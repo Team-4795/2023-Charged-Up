@@ -68,11 +68,15 @@ public class RobotContainer {
    */
   
   private void configureButtonBindings() {
+    //TODO: find actual buttons
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 6);
+    final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 5);
 
     setxbutton.onTrue(new RunCommand(
         () -> m_robotDrive.setX(),
         m_robotDrive));
+
+    resetheadingButton.onTrue(new RunCommand(m_robotDrive::zeroHeading));
   }
 
   /**
