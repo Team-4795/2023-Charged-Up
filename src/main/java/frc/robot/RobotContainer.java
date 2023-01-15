@@ -50,8 +50,8 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(-m_driverController.getRawAxis(1), 0.06),
-                MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.06),
+                MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getRawAxis(0), 0.06),
                 MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.06),
                 true),
             m_robotDrive));
@@ -68,8 +68,8 @@ public class RobotContainer {
    */
   
   private void configureButtonBindings() {
-    //TODO: find actual buttons
-    final JoystickButton setxbutton = new JoystickButton(m_driverController, 6);
+
+    final JoystickButton setxbutton = new JoystickButton(m_driverController, 4);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 5);
 
     setxbutton.onTrue(new RunCommand(
