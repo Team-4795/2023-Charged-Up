@@ -17,6 +17,7 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants.ModuleConstants;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class MAXSwerveModule {
   private final CANSparkMax m_drivingSparkMax;
   private final CANSparkMax m_turningSparkMax;

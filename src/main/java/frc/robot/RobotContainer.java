@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -50,11 +52,13 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(m_driverController.getRawAxis(1), 0.06),
-                MathUtil.applyDeadband(-m_driverController.getRawAxis(0), 0.06),
-                MathUtil.applyDeadband(m_driverController.getRawAxis(4), 0.06),
+                MathUtil.applyDeadband(m_driverController.getRawAxis(0), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getRawAxis(1), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getRawAxis(4), 0.06),
                 true),
             m_robotDrive));
+
+    
   }
 
   /**
@@ -69,8 +73,8 @@ public class RobotContainer {
   
   private void configureButtonBindings() {
 
-    final JoystickButton setxbutton = new JoystickButton(m_driverController, 4);
-    final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 5);
+    final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
+    final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
 
     setxbutton.onTrue(new RunCommand(
         () -> m_robotDrive.setX(),
