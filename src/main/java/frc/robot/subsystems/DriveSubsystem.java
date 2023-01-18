@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SerialPort;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -42,7 +43,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kBackRightChassisAngularOffset);
 
-  // The gyro sensor m_gyro 
+  // The gyro sensor
 
   AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
@@ -60,23 +61,27 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-  
-    SmartDashboard.putNumber("AngleYaw", m_gyro.getYaw());
-    SmartDashboard.putNumber("Angle", m_gyro.getAngle());
-    SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
+
 
   }
 
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
+    SmartDashboard.putNumber("AngleYaw", m_gyro.getYaw());
+    SmartDashboard.putNumber("Angle", m_gyro.getAngle());
+    SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
+    SmartDashboard.putBoolean("isconnected", m_gyro.isCalibrating());
+
     m_odometry.update(
         Rotation2d.fromDegrees(m_gyro.getYaw()),
+        
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
+            
         });
    
   }
