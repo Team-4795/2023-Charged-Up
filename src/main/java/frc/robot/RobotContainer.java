@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -76,11 +75,11 @@ public class RobotContainer {
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
 
-    setxbutton.onTrue(new RunCommand(
+    setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
-    resetheadingButton.onTrue(new RunCommand(m_robotDrive::zeroHeading));
+    resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
   }
 
   /**

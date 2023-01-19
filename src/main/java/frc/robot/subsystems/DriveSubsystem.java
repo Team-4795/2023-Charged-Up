@@ -15,10 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.SerialPort;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -71,7 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("AngleYaw", m_gyro.getYaw());
     SmartDashboard.putNumber("Angle", m_gyro.getAngle());
     SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
-    SmartDashboard.putBoolean("isconnected", m_gyro.isCalibrating());
+    SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
 
     m_odometry.update(
         Rotation2d.fromDegrees(m_gyro.getYaw()),
@@ -129,7 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(m_gyro.getYaw()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
