@@ -32,7 +32,7 @@ public class AutoSelector {
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
 
-  PathPlannerTrajectory ExamplePath = PathPlanner.loadPath("ExamplePath", new PathConstraints(4, 3));
+  PathPlannerTrajectory ExamplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
 
   Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
     // Start at the origin facing the +X direction
