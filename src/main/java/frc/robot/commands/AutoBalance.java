@@ -7,8 +7,10 @@ import frc.robot.subsystems.DriveSubsystem;
 
 
 public class AutoBalance extends PIDCommand{
+    DriveSubsystem drive;
+    double velocityErrorThreshold;
 
-    public AutoBalance(DriveSubsystem drive, double targetAngle) {
+    public AutoBalance(DriveSubsystem drive, double targetAngle, double velocityErrorThreshold) {
         super(new PIDController(0.3, 0.3, 0.3), 
         // get Gyro Angle
         drive::getElevationAngle, 
@@ -17,7 +19,8 @@ public class AutoBalance extends PIDCommand{
         //output to swerve drive command
         output -> drive.setModuleStates(convertSwerve(output)), 
         drive);
-        
+        this.drive = drive;
+        this.velocityErrorThreshold = velocityErrorThreshold;
     }
 
 
@@ -33,9 +36,8 @@ public class AutoBalance extends PIDCommand{
 
     @Override
     public boolean isFinished(){
-
-        return getController().atSetpoint();
+        //change so that it's finished when angle = 0 and angular velocity = 0
+        return (Math.abs(drive.getElevationVelocity()) < velocityErrorThreshold && getController().atSetpoint());
     }
-
 
 }
