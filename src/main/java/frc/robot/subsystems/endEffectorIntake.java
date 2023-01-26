@@ -25,7 +25,7 @@ public class endEffectorIntake extends SubsystemBase {
 
     public void stopIntake(double speed) 
     {
-        intakeMotor.set(speed = 0);  
+        intakeMotor.set(0);  
     }
 
 }
