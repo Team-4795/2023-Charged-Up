@@ -17,14 +17,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.LiftCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
 
@@ -80,8 +78,10 @@ public class RobotContainer {
 
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
-    final Trigger lift = new Trigger(()); // not sure whow to get value
-
+    
+    
+    final JoystickButton ArmButton = new JoystickButton(m_driverController, 7);
+    final JoystickButton ArmButtonReverse = new JoystickButton(m_driverController, 8);
 
 
 
@@ -89,10 +89,17 @@ public class RobotContainer {
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
-    resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));      
-    lift.whileHeld(new LiftCommand(lift, trigger value goes here));
+    resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));  
 
+    ArmButton.whileTrue(new RunCommand(
+        () -> lift.move(0.1),
+        lift));
+    ArmButtonReverse.whileTrue(new RunCommand(
+        () -> lift.move(-0.1),
+        lift));
+    
   }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
