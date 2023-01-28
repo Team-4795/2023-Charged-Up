@@ -23,7 +23,11 @@ public class endEffectorIntake extends SubsystemBase {
         intakeMotor.set(speed);
     }
 
+<<<<<<< Updated upstream
     public void stopIntake(double speed) 
+=======
+    public void stopIntake() 
+>>>>>>> Stashed changes
     {
         intakeMotor.set(0);  
     }
