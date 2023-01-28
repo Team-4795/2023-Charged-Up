@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SPI;
 
@@ -56,10 +58,12 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+  private double previousAngle;
+  private double elevationAngleVelocity;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-
-
+      previousAngle = getElevationAngle();
   }
 
   @Override
@@ -80,7 +84,9 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
             
         });
-   
+    
+    elevationAngleVelocity = (getElevationAngle() - previousAngle) / 0.02; //velocity approx.
+    previousAngle = getElevationAngle();
   }
 
   /**
@@ -182,6 +188,15 @@ public class DriveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(m_gyro.getYaw()).getDegrees();
   }
 
+  //angle between xy-plane and the forward vector of the drivebase - potentially doesn't work
+  public double getElevationAngle(){
+    return (double) m_gyro.getPitch();
+  }
+
+  public double getElevationVelocity(){
+    return elevationAngleVelocity;
+  }
+
   /**
    * Returns the turn rate of the robot.
    *
@@ -190,4 +205,5 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
+
 }

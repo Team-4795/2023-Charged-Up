@@ -1,43 +1,54 @@
 package frc.robot.commands;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.Constants.AutoConstants;
 
 
-public class AutoBalance extends PIDCommand{
+public class AutoBalance extends CommandBase{
     DriveSubsystem drive;
-    double velocityErrorThreshold;
+    double elevationAngle;
+    double errorThreshold;
+    double[] output;
 
-    public AutoBalance(DriveSubsystem drive, double targetAngle, double velocityErrorThreshold) {
-        super(new PIDController(0.3, 0.3, 0.3), 
-        // get Gyro Angle
-        drive::getElevationAngle, 
-        //target Angle
-        targetAngle, 
-        //output to swerve drive command
-        output -> drive.setModuleStates(convertSwerve(output)), 
-        drive);
-        this.drive = drive;
-        this.velocityErrorThreshold = velocityErrorThreshold;
+    public AutoBalance(double errorThreshold){
+        this.errorThreshold = errorThreshold;
+        output = new double[3];
+        addRequirements(drive);
     }
 
+    @Override
+    public void initialize(){
+        elevationAngle = drive.getElevationAngle();
+    }
 
-    private static SwerveModuleState[] convertSwerve(double output) {
-        //assuming that 0 angle is forward
-        SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
-        for(int i = 0; i < swerveModuleStates.length; i++){
-            swerveModuleStates[i] = new SwerveModuleState(output, Rotation2d.fromDegrees(0.0));
+    @Override
+    public void execute(){
+        elevationAngle = drive.getElevationAngle();
+        output = updateDrive();
+        //not sure if Field relative is correct, but whatever
+        drive.drive(output[0], output[1], output[2], true);
+        SmartDashboard.putNumber("Angle of Elevation", elevationAngle);
+        SmartDashboard.putNumber("X velocity", output[0]);
+        SmartDashboard.putNumber("Y velocity", output[1]);
+    }
+
+    private double[] updateDrive() {
+        //assuming we drive straight in the x direction for now; negative signs could be flipped
+        double[] driveValues = new double[3];
+        if(elevationAngle > 0){
+            driveValues[0] = (1 + elevationAngle / AutoConstants.platformMaxAngle) * AutoConstants.balanceSpeed; 
+        } else if(elevationAngle < 0){
+            driveValues[0] = -(1 + elevationAngle / AutoConstants.platformMaxAngle) * AutoConstants.balanceSpeed;
         }
-        return swerveModuleStates;
+        return driveValues;
     }
-
 
     @Override
     public boolean isFinished(){
-        //change so that it's finished when angle = 0 and angular velocity = 0
-        return (Math.abs(drive.getElevationVelocity()) < velocityErrorThreshold && getController().atSetpoint());
+        return (Math.abs(elevationAngle) < errorThreshold);
     }
 
 }
