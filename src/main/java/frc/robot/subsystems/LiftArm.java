@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 
 public class LiftArm extends ProfiledPIDSubsystem {
-  private final CANSparkMax leftArmMotor = new CANSparkMax(0, MotorType.kBrushless);
-  private final CANSparkMax rightArmMotor = new CANSparkMax(1, MotorType.kBrushless);
+  private final CANSparkMax leftArmMotor = new CANSparkMax(10, MotorType.kBrushless);
+  private final CANSparkMax rightArmMotor = new CANSparkMax(11, MotorType.kBrushless);
 
-  private final Encoder liftEncoder = new Encoder(0,0);
+  private final Encoder liftEncoder = new Encoder(0,1);
 
  // PIDController m_pid = new PIDController(0, 0, 0);
 
@@ -31,7 +31,8 @@ public class LiftArm extends ProfiledPIDSubsystem {
     rightArmMotor.follow(leftArmMotor);
 
     
-    liftEncoder.setDistancePerPulse(0); // not zero change
+    //liftEncoder.setDistancePerPulse(0); // not zero change
+    
   }
 
   public void move(double speed){

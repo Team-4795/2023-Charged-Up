@@ -92,10 +92,16 @@ public class RobotContainer {
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));  
 
     ArmButton.whileTrue(new RunCommand(
-        () -> lift.setGoal(0.1),
+        () -> {
+            lift.setGoal(0.1);
+            lift.enable();
+        },
         lift));
     ArmButtonReverse.whileTrue(new RunCommand(
-        () -> lift.setGoal(-0.1),
+        () -> {
+            lift.setGoal(-0.1);
+            lift.enable();
+        },
         lift));
     
   }
