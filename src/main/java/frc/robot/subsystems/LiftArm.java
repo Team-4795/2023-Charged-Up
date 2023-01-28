@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
@@ -16,11 +15,12 @@ public class LiftArm extends ProfiledPIDSubsystem {
 
   private final Encoder liftEncoder = new Encoder(0,0);
 
-  PIDController m_pid = new PIDController(0, 0, 0);
+ // PIDController m_pid = new PIDController(0, 0, 0);
+
   private final ArmFeedforward m_feedforward = new ArmFeedforward(0, -0.04, 0, 0);
 
   public LiftArm(){
-    super(new ProfiledPIDController(0,0,0, new TrapezoidProfile.Constraints(0,0)),0);
+    super(new ProfiledPIDController(0,0,0, new TrapezoidProfile.Constraints(0,0)),0);// change
 
     leftArmMotor.restoreFactoryDefaults();
     rightArmMotor.restoreFactoryDefaults();
@@ -35,7 +35,9 @@ public class LiftArm extends ProfiledPIDSubsystem {
   }
 
   public void move(double speed){
-    leftArmMotor.setVoltage(m_feedforward.calculate(speed, speed));
+    leftArmMotor.setVoltage(speed);
+    // leftArmMotor.setVoltage(m_feedforward.calculate(, speed));
+
  }
 
  @Override
