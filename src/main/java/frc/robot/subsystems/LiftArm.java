@@ -1,35 +1,57 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+public class LiftArm extends ProfiledPIDSubsystem {
+  private final CANSparkMax leftArmMotor = new CANSparkMax(0, MotorType.kBrushless);
+  private final CANSparkMax rightArmMotor = new CANSparkMax(1, MotorType.kBrushless);
 
-public class LiftArm extends SubsystemBase {
-  private final CANSparkMax liftArmMotor = new CANSparkMax(0, MotorType.kBrushless);
-  private final RelativeEncoder liftEncoder = liftArmMotor.getEncoder();;
+  private final Encoder liftEncoder = new Encoder(0,0);
+
+  PIDController m_pid = new PIDController(0, 0, 0);
+  private final ArmFeedforward m_feedforward = new ArmFeedforward(0, -0.04, 0, 0);
 
   public LiftArm(){
+    super(new ProfiledPIDController(0,0,0, new TrapezoidProfile.Constraints(0,0)),0);
 
-    liftArmMotor.restoreFactoryDefaults();
-    liftArmMotor.setIdleMode(IdleMode.kBrake);
-    liftArmMotor.setInverted(true);
+    leftArmMotor.restoreFactoryDefaults();
+    rightArmMotor.restoreFactoryDefaults();
+    leftArmMotor.setIdleMode(IdleMode.kBrake);
+    rightArmMotor.setIdleMode(IdleMode.kBrake);
+    rightArmMotor.setInverted(true);
+    leftArmMotor.setInverted(true);
+    rightArmMotor.follow(leftArmMotor);
 
- // all below does not work need spark alternative and is not working
- // need more research on how to implement PID
-
-   
+    
+    liftEncoder.setDistancePerPulse(0); // not zero change
   }
 
   public void move(double speed){
-    liftArmMotor.set(speed);
+    leftArmMotor.setVoltage(m_feedforward.calculate(speed, speed));
  }
 
+ @Override
+ public void useOutput(double output, TrapezoidProfile.State setpoint) {
+  // Calculate the feedforward from the sepoint
+  double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
+  leftArmMotor.setVoltage(output + feedforward);
+}
+
+@Override
+public double getMeasurement() {
+  return liftEncoder.getDistance() + 0; // some constant here
+}
+
   public void resetEncoder() {
-    liftEncoder.setPosition(0);
+    liftEncoder.reset();
   }
 
 
