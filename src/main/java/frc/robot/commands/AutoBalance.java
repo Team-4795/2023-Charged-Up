@@ -13,8 +13,9 @@ public class AutoBalance extends CommandBase{
     double errorThreshold;
     double[] output;
 
-    public AutoBalance(double errorThreshold){
+    public AutoBalance(DriveSubsystem drive, double errorThreshold){
         this.errorThreshold = errorThreshold;
+        this.drive = drive;
         output = new double[3];
         addRequirements(drive);
     }
