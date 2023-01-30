@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+import frc.robot.subsystems.endEffectorIntake;
 
 
 /*
@@ -34,14 +35,18 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final endEffectorIntake m_intake;
 
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    m_intake = new endEffectorIntake();
     // Configure the button bindings
     configureButtonBindings();
 
@@ -56,8 +61,6 @@ public class RobotContainer {
                 MathUtil.applyDeadband(-m_driverController.getRawAxis(4), 0.06),
                 true),
             m_robotDrive));
-
-    
   }
 
   /**
@@ -74,12 +77,18 @@ public class RobotContainer {
 
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
+    final JoystickButton spinInwards = new JoystickButton(m_driverController, 7);
+    final JoystickButton spinOutwards = new JoystickButton(m_driverController, 7);
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
+
+    spinInwards.whileTrue(new RunCommand(m_intake::setMotorSpeed));
+
+    spinOutwards.whileTrue(new RunCommand(m_intake::stopIntake));
   }
 
   /**

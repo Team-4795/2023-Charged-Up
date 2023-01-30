@@ -7,13 +7,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 //pneumatics imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
 
 //robot imports
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class endEffectorIntake {
@@ -25,7 +20,7 @@ public class endEffectorIntake {
         solenoid = new DoubleSolenoid(null, 0, 1);
 
         int Intake = Constants.kIntake;
-        intakeMotor = new CANSparkMax(Intake, MotorType.kBrushed);
+        intakeMotor = new CANSparkMax(Intake, MotorType.kBrushless);
     }
 
     public void extend() {
@@ -41,9 +36,9 @@ public class endEffectorIntake {
     }
 
     //speed
-    public void setMotorSpeed(double speed)
+    public void setMotorSpeed()
     {
-        intakeMotor.set(speed);
+        intakeMotor.set(0.2);
     }
 
     public void stopIntake() 
