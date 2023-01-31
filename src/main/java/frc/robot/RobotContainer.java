@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -84,12 +85,29 @@ public class RobotContainer {
     final JoystickButton ArmButtonReverse = new JoystickButton(m_driverController, 8);
 
 
+    // this is only for testing will convert to d-pad with 2 modes or something else
+     final JoystickButton stowed = new JoystickButton(m_driverController, some number);
+     final JoystickButton intakeCube = new JoystickButton(m_driverController, some number);
+     final JoystickButton highFeeder = new JoystickButton(m_driverController, some number);
+     final JoystickButton lowFeeder = new JoystickButton(m_driverController, some number);
+     final JoystickButton highGoal = new JoystickButton(m_driverController, some number);
+     final JoystickButton lowGoal = new JoystickButton(m_driverController, some number);
+
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
-    resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));  
+    resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
+    
+    stowed.whileTrue(new RunCommand(
+        () -> {
+            lift.setGoal(2); // shold look into the scale
+            lift.enable();
+        },
+        lift));
+
+
 
     ArmButton.whileTrue(new RunCommand(
         () -> {
