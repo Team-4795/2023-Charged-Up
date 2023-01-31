@@ -130,4 +130,9 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+//Placeholder 
+  public static final String SnakeEyesCamera = "LifeCamera";
+  public static final double CameraHeight = 0;
+  public static final double TargetHeight = 0;
+  public static final double cameraPitchRadians = 0;
 }

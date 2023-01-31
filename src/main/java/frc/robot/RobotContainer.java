@@ -18,6 +18,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -34,6 +35,7 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final Vision m_Vision = new Vision();
 
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
@@ -74,12 +76,16 @@ public class RobotContainer {
 
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
+    final JoystickButton TurnLEDOn = new JoystickButton(m_driverController, 1);
+    final JoystickButton TurnLEDOff = new JoystickButton(m_driverController, 0);
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
+    TurnLEDOn.whileTrue(new RunCommand(m_Vision::EnableLED));
+    TurnLEDOff.whileTrue(new RunCommand(m_Vision::DisableLED));
   }
 
   /**
