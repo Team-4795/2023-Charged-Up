@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private PowerDistribution PD = new PowerDistribution();
+  PowerDistribution PD = new PowerDistribution(1, ModuleType.kRev);
   private RobotContainer m_robotContainer;
 
   /**
