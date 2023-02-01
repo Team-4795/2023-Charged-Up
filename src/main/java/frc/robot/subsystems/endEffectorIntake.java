@@ -1,14 +1,18 @@
 package frc.robot.subsystems;
 
 //motor imports
-import com.revrobotics.PMWSparkMax;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 
 //pneumatics imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
 
 //robot imports
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class endEffectorIntake {
@@ -36,9 +40,9 @@ public class endEffectorIntake {
     }
 
     //speed
-    public void setMotorSpeed()
+    public void setIntakeSpeed(double speed)
     {
-        intakeMotor.set(0.2);
+        intakeMotor.set(speed);
     }
 
     public void stopIntake() 
