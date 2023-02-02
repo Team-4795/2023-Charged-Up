@@ -58,12 +58,9 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
-  private double previousAngle;
-  private double elevationAngleVelocity;
-
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-      previousAngle = getElevationAngle();
+    
   }
 
   @Override
@@ -84,9 +81,6 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
             
         });
-    
-    elevationAngleVelocity = (getElevationAngle() - previousAngle) / 0.02; //velocity approx.
-    previousAngle = getElevationAngle();
   }
 
   /**
@@ -191,10 +185,6 @@ public class DriveSubsystem extends SubsystemBase {
   //angle between xy-plane and the forward vector of the drivebase - potentially doesn't work
   public double getElevationAngle(){
     return (double) m_gyro.getPitch();
-  }
-
-  public double getElevationVelocity(){
-    return elevationAngleVelocity;
   }
 
   /**
