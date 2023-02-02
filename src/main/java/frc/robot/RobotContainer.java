@@ -81,17 +81,17 @@ public class RobotContainer {
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
     
     
-    final JoystickButton ArmButton = new JoystickButton(m_driverController, 7);
-    final JoystickButton ArmButtonReverse = new JoystickButton(m_driverController, 8);
+    final JoystickButton ArmButton = new JoystickButton(m_driverController, 2);
+    final JoystickButton ArmButtonReverse = new JoystickButton(m_driverController, 3);
 
 
     // this is only for testing will convert to d-pad with 2 modes or something else
-     final JoystickButton stowed = new JoystickButton(m_driverController, some number);
+    /*  final JoystickButton stowed = new JoystickButton(m_driverController, some number);
      final JoystickButton intakeCube = new JoystickButton(m_driverController, some number);
      final JoystickButton highFeeder = new JoystickButton(m_driverController, some number);
      final JoystickButton lowFeeder = new JoystickButton(m_driverController, some number);
      final JoystickButton highGoal = new JoystickButton(m_driverController, some number);
-     final JoystickButton lowGoal = new JoystickButton(m_driverController, some number);
+     final JoystickButton lowGoal = new JoystickButton(m_driverController, some number); */
 
 
     setxbutton.whileTrue(new RunCommand(
@@ -100,25 +100,15 @@ public class RobotContainer {
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     
-    stowed.whileTrue(new RunCommand(
-        () -> {
-            lift.setGoal(2); // shold look into the scale
-            lift.enable();
-        },
-        lift));
-
-
 
     ArmButton.whileTrue(new RunCommand(
         () -> {
-            lift.setGoal(0.1);
-            lift.enable();
+            lift.move(m_driverController.getRawAxis(2));
         },
         lift));
     ArmButtonReverse.whileTrue(new RunCommand(
         () -> {
-            lift.setGoal(-0.1);
-            lift.enable();
+            lift.move(-m_driverController.getRawAxis(3));
         },
         lift));
     
