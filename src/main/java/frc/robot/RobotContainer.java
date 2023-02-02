@@ -103,12 +103,12 @@ public class RobotContainer {
 
     ArmButton.whileTrue(new RunCommand(
         () -> {
-            lift.move(m_driverController.getRawAxis(2));
+            lift.move(Math.pow(m_driverController.getRawAxis(2), 3));
         },
         lift));
     ArmButtonReverse.whileTrue(new RunCommand(
         () -> {
-            lift.move(-m_driverController.getRawAxis(3));
+            lift.move(-Math.pow(m_driverController.getRawAxis(2), 3));
         },
         lift));
     

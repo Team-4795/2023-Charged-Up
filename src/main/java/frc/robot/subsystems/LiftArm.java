@@ -34,6 +34,10 @@ public class LiftArm extends SubsystemBase {
     leftArmMotor.restoreFactoryDefaults();
     rightArmMotor.restoreFactoryDefaults();
 
+    liftRelativeEncoder.setPositionConversionFactor(1);
+    liftEncoder.setPositionConversionFactor(1);
+
+
     leftArmMotor.setSmartCurrentLimit(30);
     rightArmMotor.setSmartCurrentLimit(30);
 
@@ -43,22 +47,21 @@ public class LiftArm extends SubsystemBase {
     rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 55);
     rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
 
-
     leftArmMotor.setIdleMode(IdleMode.kBrake);
     rightArmMotor.setIdleMode(IdleMode.kBrake);
 
     rightArmMotor.setInverted(false); 
     leftArmMotor.setInverted(true);
 
-    rightArmMotor.follow(leftArmMotor);
-
-    //liftEncoder.setPositionConversionFactor(0);
-   
-    
+    rightArmMotor.follow(leftArmMotor);    
     
   }
 
 public void move(double speed){
+  
+  if(speed>0.25)speed=0.25; 
+  if(speed<-0.25)speed=-0.25; 
+
   leftArmMotor.set(speed);
  }
 
