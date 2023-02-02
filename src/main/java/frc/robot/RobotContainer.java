@@ -86,7 +86,7 @@ public class RobotContainer {
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
 
-    spinInwards.whileTrue(new RunCommand(m_intake::setMotorSpeed));
+    spinInwards.whileTrue(new RunCommand(m_intake::setIntakeSpeed));
 
     spinOutwards.whileTrue(new RunCommand(m_intake::stopIntake));
   }

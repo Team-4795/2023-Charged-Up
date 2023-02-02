@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
 //motor imports
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.motorcontrol.PWMTalonSRX;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 
 //pneumatics imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -16,33 +16,30 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class endEffectorIntake {
-    private DoubleSolenoid solenoid;
-
-    private final CANSparkMax intakeMotor;
+   // private DoubleSolenoid solenoid;
+    private final PWMVictorSPX intakeMotor = new PWMVictorSPX(0);
 
     public endEffectorIntake(){
-        solenoid = new DoubleSolenoid(null, 0, 1);
+        //solenoid = new DoubleSolenoid(null, 0, 1);
 
-        int Intake = Constants.kIntake;
-        intakeMotor = new CANSparkMax(Intake, MotorType.kBrushless);
     }
 
-    public void extend() {
-        solenoid.set(DoubleSolenoid.Value.kForward);
-    }
+    //public void extend() {
+       // solenoid.set(DoubleSolenoid.Value.kForward);
+    //}
 
-    public void retract() {
-        solenoid.set(DoubleSolenoid.Value.kReverse);
-    }
+    //public void retract() {
+        //solenoid.set(DoubleSolenoid.Value.kReverse);
+    //}
 
-    public void stop() {
-        solenoid.set(DoubleSolenoid.Value.kOff);
-    }
+    //public void stop() {
+        //solenoid.set(DoubleSolenoid.Value.kOff);
+    //}
 
     //speed
-    public void setIntakeSpeed(double speed)
+    public void setIntakeSpeed()
     {
-        intakeMotor.set(speed);
+        intakeMotor.set(0.5);
     }
 
     public void stopIntake() 
