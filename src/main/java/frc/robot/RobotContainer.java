@@ -72,7 +72,9 @@ public class RobotContainer {
 
     m_arm.setDefaultCommand(
         new RunCommand(
-            () -> m_arm.move(0.0), // TODO: double check
+            () -> m_arm.move(
+                0.25 * (Math.pow(m_driverController.getRawAxis(3), 3) - Math.pow(m_driverController.getRawAxis(2), 3))
+            ), // TODO: double check
             m_arm
         )
     );
@@ -97,8 +99,8 @@ public class RobotContainer {
     final JoystickButton ArmButtonReverse = new JoystickButton(m_driverController, 2);
 
     // TODO: Find ids
-    final JoystickButton spinInwards = new JoystickButton(m_driverController, null);
-    final JoystickButton spinOutwards = new JoystickButton(m_driverController, null);
+    final JoystickButton spinInwards = new JoystickButton(m_driverController, 1);
+    final JoystickButton spinOutwards = new JoystickButton(m_driverController, 2);
 
     // this is only for testing will convert to d-pad with 2 modes or something else
     /*  final JoystickButton stowed = new JoystickButton(m_driverController, some number);

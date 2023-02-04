@@ -46,7 +46,7 @@ public class LiftArm extends SubsystemBase {
     rightArmMotor.setSmartCurrentLimit(60);
 
     // Set relative encoder position to absolute encoder position
-    liftRelativeEncoder.setPosition(liftEncoder.getPosition());
+    liftRelativeEncoder.setPosition(liftEncoder.getPosition() * 72);
 
     leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
     leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
