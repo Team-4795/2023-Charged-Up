@@ -14,7 +14,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -80,9 +79,8 @@ public class RobotContainer {
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
     
-    
-    final JoystickButton ArmButton = new JoystickButton(m_driverController, 2);
-    final JoystickButton ArmButtonReverse = new JoystickButton(m_driverController, 3);
+    final JoystickButton ArmButtonForward = new JoystickButton(m_driverController, 3);
+    final JoystickButton ArmButtonReverse = new JoystickButton(m_driverController, 2);
 
 
     // this is only for testing will convert to d-pad with 2 modes or something else
@@ -101,11 +99,12 @@ public class RobotContainer {
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     
 
-    ArmButton.whileTrue(new RunCommand(
+    ArmButtonForward.whileTrue(new RunCommand(
         () -> {
-            lift.move(Math.pow(m_driverController.getRawAxis(2), 3));
+            lift.move(Math.pow(m_driverController.getRawAxis(3), 3));
         },
         lift));
+
     ArmButtonReverse.whileTrue(new RunCommand(
         () -> {
             lift.move(-Math.pow(m_driverController.getRawAxis(2), 3));

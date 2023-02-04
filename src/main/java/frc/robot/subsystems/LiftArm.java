@@ -18,18 +18,14 @@ public class LiftArm extends SubsystemBase {
   private final AbsoluteEncoder liftEncoder;
   private final RelativeEncoder liftRelativeEncoder;
 
-  private final SparkMaxPIDController m_PIDController;
-
-
+  // private final SparkMaxPIDController m_PIDController;
 
   public LiftArm(){
 
     liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
     liftRelativeEncoder= leftArmMotor.getEncoder();
-    liftRelativeEncoder.setPosition(0);
 
-    m_PIDController = leftArmMotor.getPIDController();
-
+    // m_PIDController = leftArmMotor.getPIDController();
 
     leftArmMotor.restoreFactoryDefaults();
     rightArmMotor.restoreFactoryDefaults();
@@ -37,13 +33,19 @@ public class LiftArm extends SubsystemBase {
     liftRelativeEncoder.setPositionConversionFactor(1);
     liftEncoder.setPositionConversionFactor(1);
 
+    leftArmMotor.setSmartCurrentLimit(60);
+    rightArmMotor.setSmartCurrentLimit(60);
 
-    leftArmMotor.setSmartCurrentLimit(30);
-    rightArmMotor.setSmartCurrentLimit(30);
+    // Set relative encoder position to absolute encoder position
+    liftRelativeEncoder.setPosition(liftEncoder.getPosition());
 
+    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
     leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 55);
     leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
 
+    rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+    rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
     rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 55);
     rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
 
@@ -54,7 +56,9 @@ public class LiftArm extends SubsystemBase {
     leftArmMotor.setInverted(true);
 
     rightArmMotor.follow(leftArmMotor);    
-    
+
+    leftArmMotor.burnFlash();
+    rightArmMotor.burnFlash();
   }
 
 public void move(double speed){
