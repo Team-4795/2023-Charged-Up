@@ -18,14 +18,23 @@ public class LiftArm extends SubsystemBase {
   private final AbsoluteEncoder liftEncoder;
   private final RelativeEncoder liftRelativeEncoder;
 
-  // private final SparkMaxPIDController m_PIDController;
+  private final SparkMaxPIDController m_PIDController;
 
   public LiftArm(){
 
     liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
     liftRelativeEncoder= leftArmMotor.getEncoder();
 
-    // m_PIDController = leftArmMotor.getPIDController();
+    m_PIDController = leftArmMotor.getPIDController();
+    m_PIDController.setFeedbackDevice(liftEncoder);
+
+    m_PIDController.setP(0.05);
+    m_PIDController.setI(0);
+    m_PIDController.setD(0);
+    m_PIDController.setFF(0);
+
+    // Temporary values
+    m_PIDController.setOutputRange(-0.25, 0.25);
 
     leftArmMotor.restoreFactoryDefaults();
     rightArmMotor.restoreFactoryDefaults();
@@ -61,18 +70,17 @@ public class LiftArm extends SubsystemBase {
     rightArmMotor.burnFlash();
   }
 
-public void move(double speed){
-  
-  if(speed>0.25)speed=0.25; 
-  if(speed<-0.25)speed=-0.25; 
+  public void move(double speed){
+    if(speed>0.25)speed=0.25; 
+    if(speed<-0.25)speed=-0.25; 
 
-  leftArmMotor.set(speed);
- }
+    leftArmMotor.set(speed);
+  }
 
-
-public void resetEncoders() {
-  liftRelativeEncoder.setPosition(0);
-}
+  // Sets setpoint, where setpoint is in encoder ticks (position converion factor is 1.0)
+  public void setPosition(double setpoint){
+    m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+  }
 
   @Override
   public void periodic() {}
