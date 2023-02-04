@@ -50,13 +50,13 @@ public class LiftArm extends SubsystemBase {
 
     leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
     leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-    leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 55);
-    leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
+    leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 65);
+    leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 10);
 
     rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
     rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-    rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 55);
-    rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
+    rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 65);
+    rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 10);
 
     leftArmMotor.setIdleMode(IdleMode.kBrake);
     rightArmMotor.setIdleMode(IdleMode.kBrake);
