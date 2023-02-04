@@ -19,6 +19,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
+import frc.robot.subsystems.endEffectorIntake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -36,7 +37,8 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  public final LiftArm lift = new LiftArm();
+  private final endEffectorIntake m_intake;
+  public final LiftArm m_arm = new LiftArm();
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
 
@@ -44,10 +46,10 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    m_intake = new endEffectorIntake();
+
     // Configure the button bindings
     configureButtonBindings();
-
-
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -61,7 +63,19 @@ public class RobotContainer {
                 true),
             m_robotDrive));
 
-    
+    m_intake.setDefaultCommand(
+        new RunCommand(
+            () -> m_intake.stopIntake(),
+            m_intake
+        )
+    );
+
+    m_arm.setDefaultCommand(
+        new RunCommand(
+            () -> m_arm.move(0.0), // TODO: double check
+            m_arm
+        )
+    );
   }
 
   /**
@@ -82,6 +96,9 @@ public class RobotContainer {
     final JoystickButton ArmButtonForward = new JoystickButton(m_driverController, 3);
     final JoystickButton ArmButtonReverse = new JoystickButton(m_driverController, 2);
 
+    // TODO: Find ids
+    final JoystickButton spinInwards = new JoystickButton(m_driverController, null);
+    final JoystickButton spinOutwards = new JoystickButton(m_driverController, null);
 
     // this is only for testing will convert to d-pad with 2 modes or something else
     /*  final JoystickButton stowed = new JoystickButton(m_driverController, some number);
@@ -101,15 +118,18 @@ public class RobotContainer {
 
     ArmButtonForward.whileTrue(new RunCommand(
         () -> {
-            lift.move(Math.pow(m_driverController.getRawAxis(3), 3));
+            m_arm.move(Math.pow(m_driverController.getRawAxis(3), 3) * 0.25);
         },
-        lift));
+        m_arm));
 
     ArmButtonReverse.whileTrue(new RunCommand(
         () -> {
-            lift.move(-Math.pow(m_driverController.getRawAxis(2), 3));
+            m_arm.move(-Math.pow(m_driverController.getRawAxis(2), 3) * 0.25);
         },
-        lift));
+        m_arm));
+
+    spinInwards.whileTrue(new RunCommand(m_intake::setIntakeSpeed));
+    spinOutwards.whileTrue(new RunCommand(m_intake::stopIntake));
     
   }
 

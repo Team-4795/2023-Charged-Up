@@ -71,9 +71,6 @@ public class LiftArm extends SubsystemBase {
   }
 
   public void move(double speed){
-    if(speed>0.25)speed=0.25; 
-    if(speed<-0.25)speed=-0.25; 
-
     leftArmMotor.set(speed);
   }
 
