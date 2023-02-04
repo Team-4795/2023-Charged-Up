@@ -94,9 +94,6 @@ public class RobotContainer {
 
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
-    
-    final JoystickButton ArmButtonForward = new JoystickButton(m_driverController, 3);
-    final JoystickButton ArmButtonReverse = new JoystickButton(m_driverController, 2);
 
     // TODO: Find ids
     final JoystickButton spinInwards = new JoystickButton(m_driverController, 1);
@@ -116,19 +113,7 @@ public class RobotContainer {
         m_robotDrive));
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
-    
 
-    ArmButtonForward.whileTrue(new RunCommand(
-        () -> {
-            m_arm.move(Math.pow(m_driverController.getRawAxis(3), 3) * 0.25);
-        },
-        m_arm));
-
-    ArmButtonReverse.whileTrue(new RunCommand(
-        () -> {
-            m_arm.move(-Math.pow(m_driverController.getRawAxis(2), 3) * 0.25);
-        },
-        m_arm));
 
     spinInwards.whileTrue(new RunCommand(m_intake::setIntakeSpeed));
     spinOutwards.whileTrue(new RunCommand(m_intake::stopIntake));
