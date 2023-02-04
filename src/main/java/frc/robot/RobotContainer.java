@@ -24,9 +24,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
-
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -41,6 +41,8 @@ public class RobotContainer {
   public final LiftArm m_arm = new LiftArm();
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
+  GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -70,11 +72,12 @@ public class RobotContainer {
         )
     );
 
+    // Axis 2 = to battery, axis 3 = away
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> m_arm.move(
-                0.25 * (Math.pow(m_driverController.getRawAxis(3), 3) - Math.pow(m_driverController.getRawAxis(2), 3))
-            ), // TODO: double check
+                0.3 * (Math.pow(m_operatorController.getRawAxis(3), 3) - Math.pow(m_operatorController.getRawAxis(2), 3))
+            ),
             m_arm
         )
     );
@@ -89,23 +92,27 @@ public class RobotContainer {
    * passing it to a
    * {@link JoystickButton}.
    */
+
+
   
   private void configureButtonBindings() {
 
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
 
-    // TODO: Find ids
-    final JoystickButton spinInwards = new JoystickButton(m_driverController, 1);
-    final JoystickButton spinOutwards = new JoystickButton(m_driverController, 2);
+    //Intake dpad
+    // final Trigger reverseIntake = new Trigger(() -> m_operatorController.getPOV()==90);
+    // final Trigger intake = new Trigger(() -> m_operatorController.getPOV()==270);
+    final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
+    final JoystickButton intake = new JoystickButton(m_driverController, 7);
 
     // this is only for testing will convert to d-pad with 2 modes or something else
-    /*  final JoystickButton stowed = new JoystickButton(m_driverController, some number);
-     final JoystickButton intakeCube = new JoystickButton(m_driverController, some number);
-     final JoystickButton highFeeder = new JoystickButton(m_driverController, some number);
-     final JoystickButton lowFeeder = new JoystickButton(m_driverController, some number);
-     final JoystickButton highGoal = new JoystickButton(m_driverController, some number);
-     final JoystickButton lowGoal = new JoystickButton(m_driverController, some number); */
+    //  final JoystickButton stowed = new JoystickButton(m_driverController, some number);
+    //  final JoystickButton intakeCube = new JoystickButton(m_driverController, some number);
+    //  final JoystickButton highFeeder = new JoystickButton(m_driverController, some number);
+    //  final JoystickButton lowFeeder = new JoystickButton(m_driverController, some number);
+    final JoystickButton highGoal = new JoystickButton(m_operatorController, 1);
+    final JoystickButton lowGoal = new JoystickButton(m_operatorController, 2);
 
 
     setxbutton.whileTrue(new RunCommand(
@@ -114,10 +121,12 @@ public class RobotContainer {
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
 
+    //Intake
+    intake.whileTrue(new RunCommand(m_intake::setIntakeSpeed));
+    reverseIntake.whileTrue(new RunCommand(m_intake::OutTake));
 
-    spinInwards.whileTrue(new RunCommand(m_intake::setIntakeSpeed));
-    spinOutwards.whileTrue(new RunCommand(m_intake::stopIntake));
-    
+    // lowGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.2)));
+    // highGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.4)));
   }
 
 

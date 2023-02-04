@@ -17,27 +17,32 @@ public class LiftArm extends SubsystemBase {
 
   private final AbsoluteEncoder liftEncoder;
   private final RelativeEncoder liftRelativeEncoder;
+  double requestedSpeed = 0;
 
-  private final SparkMaxPIDController m_PIDController;
+  // private final SparkMaxPIDController m_PIDController;
 
   public LiftArm(){
-
+    
     liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
     liftRelativeEncoder= leftArmMotor.getEncoder();
 
-    m_PIDController = leftArmMotor.getPIDController();
-    m_PIDController.setFeedbackDevice(liftEncoder);
+    // m_PIDController = leftArmMotor.getPIDController();
+    // m_PIDController.setFeedbackDevice(liftEncoder);
 
-    m_PIDController.setP(0.05);
-    m_PIDController.setI(0);
-    m_PIDController.setD(0);
-    m_PIDController.setFF(0);
+    // m_PIDController.setP(0.05);
+    // m_PIDController.setI(0);
+    // m_PIDController.setD(0);
+    // m_PIDController.setFF(0);
 
     // Temporary values
-    m_PIDController.setOutputRange(-0.25, 0.25);
+    // m_PIDController.setOutputRange(-0.25, 0.25);
 
     leftArmMotor.restoreFactoryDefaults();
     rightArmMotor.restoreFactoryDefaults();
+
+    leftArmMotor.setOpenLoopRampRate(0.5);
+    rightArmMotor.setOpenLoopRampRate(0.5);
+
 
     liftRelativeEncoder.setPositionConversionFactor(1);
     liftEncoder.setPositionConversionFactor(1);
@@ -48,38 +53,46 @@ public class LiftArm extends SubsystemBase {
     // Set relative encoder position to absolute encoder position
     liftRelativeEncoder.setPosition(liftEncoder.getPosition() * 72);
 
-    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-    leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 65);
-    leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 10);
+    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+    rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+    rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+    // leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 65);
+    // leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 10);
 
-    rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-    rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-    rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 65);
-    rightArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 10);
 
     leftArmMotor.setIdleMode(IdleMode.kBrake);
     rightArmMotor.setIdleMode(IdleMode.kBrake);
+    
+    rightArmMotor.follow(leftArmMotor, true);
+
+
 
     rightArmMotor.setInverted(false); 
     leftArmMotor.setInverted(true);
 
-    rightArmMotor.follow(leftArmMotor);    
 
     leftArmMotor.burnFlash();
     rightArmMotor.burnFlash();
   }
 
   public void move(double speed){
+    requestedSpeed = speed;
     leftArmMotor.set(speed);
   }
 
-  // Sets setpoint, where setpoint is in encoder ticks (position converion factor is 1.0)
-  public void setPosition(double setpoint){
-    m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
-  }
+  // // Sets setpoint, where setpoint is in encoder ticks (position converion factor is 1.0)
+  // public void setPosition(double setpoint){
+  //   m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+  // }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber("Relative location", liftRelativeEncoder.getPosition());
+    SmartDashboard.putNumber("Absolute location", liftEncoder.getPosition());
+    SmartDashboard.putNumber("Applied Speed", rightArmMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
+
+  }
 
 }
