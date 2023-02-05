@@ -34,6 +34,10 @@ public class AutoSelector {
 
   PathPlannerTrajectory ExamplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
 
+
+
+
+  
   Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
     // Start at the origin facing the +X direction
     new Pose2d(0, 0, new Rotation2d(0)),
@@ -46,6 +50,12 @@ public class AutoSelector {
     AutoConstants.kMaxAccelerationMetersPerSecondSquared)
     // Add kinematics to ensure max speed is actually obeyed
     .setKinematics(DriveConstants.kDriveKinematics));
+
+
+
+
+
+
 
   public AutoSelector(DriveSubsystem drivebase) {
     chooser.setDefaultOption("ExamplePath", new SequentialCommandGroup(
