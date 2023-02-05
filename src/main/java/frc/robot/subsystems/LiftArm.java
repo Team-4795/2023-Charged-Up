@@ -14,7 +14,6 @@ public class LiftArm extends SubsystemBase {
   private final CANSparkMax leftArmMotor = new CANSparkMax(10, MotorType.kBrushless);
   private final CANSparkMax rightArmMotor = new CANSparkMax(11, MotorType.kBrushless);
 
-
   private final AbsoluteEncoder liftEncoder;
   private final RelativeEncoder liftRelativeEncoder;
   double requestedSpeed = 0;
@@ -43,16 +42,17 @@ public class LiftArm extends SubsystemBase {
     leftArmMotor.setOpenLoopRampRate(0.5);
     rightArmMotor.setOpenLoopRampRate(0.5);
 
-
     liftRelativeEncoder.setPositionConversionFactor(1);
     liftEncoder.setPositionConversionFactor(1);
 
     leftArmMotor.setSmartCurrentLimit(60);
     rightArmMotor.setSmartCurrentLimit(60);
 
-    // Set relative encoder position to absolute encoder position
+    // Set relative encoder position to absolute encoder position * 72ticks/rotation
+    // TODO: Fix this
     liftRelativeEncoder.setPosition(liftEncoder.getPosition() * 72);
 
+    // TODO: Fix this
     leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
     leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
     rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
@@ -64,18 +64,17 @@ public class LiftArm extends SubsystemBase {
     leftArmMotor.setIdleMode(IdleMode.kBrake);
     rightArmMotor.setIdleMode(IdleMode.kBrake);
     
+    // Set right motor to follow left, inverted
     rightArmMotor.follow(leftArmMotor, true);
-
-
 
     rightArmMotor.setInverted(false); 
     leftArmMotor.setInverted(true);
-
 
     leftArmMotor.burnFlash();
     rightArmMotor.burnFlash();
   }
 
+  // Set speed of arm
   public void move(double speed){
     requestedSpeed = speed;
     leftArmMotor.set(speed);
@@ -88,11 +87,10 @@ public class LiftArm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // Logging
     SmartDashboard.putNumber("Relative location", liftRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Absolute location", liftEncoder.getPosition());
     SmartDashboard.putNumber("Applied Speed", rightArmMotor.getAppliedOutput());
     SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
-
   }
-
 }

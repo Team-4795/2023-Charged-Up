@@ -73,6 +73,8 @@ public class RobotContainer {
     );
 
     // Axis 2 = to battery, axis 3 = away
+    // Subtract up movement by down movement so they cancell out if both are pressed at once
+    // Max speed is number multiplying this
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> m_arm.move(
@@ -111,8 +113,8 @@ public class RobotContainer {
     //  final JoystickButton intakeCube = new JoystickButton(m_driverController, some number);
     //  final JoystickButton highFeeder = new JoystickButton(m_driverController, some number);
     //  final JoystickButton lowFeeder = new JoystickButton(m_driverController, some number);
-    final JoystickButton highGoal = new JoystickButton(m_operatorController, 1);
-    final JoystickButton lowGoal = new JoystickButton(m_operatorController, 2);
+    // final JoystickButton highGoal = new JoystickButton(m_operatorController, 1);
+    // final JoystickButton lowGoal = new JoystickButton(m_operatorController, 2);
 
 
     setxbutton.whileTrue(new RunCommand(
@@ -122,8 +124,8 @@ public class RobotContainer {
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
 
     //Intake
-    intake.whileTrue(new RunCommand(m_intake::setIntakeSpeed));
-    reverseIntake.whileTrue(new RunCommand(m_intake::OutTake));
+    intake.whileTrue(new RunCommand(m_intake::intake));
+    reverseIntake.whileTrue(new RunCommand(m_intake::outtake));
 
     // lowGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.2)));
     // highGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.4)));

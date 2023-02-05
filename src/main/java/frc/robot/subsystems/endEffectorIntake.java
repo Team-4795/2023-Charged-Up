@@ -2,16 +2,12 @@ package frc.robot.subsystems;
 
 //motor imports
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.motorcontrol.PWMTalonSRX;
-import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //pneumatics imports
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
-
-import com.revrobotics.CANSparkMax;
+// import edu.wpi.first.wpilibj.DoubleSolenoid;
+// import edu.wpi.first.wpilibj.PneumaticsModuleType;
+// import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
+// import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
 
 //robot imports
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,8 +36,7 @@ public class endEffectorIntake extends SubsystemBase {
         //solenoid.set(DoubleSolenoid.Value.kOff);
     //}
 
-    //speed
-    public void setIntakeSpeed()
+    public void intake()
     {
         change += 1;
         intakeMotor.set(0.5);
@@ -57,7 +52,7 @@ public class endEffectorIntake extends SubsystemBase {
         intakeMotor.set(-.25);  
     }
 
-    public void OutTake()
+    public void outtake()
     {
         change -= 1;
         intakeMotor.set(-0.5);
