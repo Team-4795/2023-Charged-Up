@@ -78,9 +78,14 @@ public class RobotContainer {
     // Max speed is number multiplying this
     m_arm.setDefaultCommand(
         new RunCommand(
-            () -> m_arm.move(
-                0.3 * (Math.pow(m_operatorController.getRawAxis(3), 3) - Math.pow(m_operatorController.getRawAxis(2), 3))
-            ),
+            () -> {
+                double up = m_operatorController.getRawAxis(3);
+                double down = m_operatorController.getRawAxis(2);
+
+                if (up != 0 && down != 0) {
+                    m_arm.move(0.3 * (Math.pow(up, 3) - Math.pow(down, 3)));
+                } 
+            },
             m_arm
         )
     );
