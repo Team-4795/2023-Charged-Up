@@ -92,14 +92,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.0, 0.0, 0.0);
-            case SingleFeeder: result = new Setpoints(0.0, 0.0, 0.0);
-            case DoubleFeeder: result = new Setpoints(0.0, 0.0, 0.0);
-            case LowScore: result = new Setpoints(0.0, 0.0, 0.0);
-            case MidScore: result = new Setpoints(0.0, 0.0, 0.0);
-            case HighScoreCube: result = new Setpoints(0.0, 0.0, 0.0);
-            case StowInFrame: result = new Setpoints(0.0, 0.0, 0.0);
-            case StowLow: result = new Setpoints(0.0, 0.0, 0.0);            
+            case LowPickup: result = new Setpoints(0.94, 0.0, 0.0); break;
+            case SingleFeeder: break;
+            case DoubleFeeder: break;
+            case LowScore: result = new Setpoints(0.97, 0.0, 0.0); break;
+            case MidScore: result = new Setpoints(0.772, 0.0, 0.0); break;
+            case HighScoreCube: result = new Setpoints(0.75, 0.0, 0.0); break;
+            case StowInFrame: break;
+            case StowLow: break;            
         }
 
         return Optional.ofNullable(result);
@@ -109,14 +109,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.0, 0.0, 0.0); break;
-            case SingleFeeder: result = new Setpoints(0.0, 0.0, 0.0); break;
-            case DoubleFeeder: result = new Setpoints(0.0, 0.0, 0.0); break;
-            case LowScore: result = new Setpoints(0.0, 0.0, 0.0); break;
-            case MidScore: result = new Setpoints(0.0, 0.0, 0.0); break;
+            case LowPickup: result = new Setpoints(0.94, 0.0, 0.0); break;
+            case SingleFeeder: break;
+            case DoubleFeeder: break;
+            case LowScore: result = new Setpoints(0.97, 0.0, 0.0); break;
+            case MidScore: result = new Setpoints(0.714, 0.0, 0.0); break;
             case HighScoreCube: break;
-            case StowInFrame: result = new Setpoints(0.0, 0.0, 0.0); break;
-            case StowLow: result = new Setpoints(0.0, 0.0, 0.0); break;     
+            case StowInFrame: break;
+            case StowLow: break;     
         }
 
         return Optional.ofNullable(result);
