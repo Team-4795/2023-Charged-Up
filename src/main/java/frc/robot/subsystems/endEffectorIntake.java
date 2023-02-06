@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 //motor imports
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //pneumatics imports
 // import edu.wpi.first.wpilibj.DoubleSolenoid;
 // import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -11,16 +10,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //robot imports
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 
 public class endEffectorIntake extends SubsystemBase {
    // private DoubleSolenoid solenoid;
-    private int change = 0;
     private final PWMSparkMax intakeMotor = new PWMSparkMax(2);
 
     public endEffectorIntake(){
         //solenoid = new DoubleSolenoid(null, 0, 1);
-        SmartDashboard.putNumber("Change", 0);
 
     }
 
@@ -38,8 +35,7 @@ public class endEffectorIntake extends SubsystemBase {
 
     public void intake()
     {
-        change += 1;
-        intakeMotor.set(0.5);
+        intakeMotor.set(DriveConstants.kIntakeSpeed);
     }
 
     public void stopIntake() 
@@ -49,17 +45,14 @@ public class endEffectorIntake extends SubsystemBase {
 
     public void slowIntake() 
     {
-        intakeMotor.set(-.25);  
+        intakeMotor.set(DriveConstants.kSlowIntakeSpeed);  
     }
 
     public void outtake()
     {
-        change -= 1;
-        intakeMotor.set(-0.5);
+        intakeMotor.set(DriveConstants.kOuttakeSpeed);
     }
 
     @Override
-    public void periodic() {
-        SmartDashboard.putNumber("Change", change);
-    }
+    public void periodic() {}
 }

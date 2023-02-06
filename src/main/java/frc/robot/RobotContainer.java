@@ -37,7 +37,7 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final endEffectorIntake m_intake;
+  private final endEffectorIntake m_intake = new endEffectorIntake();;
   public final LiftArm m_arm = new LiftArm();
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
@@ -48,8 +48,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_intake = new endEffectorIntake();
-
     // Configure the button bindings
     configureButtonBindings();
 
