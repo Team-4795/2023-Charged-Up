@@ -53,6 +53,11 @@ public class EndEffectorIntake extends SubsystemBase {
         intakeMotor.set(DriveConstants.kOuttakeSpeed);
     }
 
+    public void setSpeed(double speed)
+    {
+        intakeMotor.set(speed);
+    }
+
     @Override
     public void periodic() {}
 }

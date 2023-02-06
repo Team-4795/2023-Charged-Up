@@ -19,12 +19,12 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
+import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.EndEffectorIntake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
 
@@ -38,12 +38,14 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final EndEffectorIntake m_intake = new EndEffectorIntake();;
-  public final LiftArm m_arm = new LiftArm();
+  private final LiftArm m_arm = new LiftArm();
+
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
-
+  StateManager m_manager = new StateManager(m_arm);
+  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -111,9 +113,21 @@ public class RobotContainer {
     //  final JoystickButton intakeCube = new JoystickButton(m_driverController, some number);
     //  final JoystickButton highFeeder = new JoystickButton(m_driverController, some number);
     //  final JoystickButton lowFeeder = new JoystickButton(m_driverController, some number);
-    // final JoystickButton highGoal = new JoystickButton(m_operatorController, 1);
-    // final JoystickButton lowGoal = new JoystickButton(m_operatorController, 2);
 
+    final JoystickButton pickCone = new JoystickButton(m_operatorController, 1);
+    final JoystickButton pickCube = new JoystickButton(m_operatorController, 2);
+    final JoystickButton stow = new JoystickButton(m_operatorController, 3);
+    final JoystickButton button1 = new JoystickButton(m_operatorController, 4); // Low pickup or low score
+    final JoystickButton button2 = new JoystickButton(m_operatorController, 5); // Single feeder or mid score
+    final JoystickButton button3 = new JoystickButton(m_operatorController, 6); // Double feeder or high score
+
+    pickCone.onTrue(new RunCommand(m_manager::pickCone));
+    pickCube.onTrue(new RunCommand(m_manager::pickCube));
+    stow.onTrue(new RunCommand(m_manager::stow));
+
+    button1.onTrue(new RunCommand(m_manager::button1));
+    button2.onTrue(new RunCommand(m_manager::button2));
+    button3.onTrue(new RunCommand(m_manager::button3));
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
