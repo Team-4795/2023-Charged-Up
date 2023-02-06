@@ -55,8 +55,6 @@ public class LiftArm extends SubsystemBase {
     // TODO: Fix this
     leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
     leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
-    rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
-    rightArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
     // leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 65);
     // leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 10);
 
@@ -67,7 +65,6 @@ public class LiftArm extends SubsystemBase {
     // Set right motor to follow left, inverted
     rightArmMotor.follow(leftArmMotor, true);
 
-    rightArmMotor.setInverted(false); 
     leftArmMotor.setInverted(true);
 
     leftArmMotor.burnFlash();
