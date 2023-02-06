@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutoBalance;
+import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -74,6 +76,13 @@ public class RobotContainer {
 
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
+    final JoystickButton balanceButton = new JoystickButton(m_driverController, 3);
+    final JoystickButton testButton = new JoystickButton(m_driverController, 4);
+
+
+    balanceButton.onTrue(new AutoBalance(m_robotDrive, 0.05));
+    testButton.onTrue(new DriveCommand(m_robotDrive, 0.3, 0, 0, false, 2));
+
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),

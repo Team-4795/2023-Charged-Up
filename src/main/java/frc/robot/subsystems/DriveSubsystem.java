@@ -184,7 +184,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   //angle between xy-plane and the forward vector of the drivebase - potentially doesn't work
   public double getElevationAngle(){
-    return (double) m_gyro.getPitch();
+    return Rotation2d.fromDegrees(m_gyro.getPitch()).getDegrees();
   }
 
   /**
