@@ -95,7 +95,7 @@ enum State {
             case LowPickup: result = new Setpoints(0.94, 0.0, 0.0); break;
             case SingleFeeder: break;
             case DoubleFeeder: break;
-            case LowScore: result = new Setpoints(0.97, 0.0, 0.0); break;
+            case LowScore: result = new Setpoints(0.907, 0.0, 0.0); break;
             case MidScore: result = new Setpoints(0.772, 0.0, 0.0); break;
             case HighScoreCube: result = new Setpoints(0.75, 0.0, 0.0); break;
             case StowInFrame: break;
@@ -112,7 +112,7 @@ enum State {
             case LowPickup: result = new Setpoints(0.94, 0.0, 0.0); break;
             case SingleFeeder: break;
             case DoubleFeeder: break;
-            case LowScore: result = new Setpoints(0.97, 0.0, 0.0); break;
+            case LowScore: result = new Setpoints(0.907, 0.0, 0.0); break;
             case MidScore: result = new Setpoints(0.714, 0.0, 0.0); break;
             case HighScoreCube: break;
             case StowInFrame: break;
