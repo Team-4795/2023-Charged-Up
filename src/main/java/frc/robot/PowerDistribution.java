@@ -15,8 +15,9 @@ public class PowerDistribution {
     SmartDashboard.putNumber("Voltage", voltage);
 
 
-    
+
     // Retrieves PDP temp, in C.
     double temperatureCelsius = m_pdp.getTemperature();
+    smartDashboard.putNumber("Temperature", temperaturecelsius);
 }
 
