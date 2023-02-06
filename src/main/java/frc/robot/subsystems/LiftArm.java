@@ -53,10 +53,10 @@ public class LiftArm extends SubsystemBase {
     liftRelativeEncoder.setPosition(liftEncoder.getPosition() * 72);
 
     // TODO: Fix this
-    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
-    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
-    // leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 65);
-    // leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 10);
+    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+    leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 65);
+    leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 10);
 
 
     leftArmMotor.setIdleMode(IdleMode.kBrake);
