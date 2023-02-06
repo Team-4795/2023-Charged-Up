@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-public class endEffectorIntake extends SubsystemBase {
+public class EndEffectorIntake extends SubsystemBase {
    // private DoubleSolenoid solenoid;
     private final PWMSparkMax intakeMotor = new PWMSparkMax(2);
 
-    public endEffectorIntake(){
+    public EndEffectorIntake(){
         //solenoid = new DoubleSolenoid(null, 0, 1);
 
     }
