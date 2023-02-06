@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -120,6 +121,7 @@ public class RobotContainer {
     final JoystickButton button1 = new JoystickButton(m_operatorController, 4); // Low pickup or low score
     final JoystickButton button2 = new JoystickButton(m_operatorController, 5); // Single feeder or mid score
     final JoystickButton button3 = new JoystickButton(m_operatorController, 6); // Double feeder or high score
+    final JoystickButton toggleStoring = new JoystickButton(m_operatorController, 7);
 
     pickCone.onTrue(new RunCommand(m_manager::pickCone));
     pickCube.onTrue(new RunCommand(m_manager::pickCube));
@@ -128,6 +130,9 @@ public class RobotContainer {
     button1.onTrue(new RunCommand(m_manager::button1));
     button2.onTrue(new RunCommand(m_manager::button2));
     button3.onTrue(new RunCommand(m_manager::button3));
+
+    // Temporary toggle storing button
+    toggleStoring.onTrue(new RunCommand(m_manager::toggleStoring));
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),

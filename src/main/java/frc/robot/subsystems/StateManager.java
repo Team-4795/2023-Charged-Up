@@ -12,6 +12,10 @@ public class StateManager extends SubsystemBase {
     // Either what were picking or what were holding
     Object object;
 
+    // If we are or are not storing an object
+    // Temporary
+    boolean storing = false;
+
     public StateManager(LiftArm arm) {
         this.state = State.StowLow;
         this.object = Object.None;
@@ -33,7 +37,7 @@ public class StateManager extends SubsystemBase {
 
     // Low pickup or low score
     public void button1() {
-        if (storing()) {
+        if (storing) {
             state = State.LowPickup;
         } else {
             state = State.LowScore;
@@ -44,7 +48,7 @@ public class StateManager extends SubsystemBase {
 
     // Single feeder or mid score
     public void button2() {
-        if (storing()) {
+        if (storing) {
             state = State.SingleFeeder;
         } else {
             state = State.MidScore;
@@ -55,7 +59,7 @@ public class StateManager extends SubsystemBase {
 
     // Double feeder or high score
     public void button3() {
-        if (storing()) {
+        if (storing) {
             state = State.DoubleFeeder;
         } else {
             state = State.HighScoreCube;
@@ -65,8 +69,8 @@ public class StateManager extends SubsystemBase {
     }
 
     // temporary function, if we are storing an object
-    public boolean storing() {
-        return true;
+    public void toggleStoring() {
+        storing = !storing;
     }
 
     private void setSetpoint() {
