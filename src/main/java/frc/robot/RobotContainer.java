@@ -18,13 +18,14 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.endEffectorIntake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
-import frc.robot.subsystems.endEffectorIntake;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import java.util.List;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -36,7 +37,6 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final endEffectorIntake m_intake;
-
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
 
@@ -45,8 +45,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
     m_intake = new endEffectorIntake();
+
     // Configure the button bindings
     configureButtonBindings();
 
@@ -61,6 +61,17 @@ public class RobotContainer {
                 MathUtil.applyDeadband(-m_driverController.getRawAxis(4), 0.06),
                 true),
             m_robotDrive));
+
+    m_intake.setDefaultCommand(
+        new RunCommand(
+            () -> m_intake.stopIntake(),
+            m_intake
+        )
+    );
+
+    // Axis 2 = to battery, axis 3 = away
+    // Subtract up movement by down movement so they cancell out if both are pressed at once
+    // Max speed is number multiplying this
   }
 
   /**
@@ -72,13 +83,28 @@ public class RobotContainer {
    * passing it to a
    * {@link JoystickButton}.
    */
+
+
   
   private void configureButtonBindings() {
 
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
-    final JoystickButton spinInwards = new JoystickButton(m_driverController, 7);
-    final JoystickButton spinOutwards = new JoystickButton(m_driverController, 7);
+
+    //Intake dpad
+    // final Trigger reverseIntake = new Trigger(() -> m_operatorController.getPOV()==90);
+    // final Trigger intake = new Trigger(() -> m_operatorController.getPOV()==270);
+    final JoystickButton outake = new JoystickButton(m_driverController, 8);
+    final JoystickButton intake = new JoystickButton(m_driverController, 7);
+
+    // this is only for testing will convert to d-pad with 2 modes or something else
+    //  final JoystickButton stowed = new JoystickButton(m_driverController, some number);
+    //  final JoystickButton intakeCube = new JoystickButton(m_driverController, some number);
+    //  final JoystickButton highFeeder = new JoystickButton(m_driverController, some number);
+    //  final JoystickButton lowFeeder = new JoystickButton(m_driverController, some number);
+    // final JoystickButton highGoal = new JoystickButton(m_operatorController, 1);
+    // final JoystickButton lowGoal = new JoystickButton(m_operatorController, 2);
+
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
@@ -86,10 +112,17 @@ public class RobotContainer {
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
 
-    spinInwards.whileTrue(new RunCommand(m_intake::setIntakeSpeed));
+    //Intake
+    intake.whileTrue(new RunCommand(
+        () -> m_intake.intake(0.5),
+        m_intake));
 
-    spinOutwards.whileTrue(new RunCommand(m_intake::stopIntake));
+    outake.whileTrue(new RunCommand(m_intake::outtake));
+
+    // lowGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.2)));
+    // highGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.4)));
   }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
