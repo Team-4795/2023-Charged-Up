@@ -48,6 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
+
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
@@ -61,7 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getYaw()),
+      m_gyro.getRotation2d(),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -78,13 +79,13 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    SmartDashboard.putNumber("AngleYaw", m_gyro.getYaw());
-    SmartDashboard.putNumber("Angle", m_gyro.getAngle());
-    SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
-    SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
+    //SmartDashboard.putNumber("AngleYaw", m_gyro.getYaw());
+    //SmartDashboard.putNumber("Angle", m_gyro.getAngle());
+    //SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
+    //SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
 
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getYaw()),
+        m_gyro.getRotation2d(),
         
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
@@ -112,7 +113,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getYaw()),
+        m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
