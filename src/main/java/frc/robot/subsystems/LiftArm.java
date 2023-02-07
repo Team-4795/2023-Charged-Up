@@ -21,6 +21,9 @@ public class LiftArm extends SubsystemBase {
   private final SparkMaxPIDController m_PIDController;
 
   public LiftArm(){
+
+    leftArmMotor.restoreFactoryDefaults();
+    rightArmMotor.restoreFactoryDefaults();
     
     liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
     liftRelativeEncoder= leftArmMotor.getEncoder();
@@ -31,16 +34,15 @@ public class LiftArm extends SubsystemBase {
     // Probably dont need this
     m_PIDController.setPositionPIDWrappingEnabled(false);
 
-    m_PIDController.setP(0.05);
+    m_PIDController.setP(0.8);
     m_PIDController.setI(0);
     m_PIDController.setD(0);
     m_PIDController.setFF(0);
 
     // Temporary values
-    m_PIDController.setOutputRange(-0.25, 0.25);
+    m_PIDController.setOutputRange(-0.3, 0.3);
 
-    leftArmMotor.restoreFactoryDefaults();
-    rightArmMotor.restoreFactoryDefaults();
+  
 
     leftArmMotor.setOpenLoopRampRate(0.5);
     rightArmMotor.setOpenLoopRampRate(0.5);
@@ -56,8 +58,8 @@ public class LiftArm extends SubsystemBase {
     liftRelativeEncoder.setPosition(liftEncoder.getPosition() * 72);
 
     // TODO: Fix this
-    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+    leftArmMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
     leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 65);
     leftArmMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 10);
 

@@ -83,9 +83,9 @@ public class RobotContainer {
                 double up = m_operatorController.getRawAxis(3);
                 double down = m_operatorController.getRawAxis(2);
 
-                if (up != 0 && down != 0) {
+                if (up != 0 || down != 0) {
                     m_arm.move(0.3 * (Math.pow(up, 3) - Math.pow(down, 3)));
-                } 
+              } 
             },
             m_arm
         )
@@ -135,16 +135,16 @@ public class RobotContainer {
     final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
     final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 2);
 
-    pickCone.onTrue(new RunCommand(m_manager::pickCone));
-    pickCube.onTrue(new RunCommand(m_manager::pickCube));
+    pickCone.whileTrue(new RunCommand(m_manager::pickCone, m_manager));
+    pickCube.whileTrue(new RunCommand(m_manager::pickCube, m_manager));
 
-    stow.onTrue(new RunCommand(m_manager::stow));
-    button1.onTrue(new RunCommand(m_manager::button1));
-    button2.onTrue(new RunCommand(m_manager::button2));
-    button3.onTrue(new RunCommand(m_manager::button3));
+    stow.whileTrue(new RunCommand(m_manager::stow, m_manager));
+    button1.whileTrue(new RunCommand(m_manager::button1, m_manager));
+    button2.whileTrue(new RunCommand(m_manager::button2, m_manager));
+    button3.whileTrue(new RunCommand(m_manager::button3, m_manager));
 
-    isStoring.onTrue(new RunCommand(m_manager::setStoring));
-    isNotStoring.onTrue(new RunCommand(m_manager::setNotStoring));
+    isStoring.whileTrue(new RunCommand(m_manager::setStoring, m_manager));
+    isNotStoring.whileTrue(new RunCommand(m_manager::setNotStoring, m_manager));
 
     // Temporary toggle storing button
     // toggleStoring.onTrue(new RunCommand(m_manager::toggleStoring));

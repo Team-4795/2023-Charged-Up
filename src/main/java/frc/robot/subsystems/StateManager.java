@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class StateManager extends SubsystemBase {
@@ -15,6 +17,8 @@ public class StateManager extends SubsystemBase {
     // If we are or are not storing an object
     // Temporary
     boolean storing = false;
+
+    Setpoints setpoint_debug = new Setpoints(0.0, 0.0, 0.0);
 
     public StateManager(LiftArm arm) {
         this.state = State.StowLow;
@@ -81,7 +85,15 @@ public class StateManager extends SubsystemBase {
     }
 
     private void setSetpoint() {
-        state.get(object).ifPresent(setpoints -> { arm.setPosition(setpoints.arm); });
+        state.get(object).ifPresent(setpoints -> { 
+            setpoint_debug = setpoints;
+            arm.setPosition(setpoints.arm);
+         });
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Arm setpoint", setpoint_debug.arm);
     }
 }
 
