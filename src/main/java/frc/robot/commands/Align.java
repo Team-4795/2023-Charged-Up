@@ -148,9 +148,6 @@ public class Align extends CommandBase {
         }
       }
     
-
-    //driveSubsystem.drive(goalAngle, goalDistance, rotation, isAligned);
-
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
