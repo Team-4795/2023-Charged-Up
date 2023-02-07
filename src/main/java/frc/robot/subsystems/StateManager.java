@@ -68,9 +68,16 @@ public class StateManager extends SubsystemBase {
         setSetpoint();
     }
 
-    // temporary function, if we are storing an object
     public void toggleStoring() {
         storing = !storing;
+    }
+
+    public void setStoring() {
+        storing = true;
+    }
+
+    public void setNotStoring() {
+        storing = false;
     }
 
     private void setSetpoint() {

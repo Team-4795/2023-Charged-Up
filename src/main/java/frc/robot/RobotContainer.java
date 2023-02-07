@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
 
@@ -120,24 +121,33 @@ public class RobotContainer {
     //  final JoystickButton highFeeder = new JoystickButton(m_driverController, some number);
     //  final JoystickButton lowFeeder = new JoystickButton(m_driverController, some number);
 
-    final JoystickButton pickCone = new JoystickButton(m_operatorController, 1);
-    final JoystickButton pickCube = new JoystickButton(m_operatorController, 2);
-    final JoystickButton stow = new JoystickButton(m_operatorController, 3);
-    final JoystickButton button1 = new JoystickButton(m_operatorController, 4); // Low pickup or low score
-    final JoystickButton button2 = new JoystickButton(m_operatorController, 5); // Single feeder or mid score
-    final JoystickButton button3 = new JoystickButton(m_operatorController, 6); // Double feeder or high score
-    final JoystickButton toggleStoring = new JoystickButton(m_operatorController, 7);
+    // Left, right bumper
+    final JoystickButton pickCone = new JoystickButton(m_operatorController, 5);
+    final JoystickButton pickCube = new JoystickButton(m_operatorController, 6);
+
+    // D-Pad in this order: top, left, bottom, right
+    final Trigger stow = new Trigger(() -> m_operatorController.getPOV() == 0);
+    final Trigger button1 = new Trigger(() -> m_operatorController.getPOV() == 270); // Low pickup or low score
+    final Trigger button2 = new Trigger(() -> m_operatorController.getPOV() == 180); // Single feeder or mid score
+    final Trigger button3 = new Trigger(() -> m_operatorController.getPOV() == 90); // Double feeder or high score
+
+    // A, B
+    final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
+    final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 2);
 
     pickCone.onTrue(new RunCommand(m_manager::pickCone));
     pickCube.onTrue(new RunCommand(m_manager::pickCube));
-    stow.onTrue(new RunCommand(m_manager::stow));
 
+    stow.onTrue(new RunCommand(m_manager::stow));
     button1.onTrue(new RunCommand(m_manager::button1));
     button2.onTrue(new RunCommand(m_manager::button2));
     button3.onTrue(new RunCommand(m_manager::button3));
 
+    isStoring.onTrue(new RunCommand(m_manager::setStoring));
+    isNotStoring.onTrue(new RunCommand(m_manager::setNotStoring));
+
     // Temporary toggle storing button
-    toggleStoring.onTrue(new RunCommand(m_manager::toggleStoring));
+    // toggleStoring.onTrue(new RunCommand(m_manager::toggleStoring));
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
