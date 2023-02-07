@@ -153,10 +153,9 @@ public class Align extends CommandBase {
   public boolean isFinished() {
     return isAligned && System.currentTimeMillis() - alignStart > 200;
   }
-  /* the other people's end
   public void end(boolean interrupted) {
-    drivetrainSubsystem.drive(0,0,0, true);
+    driveSubsystem.drive(0,0,0, true);
   }
 
-   */
+
 }
