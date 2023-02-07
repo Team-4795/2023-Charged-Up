@@ -156,7 +156,10 @@ public class RobotContainer {
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
 
     //Intake
-    intake.whileTrue(new RunCommand(m_intake::intake));
+    intake.whileTrue(new RunCommand(
+        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
+        m_intake));
+    
     reverseIntake.whileTrue(new RunCommand(m_intake::outtake));
 
     // lowGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.2)));

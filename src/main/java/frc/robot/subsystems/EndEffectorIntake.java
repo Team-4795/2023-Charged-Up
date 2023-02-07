@@ -33,7 +33,7 @@ public class EndEffectorIntake extends SubsystemBase {
         //solenoid.set(DoubleSolenoid.Value.kOff);
     //}
 
-    public void intake()
+    public void intake(double speed)
     {
         intakeMotor.set(DriveConstants.kIntakeSpeed);
     }
