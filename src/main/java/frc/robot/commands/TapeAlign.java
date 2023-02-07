@@ -59,7 +59,7 @@ public class TapeAlign extends CommandBase {
   @Override
   public void execute() {
     double forwardSpeed;
-    double y_speed;
+    double x_speed;
 
 
     var result = camera.getLatestResult();
@@ -69,8 +69,8 @@ public class TapeAlign extends CommandBase {
       double error = 0 - currentHeading;
       double rotation = rotationPID.calculate(error);
       driveSubsystem.drive(0, 0, rotation, true);
-      y_speed = -rotationPID.calculate(result.getBestTarget().getYaw(), 0);
-      driveSubsystem.drive(0,y_speed,0,true);
+      x_speed = -rotationPID.calculate(result.getBestTarget().getYaw(), 0);
+      driveSubsystem.drive(0,x_speed,0,true);
     } else {
       driveSubsystem.drive(0,0,0,true);
     }
