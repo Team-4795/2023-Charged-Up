@@ -106,7 +106,7 @@ public class Align extends CommandBase {
           if (targetOpt.isPresent()) {
             var target = targetOpt.get();
             // This is new target data, so recalculate the goal
-            //lastTarget = target;
+            lastTarget = target;
             
             // Transform the robot's pose to find the camera's pose
             var cameraPose = robotPose.transformBy(ROBOT_TO_CAMERA);
