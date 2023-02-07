@@ -69,7 +69,7 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
         new RunCommand(
-            () -> m_intake.stopIntake(),
+            () -> m_intake.intake(0), // Change to DriveConstants.kSlowIntakeSpeed
             m_intake
         )
     );
@@ -160,7 +160,9 @@ public class RobotContainer {
         () -> m_intake.intake(DriveConstants.kIntakeSpeed),
         m_intake));
     
-    reverseIntake.whileTrue(new RunCommand(m_intake::outtake));
+    reverseIntake.whileTrue(new RunCommand(
+        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
+        m_intake));
 
     // lowGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.2)));
     // highGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.4)));

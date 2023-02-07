@@ -35,26 +35,6 @@ public class EndEffectorIntake extends SubsystemBase {
 
     public void intake(double speed)
     {
-        intakeMotor.set(DriveConstants.kIntakeSpeed);
-    }
-
-    public void stopIntake() 
-    {
-        intakeMotor.set(0);  
-    }
-
-    public void slowIntake() 
-    {
-        intakeMotor.set(DriveConstants.kSlowIntakeSpeed);  
-    }
-
-    public void outtake()
-    {
-        intakeMotor.set(DriveConstants.kOuttakeSpeed);
-    }
-
-    public void setSpeed(double speed)
-    {
         intakeMotor.set(speed);
     }
 
