@@ -43,7 +43,9 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final Vision m_Vision = new Vision();
-
+  private final LiftArm m_arm  = new LiftArm();
+  private final EndEffectorIntake m_intake = new EndEffectorIntake();
+  
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
