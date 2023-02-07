@@ -59,9 +59,13 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 9;
 
     public static final boolean kGyroReversed = false;
+
+    public static final double kIntakeSpeed = 0.5;
+    public static final double kSlowIntakeSpeed = 0.25;
+    public static final double kOuttakeSpeed = -0.5;
   }
 
-  public static final class ModuleConstants { 
+  public static final class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
     // This changes the drive speed of the module (a pinion gear with more teeth will result in a
     // robot that drives faster).
@@ -114,7 +118,6 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
-
     public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
 
