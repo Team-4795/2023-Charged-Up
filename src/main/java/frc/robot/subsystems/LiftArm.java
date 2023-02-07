@@ -28,6 +28,9 @@ public class LiftArm extends SubsystemBase {
     m_PIDController = leftArmMotor.getPIDController();
     m_PIDController.setFeedbackDevice(liftEncoder);
 
+    // Probably dont need this
+    m_PIDController.setPositionPIDWrappingEnabled(false);
+
     m_PIDController.setP(0.05);
     m_PIDController.setI(0);
     m_PIDController.setD(0);
