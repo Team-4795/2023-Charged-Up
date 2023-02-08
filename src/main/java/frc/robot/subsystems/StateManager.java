@@ -42,9 +42,9 @@ public class StateManager extends SubsystemBase {
     // Low pickup or low score
     public void button1() {
         if (storing) {
-            state = State.LowPickup;
-        } else {
             state = State.LowScore;
+        } else {
+            state = State.LowPickup;
         }
 
         setSetpoint();
@@ -53,9 +53,9 @@ public class StateManager extends SubsystemBase {
     // Single feeder or mid score
     public void button2() {
         if (storing) {
-            state = State.SingleFeeder;
-        } else {
             state = State.MidScore;
+        } else {
+            state = State.SingleFeeder;
         }
 
         setSetpoint();
@@ -64,9 +64,9 @@ public class StateManager extends SubsystemBase {
     // Double feeder or high score
     public void button3() {
         if (storing) {
-            state = State.DoubleFeeder;
-        } else {
             state = State.HighScoreCube;
+        } else {
+            state = State.DoubleFeeder;
         }
 
         setSetpoint();
