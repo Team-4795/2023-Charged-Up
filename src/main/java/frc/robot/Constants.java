@@ -26,9 +26,9 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 3 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 1.2; // radians per second
-    public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
-    public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+    public static final double kDirectionSlewRate = 1.7; // radians per second
+    public static final double kMagnitudeSlewRate = 2.3; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 2.5; // percent per second (1 = 100%)
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(20.75);
@@ -45,7 +45,12 @@ public final class Constants {
     public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
     public static final double kFrontRightChassisAngularOffset = 0;
     public static final double kBackLeftChassisAngularOffset = Math.PI;
-    public static final double kBackRightChassisAngularOffset = Math.PI / 2;
+    public static final double kBackRightChassisAngularOffset  = Math.PI / 2;
+
+    //Chassis Angular Offset
+
+    public static final double kChassisAngularOffset = -90;
+
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 2;
