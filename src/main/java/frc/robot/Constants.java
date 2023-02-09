@@ -61,7 +61,7 @@ public final class Constants {
 
     //Chassis Angular Offset
 
-    public static final double kChassisAngularOffset = -90;
+    public static final double kChassisAngularOffset = -270;
 
 
     // SPARK MAX CAN IDs
@@ -155,7 +155,7 @@ public final class Constants {
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
   public static class VisionConstants {
-    public static final String SnakeEyesCamera = "OV9587";
+    public static final String SnakeEyesCamera = "OV5647";
     public static final double CameraHeight = 21;
     public static final double TargetHeight = 0;
     public static final double cameraPitchRadians = -5;

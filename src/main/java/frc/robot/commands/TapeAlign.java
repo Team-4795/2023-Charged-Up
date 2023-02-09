@@ -7,6 +7,8 @@ package frc.robot.commands;
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -20,8 +22,8 @@ public class TapeAlign extends CommandBase {
   boolean interrupted = false;
 
 
-  final double P_GAIN = 0.1;
-  final double D_GAIN = 0.1;
+  final double P_GAIN = 0.015;
+  final double D_GAIN = 0;
   //placeholders
   PIDController controller = new PIDController(P_GAIN, 0, D_GAIN);
 
@@ -30,7 +32,8 @@ public class TapeAlign extends CommandBase {
     this.vision = vision;
     this.camera = camera;
 
-    rotationPID = new PIDController(0.1, 0, 0);
+    rotationPID = new PIDController(0.01, 0, 0);
+    
     addRequirements(driveSubsystem);
   }
 
@@ -45,7 +48,7 @@ public class TapeAlign extends CommandBase {
   @Override
   public void execute() {
     double forwardSpeed;
-    double y_speed;
+    double x_speed;
     var result = camera.getLatestResult();
     var robotPose2d = driveSubsystem.getPose();
 
@@ -54,12 +57,13 @@ public class TapeAlign extends CommandBase {
     }
 
     if (result.hasTargets()) {
-      double currentHeading = driveSubsystem.getHeading();
-      double rotation = rotationPID.calculate(currentHeading, 0);
-      y_speed = controller.calculate(vision.getTargetAngle(), 0);
-      driveSubsystem.drive(0,y_speed, rotation,true);
+      double currentHeading = driveSubsystem.getrealheading();
+      double rotation = rotationPID.calculate(currentHeading,0);
+      x_speed = controller.calculate(vision.getTargetAngle(), 0);
+      driveSubsystem.drive(0, 0, currentHeading,true, true);
+      //driveSubsystem.drive(-x_speed, 0, 0,true, true);
     } else {
-      driveSubsystem.drive(0,0,0,true);
+      driveSubsystem.drive(0,0,0,true, true);
     }
   }
   @Override

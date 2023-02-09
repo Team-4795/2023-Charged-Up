@@ -17,6 +17,7 @@ import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.WPIUtilJNI;
 import frc.utils.SwerveUtils;
@@ -80,8 +81,8 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    //SmartDashboard.putNumber("AngleYaw", m_gyro.getYaw());
-    //SmartDashboard.putNumber("Angle", m_gyro.getAngle());
+    SmartDashboard.putNumber("AngleYaw", -m_gyro.getYaw());
+    SmartDashboard.putNumber("Angle",-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset);
     //SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
     //SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
 
@@ -249,6 +250,12 @@ public class DriveSubsystem extends SubsystemBase {
   public Rotation2d getHeading() {
     return Rotation2d.fromDegrees(-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset);
   }
+
+  public double getrealheading(){
+    return -m_gyro.getYaw();
+  }
+
+  
 
   /**
    * Returns the turn rate of the robot.

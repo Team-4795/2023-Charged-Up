@@ -5,13 +5,14 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
 
 
 public class Vision extends SubsystemBase{
-    private final PhotonCamera camera = new PhotonCamera(Constants.SnakeEyesCamera);
-    final double CameraHeight = Constants.CameraHeight;
-    final double TargetHeight = Constants.TargetHeight;
-    final double cameraPitchRadians = Constants.cameraPitchRadians;
+    private final PhotonCamera camera = new PhotonCamera(VisionConstants.SnakeEyesCamera);
+    final double CameraHeight = VisionConstants.CameraHeight;
+    final double TargetHeight = VisionConstants.TargetHeight;
+    final double cameraPitchRadians = VisionConstants.cameraPitchRadians;
     public boolean hasTargets = false;
     private double targetAngle = 0;
     double forwardSpeed;

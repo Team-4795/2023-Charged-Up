@@ -127,7 +127,7 @@ public class Align extends CommandBase {
         
         if (lastTarget == null) {
           // No target has been visible
-          driveSubsystem.drive(0,0,0,true);
+          driveSubsystem.drive(0,0,0,true,true);
         } else {
           // Drive to the target
           var xSpeed = xController.calculate(robotPose.getX());
@@ -144,7 +144,7 @@ public class Align extends CommandBase {
           if (omegaController.atGoal()) {
             omegaSpeed = 0;
           }
-          driveSubsystem.drive(xSpeed, ySpeed, omegaSpeed, true);
+          driveSubsystem.drive(xSpeed, ySpeed, omegaSpeed, true, true);
         }
       }
     
@@ -154,7 +154,7 @@ public class Align extends CommandBase {
     return isAligned && System.currentTimeMillis() - alignStart > 200;
   }
   public void end(boolean interrupted) {
-    driveSubsystem.drive(0,0,0, true);
+    driveSubsystem.drive(0,0,0, true,true);
   }
 
 

@@ -13,17 +13,22 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.TapeAlign;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
@@ -32,6 +37,8 @@ import frc.robot.subsystems.StateManager;
 
 
 import java.util.List;
+
+import org.photonvision.PhotonCamera;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -45,6 +52,7 @@ public class RobotContainer {
   private final Vision m_Vision = new Vision();
   private final LiftArm m_arm  = new LiftArm();
   private final EndEffectorIntake m_intake = new EndEffectorIntake();
+  private final PhotonCamera m_camera = new PhotonCamera(VisionConstants.SnakeEyesCamera);
   
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
@@ -114,7 +122,8 @@ public class RobotContainer {
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
     final JoystickButton TurnLEDOn = new JoystickButton(m_driverController, 1);
     final JoystickButton TurnLEDOff = new JoystickButton(m_driverController, 0);
-
+    final POVButton TapeAlign = new POVButton(m_driverController, 90);
+//get pov 90
     //Intake dpad
     // final Trigger reverseIntake = new Trigger(() -> m_operatorController.getPOV()==90);
     // final Trigger intake = new Trigger(() -> m_operatorController.getPOV()==270);
@@ -162,6 +171,9 @@ public class RobotContainer {
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     TurnLEDOn.whileTrue(new RunCommand(m_Vision::enableLED));
     TurnLEDOff.whileTrue(new RunCommand(m_Vision::disableLED));
+    Command tapeAlign = new TapeAlign(m_robotDrive, m_Vision, m_camera);
+    TapeAlign.whileTrue(tapeAlign);
+
   }
 
 
