@@ -21,8 +21,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private DoubleLogEntry ControllerXLog;
-  private DoubleLogEntry ControllerYLog;
+  private DoubleLogEntry ElevationAngle;
+  private DoubleLogEntry Heading;
   private DoubleLogEntry ControllerZLog;
 
   /**
@@ -38,8 +38,8 @@ public class Robot extends TimedRobot {
     DataLogManager.start();
 
     DataLog log = DataLogManager.getLog();
-    ControllerXLog = new DoubleLogEntry(log, "/xLog");
-    ControllerYLog = new DoubleLogEntry(log, "/yLog");
+    ElevationAngle = new DoubleLogEntry(log, "/elevationAngle");
+    Heading = new DoubleLogEntry(log, "/heading");
     ControllerZLog = new DoubleLogEntry(log, "/rotation");
   }
 
