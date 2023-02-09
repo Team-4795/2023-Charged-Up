@@ -135,16 +135,16 @@ public class RobotContainer {
     final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
     final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 2);
 
-    pickCone.toggleOnTrue(new RunCommand(m_manager::pickCone));
-    pickCube.toggleOnTrue(new RunCommand(m_manager::pickCube));
+    pickCone.toggleOnTrue(new RunCommand(m_manager::pickCone, m_manager));
+    pickCube.toggleOnTrue(new RunCommand(m_manager::pickCube, m_manager));
 
-    stow.toggleOnTrue(new RunCommand(m_manager::stow));
-    button1.toggleOnTrue(new RunCommand(m_manager::button1));
-    button2.toggleOnTrue(new RunCommand(m_manager::button2));
-    button3.toggleOnTrue(new RunCommand(m_manager::button3));
+    stow.toggleOnTrue(new RunCommand(m_manager::stow, m_manager));
+    button1.toggleOnTrue(new RunCommand(m_manager::button1, m_manager));
+    button2.toggleOnTrue(new RunCommand(m_manager::button2, m_manager));
+    button3.toggleOnTrue(new RunCommand(m_manager::button3, m_manager));
 
-    isStoring.toggleOnTrue(new RunCommand(m_manager::setStoring));
-    isNotStoring.toggleOnTrue(new RunCommand(m_manager::setNotStoring));
+    isStoring.toggleOnTrue(new RunCommand(m_manager::setStoring, m_manager));
+    isNotStoring.toggleOnTrue(new RunCommand(m_manager::setNotStoring, m_manager));
 
     // Temporary toggle storing button
     // toggleStoring.onTrue(new RunCommand(m_manager::toggleStoring));
