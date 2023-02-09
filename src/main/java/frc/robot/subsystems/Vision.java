@@ -13,7 +13,6 @@ public class Vision extends SubsystemBase{
     final double TargetHeight = Constants.TargetHeight;
     final double cameraPitchRadians = Constants.cameraPitchRadians;
     public boolean hasTargets = false;
-    private double targetDistance = 0;
     private double targetAngle = 0;
     double forwardSpeed;
     double x_pitch = 0;
@@ -21,11 +20,7 @@ public class Vision extends SubsystemBase{
       public boolean hasTargets() {
         return hasTargets;
       }
-    
-      public double getTargetDistance() {
-        return targetDistance;
-      }
-    
+       
       public double getTargetAngle() {
         return targetAngle;
       }
@@ -47,15 +42,13 @@ public class Vision extends SubsystemBase{
             targetAngle = result.getBestTarget().getPitch(); //pitch or yaw?
           } else {
             hasTargets = false;
-            targetDistance = -1;
-            targetAngle = -1;
+//            targetAngle = -1;
           }
     }
     @Override
     public void initSendable(SendableBuilder builder) {
       builder.setSmartDashboardType("Vision");
       builder.addBooleanProperty("Has target", () -> hasTargets, null);
-      builder.addDoubleProperty("Goal distance", () -> targetDistance, null);
       builder.addDoubleProperty("Goal angle", () -> targetAngle, null);
     }
 }

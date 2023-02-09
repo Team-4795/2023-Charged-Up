@@ -17,6 +17,8 @@ public class TapeAlign extends CommandBase {
   private boolean isAligned;
   private PIDController rotationPID;
   private final PhotonCamera camera;
+  boolean interrupted = false;
+
 
   final double P_GAIN = 0.1;
   final double D_GAIN = 0.1;
@@ -43,15 +45,19 @@ public class TapeAlign extends CommandBase {
   @Override
   public void execute() {
     double forwardSpeed;
-    double x_speed;
-
+    double y_speed;
     var result = camera.getLatestResult();
     var robotPose2d = driveSubsystem.getPose();
+
+    if (vision.getTargetAngle() < 2) {
+      interrupted = true;
+    }
+
     if (result.hasTargets()) {
       double currentHeading = driveSubsystem.getHeading();
       double rotation = rotationPID.calculate(currentHeading, 0);
-      x_speed = controller.calculate(vision.getTargetAngle(), 0);
-      driveSubsystem.drive(0,x_speed, rotation,true);
+      y_speed = controller.calculate(vision.getTargetAngle(), 0);
+      driveSubsystem.drive(0,y_speed, rotation,true);
     } else {
       driveSubsystem.drive(0,0,0,true);
     }
