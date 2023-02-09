@@ -80,7 +80,15 @@ public class AutoSelector {
 
     new InstantCommand(() -> {
         // Reset odometry for the first path you run during auto
+<<<<<<< Updated upstream
         drivebase.resetOdometry(SPath.getInitialHolonomicPose()); //May need to rethink this so it faces the right direction
+=======
+       // drivebase.resetOdometry(ExamplePath.getInitialHolonomicPose());
+      }),
+      new InstantCommand(() -> {
+        //Put it in break mode
+        drivebase.setBreakMode();
+>>>>>>> Stashed changes
       }),
       new PPSwerveControllerCommand(
          SPath,

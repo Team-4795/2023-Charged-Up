@@ -190,4 +190,12 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
+
+  public void setBreakMode()
+  {
+    m_frontLeft.setBreakMode();
+    m_frontRight.setBreakMode();
+    m_rearLeft.setBreakMode();
+    m_rearRight.setBreakMode();
+  }
 }
