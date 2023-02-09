@@ -160,8 +160,8 @@ public class RobotContainer {
         m_robotDrive));
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
-    TurnLEDOn.whileTrue(new RunCommand(m_Vision::EnableLED));
-    TurnLEDOff.whileTrue(new RunCommand(m_Vision::DisableLED));
+    TurnLEDOn.whileTrue(new RunCommand(m_Vision::enableLED));
+    TurnLEDOff.whileTrue(new RunCommand(m_Vision::disableLED));
   }
 
 
