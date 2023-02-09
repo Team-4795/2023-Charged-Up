@@ -26,6 +26,10 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 3 * Math.PI; // radians per second
 
+    public static final double kDirectionSlewRate = 1.7; // radians per second
+    public static final double kMagnitudeSlewRate = 2.3; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 2.5; // percent per second (1 = 100%)
+
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(20.75);
     // Distance between centers of right and left wheels on robot
@@ -41,7 +45,12 @@ public final class Constants {
     public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
     public static final double kFrontRightChassisAngularOffset = 0;
     public static final double kBackLeftChassisAngularOffset = Math.PI;
-    public static final double kBackRightChassisAngularOffset = Math.PI / 2;
+    public static final double kBackRightChassisAngularOffset  = Math.PI / 2;
+
+    //Chassis Angular Offset
+
+    public static final double kChassisAngularOffset = -90;
+
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 2;
@@ -61,7 +70,7 @@ public final class Constants {
     public static final double kOuttakeSpeed = -0.5;
   }
 
-  public static final class ModuleConstants { 
+  public static final class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
     // This changes the drive speed of the module (a pinion gear with more teeth will result in a
     // robot that drives faster).
@@ -115,6 +124,7 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
+    public static final double kDriveDeadband = 0.05;
 
   }
 
