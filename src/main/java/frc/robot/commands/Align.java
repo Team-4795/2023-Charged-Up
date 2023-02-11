@@ -78,6 +78,9 @@ public class Align extends CommandBase {
     omegaController.reset(robotPose.getRotation().getRadians());
     xController.reset(robotPose.getX());
     yController.reset(robotPose.getY());
+
+    camera.setPipelineIndex(0); //placeholder
+
   }
 
   @Override

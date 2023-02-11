@@ -19,6 +19,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.TapeAlign;
+import frc.robot.commands.Align;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -84,6 +85,9 @@ public class RobotContainer {
         )
     );
 
+
+
+
     // Axis 2 = to battery, axis 3 = away
     // Subtract up movement by down movement so they cancell out if both are pressed at once
     // Max speed is number multiplying this
@@ -116,11 +120,15 @@ public class RobotContainer {
   
   private void configureButtonBindings() {
 
+    Command tapeAlign = new TapeAlign(m_robotDrive, m_Vision, m_camera);
+    Command aprilTagAlign = new Align(m_robotDrive, m_Vision, m_camera);
+
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
     final JoystickButton TurnLEDOn = new JoystickButton(m_driverController, 1);
     final JoystickButton TurnLEDOff = new JoystickButton(m_driverController, 0);
     final POVButton TapeAlign = new POVButton(m_driverController, 90);
+    final POVButton AprilTagAlign = new POVButton(m_driverController, 180); //placeholder angle 
 //get pov 90
     //Intake dpad
     // final Trigger reverseIntake = new Trigger(() -> m_operatorController.getPOV()==90);
@@ -169,8 +177,10 @@ public class RobotContainer {
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     TurnLEDOn.whileTrue(new RunCommand(m_Vision::enableLED));
     TurnLEDOff.whileTrue(new RunCommand(m_Vision::disableLED));
-    Command tapeAlign = new TapeAlign(m_robotDrive, m_Vision, m_camera);
     TapeAlign.whileTrue(tapeAlign);
+
+    AprilTagAlign.whileTrue(aprilTagAlign);
+
 
   }
 
