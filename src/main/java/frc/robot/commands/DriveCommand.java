@@ -15,6 +15,7 @@ public class DriveCommand extends CommandBase{
 
 
     public DriveCommand(DriveSubsystem drive, double speed, double rotation, boolean fieldRelative, double angleThreshold){
+        this.drive = drive;
         this.angleThreshold = angleThreshold;
         this.speed = speed;
         this.rotation = rotation;
