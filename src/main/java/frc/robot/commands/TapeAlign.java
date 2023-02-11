@@ -22,7 +22,7 @@ public class TapeAlign extends CommandBase {
   boolean interrupted = false;
 
 
-  final double P_GAIN = 0.015;
+  final double P_GAIN = 0.011;
   final double D_GAIN = 0;
   //placeholders
   PIDController controller = new PIDController(P_GAIN, 0, D_GAIN);
@@ -59,9 +59,9 @@ public class TapeAlign extends CommandBase {
 
     if (1==1) {
       double currentHeading = driveSubsystem.getvisionheading();
-      double rotation = rotationPID.calculate(currentHeading,0);
+      double rotation = rotationPID.calculate(currentHeading,180);
       x_speed = controller.calculate(vision.getTargetAngle(), 0);
-      driveSubsystem.drive(-x_speed,0, rotation,true, 
+      driveSubsystem.drive(x_speed,0, rotation,true, 
       true);
       //driveSubsystem.drive(-x_speed, 0, 0,true, true);
     } else {
