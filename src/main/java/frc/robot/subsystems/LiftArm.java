@@ -76,6 +76,10 @@ public class LiftArm extends SubsystemBase {
     rightArmMotor.burnFlash();
   }
 
+  public double getAbsolutePosition() {
+    return this.liftEncoder.getPosition();
+  }
+
   // Set speed of arm
   public void move(double speed){
     requestedSpeed = speed;

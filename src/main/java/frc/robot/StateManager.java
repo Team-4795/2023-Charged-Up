@@ -17,12 +17,12 @@ public class StateManager {
     // Temporary
     boolean storing = false;
 
-    Setpoints current_setpoint = new Setpoints(0.0, 0.0, 0.0);
+    Setpoints current_setpoint;
 
     public StateManager(LiftArm arm) {
         this.state = State.StowLow;
         this.object = Object.None;
-        this.arm = arm;
+        this.current_setpoint = new Setpoints(arm.getAbsolutePosition(), 0, 0);
     }
 
     public void pickCube() {

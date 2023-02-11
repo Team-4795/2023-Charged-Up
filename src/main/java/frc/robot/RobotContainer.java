@@ -81,10 +81,19 @@ public class RobotContainer {
             () -> {
                 double up = m_operatorController.getRawAxis(3);
                 double down = m_operatorController.getRawAxis(2);
+                double speed = 0.05 * (Math.pow(up, 3) - Math.pow(down, 3));
+                double new_setpoint = m_manager.current_setpoint.arm + speed;
+
+                if (new_setpoint < 0.16) {
+                    new_setpoint = 0.16;
+                } else if (new_setpoint > 0.96) {
+                    new_setpoint = 0.96;
+                }
 
                 if (up != 0 || down != 0) {
-                    m_arm.move(0.3 * (Math.pow(up, 3) - Math.pow(down, 3)));
-              } 
+                    m_arm.setPosition(new_setpoint);
+                    m_manager.current_setpoint.arm = new_setpoint;
+                } 
             },
             m_arm
         )
