@@ -1,11 +1,10 @@
-package frc.robot.subsystems;
-
+package frc.robot;
 import java.util.Optional;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.LiftArm;
 
-public class StateManager extends SubsystemBase {
+public class StateManager {
     public LiftArm arm;
 
     // What state were in
@@ -18,7 +17,7 @@ public class StateManager extends SubsystemBase {
     // Temporary
     boolean storing = false;
 
-    Setpoints setpoint_debug = new Setpoints(0.0, 0.0, 0.0);
+    Setpoints current_setpoint = new Setpoints(0.0, 0.0, 0.0);
 
     public StateManager(LiftArm arm) {
         this.state = State.StowLow;
@@ -86,15 +85,15 @@ public class StateManager extends SubsystemBase {
 
     private void setSetpoint() {
         state.get(object).ifPresent(setpoints -> { 
-            setpoint_debug = setpoints;
+            current_setpoint = setpoints;
             arm.setPosition(setpoints.arm);
          });
     }
 
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumber("Arm setpoint", setpoint_debug.arm);
-    }
+    // @Override
+    // public void periodic() {
+    //     SmartDashboard.putNumber("Arm setpoint", setpoint_debug.arm);
+    // }
 }
 
 enum State {
@@ -117,8 +116,8 @@ enum State {
             case LowScore: result = new Setpoints(0.907, 0.0, 0.0); break;
             case MidScore: result = new Setpoints(0.772, 0.0, 0.0); break;
             case HighScoreCube: result = new Setpoints(0.75, 0.0, 0.0); break;
-            case StowInFrame: result = new Setpoints(0.16, 0.0, 0.0); break;
-            case StowLow: result = new Setpoints(0.96, 0.0, 0.0); break;
+            case StowInFrame: new Setpoints(0.16, 0.0, 0.0); break;
+            case StowLow: new Setpoints(0.96, 0.0, 0.0); break;
         }
 
         return Optional.ofNullable(result);
@@ -134,8 +133,8 @@ enum State {
             case LowScore: result = new Setpoints(0.907, 0.0, 0.0); break;
             case MidScore: result = new Setpoints(0.714, 0.0, 0.0); break;
             case HighScoreCube: break;
-            case StowInFrame: result = new Setpoints(0.16, 0.0, 0.0); break;
-            case StowLow: result = new Setpoints(0.96, 0.0, 0.0); break;
+            case StowInFrame: new Setpoints(0.16, 0.0, 0.0); break;
+            case StowLow: new Setpoints(0.96, 0.0, 0.0); break;
         }
 
         return Optional.ofNullable(result);
@@ -158,12 +157,12 @@ enum Object {
 
 class Setpoints {
     double arm;
-    double joint;
+    double wrist;
     double intake;
 
-    Setpoints(double arm, double joint, double intake) {
+    Setpoints(double arm, double wrist, double intake) {
         this.arm = arm;
-        this.joint = joint;
+        this.wrist = wrist;
         this.intake = intake;
     }
 }

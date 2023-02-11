@@ -14,13 +14,11 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
-import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.EndEffectorIntake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -46,6 +44,7 @@ public class RobotContainer {
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
+  // State manager
   StateManager m_manager = new StateManager(m_arm);
   
   /**
@@ -135,16 +134,16 @@ public class RobotContainer {
     final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
     final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 2);
 
-    pickCone.toggleOnTrue(new RunCommand(m_manager::pickCone, m_manager));
-    pickCube.toggleOnTrue(new RunCommand(m_manager::pickCube, m_manager));
+    pickCone.toggleOnTrue(new RunCommand(m_manager::pickCone, m_arm));
+    pickCube.toggleOnTrue(new RunCommand(m_manager::pickCube, m_arm));
 
-    stow.toggleOnTrue(new RunCommand(m_manager::stow, m_manager));
-    button1.toggleOnTrue(new RunCommand(m_manager::button1, m_manager));
-    button2.toggleOnTrue(new RunCommand(m_manager::button2, m_manager));
-    button3.toggleOnTrue(new RunCommand(m_manager::button3, m_manager));
+    stow.toggleOnTrue(new RunCommand(m_manager::stow, m_arm));
+    button1.toggleOnTrue(new RunCommand(m_manager::button1, m_arm));
+    button2.toggleOnTrue(new RunCommand(m_manager::button2, m_arm));
+    button3.toggleOnTrue(new RunCommand(m_manager::button3, m_arm));
 
-    isStoring.toggleOnTrue(new RunCommand(m_manager::setStoring, m_manager));
-    isNotStoring.toggleOnTrue(new RunCommand(m_manager::setNotStoring, m_manager));
+    isStoring.toggleOnTrue(new RunCommand(m_manager::setStoring, m_arm));
+    isNotStoring.toggleOnTrue(new RunCommand(m_manager::setNotStoring, m_arm));
 
     // Temporary toggle storing button
     // toggleStoring.onTrue(new RunCommand(m_manager::toggleStoring));
