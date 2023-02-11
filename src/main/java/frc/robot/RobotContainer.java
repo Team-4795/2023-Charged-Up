@@ -19,14 +19,18 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoBalance;
+import frc.robot.commands.AutoBalanceOld;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.EndEffectorIntake;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -113,10 +117,11 @@ public class RobotContainer {
     final JoystickButton balanceButton = new JoystickButton(m_driverController, 3);
     final JoystickButton testButton = new JoystickButton(m_driverController, 4);
 
-
-    balanceButton.onTrue(new AutoBalance(m_robotDrive, 0.05));
-    testButton.onTrue(new DriveCommand(m_robotDrive, 0.3, 0, 0, false, 2));
-
+    //balanceButton.whileTrue(new AutoBalance(m_robotDrive, 0.15, 100));
+    testButton.whileTrue(new SequentialCommandGroup(
+        new DriveCommand(m_robotDrive, 0.2, 0, false, 7),
+        new AutoBalanceOld(m_robotDrive, 0.15)
+    ));
 
     //Intake dpad
     // final Trigger reverseIntake = new Trigger(() -> m_operatorController.getPOV()==90);

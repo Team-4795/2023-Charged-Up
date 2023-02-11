@@ -19,11 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
   private RobotContainer m_robotContainer;
-  private DoubleLogEntry ElevationAngle;
-  private DoubleLogEntry Heading;
-  private DoubleLogEntry ControllerZLog;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -34,13 +30,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
-    DataLogManager.start();
-
-    DataLog log = DataLogManager.getLog();
-    ElevationAngle = new DoubleLogEntry(log, "/elevationAngle");
-    Heading = new DoubleLogEntry(log, "/heading");
-    ControllerZLog = new DoubleLogEntry(log, "/rotation");
   }
 
   /**
@@ -102,9 +91,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    ControllerXLog.append(m_robotContainer.m_driverController.getRawAxis(0));
-    ControllerYLog.append(m_robotContainer.m_driverController.getRawAxis(1));
-    ControllerZLog.append(m_robotContainer.m_driverController.getRawAxis(4));
   }
 
   @Override

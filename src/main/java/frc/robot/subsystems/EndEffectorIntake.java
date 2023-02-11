@@ -46,7 +46,7 @@ public class EndEffectorIntake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
+        //SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
 
         
     }

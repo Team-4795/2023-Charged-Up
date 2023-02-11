@@ -138,8 +138,8 @@ public final class Constants {
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
 
-    public static final double platformMaxAngle = 11.5;
-    public static final double balanceSpeed = 0.2;
+    public static final double platformMaxAngle = 10;
+    public static final double balanceSpeed = 0.0684;
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(

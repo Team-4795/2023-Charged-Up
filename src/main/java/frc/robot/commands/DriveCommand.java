@@ -6,31 +6,37 @@ import frc.robot.subsystems.DriveSubsystem;
 //purely to test how fieldRelative affects the direction of Swerve
 public class DriveCommand extends CommandBase{
     DriveSubsystem drive;
-    double time;
-    double duration;
-    double x;
-    double y;
+    double speed;
     double rotation;
     boolean fieldRelative;
+    double elevationAngle;
+    double angleThreshold;
 
 
-    public DriveCommand(DriveSubsystem drive, double x, double y, double rotation, boolean fieldRelative, double duration){
-        this.duration = 1000 * duration;
-        this.x = x;
-        this.y = y;
+
+    public DriveCommand(DriveSubsystem drive, double speed, double rotation, boolean fieldRelative, double angleThreshold){
+        this.angleThreshold = angleThreshold;
+        this.speed = speed;
         this.rotation = rotation;
         this.fieldRelative = fieldRelative;
-        time = System.currentTimeMillis();
         addRequirements(drive);
     }
 
     @Override
+    public void initialize(){
+        elevationAngle = drive.getElevationAngle();
+
+    }
+
+    @Override
     public void execute(){
-        drive.drive(x, y, rotation, fieldRelative);
+        drive.drive(speed, 0, rotation, fieldRelative, true);
+        elevationAngle = drive.getElevationAngle();
     }
 
     @Override
     public boolean isFinished(){
-        return ((System.currentTimeMillis() - time) > duration);
+        //return (((System.currentTimeMillis() - time) > duration) && startDuration);
+        return (Math.abs(elevationAngle) > angleThreshold);
     }
 }

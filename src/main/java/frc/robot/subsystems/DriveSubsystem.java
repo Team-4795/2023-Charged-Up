@@ -255,6 +255,10 @@ public class DriveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(m_gyro.getPitch()).getDegrees();
   }
 
+  public double getElevationVelocity(){
+    return m_gyro.getRawGyroX();
+  }
+
   /**
    * Returns the turn rate of the robot.
    *

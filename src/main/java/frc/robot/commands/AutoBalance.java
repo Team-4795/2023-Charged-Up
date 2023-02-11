@@ -18,7 +18,7 @@ public class AutoBalance extends CommandBase{
     double heading;
     double errorThreshold;
     double checkDuration;
-    ArrayList<Double> checkZero;
+    //ArrayList<Double> checkZero;
     double[] output;
 
     /*DataLog balanceLog;
@@ -33,7 +33,7 @@ public class AutoBalance extends CommandBase{
         this.drive = drive;
         this.checkDuration = checkDuration;
         output = new double[3];
-        checkZero = new ArrayList<>();
+        //checkZero = new ArrayList<>();
         addRequirements(drive);
     }
 
@@ -50,23 +50,23 @@ public class AutoBalance extends CommandBase{
         xVelocity = new DoubleLogEntry(balanceLog, "/xVelocity");
         yVelocity = new DoubleLogEntry(balanceLog, "/yVelocity");*/
 
-        for(int i = 0; i < 1 + (int) Math.round(checkDuration / 20); i++){
+        /*for(int i = 0; i < 1 + (int) Math.round(checkDuration / 20); i++){
             checkZero.add(1000.0); //just not under the error threshold
-        }
+        }*/
     }
 
     @Override
     public void execute(){
         elevationAngle = drive.getElevationAngle();
-        heading = drive.getHeading(); // in degrees
+        heading = drive.getHeading().getDegrees(); // in degrees
         output = updateDrive();
 
         //remove oldest element, add newest
-        checkZero.remove(0);
-        checkZero.add(elevationAngle);
+        //checkZero.remove(0);
+        //checkZero.add(elevationAngle);
 
         //not field relative so that the wheels turn forward in relation to the heading of the robot
-        drive.drive(output[0], output[1], output[2], false);
+        drive.drive(output[0], output[1], output[2], false, true);
         SmartDashboard.putNumber("Angle of Elevation", elevationAngle);
         SmartDashboard.putNumber("X velocity", output[0]);
         SmartDashboard.putNumber("Y velocity", output[1]);
@@ -84,7 +84,7 @@ public class AutoBalance extends CommandBase{
         double speed;
         double angle;
         //may need to add a speed = 0 when angle = 0
-        speed = (1 + Math.abs(elevationAngle) / AutoConstants.platformMaxAngle) * AutoConstants.balanceSpeed;
+        speed = (Math.abs(elevationAngle) / AutoConstants.platformMaxAngle) * (Math.abs(elevationAngle) / AutoConstants.platformMaxAngle) * AutoConstants.balanceSpeed;
         if(elevationAngle < 0){
             speed *= -1;
         }
@@ -96,15 +96,15 @@ public class AutoBalance extends CommandBase{
 
     @Override
     public boolean isFinished(){
-        for(double angle : checkZero){
+        /*for(double angle : checkZero){
             if(Math.abs(angle) > errorThreshold){
                 return false;
             }
-        }
+        }*/
 
         //balanceLog.close(); 
 
-        return true;
+        return (Math.abs(elevationAngle) < errorThreshold);
     }
 
 }
