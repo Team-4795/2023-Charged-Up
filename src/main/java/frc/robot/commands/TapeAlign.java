@@ -33,6 +33,7 @@ public class TapeAlign extends CommandBase {
     this.camera = camera;
 
     rotationPID = new PIDController(0.01, 0, 0);
+    rotationPID.enableContinuousInput(-180, 180);
     
     addRequirements(driveSubsystem);
   }
@@ -56,11 +57,12 @@ public class TapeAlign extends CommandBase {
       interrupted = true;
     }
 
-    if (result.hasTargets()) {
-      double currentHeading = driveSubsystem.getrealheading();
+    if (1==1) {
+      double currentHeading = driveSubsystem.getvisionheading();
       double rotation = rotationPID.calculate(currentHeading,0);
       x_speed = controller.calculate(vision.getTargetAngle(), 0);
-      driveSubsystem.drive(0, 0, currentHeading,true, true);
+      driveSubsystem.drive(-x_speed,0, rotation,true, 
+      true);
       //driveSubsystem.drive(-x_speed, 0, 0,true, true);
     } else {
       driveSubsystem.drive(0,0,0,true, true);

@@ -81,8 +81,9 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    SmartDashboard.putNumber("AngleYaw", -m_gyro.getYaw());
-    SmartDashboard.putNumber("Angle",-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset);
+    //SmartDashboard.putNumber("AngleYaw", -m_gyro.getYaw());
+    //SmartDashboard.putNumber("Angle",-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset);
+    SmartDashboard.putNumber("real heading", m_gyro.getYaw());
     //SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
     //SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
 
@@ -251,12 +252,10 @@ public class DriveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset);
   }
 
-  public double getrealheading(){
+  public double getvisionheading(){
     return -m_gyro.getYaw();
   }
-
   
-
   /**
    * Returns the turn rate of the robot.
    *
