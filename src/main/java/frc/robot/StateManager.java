@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LiftArm;
 
 public class StateManager {
-    public LiftArm arm;
-
     // What state were in
     State state;
 
@@ -17,12 +15,9 @@ public class StateManager {
     // Temporary
     boolean storing = false;
 
-    Setpoints current_setpoint;
-
-    public StateManager(LiftArm arm) {
+    public StateManager() {
         this.state = State.StowLow;
         this.object = Object.None;
-        this.current_setpoint = new Setpoints(arm.getAbsolutePosition(), 0, 0);
     }
 
     public void pickCube() {
@@ -35,40 +30,24 @@ public class StateManager {
 
     public void stow() {
         state = State.StowLow;
-        setSetpoint();
     }
 
-    // Low pickup or low score
-    public void button1() {
+    public void handleDpad(int angle) {
         if (storing) {
-            state = State.LowScore;
+            switch (angle) {
+                case 0: state = State.StowInFrame; break;
+                case 270: state = State.LowScore; break;
+                case 180: state = State.MidScore; break;
+                case 90: state = State.HighScoreCube; break;
+            }
         } else {
-            state = State.LowPickup;
+            switch (angle) {
+                case 0: state = State.StowInFrame; break;
+                case 270: state = State.LowPickup; break;
+                case 180: state = State.SingleFeeder; break;
+                case 90: state = State.DoubleFeeder; break;
+            }
         }
-
-        setSetpoint();
-    }
-
-    // Single feeder or mid score
-    public void button2() {
-        if (storing) {
-            state = State.MidScore;
-        } else {
-            state = State.SingleFeeder;
-        }
-
-        setSetpoint();
-    }
-
-    // Double feeder or high score
-    public void button3() {
-        if (storing) {
-            state = State.HighScoreCube;
-        } else {
-            state = State.DoubleFeeder;
-        }
-
-        setSetpoint();
     }
 
     public void toggleStoring() {
@@ -83,17 +62,9 @@ public class StateManager {
         storing = false;
     }
 
-    private void setSetpoint() {
-        state.get(object).ifPresent(setpoints -> { 
-            current_setpoint = setpoints;
-            arm.setPosition(setpoints.arm);
-         });
+    public Optional<Double> getArmSetpoint() {
+        return this.state.get(this.object).map(setpoints -> setpoints.arm);
     }
-
-    // @Override
-    // public void periodic() {
-    //     SmartDashboard.putNumber("Arm setpoint", setpoint_debug.arm);
-    // }
 }
 
 enum State {

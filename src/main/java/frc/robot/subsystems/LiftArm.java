@@ -20,8 +20,9 @@ public class LiftArm extends SubsystemBase {
 
   private final SparkMaxPIDController m_PIDController;
 
-  public LiftArm(){
+  public double setpoint;
 
+  public LiftArm(){
     leftArmMotor.restoreFactoryDefaults();
     rightArmMotor.restoreFactoryDefaults();
     
@@ -74,10 +75,9 @@ public class LiftArm extends SubsystemBase {
 
     leftArmMotor.burnFlash();
     rightArmMotor.burnFlash();
-  }
 
-  public double getAbsolutePosition() {
-    return this.liftEncoder.getPosition();
+    this.setpoint = liftEncoder.getPosition();
+    SmartDashboard.putNumber("Arm setpoint", this.setpoint);
   }
 
   // Set speed of arm
@@ -88,6 +88,7 @@ public class LiftArm extends SubsystemBase {
 
   // // Sets setpoint, where setpoint is in encoder ticks (position converion factor is 1.0)
   public void setPosition(double setpoint){
+    this.setpoint = setpoint;
     m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
   }
 
@@ -98,5 +99,6 @@ public class LiftArm extends SubsystemBase {
     SmartDashboard.putNumber("Absolute location", liftEncoder.getPosition());
     SmartDashboard.putNumber("Applied Speed", rightArmMotor.getAppliedOutput());
     SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
+    SmartDashboard.putNumber("Arm setpoint", setpoint);
   }
 }

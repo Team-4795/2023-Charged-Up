@@ -45,7 +45,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager(m_arm);
+  StateManager m_manager = new StateManager();
   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -82,7 +82,7 @@ public class RobotContainer {
                 double up = m_operatorController.getRawAxis(3);
                 double down = m_operatorController.getRawAxis(2);
                 double speed = 0.05 * (Math.pow(up, 3) - Math.pow(down, 3));
-                double new_setpoint = m_manager.current_setpoint.arm + speed;
+                double new_setpoint = m_arm.setpoint + speed;
 
                 if (new_setpoint < 0.16) {
                     new_setpoint = 0.16;
@@ -92,7 +92,6 @@ public class RobotContainer {
 
                 if (up != 0 || down != 0) {
                     m_arm.setPosition(new_setpoint);
-                    m_manager.current_setpoint.arm = new_setpoint;
                 } 
             },
             m_arm
@@ -133,11 +132,10 @@ public class RobotContainer {
     final JoystickButton pickCone = new JoystickButton(m_operatorController, 5);
     final JoystickButton pickCube = new JoystickButton(m_operatorController, 6);
 
-    // D-Pad in this order: top, left, bottom, right
-    final Trigger stow = new Trigger(() -> m_operatorController.getPOV() == 0);
-    final Trigger button1 = new Trigger(() -> m_operatorController.getPOV() == 270); // Low pickup or low score
-    final Trigger button2 = new Trigger(() -> m_operatorController.getPOV() == 180); // Single feeder or mid score
-    final Trigger button3 = new Trigger(() -> m_operatorController.getPOV() == 90); // Double feeder or high score
+    final Trigger dpad = new Trigger(() -> {
+        int pov = m_operatorController.getPOV();
+        return pov == 0 || pov == 90 || pov == 180 || pov == 270;
+    });
 
     // A, B
     final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
@@ -146,10 +144,11 @@ public class RobotContainer {
     pickCone.toggleOnTrue(new RunCommand(m_manager::pickCone, m_arm));
     pickCube.toggleOnTrue(new RunCommand(m_manager::pickCube, m_arm));
 
-    stow.toggleOnTrue(new RunCommand(m_manager::stow, m_arm));
-    button1.toggleOnTrue(new RunCommand(m_manager::button1, m_arm));
-    button2.toggleOnTrue(new RunCommand(m_manager::button2, m_arm));
-    button3.toggleOnTrue(new RunCommand(m_manager::button3, m_arm));
+    // Handle dpad inputs
+    dpad.toggleOnTrue(new RunCommand(() -> {
+        m_manager.handleDpad(m_operatorController.getPOV());
+        m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
+    }, m_arm));
 
     isStoring.toggleOnTrue(new RunCommand(m_manager::setStoring, m_arm));
     isNotStoring.toggleOnTrue(new RunCommand(m_manager::setNotStoring, m_arm));
