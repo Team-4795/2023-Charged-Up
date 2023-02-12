@@ -42,19 +42,11 @@ public class AutoBalanceOld extends CommandBase{
         //assuming we drive straight in the x direction for now; negative signs could be flipped
         double[] driveValues = new double[3];
         if(elevationAngle > 0){
-            driveValues[0] = -(power(1.5 * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed; 
+            driveValues[0] = -(Math.pow(1.5 * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed; 
         } else if(elevationAngle < 0){
-            driveValues[0] = (power(1.5 * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
+            driveValues[0] = (Math.pow(1.5 * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
         }
         return driveValues;
-    }
-
-    private static double power(double a, int b){
-        double sum = a;
-        for(int i = 1; i < b; i++){
-            sum *= a;
-        }
-        return a;
     }
 
     @Override
