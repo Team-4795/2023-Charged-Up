@@ -21,7 +21,7 @@ public class EndEffectorIntake extends SubsystemBase {
     private DoubleSolenoid solenoid;
     private Compressor compressor;
     private final PWMSparkMax intakeMotor = new PWMSparkMax(2);
-    //public  solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
+    public  solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
     private final PneumaticHub m_ph = new PneumaticHub(1);
 
     public EndEffectorIntake(){
