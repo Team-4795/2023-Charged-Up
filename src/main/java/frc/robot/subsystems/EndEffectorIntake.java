@@ -18,13 +18,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.Constants.DriveConstants;
 
 public class EndEffectorIntake extends SubsystemBase {
-    private DoubleSolenoid solenoid;
-    private Compressor compressor;
+    private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     private final PWMSparkMax intakeMotor = new PWMSparkMax(2);
-    public  solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
+    public DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
     private final PneumaticHub m_ph = new PneumaticHub(1);
 
     public EndEffectorIntake(){
+        compressor.enableAnalog(0, 120);
     }
 
     public void extend() {
@@ -37,6 +37,7 @@ public class EndEffectorIntake extends SubsystemBase {
 
     public void stop() {
         //solenoid.set(DoubleSolenoid.Value.kOff);
+
     }
 
     public void intake(double speed)
@@ -48,6 +49,5 @@ public class EndEffectorIntake extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
 
-        
     }
 }
