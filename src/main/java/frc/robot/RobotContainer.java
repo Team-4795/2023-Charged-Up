@@ -128,28 +128,17 @@ public class RobotContainer {
     final JoystickButton pickCube = new JoystickButton(m_operatorController, 6);
 
     // D-Pad in this order: top, left, bottom, right
-    final Trigger stow = new Trigger(() -> m_operatorController.getPOV() == 0);
-    final Trigger button1 = new Trigger(() -> m_operatorController.getPOV() == 270); // Low pickup or low score
-    final Trigger button2 = new Trigger(() -> m_operatorController.getPOV() == 180); // Single feeder or mid score
-    final Trigger button3 = new Trigger(() -> m_operatorController.getPOV() == 90); // Double feeder or high score
+    final Trigger top = new Trigger(() -> m_driverController.getPOV() == 0);
+    final Trigger left = new Trigger(() -> m_driverController.getPOV() == 270); // Low pickup or low score
+    final Trigger down = new Trigger(() -> m_operatorController.getPOV() == 180); // Single feeder or mid score
+    final Trigger right = new Trigger(() -> m_operatorController.getPOV() == 90); // Double feeder or high score
 
     // A, B
-    final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
-    final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 2);
 
-    pickCone.onTrue(new RunCommand(m_manager::pickCone));
-    pickCube.onTrue(new RunCommand(m_manager::pickCube));
 
-    stow.onTrue(new RunCommand(m_manager::stow));
-    button1.onTrue(new RunCommand(m_manager::button1));
-    button2.onTrue(new RunCommand(m_manager::button2));
-    button3.onTrue(new RunCommand(m_manager::button3));
+    
 
-    isStoring.onTrue(new RunCommand(m_manager::setStoring));
-    isNotStoring.onTrue(new RunCommand(m_manager::setNotStoring));
-
-    // Temporary toggle storing button
-    // toggleStoring.onTrue(new RunCommand(m_manager::toggleStoring));
+    
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
