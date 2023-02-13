@@ -86,8 +86,8 @@ public class LiftArm extends SubsystemBase {
     leftArmMotor.set(speed);
   }
 
-  // // Sets setpoint, where setpoint is in encoder ticks (position converion factor is 1.0)
-  public void setPosition(double setpoint){
+  // Sets setpoint, where setpoint is 0 to 1
+  public void setPosition(double setpoint) {
     this.setpoint = setpoint;
     m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
   }

@@ -82,18 +82,22 @@ public class RobotContainer {
             () -> {
                 double up = m_operatorController.getRawAxis(3);
                 double down = m_operatorController.getRawAxis(2);
-                double speed = 0.05 * (Math.pow(up, 3) - Math.pow(down, 3));
-                double new_setpoint = m_arm.setpoint + speed;
+                
+                // Get amount to change the setpoint
+                double change = OIConstants.kArmManualSpeed * (Math.pow(up, 3) - Math.pow(down, 3));
 
+                // Apply deadband and add to arm setpoint
+                double new_setpoint = m_arm.setpoint + MathUtil.applyDeadband(change, OIConstants.kArmDeadband);
+
+                // Manual soft limits, probably should remove
                 if (new_setpoint < 0.16) {
                     new_setpoint = 0.16;
                 } else if (new_setpoint > 0.96) {
                     new_setpoint = 0.96;
                 }
 
-                if (up != 0 || down != 0) {
-                    m_arm.setPosition(new_setpoint);
-                } 
+                // Set new arm setpoint and move to it
+                m_arm.setPosition(new_setpoint);
             },
             m_arm
         )
@@ -123,20 +127,15 @@ public class RobotContainer {
     final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
     final JoystickButton intake = new JoystickButton(m_driverController, 7);
 
-    // this is only for testing will convert to d-pad with 2 modes or something else
-    //  final JoystickButton stowed = new JoystickButton(m_driverController, some number);
-    //  final JoystickButton intakeCube = new JoystickButton(m_driverController, some number);
-    //  final JoystickButton highFeeder = new JoystickButton(m_driverController, some number);
-    //  final JoystickButton lowFeeder = new JoystickButton(m_driverController, some number);
-
     // Left, right bumper
     final JoystickButton pickCone = new JoystickButton(m_operatorController, 5);
     final JoystickButton pickCube = new JoystickButton(m_operatorController, 6);
 
-    final Trigger dpad = new Trigger(() -> {
-        int pov = m_operatorController.getPOV();
-        return pov == 0 || pov == 90 || pov == 180 || pov == 270;
-    });
+    // Handle dpad inputs
+    final Trigger povUp = new Trigger(() -> m_operatorController.getPOV() == 0);
+    final Trigger povLeft = new Trigger(() -> m_operatorController.getPOV() == 270);
+    final Trigger povDown = new Trigger(() -> m_operatorController.getPOV() == 180);
+    final Trigger povRight = new Trigger(() -> m_operatorController.getPOV() == 90);
 
     // A, B
     final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
@@ -145,17 +144,14 @@ public class RobotContainer {
     pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
 
-    // Handle dpad inputs
-    dpad.onTrue(new InstantCommand(() -> {
-        m_manager.handleDpad(m_operatorController.getPOV());
-        m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
-    }, m_arm));
+    // Handle dpad triggers
+    povUp.onTrue(new InstantCommand(() -> {m_manager.handleDpad(0); setStates();}, m_arm));
+    povLeft.onTrue(new InstantCommand(() -> {m_manager.handleDpad(270); setStates();}, m_arm));
+    povDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
+    povRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
 
     isStoring.onTrue(new InstantCommand(m_manager::setStoring, m_arm));
     isNotStoring.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
-
-    // Temporary toggle storing button
-    // toggleStoring.onTrue(new RunCommand(m_manager::toggleStoring));
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
@@ -172,8 +168,6 @@ public class RobotContainer {
         () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
         m_intake));
 
-    // lowGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.2)));
-    // highGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.4)));
   }
 
 
@@ -222,5 +216,9 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
 
+  }
+
+  private void setStates() {
+    m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
   }
 }
