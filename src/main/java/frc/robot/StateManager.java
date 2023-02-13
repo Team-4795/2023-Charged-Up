@@ -67,6 +67,10 @@ public class StateManager {
     public Optional<Double> getArmSetpoint() {
         return this.state.get(this.object).map(setpoints -> setpoints.arm);
     }
+
+    public Optional<Double> getIntakeSetpoint() {
+        return this.state.get(this.object).map(setpoints -> setpoints.intake);
+    }
 }
 
 enum State {
@@ -83,12 +87,12 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.94, 0.0, 0.0); break;
+            case LowPickup: result = new Setpoints(0.94, 0.0, -.5); break;
             case SingleFeeder: break;
             case DoubleFeeder: break;
-            case LowScore: result = new Setpoints(0.907, 0.0, 0.0); break;
-            case MidScore: result = new Setpoints(0.772, 0.0, 0.0); break;
-            case HighScoreCube: result = new Setpoints(0.75, 0.0, 0.0); break;
+            case LowScore: result = new Setpoints(0.905, 0.0, 0.0); break;
+            case MidScore: result = new Setpoints(0.74, 0.0, 0.0); break;
+            case HighScoreCube: result = new Setpoints(.68, 0.0, 0.0); break;
             case StowInFrame: result = new Setpoints(0.16, 0.0, 0.0); break;
             case StowLow: result = new Setpoints(0.96, 0.0, 0.0); break;
         }
@@ -100,11 +104,11 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.94, 0.0, 0.0); break;
+            case LowPickup: result = new Setpoints(0.94, 0.0, -.5); break;
             case SingleFeeder: break;
             case DoubleFeeder: break;
-            case LowScore: result = new Setpoints(0.907, 0.0, 0.0); break;
-            case MidScore: result = new Setpoints(0.714, 0.0, 0.0); break;
+            case LowScore: result = new Setpoints(0.89, 0.0, 0.0); break;
+            case MidScore: result = new Setpoints(.7, 0.0, 0.0); break;
             case HighScoreCube: break;
             case StowInFrame: result = new Setpoints(0.16, 0.0, 0.0); break;
             case StowLow: result = new Setpoints(0.96, 0.0, 0.0); break;
