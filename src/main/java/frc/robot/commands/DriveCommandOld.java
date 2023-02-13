@@ -3,20 +3,18 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-//purely to test how fieldRelative affects the direction of Swerve
+//Only drives straight in the X-direction, assumes platform in front of robot
 public class DriveCommandOld extends CommandBase{
     DriveSubsystem drive;
     double speed;
-    boolean fieldRelative;
     double angleThreshold;
 
     double elevationAngle;
 
-    public DriveCommandOld(DriveSubsystem drive, double speed, boolean fieldRelative, double angleThreshold){
+    public DriveCommandOld(DriveSubsystem drive, double speed, double angleThreshold){
         this.drive = drive;
         this.angleThreshold = angleThreshold;
         this.speed = speed;
-        this.fieldRelative = fieldRelative;
         addRequirements(drive);
     }
 
@@ -27,7 +25,7 @@ public class DriveCommandOld extends CommandBase{
 
     @Override
     public void execute(){
-        drive.drive(speed, 0, 0, fieldRelative, true);
+        drive.drive(speed, 0, 0, false, true);
         elevationAngle = drive.getElevationAngle();
     }
 

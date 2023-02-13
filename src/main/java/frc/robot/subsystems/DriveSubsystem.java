@@ -52,6 +52,8 @@ public class DriveSubsystem extends SubsystemBase {
   AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
 
+  private double[][] rotation = new double[3][3];
+
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
@@ -257,6 +259,37 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double getElevationVelocity(){
     return m_gyro.getRawGyroX();
+  }
+
+  public void setRotationMatrix(){
+    double x = m_gyro.getPitch() * Math.PI / 180;
+    double y = m_gyro.getRoll() * Math.PI / 180; //is this x or y axis???^ description some garbage bruh
+    double z = m_gyro.getYaw() * Math.PI / 180;
+    rotation[0] = new double[] {Math.cos(y) * Math.cos(z), Math.sin(x) * Math.sin(y) * Math.cos(z) - Math.cos(x) * Math.sin(z), Math.cos(x) * Math.sin(y) * Math.cos(z) - Math.sin(x) * Math.sin(z)};
+    rotation[1] = new double[] {Math.cos(y) * Math.cos(z), Math.sin(x) * Math.sin(y) * Math.sin(z) + Math.cos(x) * Math.cos(z), Math.cos(x) * Math.sin(y) * Math.sin(z) - Math.sin(x) * Math.cos(z)};
+    rotation[2] = new double[] {-Math.sin(y), Math.sin(x) * Math.cos(y), Math.cos(x) * Math.cos(y)};
+  }
+
+  public double[] multiplyRotationMatrix(double[] vector){
+    //vector is a three by 1 matrix (array)
+    double sum;
+    double[] result = new double[3];
+    for(int i = 0; i < 3; i++){
+      sum = 0;
+      for(int j = 0; j < 3; j++){
+        sum += rotation[i][j] * vector[j];
+      }
+      result[i] = sum;
+    }
+    return result;
+  }
+
+  //should work theoretically, unless the rotation matrix is inputted wrong
+  public double getElevationAngleV2(){
+    setRotationMatrix();
+    double headingAngle = getHeading().getRadians();
+    double[] outputVector = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle), Math.cos(headingAngle), 0});
+    return Math.atan(outputVector[2] / (Math.sqrt(Math.pow(outputVector[0], 2) + Math.pow(outputVector[1], 2))));
   }
 
   /**

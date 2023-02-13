@@ -16,14 +16,13 @@ public class AutoBalance extends CommandBase{
     
     double elevationAngle;
     double elevationVelocity;
-    Rotation2d heading;
     
-    double[] output;
+    double output;
 
     public AutoBalance(DriveSubsystem drive, double errorThreshold){
         this.drive = drive;
         this.errorThreshold = errorThreshold;
-        output = new double[3];
+        output = 0;
 
         addRequirements(drive);
     }
@@ -33,33 +32,27 @@ public class AutoBalance extends CommandBase{
     public void initialize(){
         elevationAngle = drive.getElevationAngle();
         elevationVelocity = drive.getElevationVelocity();
-        heading = drive.getHeading();
     }
 
     @Override
     public void execute(){
         elevationAngle = drive.getElevationAngle();
         elevationVelocity = drive.getElevationVelocity();
-        heading = drive.getHeading();
         output = updateDrive();
-        drive.drive(output[0], output[1], 0, false, true);
+        drive.drive(output, 0, 0, false, true);
 
         SmartDashboard.putNumber("Angle of Elevation", elevationAngle);
-        SmartDashboard.putNumber("X velocity", output[0]);
-        SmartDashboard.putNumber("Y velocity", output[1]);
+        SmartDashboard.putNumber("Speed", output);
         SmartDashboard.putNumber("Elevation velocity", elevationVelocity);
-        SmartDashboard.putNumber("Heading", heading.getDegrees());
     }
 
-    private double[] updateDrive() {
-        double[] driveValues = new double[2];
+    private double updateDrive() {
+        //check angle --> direction relation just in case, should be right tho
         double speed = (Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
-        if(elevationAngle < 0){
+        if(elevationAngle > 0){
             speed *= -1;
         }
-        driveValues[0] = speed * heading.getCos();
-        driveValues[1] = speed * heading.getSin();
-        return driveValues;
+        return speed;
     }
 
     @Override

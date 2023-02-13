@@ -141,9 +141,16 @@ public final class Constants {
     public static final double platformMaxAngle = 10;
     public static final double balanceSpeed = 0.0684;
 
+    public static final double driveAngleThreshold = 8; //degrees
+    public static final double driveBalanceSpeed = 0.2;
+    public static final double balanceAngleErrorThreshold = 0.15;
+    public static final double polyCoeff = 1.5;
+    public static final double checkDuration = 0.5;
+
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
   }
 
   public static final class NeoMotorConstants {

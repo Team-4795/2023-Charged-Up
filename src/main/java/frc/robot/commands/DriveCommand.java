@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -8,7 +7,6 @@ import frc.robot.subsystems.DriveSubsystem;
 public class DriveCommand extends CommandBase{
     DriveSubsystem drive;
     double speed;
-    boolean fieldRelative;
     double angleThreshold;
 
     double duration;
@@ -16,14 +14,12 @@ public class DriveCommand extends CommandBase{
     boolean check;
 
     double elevationAngle;
-    Rotation2d heading;
 
-    public DriveCommand(DriveSubsystem drive, double speed, boolean fieldRelative, double angleThreshold, double checkDuration){
+    public DriveCommand(DriveSubsystem drive, double speed, double angleThreshold, double checkDuration){
         this.drive = drive;
         this.angleThreshold = angleThreshold;
         this.duration = checkDuration;
         this.speed = speed;
-        this.fieldRelative = fieldRelative;
         check = false;
         addRequirements(drive);
     }
@@ -31,19 +27,20 @@ public class DriveCommand extends CommandBase{
     @Override
     public void initialize(){
         elevationAngle = drive.getElevationAngle();
-        heading = drive.getHeading();
     }
 
     @Override
     public void execute(){
-        drive.drive(speed * heading.getCos(), speed * heading.getSin(), 0, fieldRelative, true);
+        drive.drive(speed, 0, 0, true, true);
         elevationAngle = drive.getElevationAngle();
         if(Math.abs(elevationAngle) > angleThreshold){
-            check = true;
-            time = System.currentTimeMillis();
+            if(!check){
+                time = System.currentTimeMillis();
+                check = true;
+            }
         } else {
-            check = false;
             time = 0;
+            check = false;
         }
     }
 

@@ -15,7 +15,7 @@ public class AutoBalanceOld extends CommandBase{
     public AutoBalanceOld(DriveSubsystem drive, double errorThreshold){
         this.errorThreshold = errorThreshold;
         this.drive = drive;
-        output = new double[3];
+        output = new double[2];
         addRequirements(drive);
     }
 
@@ -31,7 +31,8 @@ public class AutoBalanceOld extends CommandBase{
         elevationVelocity = drive.getElevationVelocity();
         output = updateDrive();
         //not sure if Field relative is correct, but whatever
-        drive.drive(output[0], output[1], output[2], false, true);
+        drive.drive(output[0], output[1], 0, false, true);
+
         SmartDashboard.putNumber("Angle of Elevation", elevationAngle);
         SmartDashboard.putNumber("X velocity", output[0]);
         SmartDashboard.putNumber("Y velocity", output[1]);
@@ -39,19 +40,18 @@ public class AutoBalanceOld extends CommandBase{
     }
 
     private double[] updateDrive() {
-        //assuming we drive straight in the x direction for now; negative signs could be flipped
-        double[] driveValues = new double[3];
+        //assuming we drive straight in the x direction for now
+        double[] driveValues = new double[2];
         if(elevationAngle > 0){
-            driveValues[0] = -(Math.pow(1.5 * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed; 
+            driveValues[0] = -(Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed; 
         } else if(elevationAngle < 0){
-            driveValues[0] = (Math.pow(1.5 * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
+            driveValues[0] = (Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
         }
         return driveValues;
     }
 
     @Override
     public boolean isFinished(){
-        //return (Math.abs(elevationAngle) < errorThreshold);
         return(Math.abs(elevationVelocity) > 0.1 && (elevationAngle/elevationAngle != elevationVelocity/elevationVelocity));
     }
 
