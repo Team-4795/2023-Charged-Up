@@ -12,7 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +24,9 @@ import frc.utils.SwerveUtils;
 
 
 public class DriveSubsystem extends SubsystemBase {
+  //Create field2d
+  private final Field2d m_field = new Field2d();
+  
   // Create MAXSwerveModules
   
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
@@ -85,6 +89,8 @@ public class DriveSubsystem extends SubsystemBase {
     //SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
     //SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
 
+    
+
     m_odometry.update(
       Rotation2d.fromDegrees(-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset),
         
@@ -95,7 +101,8 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
             
         });
-   
+        SmartDashboard.putData("Field", m_field);
+    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
   /**
@@ -257,5 +264,13 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  public void setBreakMode()
+  {
+    m_frontLeft.setBreakMode();
+    m_frontRight.setBreakMode();
+    m_rearLeft.setBreakMode();
+    m_rearRight.setBreakMode();
   }
 }

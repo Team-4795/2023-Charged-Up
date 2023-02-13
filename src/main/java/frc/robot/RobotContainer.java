@@ -39,8 +39,12 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+//<<<<<<< HEAD
+  private final AutoSelector autoSelector;
+//=======
   private final EndEffectorIntake m_intake = new EndEffectorIntake();;
   private final LiftArm m_arm = new LiftArm();
+//>>>>>>> main
 
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
@@ -53,6 +57,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
+    autoSelector = new AutoSelector(m_robotDrive);
+
     configureButtonBindings();
 
     // Configure default commands
@@ -175,6 +181,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -213,6 +220,7 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+
 
   }
 }
