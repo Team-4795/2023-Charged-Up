@@ -30,14 +30,15 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
-
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 
 public class AutoSelector {
     
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-
+  Field2d m_field = new Field2d();
+   
 
   //All Path Planner paths
 
@@ -49,7 +50,7 @@ public class AutoSelector {
   //1 Game piece Auto
   PathPlannerTrajectory OneGamePiece = PathPlanner.loadPath("1 Game Piece", new PathConstraints(4, 3));
   //2 Game piece Auto
-
+  //PathPlannerTrajectory TwoGamePiece = PathPlanner.loadPath("2 Game Piece", new PathConstraints(4, 3));
 
   //Manually constructed path S shape
   Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
@@ -73,22 +74,18 @@ public class AutoSelector {
   //Define Auto Selector
   public AutoSelector(DriveSubsystem drivebase) {
 
-    final HashMap<String, Command> AutoEventMap = new HashMap<>();
+   
 
     //Define first path option as S path
     chooser.setDefaultOption("SPath", new SequentialCommandGroup(
 
     new InstantCommand(() -> {
         // Reset odometry for the first path you run during auto
-<<<<<<< Updated upstream
-        drivebase.resetOdometry(SPath.getInitialHolonomicPose()); //May need to rethink this so it faces the right direction
-=======
        // drivebase.resetOdometry(ExamplePath.getInitialHolonomicPose());
       }),
       new InstantCommand(() -> {
         //Put it in break mode
         drivebase.setBreakMode();
->>>>>>> Stashed changes
       }),
       new PPSwerveControllerCommand(
          SPath,
@@ -100,7 +97,12 @@ public class AutoSelector {
           drivebase::setModuleStates, // Module states consumer
           true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
           drivebase // Requires this drive subsystem
-      )       
+      ),
+      new InstantCommand(() -> {
+        //Put the trajectory in glass
+        m_field.getObject("traj").setTrajectory(SPath); 
+      })
+            
       ));
 
        //Define another path option as Holonomic Demo path
@@ -109,6 +111,10 @@ public class AutoSelector {
     new InstantCommand(() -> {
         // Reset odometry for the first path you run during auto
         drivebase.resetOdometry(HolonomicDemo.getInitialHolonomicPose()); //May need to rethink this so it faces the right direction
+      }),
+      new InstantCommand(() -> {
+        //Put it in break mode
+        drivebase.setBreakMode();
       }),
       new PPSwerveControllerCommand(
         HolonomicDemo,
@@ -120,18 +126,26 @@ public class AutoSelector {
           drivebase::setModuleStates, // Module states consumer
           true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
           drivebase // Requires this drive subsystem
-      )       
+      ),
+      new InstantCommand(() -> {
+        //Put the trajectory in glass
+        m_field.getObject("traj").setTrajectory(HolonomicDemo); 
+      })
+                  
       ));
 
+      //Create Hashmap for 1 game peice 
+
+      final HashMap<String, Command> AutoEventMap1 = new HashMap<>();
       //Add commands to events through the hash map\
       //Add the actual commands instead of the print commands
-      AutoEventMap.put("event1", new PrintCommand("event 1 here"));
-      AutoEventMap.put("event2", new PrintCommand("event 2 here"));
+      AutoEventMap1.put("event1", new PrintCommand("event 1 here"));
+      AutoEventMap1.put("event2", new PrintCommand("event 2 here"));
 
       
       //It should split the OnePath into multiple individually paths based on the stop points/events? defined in pathplanner
       //Shouldn't need a cast IDK why it doesn't work
-      ArrayList<PathPlannerTrajectory> OnePathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("1 Game Piece", new PathConstraints(4, 3));
+     List<PathPlannerTrajectory> OnePathGroup =  PathPlanner.loadPathGroup("1 Game Piece", new PathConstraints(4, 3));
      
      
      
@@ -157,7 +171,7 @@ public class AutoSelector {
           drivebase // Requires this drive subsystem
               ),
               OnePathGroup.get(0).getMarkers(),
-              AutoEventMap),
+              AutoEventMap1),
          // new InstantCommand(drivebase::enableXstance, drivebase),
           //new WaitCommand(5),
          // new InstantCommand(drivebase::disableXstance, drivebase),
@@ -173,7 +187,11 @@ public class AutoSelector {
           drivebase // Requires this drive subsystem
               ),
               OnePathGroup.get(1).getMarkers(),
-           AutoEventMap));
+           AutoEventMap1),
+           new InstantCommand(() -> {
+            //Put the trajectory in glass
+            m_field.getObject("traj").setTrajectory(PathPlanner.loadPath("1 Game Piece", new PathConstraints(4, 3))); 
+          }));
 
           
       
@@ -200,11 +218,15 @@ public class AutoSelector {
     drivebase);
 
     drivebase.resetOdometry(exampleTrajectory.getInitialPose());
+    m_field.getObject("traj").setTrajectory(exampleTrajectory); 
 
-    }));
+    })
+    
+    );
 
     
-    SmartDashboard.putData(chooser);
+    SmartDashboard.putData("Auto Selector", chooser);
+    SmartDashboard.putData(m_field);
   }
 
   public Command getSelected() {
