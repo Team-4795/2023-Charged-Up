@@ -24,21 +24,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.EndEffectorIntake;
+import frc.robot.subsystems.LiftArm;
+import frc.robot.subsystems.StateManager;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
+import frc.robot.Constants.OIConstants;
 
 public class AutoSelector {
     
   private final SendableChooser<Command> chooser = new SendableChooser<>();
-
+  private final EndEffectorIntake m_intake = new EndEffectorIntake();;
   Field2d m_field = new Field2d();
-   
+  private final LiftArm m_arm = new LiftArm();
+  StateManager m_manager = new StateManager(m_arm);
+  Timer time = new Timer();
 
   //All Path Planner paths
 
@@ -137,11 +145,55 @@ public class AutoSelector {
       //Create Hashmap for 1 game peice 
 
       final HashMap<String, Command> AutoEventMap1 = new HashMap<>();
-      //Add commands to events through the hash map\
-      //Add the actual commands instead of the print commands
-      AutoEventMap1.put("event1", new PrintCommand("event 1 here"));
-      AutoEventMap1.put("event2", new PrintCommand("event 2 here"));
+      //Add commands to events through the hash map
+      
+      AutoEventMap1.put("Score", new SequentialCommandGroup(
+        
+      new RunCommand(m_manager::button1),
+      new InstantCommand(()->{
+        time.start();
+        while(time.get()< 2)
+        {
+        new RunCommand(
+        
+        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
+        m_intake);}
+          time.stop();
+          time.reset();
+      }
+      
+      )));//Low score cone
 
+      AutoEventMap1.put("Intake", new SequentialCommandGroup(
+        new RunCommand(m_manager::button1),
+      new InstantCommand(()->{
+        time.start();
+        while(time.get()< 2)
+        {
+        new RunCommand(
+        
+        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
+        m_intake);}
+          time.stop();
+          time.reset();
+      }
+      )));//Low Intake cone
+
+      AutoEventMap1.put("Score2",new SequentialCommandGroup(
+
+      new RunCommand(m_manager::button2),
+      new InstantCommand(()->{
+        time.start();
+        while(time.get()< 2)
+        {
+        new RunCommand(
+        
+        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
+        m_intake);}
+          time.stop();
+          time.reset();
+      }
+      )));//Mid score cone
       
       //It should split the OnePath into multiple individually paths based on the stop points/events? defined in pathplanner
       //Shouldn't need a cast IDK why it doesn't work
