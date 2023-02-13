@@ -25,9 +25,9 @@ import frc.robot.subsystems.EndEffectorIntake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
@@ -74,6 +74,15 @@ public class RobotContainer {
             () -> m_intake.intake(0), // Change to DriveConstants.kSlowIntakeSpeed
             m_intake
         )
+    
+    );
+
+    m_intake.setDefaultCommand(
+        new RunCommand(
+            () -> m_intake.extend(), // Change to DriveConstants.kSlowIntakeSpeed
+            m_intake
+        )
+    
     );
 
     // Axis 2 = to battery, axis 3 = away
@@ -128,16 +137,24 @@ public class RobotContainer {
     final JoystickButton pickCube = new JoystickButton(m_operatorController, 6);
 
     // D-Pad in this order: top, left, bottom, right
-    final Trigger top = new Trigger(() -> m_driverController.getPOV() == 0);
-    final Trigger left = new Trigger(() -> m_driverController.getPOV() == 270); // Low pickup or low score
-    final Trigger down = new Trigger(() -> m_operatorController.getPOV() == 180); // Single feeder or mid score
-    final Trigger right = new Trigger(() -> m_operatorController.getPOV() == 90); // Double feeder or high score
+    final POVButton top = new POVButton(m_driverController,0);
+    final POVButton left = new POVButton(m_driverController,90);
+    final POVButton down = new POVButton(m_driverController,180);
+    final POVButton right = new POVButton(m_driverController,270);
+
+    final JoystickButton extend = new JoystickButton(m_driverController, 1);
+    final JoystickButton retract = new JoystickButton(m_driverController, 2);
+
 
     // A, B
 
+    extend.whileTrue(new RunCommand(
+        () -> m_intake.extend(),
+        m_intake));
 
-    
-
+    retract.whileTrue(new RunCommand(
+        () -> m_intake.retract(),
+        m_intake));
     
 
     setxbutton.whileTrue(new RunCommand(
@@ -154,6 +171,7 @@ public class RobotContainer {
     reverseIntake.whileTrue(new RunCommand(
         () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
         m_intake));
+
 
     // lowGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.2)));
     // highGoal.onTrue(new RunCommand(() -> m_arm.setPosition(0.4)));
