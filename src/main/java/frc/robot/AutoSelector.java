@@ -248,10 +248,63 @@ public class AutoSelector {
           
       
       //Add One game piece auto with events 
-      chooser.addOption("1 Game Piece", OnePiecePath);
+      chooser.addOption("1 Game Piece events", OnePiecePath);
 
 
 
+  //no event 2 game piece 
+  List<PathPlannerTrajectory> OnePathGroupNoEvent =  PathPlanner.loadPathGroup("1 Game Piece", new PathConstraints(4, 3));
+    
+  final HashMap<String, Command> AutoEventMap1NoEvent = new HashMap<>();   
+     
+      //Made the path and events into one command
+
+  Command OnePiecePathNoEvents =
+      new SequentialCommandGroup( 
+        new InstantCommand(() -> {
+          // Reset odometry for the first path you run during auto
+          drivebase.resetOdometry(OnePathGroup.get(0).getInitialHolonomicPose()); //May need to rethink this so it faces the right direction
+        }),
+        new FollowPathWithEvents(
+          new PPSwerveControllerCommand(
+            
+          OnePathGroup.get(0),
+      drivebase::getPose, // Pose supplier
+    DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+      new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+      new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+      new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+      drivebase::setModuleStates, // Module states consumer
+      true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+      drivebase // Requires this drive subsystem
+          ),
+          OnePathGroupNoEvent.get(0).getMarkers(),
+          AutoEventMap1NoEvent),
+     // new InstantCommand(drivebase::enableXstance, drivebase),
+      //new WaitCommand(5),
+     // new InstantCommand(drivebase::disableXstance, drivebase),
+          new FollowPathWithEvents(new PPSwerveControllerCommand(
+            OnePathGroupNoEvent.get(1),
+      drivebase::getPose, // Pose supplier
+    DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+      new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+      new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+      new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+      drivebase::setModuleStates, // Module states consumer
+      true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+      drivebase // Requires this drive subsystem
+          ),
+          OnePathGroupNoEvent.get(1).getMarkers(),
+          AutoEventMap1NoEvent),
+       new InstantCommand(() -> {
+        //Put the trajectory in glass
+        m_field.getObject("traj").setTrajectory(PathPlanner.loadPath("1 Game Piece", new PathConstraints(4, 3))); 
+      }));
+
+      
+  
+  //Add One game piece auto with no events 
+  chooser.addOption("1 Game Piece", OnePiecePathNoEvents);
 
       //Add another option which is the manually made S path
     chooser.addOption("Manual SPath", new InstantCommand(()->{
