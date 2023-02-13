@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
@@ -20,19 +21,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class EndEffectorIntake extends SubsystemBase {
     private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     private final PWMSparkMax intakeMotor = new PWMSparkMax(2);
-    public DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
+    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
     private final PneumaticHub m_ph = new PneumaticHub(1);
 
     public EndEffectorIntake(){
-        compressor.enableAnalog(0, 120);
+        compressor.enableAnalog(90, 120);
     }
 
     public void extend() {
-       solenoid.set(DoubleSolenoid.Value.kForward);
+       solenoid.set(Value.kForward);
     }
 
     public void retract() {
-        solenoid.set(DoubleSolenoid.Value.kReverse);
+        solenoid.set(Value.kReverse);
+
     }
 
     public void stop() {
@@ -48,6 +50,8 @@ public class EndEffectorIntake extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
+        SmartDashboard.putBoolean("hamburger", false);
+
 
     }
 }
