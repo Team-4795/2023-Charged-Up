@@ -39,6 +39,7 @@ public class StateManager {
                 case 270: state = State.LowScore; break;
                 case 180: state = State.MidScore; break;
                 case 90: state = State.HighScoreCube; break;
+                default: break;
             }
         } else {
             switch (angle) {
@@ -46,6 +47,7 @@ public class StateManager {
                 case 270: state = State.LowPickup; break;
                 case 180: state = State.SingleFeeder; break;
                 case 90: state = State.DoubleFeeder; break;
+                default: break;
             }
         }
     }

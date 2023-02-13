@@ -21,6 +21,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -141,17 +142,17 @@ public class RobotContainer {
     final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
     final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 2);
 
-    pickCone.toggleOnTrue(new RunCommand(m_manager::pickCone, m_arm));
-    pickCube.toggleOnTrue(new RunCommand(m_manager::pickCube, m_arm));
+    pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
+    pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
 
     // Handle dpad inputs
-    dpad.toggleOnTrue(new RunCommand(() -> {
+    dpad.onTrue(new InstantCommand(() -> {
         m_manager.handleDpad(m_operatorController.getPOV());
         m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
     }, m_arm));
 
-    isStoring.toggleOnTrue(new RunCommand(m_manager::setStoring, m_arm));
-    isNotStoring.toggleOnTrue(new RunCommand(m_manager::setNotStoring, m_arm));
+    isStoring.onTrue(new InstantCommand(m_manager::setStoring, m_arm));
+    isNotStoring.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
 
     // Temporary toggle storing button
     // toggleStoring.onTrue(new RunCommand(m_manager::toggleStoring));
