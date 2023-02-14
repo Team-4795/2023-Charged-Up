@@ -77,13 +77,6 @@ public class RobotContainer {
     
     );
 
-    m_intake.setDefaultCommand(
-        new RunCommand(
-            () -> m_intake.extend(), // Change to DriveConstants.kSlowIntakeSpeed
-            m_intake
-        )
-    
-    );
 
     // Axis 2 = to battery, axis 3 = away
     // Subtract up movement by down movement so they cancell out if both are pressed at once
@@ -148,11 +141,11 @@ public class RobotContainer {
 
     // A, B
 
-    extend.whileTrue(new RunCommand(
+    extend.onTrue(new InstantCommand(
         () -> m_intake.extend(),
         m_intake));
 
-    retract.whileTrue(new RunCommand(
+    retract.onTrue(new InstantCommand(
         () -> m_intake.retract(),
         m_intake));
     
