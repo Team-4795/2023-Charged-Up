@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final EndEffectorIntake m_intake = new EndEffectorIntake();;
   private final LiftArm m_arm = new LiftArm();
 
@@ -69,7 +69,7 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
         new RunCommand(
-            () -> m_intake.intakeAutomatic(), // Change to DriveConstants.kSlowIntakeSpeed
+            () -> m_intake.intakeAutomatic(),
             m_intake
         )
     );
