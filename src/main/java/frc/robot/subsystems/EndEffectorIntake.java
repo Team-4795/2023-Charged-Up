@@ -24,6 +24,8 @@ public class EndEffectorIntake extends SubsystemBase {
     //public  solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
     private final PneumaticHub m_ph = new PneumaticHub(1);
 
+    public double intakeSpeed = 0.25;
+
     public EndEffectorIntake(){
     }
 
@@ -39,9 +41,12 @@ public class EndEffectorIntake extends SubsystemBase {
         //solenoid.set(DoubleSolenoid.Value.kOff);
     }
 
-    public void intake(double speed)
-    {
+    public void setIntakeSpeed(double speed) {
         intakeMotor.set(speed);
+    }
+
+    public void intake() {
+        intakeMotor.set(intakeSpeed);
     }
 
     @Override

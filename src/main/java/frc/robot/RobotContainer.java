@@ -69,7 +69,7 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
         new RunCommand(
-            () -> m_intake.intake(-.25), // Change to DriveConstants.kSlowIntakeSpeed
+            () -> m_intake.intake(), // Change to DriveConstants.kSlowIntakeSpeed
             m_intake
         )
     );
@@ -161,12 +161,12 @@ public class RobotContainer {
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
 
     //Intake
-    intake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
+    intake.onTrue(new InstantCommand(
+        () -> m_intake.setIntakeSpeed(DriveConstants.kIntakeSpeed),
         m_intake));
     
-    reverseIntake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
+    reverseIntake.onTrue(new InstantCommand(
+        () -> m_intake.setIntakeSpeed(DriveConstants.kOuttakeSpeed),
         m_intake));
 
   }
@@ -221,6 +221,6 @@ public class RobotContainer {
 
   private void setStates() {
     m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
-    m_manager.getIntakeSetpoint().ifPresent(m_intake::intake);
+    m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
   }
 }
