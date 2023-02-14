@@ -69,7 +69,7 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
         new RunCommand(
-            () -> m_intake.intake(), // Change to DriveConstants.kSlowIntakeSpeed
+            () -> m_intake.intakeAutomatic(), // Change to DriveConstants.kSlowIntakeSpeed
             m_intake
         )
     );
@@ -80,21 +80,20 @@ public class RobotContainer {
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> {
-                double up = m_operatorController.getRawAxis(3);
-                double down = m_operatorController.getRawAxis(2);
+                double up = MathUtil.applyDeadband(m_operatorController.getRawAxis(3), OIConstants.kArmDeadband);
+                double down = MathUtil.applyDeadband(m_operatorController.getRawAxis(2), OIConstants.kArmDeadband);
                 
                 // Get amount to change the setpoint
                 double change = OIConstants.kArmManualSpeed * (Math.pow(up, 3) - Math.pow(down, 3));
 
-              
-                // Apply deadband and add to arm setpoint
-                double new_setpoint = m_arm.setpoint + MathUtil.applyDeadband(change, OIConstants.kArmDeadband);
+                // New setpoint to move to
+                double new_setpoint = m_arm.setpoint + change;
 
                 // Manual soft limits, probably should remove
-            if (new_setpoint < 0.16) {
-                    new_setpoint = 0.16;
-                } else if (new_setpoint > 0.96) {
-                    new_setpoint = 0.96;
+                if (new_setpoint < 0.14) {
+                    new_setpoint = 0.14;
+                } else if (new_setpoint > 0.98) {
+                    new_setpoint = 0.98;
                 }
 
                 // Set new arm setpoint and move to it

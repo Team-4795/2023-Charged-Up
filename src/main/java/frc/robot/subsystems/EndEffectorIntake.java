@@ -45,7 +45,7 @@ public class EndEffectorIntake extends SubsystemBase {
         intakeMotor.set(speed);
     }
 
-    public void intake() {
+    public void intakeAutomatic() {
         intakeMotor.set(intakeSpeed);
     }
 
