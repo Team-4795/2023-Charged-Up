@@ -80,8 +80,8 @@ public class RobotContainer {
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> {
-                double up = MathUtil.applyDeadband(m_operatorController.getRawAxis(3), OIConstants.kArmDeadband);
-                double down = MathUtil.applyDeadband(m_operatorController.getRawAxis(2), OIConstants.kArmDeadband);
+                double up = MathUtil.applyDeadband(m_driverController.getRawAxis(3), OIConstants.kArmDeadband);
+                double down = MathUtil.applyDeadband(m_driverController.getRawAxis(2), OIConstants.kArmDeadband);
                 
                 // Get amount to change the setpoint
                 double change = OIConstants.kArmManualSpeed * (Math.pow(up, 3) - Math.pow(down, 3));

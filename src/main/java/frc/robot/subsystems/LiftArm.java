@@ -35,7 +35,7 @@ public class LiftArm extends SubsystemBase {
     // Probably dont need this
     m_PIDController.setPositionPIDWrappingEnabled(false);
 
-    m_PIDController.setP(0.8);
+    m_PIDController.setP(1.6);
     m_PIDController.setI(0);
     m_PIDController.setD(0);
     m_PIDController.setFF(0);
