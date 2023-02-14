@@ -36,18 +36,18 @@ public class StateManager {
     public void handleDpad(int angle) {
         if (storing) {
             switch (angle) {
-                case 0: state = State.StowInFrame; break;
-                case 270: state = State.LowScore; break;
-                case 180: state = State.MidScore; break;
-                case 90: state = State.HighScoreCube; break;
+                case 0: state = State.HighScoreCube; break;
+                case 270: state = State.MidScore; break;
+                case 180: state = State.LowScore; break;
+                case 90: state = State.StowInFrame; break;
                 default: break;
             }
         } else {
             switch (angle) {
-                case 0: state = State.StowInFrame; break;
-                case 270: state = State.LowPickup; break;
-                case 180: state = State.SingleFeeder; break;
-                case 90: state = State.DoubleFeeder; break;
+                case 0: state = State.DoubleFeeder; break;
+                case 270: state = State.SingleFeeder; break;
+                case 180: state = State.LowPickup; break;
+                case 90: state = State.StowInFrame; break;
                 default: break;
             }
         }

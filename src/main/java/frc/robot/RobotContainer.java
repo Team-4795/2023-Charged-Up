@@ -127,6 +127,9 @@ public class RobotContainer {
     // final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
     // final JoystickButton intake = new JoystickButton(m_driverController, 7);
 
+    // Keybinds:
+    // https://docs.google.com/document/d/170FNOZ3DKwVowGESMP2AQLjpuYHfxeh4vl-hTgFNpbM/edit?usp=sharing
+
     // Left, right bumper
     final JoystickButton pickCone = new JoystickButton(m_operatorController, 5);
     final JoystickButton pickCube = new JoystickButton(m_operatorController, 6);
