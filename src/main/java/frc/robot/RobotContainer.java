@@ -121,11 +121,11 @@ public class RobotContainer {
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
 
-    //Intake dpad
-    // final Trigger reverseIntake = new Trigger(() -> m_operatorController.getPOV()==90);
-    // final Trigger intake = new Trigger(() -> m_operatorController.getPOV()==270);
-    final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
-    final JoystickButton intake = new JoystickButton(m_driverController, 7);
+    // Intake triggers
+    final Trigger reverseIntake = new Trigger(() -> m_driverController.getPOV() == 90);
+    final Trigger intake = new Trigger(() -> m_driverController.getPOV() == 270);
+    // final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
+    // final JoystickButton intake = new JoystickButton(m_driverController, 7);
 
     // Left, right bumper
     final JoystickButton pickCone = new JoystickButton(m_operatorController, 5);
