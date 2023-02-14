@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -36,8 +35,8 @@ public class AutoBalance extends CommandBase{
 
     @Override
     public void execute(){
-        elevationAngle = drive.getElevationAngle();
-        elevationVelocity = drive.getElevationVelocity();
+        elevationAngle = drive.getElevationAngleV2();
+        elevationVelocity = drive.getElevationVelocityV2();
         output = updateDrive();
         drive.drive(output, 0, 0, false, true);
 
@@ -57,7 +56,7 @@ public class AutoBalance extends CommandBase{
 
     @Override
     public boolean isFinished(){
-        return (Math.abs(elevationVelocity) > 0.1 && (elevationAngle/elevationAngle != elevationVelocity/elevationVelocity));
+        return (Math.abs(elevationVelocity) > 0.2 && (elevationAngle/elevationAngle != elevationVelocity/elevationVelocity));
     }
 
 }

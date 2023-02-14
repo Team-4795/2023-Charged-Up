@@ -53,6 +53,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 
   private double[][] rotation = new double[3][3];
+  private double[] rotationChanges = new double[3];
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -261,10 +262,10 @@ public class DriveSubsystem extends SubsystemBase {
     return m_gyro.getRawGyroX();
   }
 
-  public void setRotationMatrix(){
-    double x = m_gyro.getPitch() * Math.PI / 180;
-    double y = m_gyro.getRoll() * Math.PI / 180; //is this x or y axis???^ description some garbage bruh
-    double z = m_gyro.getYaw() * Math.PI / 180;
+  public void setRotationMatrix(double xOffset, double yOffset, double zOffset){
+    double x = m_gyro.getPitch() * Math.PI / 180 + xOffset;
+    double y = m_gyro.getRoll() * Math.PI / 180 + yOffset; //is this x or y axis???^ description some garbage bruh
+    double z = m_gyro.getYaw() * Math.PI / 180 + zOffset;
     rotation[0] = new double[] {Math.cos(y) * Math.cos(z), Math.sin(x) * Math.sin(y) * Math.cos(z) - Math.cos(x) * Math.sin(z), Math.cos(x) * Math.sin(y) * Math.cos(z) - Math.sin(x) * Math.sin(z)};
     rotation[1] = new double[] {Math.cos(y) * Math.cos(z), Math.sin(x) * Math.sin(y) * Math.sin(z) + Math.cos(x) * Math.cos(z), Math.cos(x) * Math.sin(y) * Math.sin(z) - Math.sin(x) * Math.cos(z)};
     rotation[2] = new double[] {-Math.sin(y), Math.sin(x) * Math.cos(y), Math.cos(x) * Math.cos(y)};
@@ -286,10 +287,30 @@ public class DriveSubsystem extends SubsystemBase {
 
   //should work theoretically, unless the rotation matrix is inputted wrong
   public double getElevationAngleV2(){
-    setRotationMatrix();
+    setRotationMatrix(0, 0, 0);
     double headingAngle = getHeading().getRadians();
     double[] outputVector = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle), Math.cos(headingAngle), 0});
     return Math.atan(outputVector[2] / (Math.sqrt(Math.pow(outputVector[0], 2) + Math.pow(outputVector[1], 2))));
+  }
+
+  public double getElevationVelocityV2(){
+    setRotationMatrix(0, 0, 0);
+    double headingAngle = getHeading().getRadians();
+    double[] hold = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle), Math.cos(headingAngle), 0});
+    double original = Math.atan(hold[2] / (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
+    setRotationMatrix(0.0001, 0, 0);
+    hold = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle), Math.cos(headingAngle), 0});
+    double xChange = Math.atan(hold[2] / (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
+    setRotationMatrix(0, 0.0001, 0);
+    hold = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle), Math.cos(headingAngle), 0});
+    double yChange = Math.atan(hold[2] / (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
+    setRotationMatrix(0, 0, 0.0001);
+    hold = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle + 0.0001), Math.cos(headingAngle + 0.0001), 0});
+    double zChange = Math.atan(hold[2] / (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
+    rotationChanges[0] = (xChange - original) / 0.0001;
+    rotationChanges[1] = (yChange - original) / 0.0001;
+    rotationChanges[2] = (zChange - original) / 0.0001;
+    return (rotationChanges[0] * m_gyro.getRawGyroX() + rotationChanges[1] * m_gyro.getRawGyroY() + rotationChanges[2] * m_gyro.getRawGyroZ());
   }
 
   /**
