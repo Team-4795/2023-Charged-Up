@@ -38,6 +38,7 @@ public class AutoBalance extends CommandBase{
         elevationAngle = drive.getElevationAngleV2();
         elevationVelocity = drive.getElevationVelocityV2();
         output = updateDrive();
+        drive.setBalanceSpeed(output);
         drive.drive(output, 0, 0, false, true);
 
         SmartDashboard.putNumber("Angle of Elevation", elevationAngle);
@@ -55,8 +56,13 @@ public class AutoBalance extends CommandBase{
     }
 
     @Override
+    public void end(boolean interrupted){
+        drive.setBalanceSpeed(0);
+    }
+
+    @Override
     public boolean isFinished(){
-        return (Math.abs(elevationVelocity) > 0.2 && (elevationAngle/elevationAngle != elevationVelocity/elevationVelocity));
+        return (Math.abs(elevationVelocity) > errorThreshold && (elevationAngle/elevationAngle != elevationVelocity/elevationVelocity));
     }
 
 }

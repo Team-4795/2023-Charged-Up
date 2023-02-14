@@ -21,6 +21,11 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
+  private DoubleLogEntry elevationAngle;
+  private DoubleLogEntry elevationVelocity;
+  private DoubleLogEntry balanceSpeed;
+  private DataLog log;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -30,6 +35,12 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    DataLogManager.start();
+    log = DataLogManager.getLog();
+    elevationAngle = new DoubleLogEntry(log, "/elevationAngle");
+    elevationVelocity = new DoubleLogEntry(log, "/elevationVelocity");
+    balanceSpeed = new DoubleLogEntry(log, "balanceSpeed");
   }
 
   /**
@@ -91,6 +102,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    elevationAngle.append(m_robotContainer.m_robotDrive.getElevationAngleV2());
+    elevationVelocity.append(m_robotContainer.m_robotDrive.getElevationVelocityV2());
+    balanceSpeed.append(m_robotContainer.m_robotDrive.getBalanceSpeed());
   }
 
   @Override

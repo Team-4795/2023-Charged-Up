@@ -42,7 +42,7 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final EndEffectorIntake m_intake = new EndEffectorIntake();;
   private final LiftArm m_arm = new LiftArm();
 
@@ -118,13 +118,13 @@ public class RobotContainer {
     //no check duration, only moves in +/- x direction in relation to robot
     testButton.whileTrue(new SequentialCommandGroup(
         new DriveCommandOld(m_robotDrive, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold),
-        new AutoBalanceOld(m_robotDrive, AutoConstants.balanceAngleErrorThreshold)
+        new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
 
     //heading has to be set correctly with the 4' side of the charge platform parallel to the x-axis, elevation angle could be wrong here
     balanceButton.whileTrue(new SequentialCommandGroup(
         new DriveCommand(m_robotDrive, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
-        new AutoBalance(m_robotDrive, AutoConstants.balanceAngleErrorThreshold)
+        new AutoBalance(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
 
     //Intake dpad
