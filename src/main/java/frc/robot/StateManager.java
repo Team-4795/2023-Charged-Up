@@ -72,6 +72,10 @@ public class StateManager {
     public Optional<Double> getIntakeSetpoint() {
         return this.state.get(this.object).map(setpoints -> setpoints.intake);
     }
+
+    public State getState(){
+        return state;
+    }
 }
 
 enum State {
