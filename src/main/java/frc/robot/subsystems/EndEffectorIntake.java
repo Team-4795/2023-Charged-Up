@@ -42,17 +42,19 @@ public class EndEffectorIntake extends SubsystemBase {
     }
 
     public void setIntakeSpeed(double speed) {
-        intakeMotor.set(speed);
+        this.intakeSpeed = speed;
     }
 
     public void intakeAutomatic() {
         intakeMotor.set(intakeSpeed);
     }
 
+    public void intake(double speed) {
+        intakeMotor.set(speed);
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
-
-        
     }
 }

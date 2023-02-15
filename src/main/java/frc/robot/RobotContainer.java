@@ -141,8 +141,8 @@ public class RobotContainer {
     final Trigger povRight = new Trigger(() -> m_operatorController.getPOV() == 90);
 
     // A, B
-    final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
-    final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 2);
+    final JoystickButton isStoring = new JoystickButton(m_driverController, 1);
+    final JoystickButton isNotStoring = new JoystickButton(m_driverController, 2);
 
     pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
@@ -163,12 +163,12 @@ public class RobotContainer {
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
 
     //Intake
-    intake.onTrue(new InstantCommand(
-        () -> m_intake.setIntakeSpeed(DriveConstants.kIntakeSpeed),
+    intake.whileTrue(new RunCommand(
+        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
         m_intake));
     
-    reverseIntake.onTrue(new InstantCommand(
-        () -> m_intake.setIntakeSpeed(DriveConstants.kOuttakeSpeed),
+    reverseIntake.whileTrue(new RunCommand(
+        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
         m_intake));
 
   }
