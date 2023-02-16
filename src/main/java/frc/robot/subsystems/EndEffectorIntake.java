@@ -1,7 +1,11 @@
 package frc.robot.subsystems;
 
 //motor imports
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 //pneumatics imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
@@ -20,13 +24,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class EndEffectorIntake extends SubsystemBase {
     private DoubleSolenoid solenoid;
     private Compressor compressor;
-    private final PWMSparkMax intakeMotor = new PWMSparkMax(2);
+    private final CANSparkMax intakeMotor = new CANSparkMax(24, MotorType.kBrushed);
     //public  solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
     private final PneumaticHub m_ph = new PneumaticHub(1);
 
     public double intakeSpeed = 0.25;
 
     public EndEffectorIntake(){
+        
+        intakeMotor.setIdleMode(IdleMode.kBrake);
+
+        intakeMotor.setSmartCurrentLimit(40);
     }
 
     public void extend() {
