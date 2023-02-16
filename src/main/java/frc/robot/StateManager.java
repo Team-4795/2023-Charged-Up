@@ -10,23 +10,23 @@ public class StateManager {
     State state;
 
     // Either what were picking or what were holding
-    Object object;
+    Gamepiece gamepiece;
 
-    // If we are or are not storing an object
+    // If we are or are not storing an gamepiece
     // Temporary
     boolean storing = false;
 
     public StateManager() {
         this.state = State.StowLow;
-        this.object = Object.None;
+        this.gamepiece = Gamepiece.None;
     }
 
     public void pickCube() {
-        object = Object.Cube;
+        gamepiece = Gamepiece.Cube;
     }
 
     public void pickCone() {
-        object = Object.Cone;
+        gamepiece = Gamepiece.Cone;
     }
 
     public void stow() {
@@ -66,11 +66,11 @@ public class StateManager {
     }
 
     public Optional<Double> getArmSetpoint() {
-        return this.state.get(this.object).map(setpoints -> setpoints.arm);
+        return this.state.get(this.gamepiece).map(setpoints -> setpoints.arm);
     }
 
     public Optional<Double> getIntakeSetpoint() {
-        return this.state.get(this.object).map(setpoints -> setpoints.intake);
+        return this.state.get(this.gamepiece).map(setpoints -> setpoints.intake);
     }
 
     public State getState(){
@@ -130,8 +130,8 @@ enum State {
         return Optional.ofNullable(result);
     }
 
-    public Optional<Setpoints> get(Object object) {
-        switch (object) {
+    public Optional<Setpoints> get(Gamepiece gamepiece) {
+        switch (gamepiece) {
             case Cube: return getCube();
             case Cone: return getCone();
             default: return Optional.empty();
@@ -139,7 +139,7 @@ enum State {
     }
 }
 
-enum Object {
+enum Gamepiece {
     Cube,
     Cone,
     None,
