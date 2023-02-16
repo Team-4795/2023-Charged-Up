@@ -169,7 +169,7 @@ public final class Constants {
     public static final double kMaxOutput = 0.3;
     public static final double kRampRate = 0.5;
     public static final double kConversionFactor = 1;
-    public static final double kCurrentLimit = 60;
+    public static final int kCurrentLimit = 60;
     public static final double kGearing = 72;
     public static final boolean kEnableForwardLimit = false;
     public static final boolean kEnableReverseLimit = false;
