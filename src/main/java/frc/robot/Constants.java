@@ -149,4 +149,35 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+  public static final class RotationConstants {
+    public static final double kP = .01;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kMinimumAngle = -180;
+    public static final double kMaximumAngle = 180;
+  }
+
+  public static final class ArmConstants {
+    public static final int kLeftArmMotorCANID = 10;
+    public static final int kRightArmMotorCANID = 11;
+    public static final double kP = 1.6;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kFF = 0;
+    public static final double kMinOutput = -0.3;
+    public static final double kMaxOutput = 0.3;
+    public static final double kRampRate = 0.5;
+    public static final double kConversionFactor = 1;
+    public static final double kCurrentLimit = 60;
+    public static final double kGearing = 72;
+    public static final boolean kEnableForwardLimit = false;
+    public static final boolean kEnableReverseLimit = false;
+    public static final double kForwardLimit = 65;
+    public static final double kReverseLimit = 10;
+    
+
+
+
+  }
 }
