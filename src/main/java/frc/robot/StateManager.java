@@ -12,7 +12,7 @@ public class StateManager {
     // Either what were picking or what were holding
     Gamepiece gamepiece;
 
-    // If we are or are not storing an gamepiece
+    // If we are or are not storing a gamepiece
     // Temporary
     boolean storing = false;
 
@@ -153,8 +153,8 @@ public class StateManager {
         return this.state.get(this.gamepiece).map(setpoints -> setpoints.intake);
     }
 
-    public Optional<Double> getLEDs() {
-        return this.state.get(this.gamepiece).map(setpoints -> setpoints.intake);
+    public Optional<Double> getLED() {
+        return this.state.getLED(this.gamepiece);
     }
 
     public State getState(){
