@@ -29,6 +29,7 @@ public class EndEffectorIntake extends SubsystemBase {
     private final PneumaticHub m_ph = new PneumaticHub(1);
 
     public double intakeSpeed = 0.25;
+    public double requestedSpeed = 0.25;
 
     public EndEffectorIntake(){
         
@@ -50,19 +51,23 @@ public class EndEffectorIntake extends SubsystemBase {
     }
 
     public void setIntakeSpeed(double speed) {
+        this.requestedSpeed = speed;
         this.intakeSpeed = speed;
     }
 
     public void intakeAutomatic() {
+        this.requestedSpeed = intakeSpeed;
         intakeMotor.set(intakeSpeed);
     }
 
     public void intake(double speed) {
+        this.requestedSpeed = speed;
         intakeMotor.set(speed);
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
+        SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
     }
 }
