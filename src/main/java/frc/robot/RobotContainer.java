@@ -117,9 +117,9 @@ public class RobotContainer {
 
   
   private void configureButtonBindings() {
-
-    final JoystickButton setxbutton = new JoystickButton(m_driverController, 5);
-    final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 6);
+    // A, B
+    final JoystickButton setxbutton = new JoystickButton(m_driverController, 1);
+    final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 2);
 
     // Intake triggers
     final Trigger reverseIntake = new Trigger(() -> m_driverController.getPOV() == 90);
@@ -140,9 +140,9 @@ public class RobotContainer {
     final Trigger povDown = new Trigger(() -> m_operatorController.getPOV() == 180);
     final Trigger povRight = new Trigger(() -> m_operatorController.getPOV() == 90);
 
-    // A, B
-    final JoystickButton isStoring = new JoystickButton(m_driverController, 1);
-    final JoystickButton isNotStoring = new JoystickButton(m_driverController, 2);
+    // left, right bumper
+    final JoystickButton isStoring = new JoystickButton(m_driverController, 6);
+    final JoystickButton isNotStoring = new JoystickButton(m_driverController, 5);
 
     pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
