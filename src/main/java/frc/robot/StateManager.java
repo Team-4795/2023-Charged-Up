@@ -16,6 +16,86 @@ public class StateManager {
     // Temporary
     boolean storing = false;
 
+    enum Gamepiece {
+        Cube,
+        Cone,
+        None,
+    }
+
+    public enum LED {
+        Cone,
+        Cube,
+    }
+
+    enum State {
+        LowPickup,
+        SingleFeeder,
+        DoubleFeeder,
+        LowScore,
+        MidScore,
+        HighScoreCube,
+        StowInFrame,
+        StowLow;
+
+        private Optional<Setpoints> getCubeSetpoints() {
+            Setpoints result = null;
+
+            switch (this) {
+                case LowPickup: result = new Setpoints(0.905, 0.0); break;
+                case SingleFeeder: break;
+                case DoubleFeeder: break;
+                case LowScore: result = new Setpoints(0.905, 0.0); break;
+                case MidScore: result = new Setpoints(0.74, 0.0); break;
+                case HighScoreCube: result = new Setpoints(.68, 0.0); break;
+                case StowInFrame: result = new Setpoints(0.16, 0.0); break;
+                case StowLow: result = new Setpoints(0.96, 0.0); break;
+            }
+
+            if (result != null) {
+                result.intake = DriveConstants.kSlowCubeIntakeSpeed;
+            }
+
+            return Optional.ofNullable(result);
+        }
+
+        private Optional<Setpoints> getConeSetpoints() {
+            Setpoints result = null;
+
+            switch (this) {
+                case LowPickup: result = new Setpoints(0.89, 0.0); break;
+                case SingleFeeder: break;
+                case DoubleFeeder: break;
+                case LowScore: result = new Setpoints(0.89, 0.0); break;
+                case MidScore: result = new Setpoints(0.7, 0.0); break;
+                case HighScoreCube: break;
+                case StowInFrame: result = new Setpoints(0.16, 0.0); break;
+                case StowLow: result = new Setpoints(0.96, 0.0); break;
+            }
+
+            if (result != null) {
+                result.intake = DriveConstants.kSlowConeIntakeSpeed;
+            }
+
+            return Optional.ofNullable(result);
+        }
+
+        public Optional<Setpoints> getSetpoints() {
+            switch (gamepiece) {
+                case Cube: return getCubeSetpoints();
+                case Cone: return getConeSetpoints();
+                case None: return Optional.empty();
+            }
+        }
+
+        public Optional<LED> getLED() {
+            switch (gamepiece) {
+                case Cube: return Optional.of(LED.Cube);
+                case Cone: return Optional.of(LED.Cone);
+                case None: return Optional.empty();
+            }
+        }
+    }
+
     public StateManager() {
         this.state = State.StowLow;
         this.gamepiece = Gamepiece.None;
@@ -73,76 +153,13 @@ public class StateManager {
         return this.state.get(this.gamepiece).map(setpoints -> setpoints.intake);
     }
 
+    public Optional<Double> getLEDs() {
+        return this.state.get(this.gamepiece).map(setpoints -> setpoints.intake);
+    }
+
     public State getState(){
         return state;
     }
-}
-
-enum State {
-    LowPickup,
-    SingleFeeder,
-    DoubleFeeder,
-    LowScore,
-    MidScore,
-    HighScoreCube,
-    StowInFrame,
-    StowLow;
-
-    private Optional<Setpoints> getCube() {
-        Setpoints result = null;
-
-        switch (this) {
-            case LowPickup: result = new Setpoints(0.905, 0.0); break;
-            case SingleFeeder: break;
-            case DoubleFeeder: break;
-            case LowScore: result = new Setpoints(0.905, 0.0); break;
-            case MidScore: result = new Setpoints(0.74, 0.0); break;
-            case HighScoreCube: result = new Setpoints(.68, 0.0); break;
-            case StowInFrame: result = new Setpoints(0.16, 0.0); break;
-            case StowLow: result = new Setpoints(0.96, 0.0); break;
-        }
-
-        if (result != null) {
-            result.intake = DriveConstants.kSlowCubeIntakeSpeed;
-        }
-
-        return Optional.ofNullable(result);
-    }
-
-    private Optional<Setpoints> getCone() {
-        Setpoints result = null;
-
-        switch (this) {
-            case LowPickup: result = new Setpoints(0.89, 0.0); break;
-            case SingleFeeder: break;
-            case DoubleFeeder: break;
-            case LowScore: result = new Setpoints(0.89, 0.0); break;
-            case MidScore: result = new Setpoints(0.7, 0.0); break;
-            case HighScoreCube: break;
-            case StowInFrame: result = new Setpoints(0.16, 0.0); break;
-            case StowLow: result = new Setpoints(0.96, 0.0); break;
-        }
-
-        if (result != null) {
-            result.intake = DriveConstants.kSlowConeIntakeSpeed;
-        }
-
-        return Optional.ofNullable(result);
-    }
-
-    public Optional<Setpoints> get(Gamepiece gamepiece) {
-        switch (gamepiece) {
-            case Cube: return getCube();
-            case Cone: return getCone();
-            default: return Optional.empty();
-        }
-    }
-}
-
-enum Gamepiece {
-    Cube,
-    Cone,
-    None,
 }
 
 class Setpoints {
