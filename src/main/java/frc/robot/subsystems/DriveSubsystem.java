@@ -54,6 +54,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private double[][] rotation = new double[3][3];
   private double[] rotationChanges = new double[3];
+  private double balanceSpeed = 0.0;
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -237,6 +238,14 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.resetEncoders();
     m_frontRight.resetEncoders();
     m_rearRight.resetEncoders();
+  }
+
+  public void setBalanceSpeed(double value){
+    balanceSpeed = value;
+  }
+  //pick up these changes please
+  public double getBalanceSpeed(){
+    return balanceSpeed;
   }
 
   /** Zeroes the heading of the robot. */

@@ -39,7 +39,7 @@ public class AutoBalance extends CommandBase{
         elevationVelocity = drive.getElevationVelocityV2();
         output = updateDrive();
         drive.setBalanceSpeed(output);
-        drive.drive(output, 0, 0, false, true);
+        drive.drive(output, 0.0, 0.0, false, true);
 
         SmartDashboard.putNumber("Angle of Elevation", elevationAngle);
         SmartDashboard.putNumber("Speed", output);
