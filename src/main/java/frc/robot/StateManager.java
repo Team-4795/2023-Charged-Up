@@ -153,12 +153,8 @@ public class StateManager {
         return this.state.get(this.gamepiece).map(setpoints -> setpoints.intake);
     }
 
-    public Optional<Double> getLED() {
+    public Optional<LED> getLED() {
         return this.state.getLED(this.gamepiece);
-    }
-
-    public State getState(){
-        return state;
     }
 }
 
