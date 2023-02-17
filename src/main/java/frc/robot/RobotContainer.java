@@ -90,7 +90,7 @@ public class RobotContainer {
                 }
 
                 if (m_arm.setpoint > ArmConstants.kHighWristLimit) {
-                    m_intake.extended = true;
+                    m_intake.extended = false;
                 }
 
                 if (m_intake.extended) {

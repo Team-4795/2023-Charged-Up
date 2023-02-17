@@ -112,8 +112,8 @@ enum State {
 
         switch (this) {
             case LowPickup: result = new Setpoints(0.905, false); break;
-            case SingleFeeder: break;
-            case DoubleFeeder: break;
+            case SingleFeeder: new Setpoints(0.7, false); break;
+            case DoubleFeeder: new Setpoints(0.7, true); break;
             case LowScore: result = new Setpoints(0.905, false); break;
             case MidScore: result = new Setpoints(0.74, false); break;
             case HighScoreCube: result = new Setpoints(.68, false); break;
@@ -133,8 +133,8 @@ enum State {
 
         switch (this) {
             case LowPickup: result = new Setpoints(0.89, false); break;
-            case SingleFeeder: break;
-            case DoubleFeeder: break;
+            case SingleFeeder: new Setpoints(0.65, false); break;
+            case DoubleFeeder: new Setpoints(0.65, true); break;
             case LowScore: result = new Setpoints(0.89, false); break;
             case MidScore: result = new Setpoints(0.7, false); break;
             case HighScoreCube: break;
