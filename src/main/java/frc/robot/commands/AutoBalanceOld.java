@@ -43,9 +43,19 @@ public class AutoBalanceOld extends CommandBase{
         return -(elevationAngle / elevationAngle)*(Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
     }
 
+    private int signOf(double num){
+        if(num < 0){
+            return -1;
+        } else if (num > 0){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public boolean isFinished(){
-        return(Math.abs(elevationVelocity) > errorThreshold && (elevationAngle/elevationAngle != elevationVelocity/elevationVelocity));
+        return(Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
     }
 
 }

@@ -143,7 +143,7 @@ public final class Constants {
 
     public static final double driveAngleThreshold = 8; //degrees
     public static final double driveBalanceSpeed = 0.2;
-    public static final double balanceAngleErrorThreshold = 0.15;
+    public static final double angularVelocityErrorThreshold = 0.15;
     public static final double polyCoeff = 1.5;
     public static final double checkDuration = 0.5;
 
