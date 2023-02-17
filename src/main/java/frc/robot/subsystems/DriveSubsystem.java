@@ -24,9 +24,7 @@ import frc.utils.SwerveUtils;
 
 
 public class DriveSubsystem extends SubsystemBase {
-  //Create field2d
-  private final Field2d m_field = new Field2d();
-  
+
   // Create MAXSwerveModules
   
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
@@ -76,8 +74,9 @@ public class DriveSubsystem extends SubsystemBase {
       });
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
-
+  public DriveSubsystem(Field2d m_field) {
+    SmartDashboard.putData("Field", m_field);
+    m_field.setRobotPose(m_odometry.getPoseMeters());
 
   }
 
@@ -101,8 +100,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
             
         });
-        SmartDashboard.putData("Field", m_field);
-    m_field.setRobotPose(m_odometry.getPoseMeters());
+ 
   }
 
   /**
@@ -129,6 +127,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         },
         pose);
+
   }
 
   /**

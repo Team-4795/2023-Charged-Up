@@ -42,10 +42,6 @@ import frc.robot.Constants.OIConstants;
 public class AutoSelector {
     
   private final SendableChooser<Command> chooser = new SendableChooser<>();
-  private final EndEffectorIntake m_intake = new EndEffectorIntake();;
-  Field2d m_field = new Field2d();
-  private final LiftArm m_arm = new LiftArm();
-  StateManager m_manager = new StateManager(m_arm);
   Timer time = new Timer();
 
   //All Path Planner paths
@@ -80,7 +76,7 @@ public class AutoSelector {
 
 
   //Define Auto Selector
-  public AutoSelector(DriveSubsystem drivebase) {
+  public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field ,  StateManager m_manager) {
 
    
 
@@ -331,7 +327,7 @@ public class AutoSelector {
 
     
     SmartDashboard.putData("Auto Selector", chooser);
-    SmartDashboard.putData(m_field);
+
   }
 
   public Command getSelected() {

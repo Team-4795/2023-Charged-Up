@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -38,10 +39,11 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-//<<<<<<< HEAD
+  private final Field2d m_field = new Field2d();
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem(m_field);
+ 
   private final AutoSelector autoSelector;
-//=======
+
   private final EndEffectorIntake m_intake = new EndEffectorIntake();;
   private final LiftArm m_arm = new LiftArm();
 //>>>>>>> main
@@ -57,7 +59,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    autoSelector = new AutoSelector(m_robotDrive);
+    autoSelector = new AutoSelector(m_robotDrive,m_intake,m_arm,m_field,m_manager);
 
     configureButtonBindings();
 
