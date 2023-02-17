@@ -25,7 +25,9 @@ import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.EndEffectorIntake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -143,6 +145,8 @@ public class RobotContainer {
     final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
     final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 2);
 
+    final JoystickButton test = new JoystickButton(m_operatorController, 3);
+
     pickCone.onTrue(new RunCommand(m_manager::pickCone));
     pickCube.onTrue(new RunCommand(m_manager::pickCube));
 
@@ -167,6 +171,8 @@ public class RobotContainer {
     intake.whileTrue(new RunCommand(
         () -> m_intake.intake(DriveConstants.kIntakeSpeed),
         m_intake));
+
+    test.onTrue(new RunCommand(() -> m_intake.intake(0.2), m_intake).withTimeout(1));
     
     reverseIntake.whileTrue(new RunCommand(
         () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
