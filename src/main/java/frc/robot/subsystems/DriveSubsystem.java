@@ -294,28 +294,28 @@ public class DriveSubsystem extends SubsystemBase {
     return result;
   }
 
-  //should work theoretically, unless the rotation matrix is inputted wrong
+  //should not work theoretically, because it's not as simple as putting in an xy vector -headingAngle from the [0,1,0] vector
   public double getElevationAngleV2(){
     setRotationMatrix(0, 0, 0);
     double headingAngle = getHeading().getRadians();
     double[] outputVector = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle), Math.cos(headingAngle), 0});
-    return Math.atan(outputVector[2] / (Math.sqrt(Math.pow(outputVector[0], 2) + Math.pow(outputVector[1], 2))));
+    return Math.atan2(outputVector[2], (Math.sqrt(Math.pow(outputVector[0], 2) + Math.pow(outputVector[1], 2))));
   }
 
   public double getElevationVelocityV2(){
     setRotationMatrix(0, 0, 0);
     double headingAngle = getHeading().getRadians();
     double[] hold = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle), Math.cos(headingAngle), 0});
-    double original = Math.atan(hold[2] / (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
+    double original = Math.atan2(hold[2], (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
     setRotationMatrix(0.0001, 0, 0);
     hold = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle), Math.cos(headingAngle), 0});
-    double xChange = Math.atan(hold[2] / (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
+    double xChange = Math.atan2(hold[2], (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
     setRotationMatrix(0, 0.0001, 0);
     hold = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle), Math.cos(headingAngle), 0});
-    double yChange = Math.atan(hold[2] / (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
+    double yChange = Math.atan2(hold[2], (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
     setRotationMatrix(0, 0, 0.0001);
     hold = multiplyRotationMatrix(new double[] {-Math.sin(headingAngle + 0.0001), Math.cos(headingAngle + 0.0001), 0});
-    double zChange = Math.atan(hold[2] / (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
+    double zChange = Math.atan2(hold[2], (Math.sqrt(Math.pow(hold[0], 2) + Math.pow(hold[1], 2))));
     rotationChanges[0] = (xChange - original) / 0.0001;
     rotationChanges[1] = (yChange - original) / 0.0001;
     rotationChanges[2] = (zChange - original) / 0.0001;

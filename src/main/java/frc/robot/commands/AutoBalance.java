@@ -55,6 +55,16 @@ public class AutoBalance extends CommandBase{
         return speed;
     }
 
+    private int signOf(double num){
+        if(num < 0){
+            return -1;
+        } else if (num > 0){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public void end(boolean interrupted){
         drive.setBalanceSpeed(0);
@@ -62,7 +72,7 @@ public class AutoBalance extends CommandBase{
 
     @Override
     public boolean isFinished(){
-        return (Math.abs(elevationVelocity) > errorThreshold && (elevationAngle/elevationAngle != elevationVelocity/elevationVelocity));
+        return (Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
     }
 
 }
