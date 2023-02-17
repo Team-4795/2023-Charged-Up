@@ -239,5 +239,6 @@ public class RobotContainer {
   private void setStates() {
     m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
     m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
+    // m_manager.getWristExtended().ifPresent(m_intake::setExtended);
   }
 }

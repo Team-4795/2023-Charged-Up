@@ -88,6 +88,10 @@ public class StateManager {
         return this.state.getLED(this.gamepiece);
     }
 
+    public Optional<Boolean> getWristExtended() {
+        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.wrist);
+    }
+
     public State getState() {
         return this.state;
     }
@@ -107,14 +111,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.905, 0.0); break;
+            case LowPickup: result = new Setpoints(0.905, false); break;
             case SingleFeeder: break;
             case DoubleFeeder: break;
-            case LowScore: result = new Setpoints(0.905, 0.0); break;
-            case MidScore: result = new Setpoints(0.74, 0.0); break;
-            case HighScoreCube: result = new Setpoints(.68, 0.0); break;
-            case StowInFrame: result = new Setpoints(0.16, 0.0); break;
-            case StowLow: result = new Setpoints(0.96, 0.0); break;
+            case LowScore: result = new Setpoints(0.905, false); break;
+            case MidScore: result = new Setpoints(0.74, false); break;
+            case HighScoreCube: result = new Setpoints(.68, false); break;
+            case StowInFrame: result = new Setpoints(0.16, false); break;
+            case StowLow: result = new Setpoints(0.96, false); break;
         }
 
         if (result != null) {
@@ -128,14 +132,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.89, 0.0); break;
+            case LowPickup: result = new Setpoints(0.89, false); break;
             case SingleFeeder: break;
             case DoubleFeeder: break;
-            case LowScore: result = new Setpoints(0.89, 0.0); break;
-            case MidScore: result = new Setpoints(0.7, 0.0); break;
+            case LowScore: result = new Setpoints(0.89, false); break;
+            case MidScore: result = new Setpoints(0.7, false); break;
             case HighScoreCube: break;
-            case StowInFrame: result = new Setpoints(0.16, 0.0); break;
-            case StowLow: result = new Setpoints(0.96, 0.0); break;
+            case StowInFrame: result = new Setpoints(0.16, false); break;
+            case StowLow: result = new Setpoints(0.96, false); break;
         }
 
         if (result != null) {
@@ -164,10 +168,10 @@ enum State {
 
 class Setpoints {
     double arm;
-    double wrist;
+    boolean wrist;
     double intake;
 
-    Setpoints(double arm, double wrist) {
+    Setpoints(double arm, boolean wrist) {
         this.arm = arm;
         this.wrist = wrist;
         this.intake = 0.0;

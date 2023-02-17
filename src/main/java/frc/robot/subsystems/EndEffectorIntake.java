@@ -31,6 +31,8 @@ public class EndEffectorIntake extends SubsystemBase {
     public double intakeSpeed = 0.25;
     public double requestedSpeed = 0.25;
 
+    boolean extended = false;
+
     public EndEffectorIntake(){
         
         intakeMotor.setIdleMode(IdleMode.kBrake);
@@ -40,17 +42,26 @@ public class EndEffectorIntake extends SubsystemBase {
     }
 
     public void extend() {
-       solenoid.set(Value.kForward);
+        extended = true;
+        solenoid.set(Value.kForward);
     }
 
     public void retract() {
+        extended = false;
         solenoid.set(Value.kReverse);
-
     }
 
     public void stop() {
         //solenoid.set(DoubleSolenoid.Value.kOff);
 
+    }
+
+    public void setExtended(boolean extend) {
+        if (extend) {
+            extend();
+        } else {
+            retract();
+        }
     }
 
     public void setIntakeSpeed(double speed) {
@@ -72,5 +83,7 @@ public class EndEffectorIntake extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
+        SmartDashboard.putBoolean("Wrist extended", extended);
+
     }
 }
