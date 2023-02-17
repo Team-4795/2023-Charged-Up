@@ -265,6 +265,14 @@ public class DriveSubsystem extends SubsystemBase {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
+  public double getElevationAngle(){
+    return m_gyro.getPitch();
+  }
+
+  public double getElevationVelocity(){
+    return m_gyro.getRawGyroX();
+  }
+
   public void setBreakMode()
   {
     m_frontLeft.setBreakMode();

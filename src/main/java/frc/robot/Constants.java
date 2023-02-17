@@ -149,6 +149,15 @@ public final class Constants {
    public static final PIDController AutoYcontroller = new PIDController(0, 0, 0); // Y controller (usually the same values as X controller)
    public static final PIDController AutoRotationcontroller =  new PIDController(0, 0, 0); // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
   
+
+   public static final double polyCoeff = 1.5;
+   public static final double platformMaxAngle = 10;
+   public static final double balanceSpeed = 0.0684;
+   public static final double driveAngleThreshold = 8; //degrees
+   public static final double driveBalanceSpeed = 0.2;
+   public static final double angularVelocityErrorThreshold = 0.15;
+   public static final double checkDuration = 0.5;
+
    // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
