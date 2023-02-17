@@ -175,7 +175,8 @@ public final class Constants {
     public static final boolean kEnableReverseLimit = false;
     public static final double kForwardLimit = 65;
     public static final double kReverseLimit = 10;
-    
+    public static final double kLowWristLimit = 0.2;
+    public static final double kHighWristLimit = 0.8;
 
 
 

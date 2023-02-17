@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
@@ -75,11 +76,11 @@ public class RobotContainer {
 
                 m_intake.extended = m_intake.extendedTarget;
                 
-                if (m_arm.setpoint < 0.2) {
+                if (m_arm.setpoint < ArmConstants.kLowWristLimit) {
                     m_intake.extended = false;
                 }
 
-                if (m_arm.setpoint > 0.8) {
+                if (m_arm.setpoint > ArmConstants.kHighWristLimit) {
                     m_intake.extended = true;
                 }
 
