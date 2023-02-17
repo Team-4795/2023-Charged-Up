@@ -7,93 +7,24 @@ import frc.robot.Constants.DriveConstants;
 
 public class StateManager {
     // What state were in
-    State state;
+    private State state;
 
     // Either what were picking or what were holding
-    Gamepiece gamepiece;
+    private Gamepiece gamepiece;
 
     // If we are or are not storing a gamepiece
     // Temporary
-    boolean storing = false;
-
-    enum Gamepiece {
-        Cube,
-        Cone,
-        None,
-    }
+    private boolean storing = false;
 
     public enum LED {
         Cone,
         Cube,
     }
 
-    enum State {
-        LowPickup,
-        SingleFeeder,
-        DoubleFeeder,
-        LowScore,
-        MidScore,
-        HighScoreCube,
-        StowInFrame,
-        StowLow;
-
-        private Optional<Setpoints> getCubeSetpoints() {
-            Setpoints result = null;
-
-            switch (this) {
-                case LowPickup: result = new Setpoints(0.905, 0.0); break;
-                case SingleFeeder: break;
-                case DoubleFeeder: break;
-                case LowScore: result = new Setpoints(0.905, 0.0); break;
-                case MidScore: result = new Setpoints(0.74, 0.0); break;
-                case HighScoreCube: result = new Setpoints(.68, 0.0); break;
-                case StowInFrame: result = new Setpoints(0.16, 0.0); break;
-                case StowLow: result = new Setpoints(0.96, 0.0); break;
-            }
-
-            if (result != null) {
-                result.intake = DriveConstants.kSlowCubeIntakeSpeed;
-            }
-
-            return Optional.ofNullable(result);
-        }
-
-        private Optional<Setpoints> getConeSetpoints() {
-            Setpoints result = null;
-
-            switch (this) {
-                case LowPickup: result = new Setpoints(0.89, 0.0); break;
-                case SingleFeeder: break;
-                case DoubleFeeder: break;
-                case LowScore: result = new Setpoints(0.89, 0.0); break;
-                case MidScore: result = new Setpoints(0.7, 0.0); break;
-                case HighScoreCube: break;
-                case StowInFrame: result = new Setpoints(0.16, 0.0); break;
-                case StowLow: result = new Setpoints(0.96, 0.0); break;
-            }
-
-            if (result != null) {
-                result.intake = DriveConstants.kSlowConeIntakeSpeed;
-            }
-
-            return Optional.ofNullable(result);
-        }
-
-        public Optional<Setpoints> getSetpoints() {
-            switch (gamepiece) {
-                case Cube: return getCubeSetpoints();
-                case Cone: return getConeSetpoints();
-                case None: return Optional.empty();
-            }
-        }
-
-        public Optional<LED> getLED() {
-            switch (gamepiece) {
-                case Cube: return Optional.of(LED.Cube);
-                case Cone: return Optional.of(LED.Cone);
-                case None: return Optional.empty();
-            }
-        }
+    enum Gamepiece {
+        Cube,
+        Cone,
+        None,
     }
 
     public StateManager() {
@@ -146,15 +77,88 @@ public class StateManager {
     }
 
     public Optional<Double> getArmSetpoint() {
-        return this.state.get(this.gamepiece).map(setpoints -> setpoints.arm);
+        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.arm);
     }
 
     public Optional<Double> getIntakeSetpoint() {
-        return this.state.get(this.gamepiece).map(setpoints -> setpoints.intake);
+        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.intake);
     }
 
     public Optional<LED> getLED() {
         return this.state.getLED(this.gamepiece);
+    }
+
+    public State getState() {
+        return this.state;
+    }
+}
+
+enum State {
+    LowPickup,
+    SingleFeeder,
+    DoubleFeeder,
+    LowScore,
+    MidScore,
+    HighScoreCube,
+    StowInFrame,
+    StowLow;
+
+    private Optional<Setpoints> getCubeSetpoints() {
+        Setpoints result = null;
+
+        switch (this) {
+            case LowPickup: result = new Setpoints(0.905, 0.0); break;
+            case SingleFeeder: break;
+            case DoubleFeeder: break;
+            case LowScore: result = new Setpoints(0.905, 0.0); break;
+            case MidScore: result = new Setpoints(0.74, 0.0); break;
+            case HighScoreCube: result = new Setpoints(.68, 0.0); break;
+            case StowInFrame: result = new Setpoints(0.16, 0.0); break;
+            case StowLow: result = new Setpoints(0.96, 0.0); break;
+        }
+
+        if (result != null) {
+            result.intake = DriveConstants.kSlowCubeIntakeSpeed;
+        }
+
+        return Optional.ofNullable(result);
+    }
+
+    private Optional<Setpoints> getConeSetpoints() {
+        Setpoints result = null;
+
+        switch (this) {
+            case LowPickup: result = new Setpoints(0.89, 0.0); break;
+            case SingleFeeder: break;
+            case DoubleFeeder: break;
+            case LowScore: result = new Setpoints(0.89, 0.0); break;
+            case MidScore: result = new Setpoints(0.7, 0.0); break;
+            case HighScoreCube: break;
+            case StowInFrame: result = new Setpoints(0.16, 0.0); break;
+            case StowLow: result = new Setpoints(0.96, 0.0); break;
+        }
+
+        if (result != null) {
+            result.intake = DriveConstants.kSlowConeIntakeSpeed;
+        }
+
+        return Optional.ofNullable(result);
+    }
+
+    public Optional<Setpoints> getSetpoints(StateManager.Gamepiece gamepiece) {
+        switch (gamepiece) {
+            case Cube: return getCubeSetpoints();
+            case Cone: return getConeSetpoints();
+            default: return Optional.empty();
+        }
+    }
+
+    public Optional<StateManager.LED> getLED(StateManager.Gamepiece gamepiece) {
+        switch (gamepiece) {
+            case Cube: return Optional.of(StateManager.LED.Cube);
+            case Cone: return Optional.of(StateManager.LED.Cone);
+            default: return Optional.empty();
+        }
     }
 }
 
