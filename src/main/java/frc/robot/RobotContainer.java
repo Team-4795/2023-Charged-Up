@@ -121,10 +121,10 @@ public class RobotContainer {
                 double new_setpoint = m_arm.setpoint + change;
 
                 // Manual soft limits, probably should remove
-                if (new_setpoint < 0.14) {
-                    new_setpoint = 0.14;
-                } else if (new_setpoint > 0.98) {
-                    new_setpoint = 0.98;
+                if (new_setpoint < 0.12) {
+                    new_setpoint = 0.12;
+                } else if (new_setpoint > 0.97) {
+                    new_setpoint = 0.97;
                 }
 
                 // Set new arm setpoint and move to it
@@ -153,10 +153,10 @@ public class RobotContainer {
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 2);
 
     //face angle buttons
-    final JoystickButton forwardbutton = new JoystickButton(m_driverController, 1);
-    final JoystickButton lefttbutton = new JoystickButton(m_driverController, 2);
-    final JoystickButton rightbutton = new JoystickButton(m_driverController, 3);
-    final JoystickButton backbutton = new JoystickButton(m_driverController, 4);
+    final JoystickButton forwardbutton = new JoystickButton(m_driverController, 4);
+    final JoystickButton lefttbutton = new JoystickButton(m_driverController, 3);
+    final JoystickButton rightbutton = new JoystickButton(m_driverController, 2);
+    final JoystickButton backbutton = new JoystickButton(m_driverController, 1);
 
     //vision align button
     final POVButton TapeAlign = new POVButton(m_driverController, 90);
@@ -225,28 +225,10 @@ public class RobotContainer {
         m_intake));
 
     //face angle
-    forwardbutton.whileTrue(new FaceAngle(m_robotDrive, 
-    ()-> m_driverController.getRawAxis(0),
-    ()-> m_driverController.getRawAxis(1),
-    0));
-
-    lefttbutton.whileTrue(new FaceAngle(m_robotDrive, 
-    ()-> m_driverController.getRawAxis(0),
-    ()-> m_driverController.getRawAxis(1),
-    -90));
-
-    rightbutton.whileTrue(new FaceAngle(m_robotDrive, 
-    ()-> m_driverController.getRawAxis(0),
-    ()-> m_driverController.getRawAxis(1),
-    90));
-
-    backbutton.whileTrue(new FaceAngle(m_robotDrive, 
-    ()-> m_driverController.getRawAxis(0),
-    ()-> m_driverController.getRawAxis(1),
-    180));
+    
 
     //vision align
-    TapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, m_camera));
+    //TapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, m_camera));
 
   }
 
@@ -301,6 +283,6 @@ public class RobotContainer {
   private void setStates() {
     m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
     m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
-    // m_manager.getWristExtended().ifPresent(m_intake::setExtended);
+    m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }
 }

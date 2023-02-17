@@ -35,6 +35,7 @@ public class EndEffectorIntake extends SubsystemBase {
     public boolean extended = false;
 
     public EndEffectorIntake(){
+        intakeMotor.setInverted(true);
         
         intakeMotor.setIdleMode(IdleMode.kBrake);
 

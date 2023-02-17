@@ -109,5 +109,6 @@ public class LiftArm extends SubsystemBase {
     SmartDashboard.putNumber("Applied Speed", rightArmMotor.getAppliedOutput());
     SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
     SmartDashboard.putNumber("Arm setpoint", setpoint);
+    liftRelativeEncoder.setPosition(this.getPosition());
   }
 }

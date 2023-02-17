@@ -69,11 +69,11 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
 
-    public static final double kIntakeSpeed = 0.5;
-    public static final double kOuttakeSpeed = -0.5;
+    public static final double kIntakeSpeed = 1;
+    public static final double kOuttakeSpeed = -0.75;
 
-    public static final double kSlowCubeIntakeSpeed = 0.1;
-    public static final double kSlowConeIntakeSpeed = 0.25;
+    public static final double kSlowCubeIntakeSpeed = 0.5;
+    public static final double kSlowConeIntakeSpeed = 0.5;
   }
 
   public static final class ModuleConstants {
@@ -171,13 +171,13 @@ public final class Constants {
     public static final double kFF = 0;
     public static final double kMinOutput = -0.3;
     public static final double kMaxOutput = 0.3;
-    public static final double kRampRate = 0.5;
+    public static final double kRampRate = 0.1;
     public static final double kConversionFactor = 1;
     public static final int kCurrentLimit = 60;
     public static final double kGearing = 72;
     public static final boolean kEnableForwardLimit = false;
     public static final boolean kEnableReverseLimit = false;
-    public static final double kForwardLimit = 65;
+    public static final double kForwardLimit = 0.95;
     public static final double kReverseLimit = 10;
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;

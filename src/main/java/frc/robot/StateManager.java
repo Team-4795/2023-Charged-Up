@@ -1,6 +1,7 @@
 package frc.robot;
 import java.util.Optional;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.subsystems.LiftArm;
 import frc.robot.Constants.DriveConstants;
@@ -62,6 +63,8 @@ public class StateManager {
                 default: break;
             }
         }
+
+        SmartDashboard.putString("State", state.name());
     }
 
     public void toggleStoring() {
@@ -111,12 +114,12 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.905, false); break;
-            case SingleFeeder: new Setpoints(0.7, false); break;
-            case DoubleFeeder: new Setpoints(0.7, true); break;
-            case LowScore: result = new Setpoints(0.905, false); break;
-            case MidScore: result = new Setpoints(0.74, false); break;
-            case HighScoreCube: result = new Setpoints(.68, false); break;
+            case LowPickup: result = new Setpoints(0.93, false); break;
+            case SingleFeeder: result = new Setpoints(0.7, false); break;
+            case DoubleFeeder: result = new Setpoints(0.7, true); break;
+            case LowScore: result = new Setpoints(0.886, false); break;
+            case MidScore: result = new Setpoints(0.74, true); break;
+            case HighScoreCube: result = new Setpoints(.68, true); break;
             case StowInFrame: result = new Setpoints(0.16, false); break;
             case StowLow: result = new Setpoints(0.96, false); break;
         }
@@ -133,8 +136,8 @@ enum State {
 
         switch (this) {
             case LowPickup: result = new Setpoints(0.89, false); break;
-            case SingleFeeder: new Setpoints(0.65, false); break;
-            case DoubleFeeder: new Setpoints(0.65, true); break;
+            case SingleFeeder: result = new Setpoints(0.65, false); break;
+            case DoubleFeeder: result = new Setpoints(0.65, true); break;
             case LowScore: result = new Setpoints(0.89, false); break;
             case MidScore: result = new Setpoints(0.7, false); break;
             case HighScoreCube: break;
