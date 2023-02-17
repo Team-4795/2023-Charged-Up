@@ -26,10 +26,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 import java.util.List;
+import frc.robot.Commands.FaceAngle;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -52,7 +52,7 @@ public class RobotContainer {
   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+   */   
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
@@ -143,6 +143,12 @@ public class RobotContainer {
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 1);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 2);
 
+    //face angle buttons
+    final JoystickButton forwardbutton = new JoystickButton(m_driverController, 1);
+    final JoystickButton lefttbutton = new JoystickButton(m_driverController, 2);
+    final JoystickButton rightbutton = new JoystickButton(m_driverController, 3);
+    final JoystickButton backbutton = new JoystickButton(m_driverController, 4);
+
     // Intake triggers
     final Trigger reverseIntake = new Trigger(() -> m_driverController.getPOV() == 90);
     final Trigger intake = new Trigger(() -> m_driverController.getPOV() == 270);
@@ -204,6 +210,27 @@ public class RobotContainer {
     reverseIntake.whileTrue(new RunCommand(
         () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
         m_intake));
+
+    //face angle
+    forwardbutton.whileTrue(new FaceAngle(m_robotDrive, 
+    ()-> m_driverController.getRawAxis(0),
+    ()-> m_driverController.getRawAxis(1),
+    0));
+
+    lefttbutton.whileTrue(new FaceAngle(m_robotDrive, 
+    ()-> m_driverController.getRawAxis(0),
+    ()-> m_driverController.getRawAxis(1),
+    -90));
+
+    rightbutton.whileTrue(new FaceAngle(m_robotDrive, 
+    ()-> m_driverController.getRawAxis(0),
+    ()-> m_driverController.getRawAxis(1),
+    90));
+
+    backbutton.whileTrue(new FaceAngle(m_robotDrive, 
+    ()-> m_driverController.getRawAxis(0),
+    ()-> m_driverController.getRawAxis(1),
+    180));
 
   }
 
