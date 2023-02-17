@@ -114,12 +114,12 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.93, false); break;
+            case LowPickup: result = new Setpoints(0.933, false); break;
             case SingleFeeder: result = new Setpoints(0.7, false); break;
             case DoubleFeeder: result = new Setpoints(0.7, true); break;
-            case LowScore: result = new Setpoints(0.886, false); break;
-            case MidScore: result = new Setpoints(0.74, true); break;
-            case HighScoreCube: result = new Setpoints(.68, true); break;
+            case LowScore: result = new Setpoints(0.91, false); break;
+            case MidScore: result = new Setpoints(0.7, true); break;
+            case HighScoreCube: result = new Setpoints(.74, true); break;//extended wrist
             case StowInFrame: result = new Setpoints(0.16, false); break;
             case StowLow: result = new Setpoints(0.96, false); break;
         }
@@ -135,10 +135,10 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.89, false); break;
+            case LowPickup: result = new Setpoints(0.955, false); break;
             case SingleFeeder: result = new Setpoints(0.65, false); break;
             case DoubleFeeder: result = new Setpoints(0.65, true); break;
-            case LowScore: result = new Setpoints(0.89, false); break;
+            case LowScore: result = new Setpoints(0.87, false); break;//not really tested
             case MidScore: result = new Setpoints(0.7, false); break;
             case HighScoreCube: break;
             case StowInFrame: result = new Setpoints(0.16, false); break;
