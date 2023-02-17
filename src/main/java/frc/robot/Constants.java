@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -143,7 +144,12 @@ public final class Constants {
 
     public static final HashMap<String, Command> AutoEventMap = new HashMap<>();
 
-    // Constraint for the motion profiled robot angle controller
+
+   public static final PIDController AutoXcontroller = new PIDController(0, 0, 0); // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+   public static final PIDController AutoYcontroller = new PIDController(0, 0, 0); // Y controller (usually the same values as X controller)
+   public static final PIDController AutoRotationcontroller =  new PIDController(0, 0, 0); // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+  
+   // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }

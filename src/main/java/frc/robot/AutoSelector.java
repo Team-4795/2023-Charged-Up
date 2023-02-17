@@ -41,8 +41,8 @@ import frc.robot.Constants.OIConstants;
 
 public class AutoSelector {
     
+
   private final SendableChooser<Command> chooser = new SendableChooser<>();
-  Timer time = new Timer();
 
   //All Path Planner paths
 
@@ -56,30 +56,13 @@ public class AutoSelector {
   //2 Game piece Auto
   //PathPlannerTrajectory TwoGamePiece = PathPlanner.loadPath("2 Game Piece", new PathConstraints(4, 3));
 
-  //Manually constructed path S shape
-  Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-    // Start at the origin facing the +X direction
-    new Pose2d(0, 0, new Rotation2d(0)),
-    // Pass through these two interior waypoints, making an 's' curve path
-    List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-    // End 3 meters straight ahead of where we started, facing forward
-    new Pose2d(3, 0, new Rotation2d(0)),
-    new TrajectoryConfig(
-    AutoConstants.kMaxSpeedMetersPerSecond,
-    AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-    // Add kinematics to ensure max speed is actually obeyed
-    .setKinematics(DriveConstants.kDriveKinematics));
-
-
-
-
-
 
   //Define Auto Selector
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field ,  StateManager m_manager) {
 
    
 
+   
     //Define first path option as S path
     chooser.setDefaultOption("SPath", new SequentialCommandGroup(
 
@@ -95,9 +78,9 @@ public class AutoSelector {
          SPath,
           drivebase::getPose, // Pose supplier
         DriveConstants.kDriveKinematics, // SwerveDriveKinematics 
-          new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-          new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-          new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+        AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+        AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+        AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
           drivebase::setModuleStates, // Module states consumer
           true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
           drivebase // Requires this drive subsystem
@@ -124,9 +107,9 @@ public class AutoSelector {
         HolonomicDemo,
           drivebase::getPose, // Pose supplier
         DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-          new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-          new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-          new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+        AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+        AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+        AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
           drivebase::setModuleStates, // Module states consumer
           true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
           drivebase // Requires this drive subsystem
@@ -137,193 +120,6 @@ public class AutoSelector {
       })
                   
       ));
-
-      //Create Hashmap for 1 game peice 
-
-      final HashMap<String, Command> AutoEventMap1 = new HashMap<>();
-      //Add commands to events through the hash map
-      
-      AutoEventMap1.put("Score", new SequentialCommandGroup(
-        
-      new RunCommand(m_manager::button1),
-      new InstantCommand(()->{
-        time.start();
-        while(time.get()< 2)
-        {
-        new RunCommand(
-        
-        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
-        m_intake);}
-          time.stop();
-          time.reset();
-      }
-      
-      )));//Low score cone
-
-      AutoEventMap1.put("Intake", new SequentialCommandGroup(
-        new RunCommand(m_manager::button1),
-      new InstantCommand(()->{
-        time.start();
-        while(time.get()< 2)
-        {
-        new RunCommand(
-        
-        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
-        m_intake);}
-          time.stop();
-          time.reset();
-      }
-      )));//Low Intake cone
-
-      AutoEventMap1.put("Score2",new SequentialCommandGroup(
-
-      new RunCommand(m_manager::button2),
-      new InstantCommand(()->{
-        time.start();
-        while(time.get()< 2)
-        {
-        new RunCommand(
-        
-        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
-        m_intake);}
-          time.stop();
-          time.reset();
-      }
-      )));//Mid score cone
-      
-      //It should split the OnePath into multiple individually paths based on the stop points/events? defined in pathplanner
-      //Shouldn't need a cast IDK why it doesn't work
-     List<PathPlannerTrajectory> OnePathGroup =  PathPlanner.loadPathGroup("1 Game Piece", new PathConstraints(4, 3));
-     
-     
-     
-          //Made the path and events into one command
-
-      Command OnePiecePath =
-          new SequentialCommandGroup( 
-            new InstantCommand(() -> {
-              // Reset odometry for the first path you run during auto
-              drivebase.resetOdometry(OnePathGroup.get(0).getInitialHolonomicPose()); //May need to rethink this so it faces the right direction
-            }),
-            new FollowPathWithEvents(
-              new PPSwerveControllerCommand(
-                
-              OnePathGroup.get(0),
-          drivebase::getPose, // Pose supplier
-        DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-          new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-          new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-          new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-          drivebase::setModuleStates, // Module states consumer
-          true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-          drivebase // Requires this drive subsystem
-              ),
-              OnePathGroup.get(0).getMarkers(),
-              AutoEventMap1),
-         // new InstantCommand(drivebase::enableXstance, drivebase),
-          //new WaitCommand(5),
-         // new InstantCommand(drivebase::disableXstance, drivebase),
-              new FollowPathWithEvents(new PPSwerveControllerCommand(
-                OnePathGroup.get(1),
-          drivebase::getPose, // Pose supplier
-        DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-          new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-          new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-          new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-          drivebase::setModuleStates, // Module states consumer
-          true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-          drivebase // Requires this drive subsystem
-              ),
-              OnePathGroup.get(1).getMarkers(),
-           AutoEventMap1),
-           new InstantCommand(() -> {
-            //Put the trajectory in glass
-            m_field.getObject("traj").setTrajectory(PathPlanner.loadPath("1 Game Piece", new PathConstraints(4, 3))); 
-          }));
-
-          
-      
-      //Add One game piece auto with events 
-      chooser.addOption("1 Game Piece events", OnePiecePath);
-
-
-
-  //no event 2 game piece 
-  List<PathPlannerTrajectory> OnePathGroupNoEvent =  PathPlanner.loadPathGroup("1 Game Piece", new PathConstraints(4, 3));
-    
-  final HashMap<String, Command> AutoEventMap1NoEvent = new HashMap<>();   
-     
-      //Made the path and events into one command
-
-  Command OnePiecePathNoEvents =
-      new SequentialCommandGroup( 
-        new InstantCommand(() -> {
-          // Reset odometry for the first path you run during auto
-          drivebase.resetOdometry(OnePathGroup.get(0).getInitialHolonomicPose()); //May need to rethink this so it faces the right direction
-        }),
-        new FollowPathWithEvents(
-          new PPSwerveControllerCommand(
-            
-          OnePathGroup.get(0),
-      drivebase::getPose, // Pose supplier
-    DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-      new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-      new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-      new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-      drivebase::setModuleStates, // Module states consumer
-      true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-      drivebase // Requires this drive subsystem
-          ),
-          OnePathGroupNoEvent.get(0).getMarkers(),
-          AutoEventMap1NoEvent),
-     // new InstantCommand(drivebase::enableXstance, drivebase),
-      //new WaitCommand(5),
-     // new InstantCommand(drivebase::disableXstance, drivebase),
-          new FollowPathWithEvents(new PPSwerveControllerCommand(
-            OnePathGroupNoEvent.get(1),
-      drivebase::getPose, // Pose supplier
-    DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-      new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-      new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-      new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-      drivebase::setModuleStates, // Module states consumer
-      true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-      drivebase // Requires this drive subsystem
-          ),
-          OnePathGroupNoEvent.get(1).getMarkers(),
-          AutoEventMap1NoEvent),
-       new InstantCommand(() -> {
-        //Put the trajectory in glass
-        m_field.getObject("traj").setTrajectory(PathPlanner.loadPath("1 Game Piece", new PathConstraints(4, 3))); 
-      }));
-
-      
-  
-  //Add One game piece auto with no events 
-  chooser.addOption("1 Game Piece", OnePiecePathNoEvents);
-
-      //Add another option which is the manually made S path
-    chooser.addOption("Manual SPath", new InstantCommand(()->{
-        new SwerveControllerCommand(
-            
-    exampleTrajectory,
-    drivebase::getPose, // Functional interface to feed supplier
-    DriveConstants.kDriveKinematics,
-
-    // Position controllers
-    new PIDController(AutoConstants.kPXController, 0, 0),
-    new PIDController(AutoConstants.kPYController, 0, 0),
-    new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
-    drivebase::setModuleStates,
-    drivebase);
-
-    drivebase.resetOdometry(exampleTrajectory.getInitialPose());
-    m_field.getObject("traj").setTrajectory(exampleTrajectory); 
-
-    })
-    
-    );
 
     
     SmartDashboard.putData("Auto Selector", chooser);
