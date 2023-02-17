@@ -5,12 +5,12 @@
 package frc.robot.Commands;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
+//import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.math.geometry.Rotation2d;
+//import edu.wpi.first.networktables.NetworkTableInstance;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -56,21 +56,18 @@ public class TapeAlign extends CommandBase {
     var result = camera.getLatestResult();
     var robotPose2d = driveSubsystem.getPose();
 
+    double currentHeading = driveSubsystem.getvisionheading();
+    double rotation = rotationPID.calculate(currentHeading,180);
+    x_speed = controller.calculate(vision.getTargetAngle(), 0);
+    driveSubsystem.drive(x_speed,0, rotation,true, 
+    true);
+
     if (vision.getTargetAngle() < 2) {
       interrupted = true;
     }
-
-    if (1==1) {
-      double currentHeading = driveSubsystem.getvisionheading();
-      double rotation = rotationPID.calculate(currentHeading,180);
-      x_speed = controller.calculate(vision.getTargetAngle(), 0);
-      driveSubsystem.drive(x_speed,0, rotation,true, 
-      true);
-      //driveSubsystem.drive(-x_speed, 0, 0,true, true);
-    } else {
-      driveSubsystem.drive(0,0,0,true, true);
+ 
     }
-  }
+  
   @Override
   public void end(boolean interrupted) {  }
   // Returns true when the command should end.
