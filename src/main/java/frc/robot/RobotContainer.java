@@ -21,14 +21,19 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.List;
 import frc.robot.Commands.FaceAngle;
+import frc.robot.Commands.TapeAlign;
+import org.photonvision.PhotonCamera;
+import frc.robot.Constants.VisionConstants;
 
 
 /*
@@ -42,6 +47,10 @@ public class RobotContainer {
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final EndEffectorIntake m_intake = new EndEffectorIntake();;
   private final LiftArm m_arm = new LiftArm();
+  private final Vision m_Vision = new Vision();
+  private final PhotonCamera m_camera = new PhotonCamera(VisionConstants.SnakeEyesCamera);
+
+
 
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
@@ -149,6 +158,10 @@ public class RobotContainer {
     final JoystickButton rightbutton = new JoystickButton(m_driverController, 3);
     final JoystickButton backbutton = new JoystickButton(m_driverController, 4);
 
+    //vision align button
+    final POVButton TapeAlign = new POVButton(m_driverController, 90);
+
+
     // Intake triggers
     final Trigger reverseIntake = new Trigger(() -> m_driverController.getPOV() == 90);
     final Trigger intake = new Trigger(() -> m_driverController.getPOV() == 270);
@@ -231,6 +244,9 @@ public class RobotContainer {
     ()-> m_driverController.getRawAxis(0),
     ()-> m_driverController.getRawAxis(1),
     180));
+
+    //vision align
+    TapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, m_camera));
 
   }
 

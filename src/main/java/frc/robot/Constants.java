@@ -7,6 +7,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -49,7 +53,7 @@ public final class Constants {
 
     //Chassis Angular Offset
 
-    public static final double kChassisAngularOffset = -90;
+    public static final double kChassisAngularOffset = -270;
 
 
     // SPARK MAX CAN IDs
@@ -178,4 +182,18 @@ public final class Constants {
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;
   }
+  public static class VisionConstants {
+    public static final String SnakeEyesCamera = "OV5647";
+    public static final double CameraHeight = 21;
+    public static final double TargetHeight = 0;
+    public static final double cameraPitchRadians = -5;
+
+    /**
+     * Physical location of the camera on the robot, relative to the center of the robot.
+     */
+    public static final Transform3d CAMERA_TO_ROBOT =
+        new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
+    public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+  }
+
 }

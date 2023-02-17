@@ -250,6 +250,10 @@ public class DriveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset);
   }
 
+  public double getvisionheading(){
+    return -m_gyro.getYaw();
+  }
+
   public double[] getModuleStates(){
     double[] swerveStates = new double[8];
     swerveStates[0] = m_frontLeft.getState().angle.getDegrees();
