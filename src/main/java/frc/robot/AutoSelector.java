@@ -59,12 +59,12 @@ public class AutoSelector {
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager) {
 
-    // Define first path option as S path
-    chooser.setDefaultOption("SPath", new SequentialCommandGroup(
+    // Define first path option as Holonomic Demo
+    chooser.setDefaultOption("Holonomic Demo", new SequentialCommandGroup(
 
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
-          drivebase.resetOdometry(SPath.getInitialHolonomicPose());
+          drivebase.resetOdometry(HolonomicDemo.getInitialHolonomicPose());
         }),
         new InstantCommand(() -> {
           // Put it in break mode
@@ -73,11 +73,11 @@ public class AutoSelector {
         
         new InstantCommand(() -> {
           // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(SPath);
+          m_field.getObject("traj").setTrajectory(HolonomicDemo);
         }),
 
         new PPSwerveControllerCommand(
-            SPath,
+            HolonomicDemo,
             drivebase::getPose, // Pose supplier
             DriveConstants.kDriveKinematics, // SwerveDriveKinematics
             AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
@@ -96,12 +96,12 @@ public class AutoSelector {
         })
     ));
 
-    // Define another path option as Holonomic Demo path
-    chooser.addOption("Holonomic Demo", new SequentialCommandGroup(
+    // Define another path option as S path
+    chooser.addOption("S Path", new SequentialCommandGroup(
 
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
-          drivebase.resetOdometry(HolonomicDemo.getInitialHolonomicPose()); // May need to rethink this so it faces the
+          drivebase.resetOdometry(SPath.getInitialHolonomicPose()); // May need to rethink this so it faces the
                                                                             // right direction
         }),
         new InstantCommand(() -> {
@@ -110,10 +110,10 @@ public class AutoSelector {
         }),
         new InstantCommand(() -> {
           // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(HolonomicDemo);
+          m_field.getObject("traj").setTrajectory(SPath);
         }),
         new PPSwerveControllerCommand(
-            HolonomicDemo,
+            SPath,
             drivebase::getPose, // Pose supplier
             DriveConstants.kDriveKinematics, // SwerveDriveKinematics
             AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
