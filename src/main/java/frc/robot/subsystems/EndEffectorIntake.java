@@ -84,5 +84,6 @@ public class EndEffectorIntake extends SubsystemBase {
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putBoolean("Wrist extended target", extendedTarget);
         SmartDashboard.putBoolean("Wrist extended", extended);
+        SmartDashboard.putBoolean("HiLetGoing?", isHiLetGoing());
     }
 }
