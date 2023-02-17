@@ -70,7 +70,25 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
         new RunCommand(
-            () -> m_intake.intakeAutomatic(),
+            () -> {
+                m_intake.intakeAutomatic();
+
+                m_intake.extended = m_intake.extendedTarget;
+                
+                if (m_arm.setpoint < 0.2) {
+                    m_intake.extended = false;
+                }
+
+                if (m_arm.setpoint > 0.8) {
+                    m_intake.extended = true;
+                }
+
+                if (m_intake.extended) {
+                    m_intake.extend();
+                } else {
+                    m_intake.retract();
+                }
+            },
             m_intake
         )
     
@@ -164,11 +182,11 @@ public class RobotContainer {
     isNotStoring.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
 
     extend.onTrue(new InstantCommand(
-        () -> m_intake.extend(),
+        () -> m_intake.setExtendedTarget(true),
         m_intake));
 
     retract.onTrue(new InstantCommand(
-        () -> m_intake.retract(),
+        () -> m_intake.setExtendedTarget(false),
         m_intake));
 
     setxbutton.whileTrue(new RunCommand(

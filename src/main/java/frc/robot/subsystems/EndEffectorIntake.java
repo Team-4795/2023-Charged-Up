@@ -31,7 +31,8 @@ public class EndEffectorIntake extends SubsystemBase {
     public double intakeSpeed = 0.25;
     public double requestedSpeed = 0.25;
 
-    boolean extended = false;
+    public boolean extendedTarget = false;
+    public boolean extended = false;
 
     public EndEffectorIntake(){
         
@@ -42,12 +43,10 @@ public class EndEffectorIntake extends SubsystemBase {
     }
 
     public void extend() {
-        extended = true;
         solenoid.set(Value.kForward);
     }
 
     public void retract() {
-        extended = false;
         solenoid.set(Value.kReverse);
     }
 
@@ -56,12 +55,8 @@ public class EndEffectorIntake extends SubsystemBase {
 
     }
 
-    public void setExtended(boolean extend) {
-        if (extend) {
-            extend();
-        } else {
-            retract();
-        }
+    public void setExtendedTarget(boolean extend) {
+        this.extendedTarget = extend;
     }
 
     public void setIntakeSpeed(double speed) {
@@ -83,7 +78,7 @@ public class EndEffectorIntake extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
+        SmartDashboard.putBoolean("Wrist extended target", extendedTarget);
         SmartDashboard.putBoolean("Wrist extended", extended);
-
     }
 }
