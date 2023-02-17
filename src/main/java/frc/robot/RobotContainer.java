@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
@@ -72,7 +73,9 @@ public class RobotContainer {
             () -> m_intake.intakeAutomatic(),
             m_intake
         )
+    
     );
+
 
     // Axis 2 = to battery, axis 3 = away
     // Subtract up movement by down movement so they cancell out if both are pressed at once
@@ -140,6 +143,10 @@ public class RobotContainer {
     final Trigger povDown = new Trigger(() -> m_operatorController.getPOV() == 180);
     final Trigger povRight = new Trigger(() -> m_operatorController.getPOV() == 90);
 
+    // X, Y
+    final JoystickButton extend = new JoystickButton(m_driverController, 3);
+    final JoystickButton retract = new JoystickButton(m_driverController, 4);
+
     // left, right bumper
     final JoystickButton isStoring = new JoystickButton(m_driverController, 6);
     final JoystickButton isNotStoring = new JoystickButton(m_driverController, 5);
@@ -155,6 +162,14 @@ public class RobotContainer {
 
     isStoring.onTrue(new InstantCommand(m_manager::setStoring, m_arm));
     isNotStoring.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
+
+    extend.onTrue(new InstantCommand(
+        () -> m_intake.extend(),
+        m_intake));
+
+    retract.onTrue(new InstantCommand(
+        () -> m_intake.retract(),
+        m_intake));
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),

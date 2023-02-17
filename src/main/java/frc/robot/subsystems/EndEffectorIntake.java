@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
@@ -19,13 +20,12 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-//import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.DriveConstants;
 
 public class EndEffectorIntake extends SubsystemBase {
-    private DoubleSolenoid solenoid;
-    private Compressor compressor;
+    private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     private final CANSparkMax intakeMotor = new CANSparkMax(24, MotorType.kBrushed);
-    //public  solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
+    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
     private final PneumaticHub m_ph = new PneumaticHub(1);
 
     public double intakeSpeed = 0.25;
@@ -36,18 +36,21 @@ public class EndEffectorIntake extends SubsystemBase {
         intakeMotor.setIdleMode(IdleMode.kBrake);
 
         intakeMotor.setSmartCurrentLimit(40);
+        compressor.enableAnalog(90, 120);
     }
 
     public void extend() {
-       solenoid.set(DoubleSolenoid.Value.kForward);
+       solenoid.set(Value.kForward);
     }
 
     public void retract() {
-        solenoid.set(DoubleSolenoid.Value.kReverse);
+        solenoid.set(Value.kReverse);
+
     }
 
     public void stop() {
         //solenoid.set(DoubleSolenoid.Value.kOff);
+
     }
 
     public void setIntakeSpeed(double speed) {
