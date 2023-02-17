@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.DoubleArrayEntry;
+//import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;

@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 //motor imports
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
+//import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -17,12 +17,16 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+//Sensor imports
+import frc.robot.Sensors.HiLetGo;
+
 
 public class EndEffectorIntake extends SubsystemBase {
     private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     private final CANSparkMax intakeMotor = new CANSparkMax(24, MotorType.kBrushed);
     private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
     private final PneumaticHub m_ph = new PneumaticHub(1);
+    private final HiLetGo hiLetGo = new HiLetGo(0);
 
     public double intakeSpeed = 0.25;
     public double requestedSpeed = 0.25;
@@ -68,6 +72,10 @@ public class EndEffectorIntake extends SubsystemBase {
     public void intake(double speed) {
         this.requestedSpeed = speed;
         intakeMotor.set(speed);
+    }
+
+    public boolean isHiLetGoing(){
+        return hiLetGo.isBroken();
     }
 
     @Override

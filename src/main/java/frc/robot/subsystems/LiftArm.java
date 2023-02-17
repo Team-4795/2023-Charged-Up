@@ -9,7 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-import frc.robot.Constants;
+//import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 
 public class LiftArm extends SubsystemBase {
