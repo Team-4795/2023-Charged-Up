@@ -153,11 +153,10 @@ public class AutoSelector {
           drivebase.setBreakMode();
         }),
         // move arm to mid cone
-        new RunCommand(m_manager::setStoring),
         new RunCommand(m_manager::pickCone),
         new RunCommand(() -> m_manager.handleDpad(270)),
         // run outake for 1 second
-        new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
+        new RunCommand(() -> m_intake.intake(DriveConstants.kCubeOuttakeSpeed), m_intake).withTimeout(1),
 
         new PPSwerveControllerCommand(
             TwoGamePiece1,
@@ -178,12 +177,11 @@ public class AutoSelector {
           m_field.getObject("traj").setTrajectory(TwoGamePiece1);
         }),
 
-        // move arm to itake cone
-        new RunCommand(m_manager::setNotStoring),
+        // move arm to intake cone
         new RunCommand(m_manager::pickCone),
         new RunCommand(() -> m_manager.handleDpad(180)),
         // run outake for 1 second
-        new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
+        new RunCommand(() -> m_intake.intake(DriveConstants.kConeOuttakeSpeed), m_intake).withTimeout(1),
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
           drivebase.resetOdometry(TwoGamePiece2.getInitialHolonomicPose()); // May need to rethink this so it faces the
@@ -209,11 +207,10 @@ public class AutoSelector {
           m_field.getObject("traj").setTrajectory(TwoGamePiece2);
         }),
         // move arm to mid cone
-        new RunCommand(m_manager::setStoring),
         new RunCommand(m_manager::pickCone),
         new RunCommand(() -> m_manager.handleDpad(270)),
         // run outake for 1 second
-        new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1)
+        new RunCommand(() -> m_intake.intake(DriveConstants.kConeOuttakeSpeed), m_intake).withTimeout(1)
 
     ));
 
@@ -228,11 +225,10 @@ public class AutoSelector {
         drivebase.setBreakMode();
       }),
       // move arm to mid cone
-      new RunCommand(m_manager::setStoring),
       new RunCommand(m_manager::pickCone),
       new RunCommand(() -> m_manager.handleDpad(270)),
       // run outake for 1 second
-      new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
+      new RunCommand(() -> m_intake.intake(DriveConstants.kConeOuttakeSpeed), m_intake).withTimeout(1),
 
       new PPSwerveControllerCommand(
           preload_01,
@@ -253,12 +249,11 @@ public class AutoSelector {
         m_field.getObject("traj").setTrajectory(preload_01);
       }),
 
-      // move arm to itake cone
-      new RunCommand(m_manager::setNotStoring),
+      // move arm to intake cone
       new RunCommand(m_manager::pickCone),
       new RunCommand(() -> m_manager.handleDpad(180)),
       // run outake for 1 second
-      new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
+      new RunCommand(() -> m_intake.intake(DriveConstants.kConeOuttakeSpeed), m_intake).withTimeout(1),
       new InstantCommand(() -> {
         // Reset odometry for the first path you run during auto
         drivebase.resetOdometry(balance_10.getInitialHolonomicPose()); // May need to rethink this so it faces the

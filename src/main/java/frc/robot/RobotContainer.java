@@ -71,7 +71,7 @@ public class RobotContainer {
    */   
   public RobotContainer() {
     // Configure the button bindings
-    autoSelector = new AutoSelector(m_robotDrive,m_intake,m_arm,m_field,m_manager);
+    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_field, m_manager);
 
     configureButtonBindings();
 
@@ -162,10 +162,10 @@ public class RobotContainer {
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 2);
 
     //face angle buttons
-    final JoystickButton forwardbutton = new JoystickButton(m_driverController, 4);
+    /*final JoystickButton forwardbutton = new JoystickButton(m_driverController, 4);
     final JoystickButton lefttbutton = new JoystickButton(m_driverController, 3);
     final JoystickButton rightbutton = new JoystickButton(m_driverController, 2);
-    final JoystickButton backbutton = new JoystickButton(m_driverController, 1);
+    final JoystickButton backbutton = new JoystickButton(m_driverController, 1);*/
 
     //vision align button
     final POVButton TapeAlign = new POVButton(m_driverController, 90);
@@ -203,12 +203,6 @@ public class RobotContainer {
     // X, Y
     final JoystickButton extend = new JoystickButton(m_driverController, 3);
     final JoystickButton retract = new JoystickButton(m_driverController, 4);
-    
-    final JoystickButton test = new JoystickButton(m_operatorController, 3);
-
-    // left, right bumper
-    final JoystickButton isStoring = new JoystickButton(m_driverController, 6);
-    final JoystickButton isNotStoring = new JoystickButton(m_driverController, 5);
 
     pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
