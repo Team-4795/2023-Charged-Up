@@ -64,6 +64,7 @@ public class TapeAlign extends CommandBase {
 
     if (vision.getTargetAngle() < 2) {
       interrupted = true;
+      
     }
  
     }
