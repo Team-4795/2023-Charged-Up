@@ -57,7 +57,7 @@ public class Vision extends SubsystemBase{
       double y;
       double x;
       
-      //float tv = table.GetNumber("tv");
+      float tv = tv_value.getFloat();
       
     @Override
     public void periodic() {
