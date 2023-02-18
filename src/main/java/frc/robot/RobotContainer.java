@@ -64,7 +64,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager();
+  StateManager m_manager = new StateManager(m_intake::isHiLetGoing);
   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -173,9 +173,19 @@ public class RobotContainer {
 
     // Intake triggers
     final Trigger reverseIntake = new Trigger(() -> m_driverController.getPOV() == 90);
-    final Trigger intake = new Trigger(() -> m_driverController.getPOV() == 270);
     // final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
     // final JoystickButton intake = new JoystickButton(m_driverController, 7);
+
+
+    final Trigger areStoring = new Trigger(() -> m_intake.isHiLetGoing());
+    final Trigger areNotStoring = new Trigger(() -> !m_intake.isHiLetGoing());
+
+    areStoring.onTrue(new SequentialCommandGroup(
+        new WaitCommand(1),
+        new InstantCommand(() -> m_intake.setIntakeSpeed(0.1))
+    ));
+    areNotStoring.onTrue(new InstantCommand(() -> m_intake.setIntakeSpeedFromGamepiece(m_manager.gamepiece)));
+
 
     // Keybinds:
     // https://docs.google.com/document/d/170FNOZ3DKwVowGESMP2AQLjpuYHfxeh4vl-hTgFNpbM/edit?usp=sharing
@@ -193,7 +203,7 @@ public class RobotContainer {
     // X, Y
     final JoystickButton extend = new JoystickButton(m_driverController, 3);
     final JoystickButton retract = new JoystickButton(m_driverController, 4);
-
+    
     final JoystickButton test = new JoystickButton(m_operatorController, 3);
 
     // left, right bumper
@@ -209,9 +219,6 @@ public class RobotContainer {
     povDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
     povRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
 
-    isStoring.onTrue(new InstantCommand(m_manager::setStoring, m_arm));
-    isNotStoring.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
-
     extend.onTrue(new InstantCommand(
         () -> m_intake.setExtendedTarget(true),
         m_intake));
@@ -225,16 +232,9 @@ public class RobotContainer {
         m_robotDrive));
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
-
-    //Intake
-    intake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
-        m_intake));
-
-    test.onTrue(new RunCommand(() -> m_intake.intake(0.2), m_intake).withTimeout(1));
     
     reverseIntake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
+        () -> m_intake.outtakeFromGamepiece(m_manager.gamepiece),
         m_intake));
 
     //face angle
@@ -259,7 +259,6 @@ public class RobotContainer {
 
   private void setStates() {
     m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
-    m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
     m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }
 }
