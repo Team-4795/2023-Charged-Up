@@ -26,8 +26,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import java.lang.annotation.Target;
 
 
-
-
 public class Align extends CommandBase {
 
   private final DriveSubsystem driveSubsystem;

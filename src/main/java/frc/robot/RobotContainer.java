@@ -38,7 +38,6 @@ import frc.robot.subsystems.StateManager;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
-
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}

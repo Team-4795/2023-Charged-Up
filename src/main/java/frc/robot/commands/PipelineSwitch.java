@@ -12,17 +12,21 @@ import frc.robot.commands.Align;
 import frc.robot.commands.TapeAlign;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.PhotonCamera;
+import frc.robot.Constants;
+import org.photonvision.common.hardware.VisionLEDMode;
 
 public class PipelineSwitch extends CommandBase {
   private final PhotonCamera camera;
   private final Vision vision;
 
-  public void SwitchToAlign(int index) {
+  public void SwitchToAlign() {
     camera.setPipelineIndex(1);
+    disableLED(VisionLEDMode.kOff);
   }
 
-  public void SwitchToTape(int index) {
+  public void SwitchToTape() {
     camera.setPipelineIndex(0);
+    enableLED(VisionLEDMode.kOn);
   }
   
   /** Creates a new PipelineSwitch. */
