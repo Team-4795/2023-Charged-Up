@@ -25,7 +25,9 @@ import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -57,7 +59,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager();
+  StateManager m_manager = new StateManager(m_intake::isHiLetGoing);
   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -164,9 +166,19 @@ public class RobotContainer {
 
     // Intake triggers
     final Trigger reverseIntake = new Trigger(() -> m_driverController.getPOV() == 90);
-    final Trigger intake = new Trigger(() -> m_driverController.getPOV() == 270);
     // final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
     // final JoystickButton intake = new JoystickButton(m_driverController, 7);
+
+
+    final Trigger areStoring = new Trigger(() -> m_intake.isHiLetGoing());
+    final Trigger areNotStoring = new Trigger(() -> !m_intake.isHiLetGoing());
+
+    areStoring.onTrue(new SequentialCommandGroup(
+        new WaitCommand(1),
+        new InstantCommand(() -> m_intake.setIntakeSpeed(0.1))
+    ));
+    areNotStoring.onTrue(new InstantCommand(() -> m_intake.setIntakeSpeedFromGamepiece(m_manager.gamepiece)));
+
 
     // Keybinds:
     // https://docs.google.com/document/d/170FNOZ3DKwVowGESMP2AQLjpuYHfxeh4vl-hTgFNpbM/edit?usp=sharing
@@ -185,10 +197,6 @@ public class RobotContainer {
     final JoystickButton extend = new JoystickButton(m_driverController, 3);
     final JoystickButton retract = new JoystickButton(m_driverController, 4);
 
-    // left, right bumper
-    final JoystickButton isStoring = new JoystickButton(m_driverController, 6);
-    final JoystickButton isNotStoring = new JoystickButton(m_driverController, 5);
-
     pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
 
@@ -197,9 +205,6 @@ public class RobotContainer {
     povLeft.onTrue(new InstantCommand(() -> {m_manager.handleDpad(270); setStates();}, m_arm));
     povDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
     povRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
-
-    isStoring.onTrue(new InstantCommand(m_manager::setStoring, m_arm));
-    isNotStoring.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
 
     extend.onTrue(new InstantCommand(
         () -> m_intake.setExtendedTarget(true),
@@ -214,14 +219,9 @@ public class RobotContainer {
         m_robotDrive));
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
-
-    //Intake
-    intake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
-        m_intake));
     
     reverseIntake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
+        () -> m_intake.outtakeFromGamepiece(m_manager.gamepiece),
         m_intake));
 
     //face angle
@@ -282,7 +282,6 @@ public class RobotContainer {
 
   private void setStates() {
     m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
-    m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
     m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }
 }

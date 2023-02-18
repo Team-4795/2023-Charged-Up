@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 //robot imports
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.Constants.DriveConstants;
 //Sensor imports
 import frc.robot.Sensors.HiLetGo;
 
@@ -73,6 +73,22 @@ public class EndEffectorIntake extends SubsystemBase {
     public void intake(double speed) {
         this.requestedSpeed = speed;
         intakeMotor.set(speed);
+    }
+
+    public void setIntakeSpeedFromGamepiece(frc.robot.StateManager.Gamepiece gamepiece) {
+        switch (gamepiece) {
+            case Cube: setIntakeSpeed(DriveConstants.kCubeIntakeSpeed); break;
+            case Cone: setIntakeSpeed(DriveConstants.kConeIntakeSpeed); break;
+            default: break;
+        }
+    }
+
+    public void outtakeFromGamepiece(frc.robot.StateManager.Gamepiece gamepiece) {
+        switch (gamepiece) {
+            case Cube: intake(DriveConstants.kCubeOuttakeSpeed); break;
+            case Cone: intake(DriveConstants.kConeOuttakeSpeed); break;
+            default: break;
+        }
     }
 
     public boolean isHiLetGoing(){

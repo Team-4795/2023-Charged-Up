@@ -102,8 +102,8 @@ public class LiftArm extends SubsystemBase {
   }
 
   @Override
+  // Logging
   public void periodic() {
-    // Logging
     SmartDashboard.putNumber("Relative location", liftRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Absolute location", liftEncoder.getPosition());
     SmartDashboard.putNumber("Applied Speed", rightArmMotor.getAppliedOutput());
