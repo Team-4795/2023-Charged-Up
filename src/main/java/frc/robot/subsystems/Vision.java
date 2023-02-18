@@ -53,6 +53,9 @@ public class Vision extends SubsystemBase{
       
       NetworkTableValue tv_value = table.getValue("tv");
       NetworkTableValue tx_value = table.getValue("tx");
+      double area;
+      double y;
+      double x;
       
       //float tv = table.GetNumber("tv");
       

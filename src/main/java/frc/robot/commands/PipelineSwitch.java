@@ -20,13 +20,13 @@ public class PipelineSwitch extends CommandBase {
   private final Vision vision;
 
   public void SwitchToAlign() {
-    camera.setPipelineIndex(1);
-    disableLED(VisionLEDMode.kOff);
+    vision.setPipelineIndex(1);
+    vision.disableLED();
   }
 
   public void SwitchToTape() {
-    camera.setPipelineIndex(0);
-    enableLED(VisionLEDMode.kOn);
+    vision.setPipelineIndex(0);
+    vision.enableLED();
   }
   
   /** Creates a new PipelineSwitch. */
@@ -40,7 +40,7 @@ public class PipelineSwitch extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    camera.setPipelineIndex(1);
+    vision.setPipelineIndex(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
