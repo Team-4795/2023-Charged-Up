@@ -114,18 +114,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.933, false); break;
-            case SingleFeeder: result = new Setpoints(0.7, false); break;
-            case DoubleFeeder: result = new Setpoints(0.7, true); break;
-            case LowScore: result = new Setpoints(0.91, false); break;
-            case MidScore: result = new Setpoints(0.7, true); break;
-            case HighScoreCube: result = new Setpoints(.74, false); break;
-            case StowInFrame: result = new Setpoints(0.16, false); break;
-            case StowLow: result = new Setpoints(0.96, false); break;
-        }
-
-        if (result != null) {
-            result.intake = DriveConstants.kSlowCubeIntakeSpeed;
+            case LowPickup: result = new Setpoints(0.933, false, 0.5); break;
+            case SingleFeeder: result = new Setpoints(0.7, false, 0.5); break;
+            case DoubleFeeder: result = new Setpoints(0.7, true, 0.5); break;
+            case LowScore: result = new Setpoints(0.91, false, 0.5); break;
+            case MidScore: result = new Setpoints(0.7, true, 0.5); break;
+            case HighScoreCube: result = new Setpoints(.74, false, 0.5); break;
+            case StowInFrame: result = new Setpoints(0.16, false, 0.5); break;
+            case StowLow: result = new Setpoints(0.96, false, 0.5); break;
         }
 
         return Optional.ofNullable(result);
@@ -135,18 +131,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.955, false); break;
-            case SingleFeeder: result = new Setpoints(0.65, false); break;
-            case DoubleFeeder: result = new Setpoints(0.65, true); break;
-            case LowScore: result = new Setpoints(0.87, false); break;//not really tested
-            case MidScore: result = new Setpoints(0.75, false); break;
+            case LowPickup: result = new Setpoints(0.955, false, 0.5); break;
+            case SingleFeeder: result = new Setpoints(0.65, false, 0.5); break;
+            case DoubleFeeder: result = new Setpoints(0.65, true, 0.5); break;
+            case LowScore: result = new Setpoints(0.87, false, 0.5); break;//not really tested
+            case MidScore: result = new Setpoints(0.75, false, 0.5); break;
             case HighScoreCube: break;
-            case StowInFrame: result = new Setpoints(0.16, false); break;
-            case StowLow: result = new Setpoints(0.96, false); break;
-        }
-
-        if (result != null) {
-            result.intake = DriveConstants.kSlowConeIntakeSpeed;
+            case StowInFrame: result = new Setpoints(0.16, false, 0.5); break;
+            case StowLow: result = new Setpoints(0.96, false, 0.5); break;
         }
 
         return Optional.ofNullable(result);
@@ -174,9 +166,9 @@ class Setpoints {
     boolean wrist;
     double intake;
 
-    Setpoints(double arm, boolean wrist) {
+    Setpoints(double arm, boolean wrist, double intake) {
         this.arm = arm;
         this.wrist = wrist;
-        this.intake = 0.0;
+        this.intake = intake;
     }
 }
