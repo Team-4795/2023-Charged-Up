@@ -168,7 +168,7 @@ public class RobotContainer {
     final JoystickButton backbutton = new JoystickButton(m_driverController, 1);
 
     //vision align button
-    final POVButton TapeAlign = new POVButton(m_driverController, 90);
+    final JoystickButton TapeAlign = new JoystickButton(m_driverController, 3);
 
 
     // Intake triggers
@@ -201,14 +201,12 @@ public class RobotContainer {
     final Trigger povRight = new Trigger(() -> m_operatorController.getPOV() == 90);
 
     // X, Y
-    final JoystickButton extend = new JoystickButton(m_driverController, 3);
-    final JoystickButton retract = new JoystickButton(m_driverController, 4);
-    
-    final JoystickButton test = new JoystickButton(m_operatorController, 3);
+    final JoystickButton extend = new JoystickButton(m_operatorController, 3); 
+    final JoystickButton retract = new JoystickButton(m_operatorController, 4);
 
     // left, right bumper
-    final JoystickButton isStoring = new JoystickButton(m_driverController, 6);
-    final JoystickButton isNotStoring = new JoystickButton(m_driverController, 5);
+    final JoystickButton isStoring = new JoystickButton(m_operatorController, 2);
+    final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 1);
 
     pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
@@ -219,13 +217,8 @@ public class RobotContainer {
     povDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
     povRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
 
-    extend.onTrue(new InstantCommand(
-        () -> m_intake.setExtendedTarget(true),
-        m_intake));
-
-    retract.onTrue(new InstantCommand(
-        () -> m_intake.setExtendedTarget(false),
-        m_intake));
+    isStoring.onTrue(new InstantCommand(m_manager::setStoring, m_arm));
+    isNotStoring.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
@@ -237,11 +230,22 @@ public class RobotContainer {
         () -> m_intake.outtakeFromGamepiece(m_manager.gamepiece),
         m_intake));
 
+    //pneumatic override
+    extend.whileTrue(new RunCommand(
+        () -> m_intake.extend(),
+        m_intake));
+
+    retract.whileTrue(new RunCommand(
+        () -> m_intake.retract(),
+        m_intake));
+        
+    
+
     //face angle
     
 
     //vision align
-    //TapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, m_camera));
+    TapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, m_camera));
 
   }
 
