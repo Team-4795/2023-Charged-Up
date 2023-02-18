@@ -161,7 +161,7 @@ public final class Constants {
    public static final double platformMaxAngle = 10;
    public static final double balanceSpeed = 0.0684;
    public static final double driveAngleThreshold = 8; //degrees
-   public static final double driveBalanceSpeed = 0.2;
+   public static final double driveBalanceSpeed = 0.4;
    public static final double angularVelocityErrorThreshold = 0.15;
    public static final double checkDuration = 0.5;
 

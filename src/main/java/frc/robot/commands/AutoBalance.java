@@ -39,7 +39,8 @@ public class AutoBalance extends CommandBase{
 
     private double updateDrive() {
         //assuming we drive straight in the x direction for now
-        return -(elevationAngle / elevationAngle)*(Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
+        return -(signOf(elevationAngle))*0.2;
+        //return -(signOf(elevationAngle))*(Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
     }
 
     private int signOf(double num){
@@ -54,7 +55,8 @@ public class AutoBalance extends CommandBase{
 
     @Override
     public boolean isFinished(){
-        return(Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
+        return false;
+        //return(Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
     }
 
 }

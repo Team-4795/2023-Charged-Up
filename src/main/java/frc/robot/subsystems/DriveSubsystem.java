@@ -17,9 +17,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import frc.utils.SwerveUtils;
 
 
@@ -61,6 +65,9 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
+  private DataLog driveLog;
+  private DoubleArrayLogEntry swerveStates;
+  private DoubleLogEntry rotation;
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -77,7 +84,9 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem(Field2d m_field) {
     SmartDashboard.putData("Field", m_field);
     m_field.setRobotPose(m_odometry.getPoseMeters());
-
+    driveLog = DataLogManager.getLog();
+    rotation = new DoubleLogEntry(driveLog, "/rotation");
+    swerveStates = new DoubleArrayLogEntry(driveLog, "/swerveStates");
   }
 
   @Override
@@ -88,7 +97,8 @@ public class DriveSubsystem extends SubsystemBase {
     //SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
     //SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
 
-    
+    rotation.append(m_currentRotation);
+    swerveStates.append(getModuleStates());
 
     m_odometry.update(
       Rotation2d.fromDegrees(-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset),

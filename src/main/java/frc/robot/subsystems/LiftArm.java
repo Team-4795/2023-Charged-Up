@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import javax.sound.sampled.DataLine;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -7,6 +9,10 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 //import frc.robot.Constants;
@@ -21,6 +27,9 @@ public class LiftArm extends SubsystemBase {
   double requestedSpeed = 0;
 
   private final SparkMaxPIDController m_PIDController;
+
+  private DataLog armLog;
+  private DoubleLogEntry armSetpoint;
 
   public double setpoint;
 
@@ -82,6 +91,10 @@ public class LiftArm extends SubsystemBase {
 
     this.setpoint = liftEncoder.getPosition();
     SmartDashboard.putNumber("Arm setpoint", this.setpoint);
+
+    armLog = DataLogManager.getLog();
+    armSetpoint = new DoubleLogEntry(armLog, "/setpoint");
+
   }
 
   // Set speed of arm
@@ -110,5 +123,7 @@ public class LiftArm extends SubsystemBase {
     SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
     SmartDashboard.putNumber("Arm setpoint", setpoint);
     liftRelativeEncoder.setPosition(this.getPosition());
+
+    armSetpoint.append(setpoint);
   }
 }
