@@ -53,7 +53,7 @@ public final class Constants {
 
     //Chassis Angular Offset
 
-    public static final double kChassisAngularOffset = -270;
+    public static final double kChassisAngularOffset = -90;
 
 
     // SPARK MAX CAN IDs
@@ -70,7 +70,7 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
 
     public static final double kIntakeSpeed = 1;
-    public static final double kOuttakeSpeed = -0.75;
+    public static final double kOuttakeSpeed = -0.35;
 
     public static final double kSlowCubeIntakeSpeed = 0.5;
     public static final double kSlowConeIntakeSpeed = 0.5;

@@ -116,12 +116,12 @@ enum State {
         switch (this) {
             case LowPickup: result = new Setpoints(0.933, false, 0.5); break;
             case SingleFeeder: result = new Setpoints(0.7, false, 0.5); break;
-            case DoubleFeeder: result = new Setpoints(0.7, true, 0.5); break;
-            case LowScore: result = new Setpoints(0.91, false, 0.5); break;
-            case MidScore: result = new Setpoints(0.7, true, 0.5); break;
-            case HighScoreCube: result = new Setpoints(.74, false, 0.5); break;
-            case StowInFrame: result = new Setpoints(0.16, false, 0.5); break;
-            case StowLow: result = new Setpoints(0.96, false, 0.5); break;
+            case DoubleFeeder: result = new Setpoints(0.64, true, 0.5); break;
+            case LowScore: result = new Setpoints(0.91, false, 0.1); break;
+            case MidScore: result = new Setpoints(0.7, true, 0.1); break;
+            case HighScoreCube: result = new Setpoints(.64, true, 0.1); break;
+            case StowInFrame: result = new Setpoints(0.16, false, 0.1); break;
+            case StowLow: result = new Setpoints(0.96, false, 0.1); break;
         }
 
         return Optional.ofNullable(result);
@@ -131,14 +131,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.955, false, 0.5); break;
-            case SingleFeeder: result = new Setpoints(0.65, false, 0.5); break;
-            case DoubleFeeder: result = new Setpoints(0.65, true, 0.5); break;
-            case LowScore: result = new Setpoints(0.87, false, 0.5); break;//not really tested
-            case MidScore: result = new Setpoints(0.75, false, 0.5); break;
+            case LowPickup: result = new Setpoints(0.955, false, 1.0); break;
+            case SingleFeeder: result = new Setpoints(0.6, false, 1.0); break;
+            case DoubleFeeder: result = new Setpoints(0.64, true, 1.0); break;
+            case LowScore: result = new Setpoints(0.87, false, 0.1); break;//not really tested
+            case MidScore: result = new Setpoints(0.73, false, 0.1); break;
             case HighScoreCube: break;
-            case StowInFrame: result = new Setpoints(0.16, false, 0.5); break;
-            case StowLow: result = new Setpoints(0.96, false, 0.5); break;
+            case StowInFrame: result = new Setpoints(0.16, false, 0.1); break;
+            case StowLow: result = new Setpoints(0.96, false, 0.1); break;
         }
 
         return Optional.ofNullable(result);

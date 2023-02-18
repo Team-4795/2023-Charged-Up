@@ -39,7 +39,7 @@ public class EndEffectorIntake extends SubsystemBase {
         
         intakeMotor.setIdleMode(IdleMode.kBrake);
 
-        intakeMotor.setSmartCurrentLimit(40);
+        intakeMotor.setSmartCurrentLimit(25);
         compressor.enableAnalog(90, 120);
     }
 
