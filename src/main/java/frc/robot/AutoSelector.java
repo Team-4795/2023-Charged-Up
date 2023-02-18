@@ -32,7 +32,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
-import frc.robot.subsystems.StateManager;
+import frc.robot.StateManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
@@ -155,7 +155,7 @@ public class AutoSelector {
         // move arm to mid cone
         new RunCommand(m_manager::setStoring),
         new RunCommand(m_manager::pickCone),
-        new RunCommand(m_manager::button2),
+        new RunCommand(() -> m_manager.handleDpad(270)),
         // run outake for 1 second
         new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
 
@@ -181,7 +181,7 @@ public class AutoSelector {
         // move arm to itake cone
         new RunCommand(m_manager::setNotStoring),
         new RunCommand(m_manager::pickCone),
-        new RunCommand(m_manager::button1),
+        new RunCommand(() -> m_manager.handleDpad(180)),
         // run outake for 1 second
         new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
         new InstantCommand(() -> {
@@ -211,7 +211,7 @@ public class AutoSelector {
         // move arm to mid cone
         new RunCommand(m_manager::setStoring),
         new RunCommand(m_manager::pickCone),
-        new RunCommand(m_manager::button1),
+        new RunCommand(() -> m_manager.handleDpad(270)),
         // run outake for 1 second
         new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1)
 
@@ -230,7 +230,7 @@ public class AutoSelector {
       // move arm to mid cone
       new RunCommand(m_manager::setStoring),
       new RunCommand(m_manager::pickCone),
-      new RunCommand(m_manager::button2),
+      new RunCommand(() -> m_manager.handleDpad(270)),
       // run outake for 1 second
       new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
 
@@ -256,7 +256,7 @@ public class AutoSelector {
       // move arm to itake cone
       new RunCommand(m_manager::setNotStoring),
       new RunCommand(m_manager::pickCone),
-      new RunCommand(m_manager::button1),
+      new RunCommand(() -> m_manager.handleDpad(180)),
       // run outake for 1 second
       new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
       new InstantCommand(() -> {
@@ -287,9 +287,15 @@ public class AutoSelector {
       new AutoBalance(drivebase, AutoConstants.angularVelocityErrorThreshold)
     ));
 
+    chooser.addOption("Balance Only", new SequentialCommandGroup(
+      new DriveCommand(drivebase, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold),
+      new AutoBalance(drivebase, AutoConstants.angularVelocityErrorThreshold)
+    ));
+
     SmartDashboard.putData("Auto Selector", chooser);
 
   }
+  
 
   public Command getSelected() {
     return chooser.getSelected();
