@@ -12,6 +12,7 @@ import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -26,14 +27,9 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private DataLog log;
-  private DoubleLogEntry armSetpoint;
-  private DoubleLogEntry intake;
+  public DataLog log;
   private StringLogEntry state;
-  private DoubleArrayLogEntry swerveStates;
-  private DoubleLogEntry rotation;
   
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -43,11 +39,7 @@ public class Robot extends TimedRobot {
 
     DataLogManager.start();
     log = DataLogManager.getLog();
-    armSetpoint = new DoubleLogEntry(log, "/armSetpoint");
-    intake = new DoubleLogEntry(log, "/intake");
     state = new StringLogEntry(log, "/state");
-    swerveStates = new DoubleArrayLogEntry(log, "/swerveStates");
-    rotation = new DoubleLogEntry(log, "rotation");
 
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -117,10 +109,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.m_manager.getArmSetpoint().ifPresent(value -> intake.append(value));
     state.append(m_robotContainer.m_manager.getState().name());
-    swerveStates.append(m_robotContainer.m_robotDrive.getModuleStates());
-    rotation.append(m_robotContainer.m_robotDrive.getHeading().getDegrees());
   }
 
   @Override
