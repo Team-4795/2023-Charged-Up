@@ -182,12 +182,12 @@ public class RobotContainer {
     final Trigger povRight = new Trigger(() -> m_operatorController.getPOV() == 90);
 
     // X, Y
-    final JoystickButton extend = new JoystickButton(m_driverController, 3);
-    final JoystickButton retract = new JoystickButton(m_driverController, 4);
+    final JoystickButton extend = new JoystickButton(m_operatorController, 3); 
+    final JoystickButton retract = new JoystickButton(m_operatorController, 4);
 
     // left, right bumper
-    final JoystickButton isStoring = new JoystickButton(m_operatorController, 1);
-    final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 2);
+    final JoystickButton isStoring = new JoystickButton(m_operatorController, 2);
+    final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 1);
 
     pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
@@ -216,6 +216,17 @@ public class RobotContainer {
     reverseIntake.whileTrue(new RunCommand(
         () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
         m_intake));
+
+    //pneumatic override
+    extend.whileTrue(new RunCommand(
+        () -> m_intake.extend(),
+        m_intake));
+
+    retract.whileTrue(new RunCommand(
+        () -> m_intake.retract(),
+        m_intake));
+        
+    
 
     //face angle
     
@@ -269,7 +280,8 @@ public class RobotContainer {
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    //return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    return new InstantCommand();
 
   }
 

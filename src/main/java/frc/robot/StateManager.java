@@ -136,7 +136,7 @@ enum State {
             case DoubleFeeder: result = new Setpoints(0.64, true, 1.0); break;
             case LowScore: result = new Setpoints(0.87, false, 0.1); break;//not really tested
             case MidScore: result = new Setpoints(0.73, false, 0.1); break;
-            case HighScoreCube: break;
+            case HighScoreCube: result = new Setpoints(.64, true, 0.1); break;
             case StowInFrame: result = new Setpoints(0.16, false, 0.1); break;
             case StowLow: result = new Setpoints(0.96, false, 0.1); break;
         }
