@@ -225,11 +225,6 @@ public class RobotContainer {
     retract.whileTrue(new RunCommand(
         () -> m_intake.retract(),
         m_intake));
-        
-    
-
-    //face angle
-    
 
     //vision align
     TapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, m_camera));
