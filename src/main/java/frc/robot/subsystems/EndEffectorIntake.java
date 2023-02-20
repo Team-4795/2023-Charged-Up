@@ -91,7 +91,7 @@ public class EndEffectorIntake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (storing && isHiLetGoing() || !storing && !isHiLetGoing()) {
+        if (storing == isHiLetGoing()) {
             hasBeenStoring.reset();
         }
 
