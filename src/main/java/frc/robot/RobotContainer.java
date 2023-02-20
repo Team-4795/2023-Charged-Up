@@ -21,6 +21,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -48,6 +49,7 @@ public class RobotContainer {
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
   private final PhotonCamera m_camera = new PhotonCamera(VisionConstants.SnakeEyesCamera);
+  private final LEDs m_led = new LEDs();
 
 
 
@@ -277,5 +279,6 @@ public class RobotContainer {
     m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
     m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
     m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
+    m_manager.getLED().ifPresent(m_led::setLEDState);
   }
 }
