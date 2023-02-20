@@ -39,9 +39,11 @@ public class EndEffectorIntake extends SubsystemBase {
     Timer hasBeenStoring;
 
     public EndEffectorIntake(){
+        intakeMotor.restoreFactoryDefaults();
         intakeMotor.setInverted(true);
         intakeMotor.setIdleMode(IdleMode.kBrake);
         intakeMotor.setSmartCurrentLimit(25);
+        intakeMotor.burnFlash();
         compressor.enableAnalog(90, 120);
         hasBeenStoring.reset();
         hasBeenStoring.start();
