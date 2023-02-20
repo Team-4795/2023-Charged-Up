@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticHub;
 
@@ -35,9 +34,6 @@ public class EndEffectorIntake extends SubsystemBase {
     public boolean extendedTarget = false;
     public boolean extended = false;
 
-    private boolean storing = false;
-    Timer hasBeenStoring;
-
     public EndEffectorIntake(){
         intakeMotor.restoreFactoryDefaults();
         intakeMotor.setInverted(true);
@@ -45,8 +41,6 @@ public class EndEffectorIntake extends SubsystemBase {
         intakeMotor.setSmartCurrentLimit(25);
         intakeMotor.burnFlash();
         compressor.enableAnalog(90, 120);
-        hasBeenStoring.reset();
-        hasBeenStoring.start();
     }
 
     public void extend() {
@@ -85,20 +79,8 @@ public class EndEffectorIntake extends SubsystemBase {
         return hiLetGo.isBroken();
     }
 
-    public boolean isStoring() {
-        return storing;
-    }
-
     @Override
     public void periodic() {
-        if (storing && isHiLetGoing() || !storing && !isHiLetGoing()) {
-            hasBeenStoring.reset();
-        }
-
-        if (hasBeenStoring.hasElapsed(1)) {
-            storing = !storing;
-            hasBeenStoring.reset();
-        }
 
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
