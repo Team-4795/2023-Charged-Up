@@ -35,11 +35,11 @@ public class EndEffectorIntake extends SubsystemBase {
     public boolean extended = false;
 
     public EndEffectorIntake(){
+        intakeMotor.restoreFactoryDefaults();
         intakeMotor.setInverted(true);
-        
         intakeMotor.setIdleMode(IdleMode.kBrake);
-
         intakeMotor.setSmartCurrentLimit(25);
+        intakeMotor.burnFlash();
         compressor.enableAnalog(90, 120);
     }
 
