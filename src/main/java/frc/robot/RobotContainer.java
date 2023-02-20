@@ -151,14 +151,8 @@ public class RobotContainer {
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 1);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 2);
 
-    //face angle buttons
-    final JoystickButton forwardbutton = new JoystickButton(m_driverController, 4);
-    final JoystickButton lefttbutton = new JoystickButton(m_driverController, 3);
-    final JoystickButton rightbutton = new JoystickButton(m_driverController, 2);
-    final JoystickButton backbutton = new JoystickButton(m_driverController, 1);
-
     //vision align button
-    final JoystickButton TapeAlign = new JoystickButton(m_driverController, 3);
+    final JoystickButton tapeAlign = new JoystickButton(m_driverController, 3);
 
 
     // Intake triggers
@@ -226,7 +220,7 @@ public class RobotContainer {
         m_intake));
 
     //vision align
-    TapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, m_camera));
+    tapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, m_camera));
 
   }
 
