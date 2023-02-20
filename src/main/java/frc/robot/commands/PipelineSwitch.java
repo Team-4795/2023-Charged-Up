@@ -5,43 +5,45 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.vision.VisionPipeline;
 import frc.robot.subsystems.Vision;
-import frc.robot.commands.Align;
-import frc.robot.commands.TapeAlign;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.PhotonCamera;
-import frc.robot.Constants;
-import org.photonvision.common.hardware.VisionLEDMode;
+// import frc.robot.commands.Align;
+// import frc.robot.commands.TapeAlign;
+// import org.photonvision.targeting.PhotonPipelineResult;
+// import org.photonvision.PhotonCamera;
+// import frc.robot.Constants;
+// import org.photonvision.common.hardware.VisionLEDMode;
+// import frc.robot.Constants.VisionConstants;
+// import edu.wpi.first.wpilibj2.command.CommandBase;
+// import edu.wpi.first.vision.VisionPipeline;
+
 
 public class PipelineSwitch extends CommandBase {
-  private final PhotonCamera camera;
   private final Vision vision;
+  public int pipelineIndex;
 
-  public void SwitchToAlign() {
-    vision.setPipelineIndex(1);
-    vision.disableLED();
-  }
-
-  public void SwitchToTape() {
-    vision.setPipelineIndex(0);
-    vision.enableLED();
-  }
-  
   /** Creates a new PipelineSwitch. */
-  public PipelineSwitch(PhotonCamera camera, Vision vision) {
-    this.camera = camera;
+  public PipelineSwitch(Vision vision) {
     this.vision = vision;
 
     addRequirements(vision);
+    vision.pipelineIndex(1);
+    //by default what do we want the pipeline to be?
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    vision.setPipelineIndex(1);
+    if (pipelineIndex == 1) {
+      vision.switchToTag();
+    }
+    else {
+      vision.switchToTape();
+    }
   }
+
+  // public boolean targetLED() {
+  //   return vision.isTargeting;
+  // }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
