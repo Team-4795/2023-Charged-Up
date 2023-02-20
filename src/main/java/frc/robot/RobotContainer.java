@@ -85,8 +85,6 @@ public class RobotContainer {
     );
 
 
-
-
     // Axis 2 = to battery, axis 3 = away
     // Subtract up movement by down movement so they cancell out if both are pressed at once
     // Max speed is number multiplying this
@@ -115,8 +113,6 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
 
-
-  
   private void configureButtonBindings() {
 
     Command tapeAlign = new TapeAlign(m_robotDrive, m_Vision, m_camera);
@@ -179,7 +175,6 @@ public class RobotContainer {
     TapeAlign.whileTrue(tapeAlign);
 
     AprilTagAlign.whileTrue(aprilTagAlign);
-
 
   }
 

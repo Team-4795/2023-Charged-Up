@@ -20,6 +20,7 @@ public class Vision extends SubsystemBase{
     final double TargetHeight = VisionConstants.TargetHeight;
     final double cameraPitchRadians = VisionConstants.cameraPitchRadians;
     public boolean hasTargets = false;
+    public boolean isTargeting = true;
     private double targetAngle = 0;
     double forwardSpeed;
     double x_pitch = 0;
@@ -41,8 +42,27 @@ public class Vision extends SubsystemBase{
         camera.setLED(VisionLEDMode.kOff);
       }
 
-      public void setPipelineIndex(int index) {
+      public void pipelineIndex(int index) {
         camera.setPipelineIndex(1);
+      }
+
+      public void switchToTag() {
+        pipelineIndex(1);
+        disableLED();
+      }
+    
+      public void switchToTape() {
+        pipelineIndex(0);
+        enableLED();
+      }
+
+      public void targetingLED() {
+        if (isTargeting == false) {
+          disableLED();
+        }
+        else {
+          enableLED();
+        }
       }
 
       NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
