@@ -3,6 +3,7 @@ package frc.robot;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.naming.ldap.ManageReferralControl;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -31,17 +32,17 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
-import frc.robot.subsystems.StateManager;
+import frc.robot.StateManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class AutoSelector {
     
   private final SendableChooser<Command> chooser = new SendableChooser<>();
-  private final EndEffectorIntake m_intake = new EndEffectorIntake();;
-  Field2d m_field = new Field2d();
+  private final EndEffectorIntake m_intake = new EndEffectorIntake();
   private final LiftArm m_arm = new LiftArm();
-  StateManager m_manager = new StateManager(m_arm);
+  Field2d m_field = new Field2d();
+  StateManager m_manager = new StateManager();
   Timer time = new Timer();
 
   //All Path Planner paths
@@ -145,51 +146,21 @@ public class AutoSelector {
       
       AutoEventMap1.put("Score", new SequentialCommandGroup(
         
-      new RunCommand(m_manager::button1),
-      new InstantCommand(()->{
-        time.start();
-        while(time.get()< 2)
-        {
-        new RunCommand(
-        
-        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
-        m_intake);}
-          time.stop();
-          time.reset();
-      }
-      
-      )));//Low score cone
+      new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}),
+      new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(2)
+
+      ));//Low score cone
 
       AutoEventMap1.put("Intake", new SequentialCommandGroup(
-        new RunCommand(m_manager::button1),
-      new InstantCommand(()->{
-        time.start();
-        while(time.get()< 2)
-        {
-        new RunCommand(
-        
-        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
-        m_intake);}
-          time.stop();
-          time.reset();
-      }
-      )));//Low Intake cone
+        new RunCommand(() -> {m_manager.handleDpad(180); setStates();}),
+        new RunCommand(() -> m_intake.intake(DriveConstants.kIntakeSpeed), m_intake).withTimeout(2)
+      ));//Low Intake cone
 
       AutoEventMap1.put("Score2",new SequentialCommandGroup(
 
-      new RunCommand(m_manager::button2),
-      new InstantCommand(()->{
-        time.start();
-        while(time.get()< 2)
-        {
-        new RunCommand(
-        
-        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
-        m_intake);}
-          time.stop();
-          time.reset();
-      }
-      )));//Mid score cone
+      new RunCommand(() -> {m_manager.handleDpad(270); setStates();}),
+      new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(2)
+      ));//Mid score cone
       
       //It should split the OnePath into multiple individually paths based on the stop points/events? defined in pathplanner
       //Shouldn't need a cast IDK why it doesn't work
@@ -328,6 +299,12 @@ public class AutoSelector {
     
     SmartDashboard.putData("Auto Selector", chooser);
     SmartDashboard.putData(m_field);
+  }
+
+  private void setStates() {
+    m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
+    m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
+    m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }
 
   public Command getSelected() {
