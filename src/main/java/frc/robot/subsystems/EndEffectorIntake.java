@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
+import com.fasterxml.jackson.core.util.RequestPayload;
 //motor imports
 import com.revrobotics.CANSparkMax;
 //import com.revrobotics.CANSparkMaxLowLevel;
@@ -17,7 +20,8 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 //robot imports
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.StateManager;
+import frc.robot.Constants.DriveConstants;
 //Sensor imports
 import frc.robot.Sensors.HiLetGo;
 
@@ -29,14 +33,17 @@ public class EndEffectorIntake extends SubsystemBase {
     private final PneumaticHub m_ph = new PneumaticHub(1);
     private final HiLetGo hiLetGo = new HiLetGo(0);
 
-    public double intakeSpeed = 0.25;
-    public double requestedSpeed = 0.25;
-
     public boolean extendedTarget = false;
     public boolean extended = false;
 
     private boolean storing = false;
-    Timer hasBeenStoring;
+    Timer hasBeenStoring = new Timer();
+
+    private double outtakeSpeed;
+
+    private double requestedSpeed;
+
+    private boolean overrideStoring = false;
 
     public EndEffectorIntake(){
         intakeMotor.restoreFactoryDefaults();
@@ -45,8 +52,9 @@ public class EndEffectorIntake extends SubsystemBase {
         intakeMotor.setSmartCurrentLimit(25);
         intakeMotor.burnFlash();
         compressor.enableAnalog(90, 120);
+
         hasBeenStoring.reset();
-        hasBeenStoring.start();
+        hasBeenStoring.start(); 
     }
 
     public void extend() {
@@ -66,27 +74,47 @@ public class EndEffectorIntake extends SubsystemBase {
         this.extendedTarget = extend;
     }
 
-    public void setIntakeSpeed(double speed) {
-        this.requestedSpeed = speed;
-        this.intakeSpeed = speed;
-    }
+    public void intakeFromGamepiece(StateManager.Gamepiece gamepiece) {
+        double speed = 0;
 
-    public void intakeAutomatic() {
-        this.requestedSpeed = intakeSpeed;
-        intakeMotor.set(intakeSpeed);
-    }
+        if (isStoring()) {
+            switch (gamepiece) {
+                case Cube: speed = DriveConstants.kCubeSlowIntakeSpeed; break;
+                case Cone: speed = DriveConstants.kConeSlowIntakeSpeed; break;
+                default: break;
+            }
+        } else {
+            switch (gamepiece) {
+                case Cube: speed = DriveConstants.kCubeIntakeSpeed; break;
+                case Cone: speed = DriveConstants.kConeIntakeSpeed; break;
+                default: break;
+            }
+        }
 
-    public void intake(double speed) {
-        this.requestedSpeed = speed;
+        requestedSpeed = speed;
         intakeMotor.set(speed);
     }
 
-    public boolean isHiLetGoing(){
+    public void setOuttakeSpeed(double speed) {
+        this.outtakeSpeed = speed;
+    }
+
+    public void outtake() {
+        requestedSpeed = outtakeSpeed;
+        intakeMotor.set(outtakeSpeed);
+    }
+
+    private boolean isHiLetGoing(){
         return hiLetGo.isBroken();
     }
 
     public boolean isStoring() {
-        return storing;
+        // Flip `storing` if overrideStoring is true, otherwise stay the same
+        return storing ^ overrideStoring;
+    }
+
+    public void overrideStoring(boolean override) {
+        this.overrideStoring = override;
     }
 
     @Override
@@ -101,9 +129,10 @@ public class EndEffectorIntake extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
-        SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putBoolean("Wrist extended target", extendedTarget);
         SmartDashboard.putBoolean("Wrist extended", extended);
+        SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
+        SmartDashboard.putNumber("Outtake speed", outtakeSpeed);
         SmartDashboard.putBoolean("HiLetGoing?", isHiLetGoing());
     }
 }

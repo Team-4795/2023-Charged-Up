@@ -1,5 +1,6 @@
 package frc.robot;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,23 +15,25 @@ public class StateManager {
     private Gamepiece gamepiece;
 
     // If we are or are not storing a gamepiece
-    // Temporary
-    private boolean storing = false;
+    private BooleanSupplier isStoring;
+    private boolean overrideStoring;
+
 
     public enum LED {
         Cone,
         Cube,
     }
 
-    enum Gamepiece {
+    public enum Gamepiece {
         Cube,
         Cone,
         None,
     }
 
-    public StateManager() {
+    public StateManager(BooleanSupplier isStoring) {
         this.state = State.StowLow;
         this.gamepiece = Gamepiece.None;
+        this.isStoring = isStoring;
     }
 
     public void pickCube() {
@@ -46,9 +49,9 @@ public class StateManager {
     }
 
     public void handleDpad(int angle) {
-        if (storing) {
+        if (isStoring.getAsBoolean() ^ overrideStoring) {
             switch (angle) {
-                case 0: state = State.HighScoreCube; break;
+                case 0: state = State.HighScore; break;
                 case 270: state = State.MidScore; break;
                 case 180: state = State.LowScore; break;
                 case 90: state = State.StowInFrame; break;
@@ -67,24 +70,12 @@ public class StateManager {
         SmartDashboard.putString("State", state.name());
     }
 
-    public void toggleStoring() {
-        storing = !storing;
-    }
-
-    public void setStoring() {
-        storing = true;
-    }
-
-    public void setNotStoring() {
-        storing = false;
-    }
-
     public Optional<Double> getArmSetpoint() {
         return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.arm);
     }
 
-    public Optional<Double> getIntakeSetpoint() {
-        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.intake);
+    public Optional<Double> getOuttakeSetpoint() {
+        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.outtake);
     }
 
     public Optional<LED> getLED() {
@@ -98,6 +89,10 @@ public class StateManager {
     public State getState() {
         return this.state;
     }
+
+    public Gamepiece getGamepiece() {
+        return this.gamepiece;
+    }
 }
 
 enum State {
@@ -106,7 +101,7 @@ enum State {
     DoubleFeeder,
     LowScore,
     MidScore,
-    HighScoreCube,
+    HighScore,
     StowInFrame,
     StowLow;
 
@@ -114,14 +109,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.933, false, 0.5); break;
-            case SingleFeeder: result = new Setpoints(0.7, false, 0.5); break;
-            case DoubleFeeder: result = new Setpoints(0.64, true, 0.5); break;
-            case LowScore: result = new Setpoints(0.91, false, 0.1); break;
-            case MidScore: result = new Setpoints(0.7, true, 0.1); break;
-            case HighScoreCube: result = new Setpoints(.64, true, 0.1); break;
-            case StowInFrame: result = new Setpoints(0.16, false, 0.1); break;
-            case StowLow: result = new Setpoints(0.96, false, 0.1); break;
+            case LowPickup: result = new Setpoints(0.933, false, -0.3); break;
+            case SingleFeeder: result = new Setpoints(0.7, false, -0.3); break;
+            case DoubleFeeder: result = new Setpoints(0.64, true, -0.3); break;
+            case LowScore: result = new Setpoints(0.91, false, -0.3); break;
+            case MidScore: result = new Setpoints(0.7, true, -0.3); break;
+            case HighScore: result = new Setpoints(.64, true, -0.3); break;
+            case StowInFrame: result = new Setpoints(0.16, false, -0.3); break;
+            case StowLow: result = new Setpoints(0.96, false, -0.3); break;
         }
 
         return Optional.ofNullable(result);
@@ -131,14 +126,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.955, false, 1.0); break;
-            case SingleFeeder: result = new Setpoints(0.6, false, 1.0); break;
-            case DoubleFeeder: result = new Setpoints(0.64, true, 1.0); break;
-            case LowScore: result = new Setpoints(0.87, false, 0.1); break;//not really tested
-            case MidScore: result = new Setpoints(0.73, false, 0.1); break;
-            case HighScoreCube: result = new Setpoints(.64, true, 0.1); break;
-            case StowInFrame: result = new Setpoints(0.16, false, 0.1); break;
-            case StowLow: result = new Setpoints(0.96, false, 0.1); break;
+            case LowPickup: result = new Setpoints(0.955, false, -0.4); break;
+            case SingleFeeder: result = new Setpoints(0.6, false, -0.4); break;
+            case DoubleFeeder: result = new Setpoints(0.64, true, -0.4); break;
+            case LowScore: result = new Setpoints(0.87, false, -0.4); break;
+            case MidScore: result = new Setpoints(0.73, false, -0.4); break;
+            case HighScore: result = new Setpoints(.64, true, -0.4); break;
+            case StowInFrame: result = new Setpoints(0.16, false, -0.4); break;
+            case StowLow: result = new Setpoints(0.96, false, -0.4); break;
         }
 
         return Optional.ofNullable(result);
@@ -164,11 +159,11 @@ enum State {
 class Setpoints {
     double arm;
     boolean wrist;
-    double intake;
+    double outtake;
 
-    Setpoints(double arm, boolean wrist, double intake) {
+    Setpoints(double arm, boolean wrist, double outtake) {
         this.arm = arm;
         this.wrist = wrist;
-        this.intake = intake;
+        this.outtake = outtake;
     }
 }

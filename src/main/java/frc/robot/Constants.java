@@ -69,11 +69,14 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
 
-    public static final double kIntakeSpeed = 1;
-    public static final double kOuttakeSpeed = -0.3;
+    public static final double kCubeIntakeSpeed = 0.5;
+    public static final double kConeIntakeSpeed = 1.0;
+    
+    public static final double kCubeSlowIntakeSpeed = 0.1;
+    public static final double kConeSlowIntakeSpeed = 0.1;
 
-    public static final double kSlowCubeIntakeSpeed = 0.5;
-    public static final double kSlowConeIntakeSpeed = 0.5;
+    public static final double kCubeOuttakeSpeed = -0.3;
+    public static final double kConeOuttakeSpeed = -0.3;
   }
 
   public static final class ModuleConstants {

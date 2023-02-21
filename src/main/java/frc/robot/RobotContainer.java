@@ -44,7 +44,7 @@ import frc.robot.Constants.VisionConstants;
 public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final EndEffectorIntake m_intake = new EndEffectorIntake();;
+  private final EndEffectorIntake m_intake = new EndEffectorIntake();
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
   private final PhotonCamera m_camera = new PhotonCamera(VisionConstants.SnakeEyesCamera);
@@ -56,7 +56,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager();
+  StateManager m_manager = new StateManager(m_intake::isStoring);
   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -80,7 +80,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
         new RunCommand(
             () -> {
-                m_intake.intakeAutomatic();
+                m_intake.intakeFromGamepiece(m_manager.getGamepiece());
 
                 m_intake.extended = m_intake.extendedTarget;
                 
@@ -156,8 +156,7 @@ public class RobotContainer {
 
 
     // Intake triggers
-    final Trigger reverseIntake = new Trigger(() -> m_driverController.getPOV() == 90);
-    final Trigger intake = new Trigger(() -> m_driverController.getPOV() == 270);
+    final Trigger outtake = new Trigger(() -> m_driverController.getPOV() == 90);
     // final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
     // final JoystickButton intake = new JoystickButton(m_driverController, 7);
 
@@ -178,9 +177,8 @@ public class RobotContainer {
     final JoystickButton extend = new JoystickButton(m_operatorController, 3); 
     final JoystickButton retract = new JoystickButton(m_operatorController, 4);
 
-    // left, right bumper
-    final JoystickButton isStoring = new JoystickButton(m_operatorController, 2);
-    final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 1);
+    // A
+    final JoystickButton overrideStoring = new JoystickButton(m_operatorController, 1);
 
     pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
@@ -191,9 +189,8 @@ public class RobotContainer {
     povDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
     povRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
 
-    isStoring.onTrue(new InstantCommand(m_manager::setStoring, m_arm));
-    isNotStoring.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
-
+    overrideStoring.onTrue(new InstantCommand(() -> m_intake.overrideStoring(true), m_intake));
+    overrideStoring.onFalse(new InstantCommand(() -> m_intake.overrideStoring(false), m_intake));
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
@@ -201,13 +198,9 @@ public class RobotContainer {
 
     resetheadingButton.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
 
-    //Intake
-    intake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
-        m_intake));
-    
-    reverseIntake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
+    // Outtake
+    outtake.whileTrue(new RunCommand(
+        m_intake::outtake,
         m_intake));
 
     //pneumatic override
@@ -275,7 +268,7 @@ public class RobotContainer {
 
   private void setStates() {
     m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
-    m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
+    m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed);
     m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }
 }
