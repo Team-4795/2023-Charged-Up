@@ -19,10 +19,13 @@ import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import frc.utils.SwerveUtils;
 
 
@@ -82,9 +85,17 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+  DataLog driveLog;
+  DoubleLogEntry elevationAngle;
+  DoubleLogEntry elevationVelocity;
+  DoubleLogEntry speedOfBalance;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    
+    driveLog = DataLogManager.getLog();
+    elevationAngle = new DoubleLogEntry(driveLog, "/elevationAngle");
+    elevationVelocity = new DoubleLogEntry(driveLog, "/elevationVelocity");
+    speedOfBalance = new DoubleLogEntry(driveLog, "/balanceSpeed");
   }
 
   @Override
