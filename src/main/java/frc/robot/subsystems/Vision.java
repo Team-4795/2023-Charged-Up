@@ -34,6 +34,11 @@ public class Vision extends SubsystemBase{
         camera.setLED(VisionLEDMode.kOff);
       }
 
+      public void setPipelineIndex(int index){
+        camera.setPipelineIndex(index);
+      }
+
+
     @Override
     public void periodic() {
         var result = camera.getLatestResult();

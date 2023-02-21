@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.List;
 import frc.robot.Commands.TapeAlign;
-import org.photonvision.PhotonCamera;
 import frc.robot.Constants.VisionConstants;
 
 
@@ -47,7 +46,6 @@ public class RobotContainer {
   private final EndEffectorIntake m_intake = new EndEffectorIntake();;
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
-  private final PhotonCamera m_camera = new PhotonCamera(VisionConstants.SnakeEyesCamera);
 
 
 
@@ -220,7 +218,7 @@ public class RobotContainer {
         m_intake));
 
     //vision align
-    tapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, m_camera));
+    tapeAlign.whileTrue(new TapeAlign(m_robotDrive,m_Vision));
 
   }
 
