@@ -10,6 +10,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -68,9 +72,11 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
 
-    public static final double kIntakeSpeed = 0.5;
-    public static final double kSlowIntakeSpeed = 0.25;
-    public static final double kOuttakeSpeed = -0.5;
+    public static final double kIntakeSpeed = 1;
+    public static final double kOuttakeSpeed = -0.3;
+
+    public static final double kSlowCubeIntakeSpeed = 0.5;
+    public static final double kSlowConeIntakeSpeed = 0.5;
   }
 
   public static final class ModuleConstants {
@@ -128,7 +134,8 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
-
+    public static final double kArmDeadband = 0.05;
+    public static final double kArmManualSpeed = 0.01;
   }
 
   public static final class AutoConstants {
@@ -160,4 +167,47 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+  public static final class RotationConstants {
+    public static final double kP = .01;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kMinimumAngle = -180;
+    public static final double kMaximumAngle = 180;
+  }
+
+  public static final class ArmConstants {
+    public static final int kLeftArmMotorCANID = 10;
+    public static final int kRightArmMotorCANID = 11;
+    public static final double kP = 1.6;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kFF = 0;
+    public static final double kMinOutput = -0.3;
+    public static final double kMaxOutput = 0.3;
+    public static final double kRampRate = 0.1;
+    public static final double kConversionFactor = 1;
+    public static final int kCurrentLimit = 60;
+    public static final double kGearing = 72;
+    public static final boolean kEnableForwardLimit = false;
+    public static final boolean kEnableReverseLimit = false;
+    public static final double kForwardLimit = 0.95;
+    public static final double kReverseLimit = 10;
+    public static final double kLowWristLimit = 0.2;
+    public static final double kHighWristLimit = 0.8;
+  }
+  public static class VisionConstants {
+    public static final String SnakeEyesCamera = "OV5647";
+    public static final double CameraHeight = 21;
+    public static final double TargetHeight = 0;
+    public static final double cameraPitchRadians = -5;
+
+    /**
+     * Physical location of the camera on the robot, relative to the center of the robot.
+     */
+    public static final Transform3d CAMERA_TO_ROBOT =
+        new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
+    public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+  }
+
 }
