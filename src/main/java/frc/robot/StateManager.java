@@ -38,10 +38,14 @@ public class StateManager {
 
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
+
+        SmartDashboard.putString("Gamepiece", "Cube");
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
+
+        SmartDashboard.putString("State", state.name());
     }
 
     public void stow() {

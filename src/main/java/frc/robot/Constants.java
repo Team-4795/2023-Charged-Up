@@ -184,6 +184,7 @@ public final class Constants {
     public static final double kReverseLimit = 10;
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;
+    public static final double kSensorChangeTime = 0.5;
   }
   public static class VisionConstants {
     public static final String SnakeEyesCamera = "OV5647";

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.StateManager;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DriveConstants;
 //Sensor imports
 import frc.robot.Sensors.HiLetGo;
@@ -119,7 +120,7 @@ public class EndEffectorIntake extends SubsystemBase {
             hasBeenStoring.reset();
         }
 
-        if (hasBeenStoring.hasElapsed(1)) {
+        if (hasBeenStoring.hasElapsed(ArmConstants.kSensorChangeTime)) {
             storing = !storing;
             hasBeenStoring.reset();
         }
