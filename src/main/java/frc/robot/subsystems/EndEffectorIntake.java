@@ -1,8 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.Supplier;
-
-import com.fasterxml.jackson.core.util.RequestPayload;
 //motor imports
 import com.revrobotics.CANSparkMax;
 //import com.revrobotics.CANSparkMaxLowLevel;
@@ -37,7 +34,7 @@ public class EndEffectorIntake extends SubsystemBase {
     public boolean extended = false;
 
     private boolean storing = false;
-    Timer hasBeenStoring = new Timer();
+    private Timer hasBeenStoring = new Timer();
 
     private double outtakeSpeed;
 
@@ -52,9 +49,8 @@ public class EndEffectorIntake extends SubsystemBase {
         intakeMotor.setSmartCurrentLimit(25);
         intakeMotor.burnFlash();
         compressor.enableAnalog(90, 120);
-
         hasBeenStoring.reset();
-        hasBeenStoring.start(); 
+        hasBeenStoring.start();
     }
 
     public void extend() {
