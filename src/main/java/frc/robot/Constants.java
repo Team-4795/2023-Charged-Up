@@ -135,6 +135,27 @@ public final class Constants {
     public static final double kArmManualSpeed = 0.01;
   }
 
+  public static final class ControlContants {
+    public static final int kArmUpAxis = 3;
+    public static final int kArmDownAxis = 2;
+
+    public static final int kSetxButton = 1;
+    public static final int kResetHeadingButton = 2;
+    public static final int kTapeAlignButton = 3;
+
+    public static final int kReverseIntakePOV = 90;
+    public static final int kIntakePOV = 270;
+
+    public static final int kPickConeButton = 5;
+    public static final int kPickCubeButton = 6;
+
+    public static final int kExtendButton = 3;
+    public static final int kRetractButton = 4;
+
+    public static final int kIsStoringButton = 2;
+    public static final int kIsNotStoringButton = 1;
+  }
+
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
@@ -181,6 +202,8 @@ public final class Constants {
     public static final double kReverseLimit = 10;
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;
+    public static final double kLowSetpointLimit = 0.12;
+    public static final double kHighSetpointLimit = 0.97;
   }
   public static class VisionConstants {
     public static final String SnakeEyesCamera = "OV5647";

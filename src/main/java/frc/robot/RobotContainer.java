@@ -18,6 +18,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ControlContants;
+
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
@@ -30,6 +32,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.List;
+
+import javax.naming.ldap.ControlFactory;
+
 import frc.robot.Commands.TapeAlign;
 import frc.robot.Constants.VisionConstants;
 
@@ -108,8 +113,8 @@ public class RobotContainer {
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> {
-                double up = MathUtil.applyDeadband(m_driverController.getRawAxis(3), OIConstants.kArmDeadband);
-                double down = MathUtil.applyDeadband(m_driverController.getRawAxis(2), OIConstants.kArmDeadband);
+                double up = MathUtil.applyDeadband(m_driverController.getRawAxis(ControlContants.kArmDownAxis), OIConstants.kArmDeadband);
+                double down = MathUtil.applyDeadband(m_driverController.getRawAxis(ControlContants.kArmDownAxis), OIConstants.kArmDeadband);
                 
                 // Get amount to change the setpoint
                 double change = OIConstants.kArmManualSpeed * (Math.pow(up, 3) - Math.pow(down, 3));
@@ -118,10 +123,10 @@ public class RobotContainer {
                 double new_setpoint = m_arm.setpoint + change;
 
                 // Manual soft limits, probably should remove
-                if (new_setpoint < 0.12) {
-                    new_setpoint = 0.12;
-                } else if (new_setpoint > 0.97) {
-                    new_setpoint = 0.97;
+                if (new_setpoint < ArmConstants.kLowSetpointLimit) {
+                    new_setpoint = ArmConstants.kLowSetpointLimit;
+                } else if (new_setpoint > ArmConstants.kHighSetpointLimit) {
+                    new_setpoint = ArmConstants.kHighSetpointLimit;
                 }
 
                 // Set new arm setpoint and move to it
@@ -146,16 +151,16 @@ public class RobotContainer {
   
   private void configureButtonBindings() {
     // A, B
-    final JoystickButton setxbutton = new JoystickButton(m_driverController, 1);
-    final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 2);
+    final JoystickButton setxbutton = new JoystickButton(m_driverController, ControlContants.kSetxButton);
+    final JoystickButton resetheadingButton = new JoystickButton(m_driverController, ControlContants.kResetHeadingButton);
 
     //vision align button
-    final JoystickButton tapeAlign = new JoystickButton(m_driverController, 3);
+    final JoystickButton tapeAlign = new JoystickButton(m_driverController, ControlContants.kTapeAlignButton);
 
 
     // Intake triggers
-    final Trigger reverseIntake = new Trigger(() -> m_driverController.getPOV() == 90);
-    final Trigger intake = new Trigger(() -> m_driverController.getPOV() == 270);
+    final Trigger reverseIntake = new Trigger(() -> m_driverController.getPOV() == ControlContants.kReverseIntakePOV);
+    final Trigger intake = new Trigger(() -> m_driverController.getPOV() == ControlContants.kIntakePOV);
     // final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
     // final JoystickButton intake = new JoystickButton(m_driverController, 7);
 
@@ -163,8 +168,8 @@ public class RobotContainer {
     // https://docs.google.com/document/d/170FNOZ3DKwVowGESMP2AQLjpuYHfxeh4vl-hTgFNpbM/edit?usp=sharing
 
     // Left, right bumper
-    final JoystickButton pickCone = new JoystickButton(m_operatorController, 5);
-    final JoystickButton pickCube = new JoystickButton(m_operatorController, 6);
+    final JoystickButton pickCone = new JoystickButton(m_operatorController, ControlContants.kPickConeButton);
+    final JoystickButton pickCube = new JoystickButton(m_operatorController, ControlContants.kPickCubeButton);
 
     // Handle dpad inputs
     final Trigger povUp = new Trigger(() -> m_operatorController.getPOV() == 0);
@@ -173,12 +178,12 @@ public class RobotContainer {
     final Trigger povRight = new Trigger(() -> m_operatorController.getPOV() == 90);
 
     // X, Y
-    final JoystickButton extend = new JoystickButton(m_operatorController, 3); 
-    final JoystickButton retract = new JoystickButton(m_operatorController, 4);
+    final JoystickButton extend = new JoystickButton(m_operatorController, ControlContants.kExtendButton); 
+    final JoystickButton retract = new JoystickButton(m_operatorController, ControlContants.kRetractButton);
 
     // left, right bumper
-    final JoystickButton isStoring = new JoystickButton(m_operatorController, 2);
-    final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 1);
+    final JoystickButton isStoring = new JoystickButton(m_operatorController, ControlContants.kIsStoringButton);
+    final JoystickButton isNotStoring = new JoystickButton(m_operatorController, ControlContants.kIsNotStoringButton);
 
     pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
