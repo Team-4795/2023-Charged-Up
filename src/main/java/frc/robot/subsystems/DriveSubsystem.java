@@ -19,6 +19,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.WPIUtilJNI;
 import frc.utils.SwerveUtils;
@@ -100,6 +101,12 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
             
         });
+
+    SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
+    SmartDashboard.putNumber("Elevation velocity", getElevationVelocity());
+    SmartDashboard.putNumber("Angle of Elevation (w/ Matrix)", getElevationAngleV2());
+    SmartDashboard.putNumber("Elevation velocity (w/ Matrix)", getElevationVelocityV2());
+    SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
   }
 
   /**

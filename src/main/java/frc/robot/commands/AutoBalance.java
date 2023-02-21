@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.DriveSubsystem;
@@ -40,10 +39,6 @@ public class AutoBalance extends CommandBase{
         output = updateDrive();
         drive.setBalanceSpeed(output);
         drive.drive(output, 0.0, 0.0, false, true);
-
-        SmartDashboard.putNumber("Angle of Elevation", elevationAngle);
-        SmartDashboard.putNumber("Speed", output);
-        SmartDashboard.putNumber("Elevation velocity", elevationVelocity);
     }
 
     private double updateDrive() {

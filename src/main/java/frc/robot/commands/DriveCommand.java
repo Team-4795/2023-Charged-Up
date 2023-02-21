@@ -12,7 +12,6 @@ public class DriveCommand extends CommandBase{
     double duration;
     double time;
     boolean check;
-
     double elevationAngle;
 
     public DriveCommand(DriveSubsystem drive, double speed, double angleThreshold, double checkDuration){

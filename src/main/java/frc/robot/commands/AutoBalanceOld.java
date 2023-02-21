@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -32,10 +31,6 @@ public class AutoBalanceOld extends CommandBase{
         output = updateDrive();
         //not sure if Field relative is correct, but whatever
         drive.drive(output, 0, 0, false, true);
-
-        SmartDashboard.putNumber("Angle of Elevation", elevationAngle);
-        SmartDashboard.putNumber("Velocity", output);
-        SmartDashboard.putNumber("Elevation velocity", elevationVelocity);
     }
 
     private double updateDrive() {
