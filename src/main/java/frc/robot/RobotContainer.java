@@ -166,10 +166,10 @@ public class RobotContainer {
     final JoystickButton pickCube = new JoystickButton(m_operatorController, 6);
 
     // Handle dpad inputs
-    final Trigger povUp = new Trigger(() -> m_operatorController.getPOV() == 0);
-    final Trigger povLeft = new Trigger(() -> m_operatorController.getPOV() == 270);
-    final Trigger povDown = new Trigger(() -> m_operatorController.getPOV() == 180);
-    final Trigger povRight = new Trigger(() -> m_operatorController.getPOV() == 90);
+    final Trigger povUp = new POVButton(m_operatorController, 0);
+    final Trigger povLeft = new POVButton(m_operatorController, 270);
+    final Trigger povDown = new POVButton(m_operatorController, 180);
+    final Trigger povRight = new POVButton(m_operatorController, 90);
 
     // X, Y
     final JoystickButton extend = new JoystickButton(m_operatorController, 3); 
