@@ -24,8 +24,10 @@ import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -184,8 +186,12 @@ public class RobotContainer {
     final JoystickButton isStoring = new JoystickButton(m_operatorController, 2);
     final JoystickButton isNotStoring = new JoystickButton(m_operatorController, 1);
 
-    pickCone.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
-    pickCube.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
+    pickCone.onTrue(new SequentialCommandGroup(
+        new InstantCommand(m_manager::pickCone, m_arm), 
+        new InstantCommand(() -> {m_led.setRGB(255, 255, 0);}, m_led)));
+    pickCube.onTrue(new SequentialCommandGroup(
+        new InstantCommand(m_manager::pickCube, m_arm), 
+        new InstantCommand(() -> {m_led.setRGB(127, 0, 255);}, m_led)));
 
     // Handle dpad triggers
     povUp.onTrue(new InstantCommand(() -> {m_manager.handleDpad(0); setStates();}, m_arm));
@@ -279,6 +285,7 @@ public class RobotContainer {
     m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
     m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
     m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
-    m_manager.getLED().ifPresent(m_led::setLEDState);
+    // The following is the implementation of LEDs into the state machine
+    // m_manager.getLED().ifPresent(m_led::setLEDState);
   }
 }
