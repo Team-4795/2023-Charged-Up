@@ -154,20 +154,23 @@ public class RobotContainer {
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 1);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 2);
 
-    final JoystickButton balanceButton = new JoystickButton(m_driverController, 3);
-    final JoystickButton testButton = new JoystickButton(m_driverController, 4);
+    final JoystickButton balanceButton_pos = new JoystickButton(m_driverController, 3);
+    final JoystickButton balanceButton_neg = new JoystickButton(m_driverController, 4);
 
-    //no check duration, only moves in +/- x direction in relation to robot
-    testButton.whileTrue(new SequentialCommandGroup(
-        new DriveCommandOld(m_robotDrive, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold),
+    balanceButton_pos.onTrue(new SequentialCommandGroup(
+        new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+        new DriveCommand(m_robotDrive, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
+        new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
         new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
 
-    //heading has to be set correctly with the 4' side of the charge platform parallel to the x-axis, elevation angle could be wrong here
-    balanceButton.whileTrue(new SequentialCommandGroup(
-        new DriveCommand(m_robotDrive, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
-        new AutoBalance(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
+    balanceButton_neg.onTrue(new SequentialCommandGroup(
+        new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+        new DriveCommand(m_robotDrive, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
+        new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+        new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
+
     //vision align button
     final JoystickButton tapeAlign = new JoystickButton(m_driverController, 3);
 
