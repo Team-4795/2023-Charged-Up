@@ -20,7 +20,6 @@ public class TapeAlign extends CommandBase {
   private final Vision vision;
   private boolean isAligned;
   private PIDController rotationPID;
-  private final PhotonCamera camera;
   boolean interrupted = false;
 
 
@@ -29,10 +28,9 @@ public class TapeAlign extends CommandBase {
   //placeholders
   PIDController controller = new PIDController(P_GAIN, 0, D_GAIN);
 
-  public TapeAlign(DriveSubsystem driveSubsystem, Vision vision, PhotonCamera camera) {
+  public TapeAlign(DriveSubsystem driveSubsystem, Vision vision) {
     this.driveSubsystem = driveSubsystem;
     this.vision = vision;
-    this.camera = camera;
 
     rotationPID = new PIDController(0.01, 0, 0);
     rotationPID.enableContinuousInput(-180, 180);
@@ -45,7 +43,7 @@ public class TapeAlign extends CommandBase {
   public void initialize() {
     isAligned = false;
     var robotPose = driveSubsystem.getPose();
-    camera.setPipelineIndex(1); //placeholder
+    vision.setPipelineIndex(1); //placeholder
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -53,7 +51,6 @@ public class TapeAlign extends CommandBase {
   public void execute() {
     double forwardSpeed;
     double x_speed;
-    var result = camera.getLatestResult();
     var robotPose2d = driveSubsystem.getPose();
 
     double currentHeading = driveSubsystem.getvisionheading();
