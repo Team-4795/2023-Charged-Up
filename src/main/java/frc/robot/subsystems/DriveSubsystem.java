@@ -17,7 +17,6 @@ import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.WPIUtilJNI;
 import frc.utils.SwerveUtils;
@@ -81,9 +80,8 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    //SmartDashboard.putNumber("AngleYaw", -m_gyro.getYaw());
-    //SmartDashboard.putNumber("Angle",-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset);
-    SmartDashboard.putNumber("real heading", m_gyro.getYaw());
+    //SmartDashboard.putNumber("AngleYaw", m_gyro.getYaw());
+    //SmartDashboard.putNumber("Angle", m_gyro.getAngle());
     //SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
     //SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
 
@@ -255,7 +253,20 @@ public class DriveSubsystem extends SubsystemBase {
   public double getvisionheading(){
     return -m_gyro.getYaw();
   }
-  
+
+  public double[] getModuleStates(){
+    double[] swerveStates = new double[8];
+    swerveStates[0] = m_frontLeft.getState().angle.getDegrees();
+    swerveStates[1] = m_frontLeft.getState().speedMetersPerSecond;
+    swerveStates[2] = m_frontRight.getState().angle.getDegrees();
+    swerveStates[3] = m_frontRight.getState().speedMetersPerSecond;
+    swerveStates[4] = m_rearLeft.getState().angle.getDegrees();
+    swerveStates[5] = m_rearLeft.getState().speedMetersPerSecond;
+    swerveStates[6] = m_rearRight.getState().angle.getDegrees();
+    swerveStates[7] = m_rearRight.getState().speedMetersPerSecond;
+    return swerveStates;
+  }
+
   /**
    * Returns the turn rate of the robot.
    *
