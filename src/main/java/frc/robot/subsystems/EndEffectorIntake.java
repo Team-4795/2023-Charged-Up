@@ -37,7 +37,7 @@ public class EndEffectorIntake extends SubsystemBase {
     private boolean storing = false;
     private Timer hasBeenStoring = new Timer();
 
-    private double outtakeSpeed;
+    private double outtakeSpeed = 0.0;
 
     private double requestedSpeed;
 
