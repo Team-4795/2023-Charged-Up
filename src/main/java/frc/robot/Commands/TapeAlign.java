@@ -5,12 +5,12 @@
 package frc.robot.Commands;
 
 import org.photonvision.PhotonCamera;
-//import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.controller.PIDController;
-//import edu.wpi.first.math.geometry.Rotation2d;
-//import edu.wpi.first.networktables.NetworkTableInstance;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -20,6 +20,7 @@ public class TapeAlign extends CommandBase {
   private final Vision vision;
   private boolean isAligned;
   private PIDController rotationPID;
+  private final PhotonCamera camera;
   boolean interrupted = false;
 
 
@@ -28,13 +29,14 @@ public class TapeAlign extends CommandBase {
   //placeholders
   PIDController controller = new PIDController(P_GAIN, 0, D_GAIN);
 
-  public TapeAlign(DriveSubsystem driveSubsystem, Vision vision) {
+  public TapeAlign(DriveSubsystem driveSubsystem, Vision vision, PhotonCamera camera) {
     this.driveSubsystem = driveSubsystem;
     this.vision = vision;
+    this.camera = camera;
 
     rotationPID = new PIDController(0.01, 0, 0);
     rotationPID.enableContinuousInput(-180, 180);
-
+    
     addRequirements(driveSubsystem);
   }
 
@@ -43,29 +45,32 @@ public class TapeAlign extends CommandBase {
   public void initialize() {
     isAligned = false;
     var robotPose = driveSubsystem.getPose();
-    vision.setPipelineIndex(1); //placeholder
+    camera.setPipelineIndex(1); //placeholder
   }
-
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double forwardSpeed;
     double x_speed;
+    var result = camera.getLatestResult();
     var robotPose2d = driveSubsystem.getPose();
-
-    double currentHeading = driveSubsystem.getvisionheading();
-    double rotation = rotationPID.calculate(currentHeading,0);
-    x_speed = controller.calculate(vision.getTargetAngle(), 0);
-    driveSubsystem.drive(x_speed,-.1, rotation,true, 
-    true);
 
     if (vision.getTargetAngle() < 2) {
       interrupted = true;
+    }
 
+    if (vision.hasTargets == true) {
+      double currentHeading = driveSubsystem.getvisionheading();
+      double rotation = rotationPID.calculate(currentHeading,180);
+      x_speed = controller.calculate(vision.getTargetAngle(), 0);
+      driveSubsystem.drive(x_speed,0, rotation,true, 
+      true);
+      //driveSubsystem.drive(-x_speed, 0, 0,true, true);
+    } else {
+      driveSubsystem.drive(0,0,0,true, true);
     }
- 
-    }
-  
+  }
   @Override
   public void end(boolean interrupted) {  }
   // Returns true when the command should end.

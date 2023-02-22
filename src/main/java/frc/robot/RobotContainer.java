@@ -54,7 +54,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager();
+  StateManager m_manager = new StateManager(m_Vision);
   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -218,7 +218,7 @@ public class RobotContainer {
         m_intake));
 
     //vision align
-    tapeAlign.whileTrue(new TapeAlign(m_robotDrive,m_Vision));
+    //tapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision));
 
   }
 

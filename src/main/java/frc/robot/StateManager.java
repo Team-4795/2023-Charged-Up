@@ -1,5 +1,6 @@
 package frc.robot;
 import java.util.Optional;
+import frc.robot.subsystems.Vision;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -9,6 +10,7 @@ import frc.robot.Constants.DriveConstants;
 public class StateManager {
     // What state were in
     private State state;
+    private Vision vision;
 
     // Either what were picking or what were holding
     private Gamepiece gamepiece;
@@ -28,17 +30,20 @@ public class StateManager {
         None,
     }
 
-    public StateManager() {
+    public StateManager(Vision vision) {
         this.state = State.StowLow;
         this.gamepiece = Gamepiece.None;
+        this.vision = vision;
     }
 
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
+        vision.switchToTag();
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
+        vision.switchToTape();
     }
 
     public void stow() {
