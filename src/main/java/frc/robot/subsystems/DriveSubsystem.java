@@ -11,14 +11,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoubleArrayEntry;
 import frc.robot.Constants;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
 import frc.utils.SwerveUtils;
 
 
@@ -49,6 +53,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
+  DataLog driveLog;
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -71,10 +76,12 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+  DoubleArrayLogEntry odometryEntry;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-
-
+    driveLog = DataLogManager.getLog();
+    odometryEntry = new DoubleArrayLogEntry(driveLog, "/odometry");
   }
 
   @Override
@@ -95,6 +102,8 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
             
         });
+    
+    odometryEntry.append(new double[]{getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()});
    
   }
 

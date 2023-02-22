@@ -43,9 +43,7 @@ public class Robot extends TimedRobot {
 
     DataLogManager.start();
     log = DataLogManager.getLog();
-    armSetpoint = new DoubleLogEntry(log, "/armSetpoint");
-    intake = new DoubleLogEntry(log, "/intake");
-    state = new StringLogEntry(log, "/state");
+    log.setFilename("Odometry Testing Log");
     swerveStates = new DoubleArrayLogEntry(log, "/swerveStates");
     rotation = new DoubleLogEntry(log, "rotation");
 
