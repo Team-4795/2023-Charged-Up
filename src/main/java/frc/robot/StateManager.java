@@ -45,7 +45,7 @@ public class StateManager {
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
 
-        SmartDashboard.putString("State", state.name());
+        SmartDashboard.putString("Gamepiece", "Cone");
     }
 
     public void stow() {
