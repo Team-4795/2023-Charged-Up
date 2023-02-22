@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ControlContants;
@@ -206,11 +207,11 @@ public class RobotContainer {
 
     //Intake
     intake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kIntakeSpeed),
+        () -> m_intake.intake(IntakeConstants.kIntakeSpeed),
         m_intake));
     
     reverseIntake.whileTrue(new RunCommand(
-        () -> m_intake.intake(DriveConstants.kOuttakeSpeed),
+        () -> m_intake.intake(IntakeConstants.kOuttakeSpeed),
         m_intake));
 
     //pneumatic override
