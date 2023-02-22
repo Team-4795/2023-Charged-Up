@@ -93,12 +93,6 @@ public class LiftArm extends SubsystemBase {
     motionTimer.reset();
   }
 
-  // Set speed of arm
-  public void move(double speed){
-    requestedSpeed = speed;
-    leftArmMotor.set(speed);
-  }
-
   private void updateMotionProfile() {
     TrapezoidProfile.State state = new TrapezoidProfile.State(liftEncoder.getPosition(), liftEncoder.getVelocity());
     TrapezoidProfile.State goal = new TrapezoidProfile.State(setpoint, 0.0);
