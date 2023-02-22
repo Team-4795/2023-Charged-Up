@@ -27,11 +27,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.List;
 import frc.robot.Commands.TapeAlign;
-import frc.robot.Constants.VisionConstants;
+// import frc.robot.Constants.VisionConstants;
+// import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 
 /*
@@ -55,10 +55,11 @@ public class RobotContainer {
 
   // State manager
   StateManager m_manager = new StateManager(m_intake::isStoring);
-  
+  StateManager m_manager = new StateManager(m_Vision);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
-   */   
+   */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
@@ -81,7 +82,7 @@ public class RobotContainer {
                 m_intake.intakeFromGamepiece(m_manager.getGamepiece());
 
                 m_intake.extended = m_intake.extendedTarget;
-                
+
                 if (m_arm.setpoint < ArmConstants.kLowWristLimit) {
                     m_intake.extended = false;
                 }
@@ -98,7 +99,7 @@ public class RobotContainer {
             },
             m_intake
         )
-    
+
     );
 
 
@@ -110,7 +111,7 @@ public class RobotContainer {
             () -> {
                 double up = MathUtil.applyDeadband(m_driverController.getRawAxis(3), OIConstants.kArmDeadband);
                 double down = MathUtil.applyDeadband(m_driverController.getRawAxis(2), OIConstants.kArmDeadband);
-                
+
                 // Get amount to change the setpoint
                 double change = OIConstants.kArmManualSpeed * (Math.pow(up, 3) - Math.pow(down, 3));
 
@@ -143,7 +144,7 @@ public class RobotContainer {
    */
 
 
-  
+
   private void configureButtonBindings() {
     // A, B
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 1);
@@ -170,7 +171,7 @@ public class RobotContainer {
     final Trigger povRight = new POVButton(m_operatorController, 90);
 
     // X, Y
-    final JoystickButton extend = new JoystickButton(m_operatorController, 3); 
+    final JoystickButton extend = new JoystickButton(m_operatorController, 3);
     final JoystickButton retract = new JoystickButton(m_operatorController, 4);
 
     // A
@@ -209,8 +210,12 @@ public class RobotContainer {
         m_intake));
 
     //vision align
-    tapeAlign.whileTrue(new TapeAlign(m_robotDrive,m_Vision));
-
+    tapeAlign.whileTrue(new TapeAlign
+    (m_robotDrive,
+    m_Vision,
+    () -> m_driverController.getRawAxis(0),
+    () -> -m_driverController.getRawAxis(1)
+    ));
   }
 
 

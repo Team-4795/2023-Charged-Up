@@ -1,6 +1,7 @@
 package frc.robot;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import frc.robot.subsystems.Vision;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -10,6 +11,7 @@ import frc.robot.Constants.DriveConstants;
 public class StateManager {
     // What state were in
     private State state;
+    private Vision vision;
 
     // Either what were picking or what were holding
     private Gamepiece gamepiece;
@@ -30,22 +32,23 @@ public class StateManager {
         None,
     }
 
-    public StateManager(BooleanSupplier isStoring) {
+    public StateManager(BooleanSupplier isStoring, Vision vision) {
         this.state = State.StowLow;
         this.gamepiece = Gamepiece.None;
         this.isStoring = isStoring;
+        this.vision = vision;
     }
 
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
-
         SmartDashboard.putString("Gamepiece", "Cube");
+        vision.switchToTag();
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
-
         SmartDashboard.putString("Gamepiece", "Cone");
+        vision.switchToTape();
     }
 
     public void stow() {
