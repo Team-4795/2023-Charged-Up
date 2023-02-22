@@ -227,8 +227,7 @@ public final class Constants {
     public static final double kOuttakeSpeed = -0.3;
     public static final double kSlowCubeIntakeSpeed = 0.5;
     public static final double kSlowConeIntakeSpeed = 0.5;
-    public static final double kOtherIntakeSpeed = 0.25;
-    public static final double kRequestedSpeed = 0.25;
+    public static final double kStartIntakeSpeed = 0.0;
     public static final int kIntakeCANID = 24;
     public static final int kPHCANID = 1;
     public static final double kMaxPressure = 120;
