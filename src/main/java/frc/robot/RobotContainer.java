@@ -218,7 +218,12 @@ public class RobotContainer {
         m_intake));
 
     //vision align
-    tapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, MathUtil.applyDeadband(m_driverController.getRawAxis(0), OIConstants.kDriveDeadband)MathUtil.applyDeadband(-m_driverController.getRawAxis(1), OIConstants.kDriveDeadband)));
+    tapeAlign.whileTrue(new TapeAlign
+    (m_robotDrive,
+    m_Vision,
+    () -> m_driverController.getRawAxis(0),
+    () -> -m_driverController.getRawAxis(1)
+    ));
   }
 
 

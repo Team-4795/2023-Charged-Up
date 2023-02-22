@@ -38,8 +38,6 @@ public class TapeAlign extends CommandBase {
     Supplier<Double> yspeedSupplier) {
     this.driveSubsystem = driveSubsystem;
     this.vision = vision;
-    xspeedSupplier = xspeedSupplier;
-    yspeedSupplier = yspeedSupplier;
 
     rotationPID = new PIDController(0.01, 0, 0);
     rotationPID.enableContinuousInput(-180, 180);
@@ -76,12 +74,11 @@ public class TapeAlign extends CommandBase {
       x_speed = controller.calculate(vision.getTargetAngle(), 0);
       //y_speed = controller.calculate(vision.getTargetAngle(), 0);
 
-      driveSubsystem.drive(-x_speed,ySpeed, rotation,true, 
-      true);
-      //driveSubsystem.drive(-x_speed, 0, 0,true, true);
+      driveSubsystem.drive(-x_speed,ySpeed, rotation,true, true);
     } else {
-      driveSubsystem.drive(xSpeed,ySpeed, rotation,true, 
-      true);
+      double currentHeading = driveSubsystem.getvisionheading();
+      double rotation = rotationPID.calculate(currentHeading,0);
+      driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
     }
   }
   @Override
