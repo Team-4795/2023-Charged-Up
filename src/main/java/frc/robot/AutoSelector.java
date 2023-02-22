@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 import frc.robot.Constants.OIConstants;
 
+
 public class AutoSelector {
 
   private final SendableChooser<Command> chooser = new SendableChooser<>();
@@ -56,8 +57,8 @@ public class AutoSelector {
   PathPlannerTrajectory TwoGamePiece2 = PathPlanner.loadPath("2 Game Piece 2", new PathConstraints(4, 3));
 
 
-  PathPlannerTrajectory preload_01 = PathPlanner.loadPath("Preload (01)", new PathConstraints(4, 3));
-  PathPlannerTrajectory balance_10 = PathPlanner.loadPath("Balance (10)", new PathConstraints(4, 3));
+  //PathPlannerTrajectory preload_01 = PathPlanner.loadPath("Preload (01)", new PathConstraints(4, 3));
+ // PathPlannerTrajectory balance_10 = PathPlanner.loadPath("Balance (10)", new PathConstraints(4, 3));
 
   // Define Auto Selector
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
@@ -139,6 +140,66 @@ public class AutoSelector {
     ));
 
     // Add option of two game peice split into parts
+    chooser.addOption("TwoGamePiece", new SequentialCommandGroup( // REVIEW THIS BEFORE RUNNING
+
+        new InstantCommand(() -> {
+          // Reset odometry for the first path you run during auto
+          drivebase.resetOdometry(TwoGamePiece1.getInitialHolonomicPose()); // May need to rethink this so it faces the
+                                                                            // right direction
+        }),
+        new InstantCommand(() -> {
+          // Put it in break mode
+          drivebase.setBreakMode();
+        }),
+
+        new PPSwerveControllerCommand(
+            TwoGamePiece1,
+            drivebase::getPose, // Pose supplier
+            DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+            AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
+                                           // use feedforwards.
+            AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+            AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
+                                                  // 0 will only use feedforwards.
+            drivebase::setModuleStates, // Module states consumer
+            true, // Should the path be automatically mirrored depending on alliance color.
+                  // Optional, defaults to true
+            drivebase // Requires this drive subsystem
+        ),
+        new InstantCommand(() -> {
+          // Put the trajectory in glass
+          m_field.getObject("traj").setTrajectory(TwoGamePiece1);
+        }),
+
+        new InstantCommand(() -> {
+          // Reset odometry for the first path you run during auto
+          drivebase.resetOdometry(TwoGamePiece2.getInitialHolonomicPose()); // May need to rethink this so it faces the
+                                                                            // right direction
+        }),
+
+        new PPSwerveControllerCommand(
+            TwoGamePiece2,
+            drivebase::getPose, // Pose supplier
+            DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+            AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
+                                           // use feedforwards.
+            AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+            AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
+                                                  // 0 will only use feedforwards.
+            drivebase::setModuleStates, // Module states consumer
+            true, // Should the path be automatically mirrored depending on alliance color.
+                  // Optional, defaults to true
+            drivebase // Requires this drive subsystem
+        ),
+        new InstantCommand(() -> {
+          // Put the trajectory in glass
+          m_field.getObject("traj").setTrajectory(TwoGamePiece2);
+        })
+    ));
+
+
+
+    // Add option of two game peice split into parts with commands
     chooser.addOption("TwoGamePieceWCommands", new SequentialCommandGroup( // REVIEW THIS BEFORE RUNNING
 
         new InstantCommand(() -> {
@@ -150,13 +211,12 @@ public class AutoSelector {
           // Put it in break mode
           drivebase.setBreakMode();
         }),
-        // move arm to intake cone
+        // move arm to intake cone low
         new RunCommand(m_manager::pickCone),
         new RunCommand(() -> m_manager.handleDpad(270)),
-        
-        new RunCommand(() -> m_intake.intake(DriveConstants.kIntakeSpeed), m_intake), 
         new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-
+        // run intake at max speed
+        new RunCommand(() -> m_intake.intake(1), m_intake), 
         // wait one second or so we have enough time to pick it up | Can't use intale.timeout(1) because the motor will stop spinning after
         
 
@@ -184,7 +244,7 @@ public class AutoSelector {
         new RunCommand(() -> m_manager.handleDpad(180)),
         // run outake for 1 second
         new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
+        new RunCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1),
 
        // ensure it doesn't collide with scoring station and change cube to cone accordiingly
 
@@ -193,7 +253,7 @@ public class AutoSelector {
        new RunCommand(() -> m_manager.handleDpad(180)),
        // run outake for 1 second
        new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-       new RunCommand(() -> m_intake.intake(DriveConstants.kIntakeSpeed), m_intake),
+       new RunCommand(() -> m_intake.intake(-.5), m_intake),
 
 
 
@@ -226,79 +286,86 @@ public class AutoSelector {
         new RunCommand(() -> m_manager.handleDpad(270)),
         // run outake for 1 second
         new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1)
+        new RunCommand(() -> m_intake.intake(.5), m_intake).withTimeout(1)
 
     ));
 
 
-    chooser.addOption("Preload + balance", new SequentialCommandGroup( // REVIEW THIS BEFORE RUNNING
-      new InstantCommand(() -> {
-        // Reset odometry for the first path you run during auto
-        drivebase.resetOdometry(TwoGamePiece1.getInitialHolonomicPose()); // May need to rethink this so it faces the right direction
-      }),
-      new InstantCommand(() -> {
-        // Put it in break mode
-        drivebase.setBreakMode();
-      }),
-      // move arm to mid cone
-      new RunCommand(m_manager::pickCone),
-      new RunCommand(() -> m_manager.handleDpad(270)),
-      // run outake for 1 second
-      new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-      new RunCommand(() -> m_intake.intake(DriveConstants.kIntakeSpeed), m_intake),
+    // chooser.addOption("Preload + balance", new SequentialCommandGroup( // REVIEW THIS BEFORE RUNNING
+    //   new InstantCommand(() -> {
+    //     // Reset odometry for the first path you run during auto
+    //     drivebase.resetOdometry(TwoGamePiece1.getInitialHolonomicPose()); // May need to rethink this so it faces the right direction
+    //   }),
+    //   new InstantCommand(() -> {
+    //     // Put it in break mode
+    //     drivebase.setBreakMode();
+    //   }),
+    //   // move arm to mid cone
+    //   new RunCommand(m_manager::pickCone),
+    //   new RunCommand(() -> m_manager.handleDpad(270)),
+    //   // run outake for 1 second
+    //   new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
+    //   new RunCommand(() -> m_intake.intake(DriveConstants.kConeIntakeSpeed), m_intake),
 
-      new PPSwerveControllerCommand(
-          preload_01,
-          drivebase::getPose, // Pose supplier
-          DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-          AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
-                                         // use feedforwards.
-          AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-          AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
-                                                // 0 will only use feedforwards.
-          drivebase::setModuleStates, // Module states consumer
-          true, // Should the path be automatically mirrored depending on alliance color.
-                // Optional, defaults to true
-          drivebase // Requires this drive subsystem
-      ),
-      new InstantCommand(() -> {
-        // Put the trajectory in glass
-        m_field.getObject("traj").setTrajectory(preload_01);
-      }),
+    //   new PPSwerveControllerCommand(
+    //       preload_01,
+    //       drivebase::getPose, // Pose supplier
+    //       DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+    //       AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
+    //                                      // use feedforwards.
+    //       AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+    //       AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
+    //                                             // 0 will only use feedforwards.
+    //       drivebase::setModuleStates, // Module states consumer
+    //       true, // Should the path be automatically mirrored depending on alliance color.
+    //             // Optional, defaults to true
+    //       drivebase // Requires this drive subsystem
+    //   ),
+    //   new InstantCommand(() -> {
+    //     // Put the trajectory in glass
+    //     m_field.getObject("traj").setTrajectory(preload_01);
+    //   }),
 
-      // move arm to outake cone
-      new RunCommand(m_manager::pickCone),
-      new RunCommand(() -> m_manager.handleDpad(180)),
-      // run outake for 1 second
-      new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-      new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
+    //   // move arm to outake cone
+    //   new RunCommand(m_manager::pickCone),
+    //   new RunCommand(() -> m_manager.handleDpad(180)),
+    //   // run outake for 1 second
+    //   new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
+    //   new RunCommand(() -> m_intake.intake(DriveConstants.kConeOuttakeSpeed), m_intake).withTimeout(1),
 
-      new InstantCommand(() -> {
-        // Reset odometry for the first path you run during auto
-        drivebase.resetOdometry(balance_10.getInitialHolonomicPose()); // May need to rethink this so it faces the
-                                                                          // right direction
-      }),
+    //   new InstantCommand(() -> {
+    //     // Reset odometry for the first path you run during auto
+    //     drivebase.resetOdometry(balance_10.getInitialHolonomicPose()); // May need to rethink this so it faces the
+    //                                                                       // right direction
+    //   }),
 
-      new PPSwerveControllerCommand(
-          balance_10,
-          drivebase::getPose, // Pose supplier
-          DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-          AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
-                                         // use feedforwards.
-          AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-          AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
-                                                // 0 will only use feedforwards.
-          drivebase::setModuleStates, // Module states consumer
-          true, // Should the path be automatically mirrored depending on alliance color.
-                // Optional, defaults to true
-          drivebase // Requires this drive subsystem
-      ),
-      new InstantCommand(() -> {
-        // Put the trajectory in glass
-        m_field.getObject("traj").setTrajectory(balance_10);
-      })
+    //   new PPSwerveControllerCommand(
+    //       balance_10,
+    //       drivebase::getPose, // Pose supplier
+    //       DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+    //       AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
+    //                                      // use feedforwards.
+    //       AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+    //       AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
+    //                                             // 0 will only use feedforwards.
+    //       drivebase::setModuleStates, // Module states consumer
+    //       true, // Should the path be automatically mirrored depending on alliance color.
+    //             // Optional, defaults to true
+    //       drivebase // Requires this drive subsystem
+    //   ),
+    //   new InstantCommand(() -> {
+    //     // Put the trajectory in glass
+    //     m_field.getObject("traj").setTrajectory(balance_10);
+    //   }),
 
-    ));
+    //   new DriveCommand(drivebase, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold),
+    //   new AutoBalance(drivebase, AutoConstants.angularVelocityErrorThreshold)
+    // ));
+
+    // chooser.addOption("Balance Only", new SequentialCommandGroup(
+    //   new DriveCommand(drivebase, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold),
+    //   new AutoBalance(drivebase, AutoConstants.angularVelocityErrorThreshold)
+    // ));
 
     SmartDashboard.putData("Auto Selector", chooser);
 

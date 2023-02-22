@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.server.PathPlannerServer;
+
 //import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
@@ -46,7 +48,7 @@ public class Robot extends TimedRobot {
     log.setFilename("Odometry Testing Log");
     swerveStates = new DoubleArrayLogEntry(log, "/swerveStates");
     rotation = new DoubleLogEntry(log, "rotation");
-
+    PathPlannerServer.startServer(5811); // 5811 = port number. adjust this according to your needs
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -117,7 +119,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     m_robotContainer.m_manager.getIntakeSetpoint().ifPresent(value -> armSetpoint.append(value));
     m_robotContainer.m_manager.getArmSetpoint().ifPresent(value -> intake.append(value));
-    state.append(m_robotContainer.m_manager.getState().name());
+    //state.append(m_robotContainer.m_manager.getState().name());
     swerveStates.append(m_robotContainer.m_robotDrive.getModuleStates());
     rotation.append(m_robotContainer.m_robotDrive.getHeading().getDegrees());
   }

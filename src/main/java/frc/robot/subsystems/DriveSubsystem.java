@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -11,20 +14,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.DoubleArrayEntry;
-import frc.robot.Constants;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.DriveConstants;
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 
 
@@ -96,7 +96,7 @@ public class DriveSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("Angle", m_gyro.getAngle());
     //SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
     //SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
-
+    
     m_odometry.update(
       Rotation2d.fromDegrees(-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset),
         
@@ -109,7 +109,8 @@ public class DriveSubsystem extends SubsystemBase {
         });
     
     odometryEntry.append(new double[]{getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()});
-    m_field.setRobotPose(getPose());
+    m_field.setRobotPose( m_odometry.getPoseMeters());
+    SmartDashboard.putData("pose", m_field);
   }
 
   /**
