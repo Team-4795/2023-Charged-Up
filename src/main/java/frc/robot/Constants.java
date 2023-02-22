@@ -74,9 +74,6 @@ public final class Constants {
     
     public static final double kCubeSlowIntakeSpeed = 0.1;
     public static final double kConeSlowIntakeSpeed = 0.1;
-
-    public static final double kCubeOuttakeSpeed = -0.3;
-    public static final double kConeOuttakeSpeed = -0.3;
   }
 
   public static final class ModuleConstants {
