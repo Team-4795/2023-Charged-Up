@@ -1,5 +1,4 @@
 package frc.robot.subsystems;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.common.hardware.VisionLEDMode;
 
@@ -14,30 +13,34 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 
-public class Vision extends SubsystemBase{
-    private final PhotonCamera camera = new PhotonCamera(VisionConstants.SnakeEyesCamera);
-    final double CameraHeight = VisionConstants.CameraHeight;
-    final double TargetHeight = VisionConstants.TargetHeight;
-    final double cameraPitchRadians = VisionConstants.cameraPitchRadians;
-    public boolean hasTargets = false;
-    public boolean isTargeting = true;
-    private double targetAngle = 0;
-    double forwardSpeed;
-    double x_pitch = 0;
 
-   
+public class Vision extends SubsystemBase{
+    private final PhotonCamera camera = new PhotonCamera(VisionConstants.kSnakeEyesCamera);
+    final double CameraHeight = VisionConstants.kCameraHeight;
+    final double TargetHeight = VisionConstants.kTargetHeight;
+    final double cameraPitchRadians = VisionConstants.kCameraPitchRadians;
+    public boolean hasTargets = false;
+    public boolean isTargeting = false;
+
+        public boolean isTargeting = true;
+    private double targetAngle = 0;
+
+    private double targetAngle = VisionConstants.kTargetAngle;
+    double forwardSpeed;
+    double x_pitch = VisionConstants.kX_Pitch;
+
       public boolean hasTargets() {
         return hasTargets;
       }
-       
+
       public double getTargetAngle() {
         return targetAngle;
       }
-    
+
       public void enableLED() {
         camera.setLED(VisionLEDMode.kOn);
       }
-    
+
       public void disableLED() {
         camera.setLED(VisionLEDMode.kOff);
       }
@@ -64,8 +67,7 @@ public class Vision extends SubsystemBase{
           enableLED();
         }
       }
-
-      NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     
       NetworkTableEntry tx = table.getEntry("tx");
       NetworkTableEntry ty = table.getEntry("ty");
@@ -81,7 +83,7 @@ public class Vision extends SubsystemBase{
       
     @Override
     public void periodic() {
-      //read values periodically
+            //read values periodically
       double x = tx.getDouble(0.0);
       double y = ty.getDouble(0.0);
       double area = ta.getDouble(0.0);
@@ -92,6 +94,15 @@ public class Vision extends SubsystemBase{
             hasTargets = false;
           } else {
             hasTargets = true;
+
+        var result = camera.getLatestResult();
+
+        if (result.hasTargets()) {
+            hasTargets = true;
+            targetAngle = result.getBestTarget().getPitch(); //pitch or yaw?
+          } else {
+            hasTargets = false;
+//            targetAngle = -1;
           }
     }
     @Override
@@ -99,12 +110,12 @@ public class Vision extends SubsystemBase{
       builder.setSmartDashboardType("Vision");
       builder.addBooleanProperty("Has target", () -> hasTargets, null);
       builder.addDoubleProperty("Goal angle", () -> targetAngle, null);
-
-      //post to smart dashboard periodically
+            //post to smart dashboard periodically
       SmartDashboard.putNumber("LimelightX", x);
       SmartDashboard.putNumber("LimelightY", y);
       SmartDashboard.putNumber("LimelightArea", area);
+
     }
 }
 
-
+hhhhhhh

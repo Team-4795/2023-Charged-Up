@@ -4,7 +4,7 @@
 
 package frc.robot.Commands;
 
-import org.photonvision.PhotonCamera;
+//import org.photonvision.PhotonCamera;
 //import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -14,6 +14,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.Constants.TapeAlignConstants;
+import frc.robot.Constants.RotationConstants;
+
 
 public class TapeAlign extends CommandBase {
   private final DriveSubsystem driveSubsystem;
@@ -23,17 +26,16 @@ public class TapeAlign extends CommandBase {
   boolean interrupted = false;
 
 
-  final double P_GAIN = 0.011;
-  final double D_GAIN = 0;
-  //placeholders
-  PIDController controller = new PIDController(P_GAIN, 0, D_GAIN);
+
+  
+  PIDController controller = new PIDController(TapeAlignConstants.kP, TapeAlignConstants.kI, TapeAlignConstants.kD);
 
   public TapeAlign(DriveSubsystem driveSubsystem, Vision vision) {
     this.driveSubsystem = driveSubsystem;
     this.vision = vision;
 
-    rotationPID = new PIDController(0.01, 0, 0);
-    rotationPID.enableContinuousInput(-180, 180);
+    rotationPID = new PIDController(RotationConstants.kP, RotationConstants.kI, RotationConstants.kD);
+    rotationPID.enableContinuousInput(RotationConstants.kMinimumAngle, RotationConstants.kMaximumAngle);
 
     addRequirements(driveSubsystem);
   }
@@ -54,12 +56,12 @@ public class TapeAlign extends CommandBase {
     var robotPose2d = driveSubsystem.getPose();
 
     double currentHeading = driveSubsystem.getvisionheading();
-    double rotation = rotationPID.calculate(currentHeading,0);
-    x_speed = controller.calculate(vision.getTargetAngle(), 0);
+    double rotation = rotationPID.calculate(currentHeading,TapeAlignConstants.kRotationSetpoint);
+    x_speed = controller.calculate(vision.getTargetAngle(), TapeAlignConstants.kTranslationSetpoint);
     driveSubsystem.drive(x_speed,-.1, rotation,true, 
     true);
 
-    if (vision.getTargetAngle() < 2) {
+    if (vision.getTargetAngle() < TapeAlignConstants.kAngularThreshold) {
       interrupted = true;
 
     }
