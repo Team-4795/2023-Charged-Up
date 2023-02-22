@@ -140,14 +140,14 @@ public class Align extends CommandBase {
     
           var ySpeed = yController.calculate(robotPose.getY());
           if (yController.atGoal()) {
-            ySpeed = 0;
+            ySpeed = ySpeed;
           }
     
           var omegaSpeed = omegaController.calculate(robotPose2d.getRotation().getRadians());
           if (omegaController.atGoal()) {
             omegaSpeed = 0;
           }
-          driveSubsystem.drive(xSpeed, ySpeed, omegaSpeed, true, true);
+          driveSubsystem.drive(0, ySpeed, omegaSpeed, true, true);
         }
       }
     

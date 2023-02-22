@@ -53,6 +53,7 @@ public class TapeAlign extends CommandBase {
   public void execute() {
     double forwardSpeed;
     double x_speed;
+    double y_speed;
     var result = camera.getLatestResult();
     var robotPose2d = driveSubsystem.getPose();
 
@@ -63,8 +64,11 @@ public class TapeAlign extends CommandBase {
     if (vision.hasTargets == true) {
       double currentHeading = driveSubsystem.getvisionheading();
       double rotation = rotationPID.calculate(currentHeading,180);
+
       x_speed = controller.calculate(vision.getTargetAngle(), 0);
-      driveSubsystem.drive(x_speed,0, rotation,true, 
+      y_speed = controller.calculate(vision.getTargetAngle(), 0);
+
+      driveSubsystem.drive(0,y_speed, rotation,true, 
       true);
       //driveSubsystem.drive(-x_speed, 0, 0,true, true);
     } else {
