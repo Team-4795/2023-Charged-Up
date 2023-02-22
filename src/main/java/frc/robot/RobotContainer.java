@@ -117,7 +117,7 @@ public class RobotContainer {
                 // New setpoint to move to
                 double new_setpoint = m_arm.setpoint + change;
 
-                // Manual soft limits, probably should remove
+                // Setpoint limits
                 if (new_setpoint < 0.12) {
                     new_setpoint = 0.12;
                 } else if (new_setpoint > 0.97) {
@@ -125,7 +125,9 @@ public class RobotContainer {
                 }
 
                 // Set new arm setpoint and move to it
-                m_arm.setPosition(new_setpoint);
+                m_arm.setTargetPosition(new_setpoint);
+
+                m_arm.runAutomatic();
             },
             m_arm
         )
@@ -272,7 +274,7 @@ public class RobotContainer {
   }
 
   private void setStates() {
-    m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
+    m_manager.getArmSetpoint().ifPresent(m_arm::setTargetPosition);
     m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
     m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }

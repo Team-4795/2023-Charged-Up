@@ -163,6 +163,7 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    public static final TrapezoidProfile.Constraints kArmMotionConstraint = new TrapezoidProfile.Constraints(2.0, 2.0);
     public static final int kLeftArmMotorCANID = 10;
     public static final int kRightArmMotorCANID = 11;
     public static final double kP = 1.6;
