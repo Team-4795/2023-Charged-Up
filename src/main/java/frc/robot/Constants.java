@@ -137,6 +137,9 @@ public final class Constants {
 
     public static final int kArmUpAxis = 3;
     public static final int kArmDownAxis = 2;
+    public static final int kDriveXSpeedAxis = 0;
+    public static final int kDriveYSpeedAxis = 1;
+    public static final int kDriveRotationAxis = 4;
 
     public static final JoystickButton driverA = new JoystickButton(driverController, 1);
     public static final JoystickButton driverB = new JoystickButton(driverController, 2);
