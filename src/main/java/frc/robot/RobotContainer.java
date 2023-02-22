@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.List;
 import frc.robot.Commands.TapeAlign;
@@ -54,8 +55,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager(m_intake::isStoring);
-  StateManager m_manager = new StateManager(m_Vision);
+  StateManager m_manager = new StateManager(m_intake::isStoring, m_Vision);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
