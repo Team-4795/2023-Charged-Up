@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -71,9 +71,7 @@ public final class Constants {
 
     public static final double kIntakeSpeed = 1;
     public static final double kOuttakeSpeed = -0.3;
-
-    public static final double kSlowCubeIntakeSpeed = 0.5;
-    public static final double kSlowConeIntakeSpeed = 0.5;
+    public static final double kSlowIntakeSpeed = 0.5;
   }
 
   public static final class ModuleConstants {
@@ -141,6 +139,10 @@ public final class Constants {
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
+    public static final PIDController AutoXcontroller = new PIDController(0, 0, 0);
+    public static final PIDController AutoYcontroller = new PIDController(0, 0, 0);
+    public static final PIDController AutoRotationcontroller = new PIDController(0, 0, 0);
+
     public static final double kPXController = 1;
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
@@ -148,6 +150,8 @@ public final class Constants {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    
+
   }
 
   public static final class NeoMotorConstants {

@@ -267,6 +267,13 @@ public class DriveSubsystem extends SubsystemBase {
     return swerveStates;
   }
 
+  public void setBreakMode(){
+    m_frontLeft.setBreakMode();
+    m_frontRight.setBreakMode();
+    m_rearLeft.setBreakMode();
+    m_rearRight.setBreakMode();
+  }
+
   /**
    * Returns the turn rate of the robot.
    *

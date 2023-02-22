@@ -37,8 +37,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 import frc.robot.Constants.OIConstants;
-import frc.robot.Commands.AutoBalance;
-import frc.robot.Commands.DriveCommand;
 
 public class AutoSelector {
 
@@ -156,7 +154,7 @@ public class AutoSelector {
         new RunCommand(m_manager::pickCone),
         new RunCommand(() -> m_manager.handleDpad(270)),
         
-        new RunCommand(() -> m_intake.intake(DriveConstants.kConeIntakeSpeed), m_intake), 
+        new RunCommand(() -> m_intake.intake(DriveConstants.kIntakeSpeed), m_intake), 
         new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
 
         // wait one second or so we have enough time to pick it up | Can't use intale.timeout(1) because the motor will stop spinning after
@@ -186,7 +184,7 @@ public class AutoSelector {
         new RunCommand(() -> m_manager.handleDpad(180)),
         // run outake for 1 second
         new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new RunCommand(() -> m_intake.intake(DriveConstants.kConeOuttakeSpeed), m_intake).withTimeout(1),
+        new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
 
        // ensure it doesn't collide with scoring station and change cube to cone accordiingly
 
@@ -195,7 +193,7 @@ public class AutoSelector {
        new RunCommand(() -> m_manager.handleDpad(180)),
        // run outake for 1 second
        new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-       new RunCommand(() -> m_intake.intake(DriveConstants.kConeIntakeSpeed), m_intake),
+       new RunCommand(() -> m_intake.intake(DriveConstants.kIntakeSpeed), m_intake),
 
 
 
@@ -228,7 +226,7 @@ public class AutoSelector {
         new RunCommand(() -> m_manager.handleDpad(270)),
         // run outake for 1 second
         new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new RunCommand(() -> m_intake.intake(DriveConstants.kConeOuttakeSpeed), m_intake).withTimeout(1)
+        new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1)
 
     ));
 
@@ -247,7 +245,7 @@ public class AutoSelector {
       new RunCommand(() -> m_manager.handleDpad(270)),
       // run outake for 1 second
       new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-      new RunCommand(() -> m_intake.intake(DriveConstants.kConeIntakeSpeed), m_intake),
+      new RunCommand(() -> m_intake.intake(DriveConstants.kIntakeSpeed), m_intake),
 
       new PPSwerveControllerCommand(
           preload_01,
@@ -273,7 +271,7 @@ public class AutoSelector {
       new RunCommand(() -> m_manager.handleDpad(180)),
       // run outake for 1 second
       new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-      new RunCommand(() -> m_intake.intake(DriveConstants.kConeOuttakeSpeed), m_intake).withTimeout(1),
+      new RunCommand(() -> m_intake.intake(DriveConstants.kOuttakeSpeed), m_intake).withTimeout(1),
 
       new InstantCommand(() -> {
         // Reset odometry for the first path you run during auto
@@ -298,15 +296,8 @@ public class AutoSelector {
       new InstantCommand(() -> {
         // Put the trajectory in glass
         m_field.getObject("traj").setTrajectory(balance_10);
-      }),
+      })
 
-      new DriveCommand(drivebase, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold),
-      new AutoBalance(drivebase, AutoConstants.angularVelocityErrorThreshold)
-    ));
-
-    chooser.addOption("Balance Only", new SequentialCommandGroup(
-      new DriveCommand(drivebase, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold),
-      new AutoBalance(drivebase, AutoConstants.angularVelocityErrorThreshold)
     ));
 
     SmartDashboard.putData("Auto Selector", chooser);
