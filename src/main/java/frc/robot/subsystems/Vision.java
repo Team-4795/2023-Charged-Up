@@ -18,6 +18,7 @@ public class Vision extends SubsystemBase{
     private double targetAngle = 0;
     double forwardSpeed;
     double x_pitch = 0;
+    
    
       public boolean hasTargets() {
         return hasTargets;
@@ -61,11 +62,11 @@ public class Vision extends SubsystemBase{
           enableLED();
         }
       }
-    
+
     @Override
     public void periodic() {
         var result = camera.getLatestResult();
-
+        camera.setDriverMode(false);
         if (result.hasTargets()) {
             hasTargets = true;
             targetAngle = result.getBestTarget().getPitch(); //pitch or yaw?
@@ -80,6 +81,8 @@ public class Vision extends SubsystemBase{
       builder.addBooleanProperty("Has target", () -> hasTargets, null);
       builder.addDoubleProperty("Goal angle", () -> targetAngle, null);
     }
+
+
 }
 
 
