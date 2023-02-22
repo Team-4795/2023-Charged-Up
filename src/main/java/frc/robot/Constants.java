@@ -287,10 +287,12 @@ public final class Constants {
 
   }
   public static class VisionConstants {
-    public static final String SnakeEyesCamera = "OV5647";
-    public static final double CameraHeight = 21;
-    public static final double TargetHeight = 0;
-    public static final double cameraPitchRadians = -5;
+    public static final String kSnakeEyesCamera = "OV5647";
+    public static final double kCameraHeight = 21;
+    public static final double kTargetHeight = 0;
+    public static final double kCameraPitchRadians = -5;
+    public static final double kX_Pitch = 0;
+    public static final double kTargetAngle = 0;
 
     /**
      * Physical location of the camera on the robot, relative to the center of the robot.
