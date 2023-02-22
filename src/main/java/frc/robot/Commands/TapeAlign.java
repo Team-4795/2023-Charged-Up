@@ -45,7 +45,7 @@ public class TapeAlign extends CommandBase {
   public void initialize() {
     isAligned = false;
     var robotPose = driveSubsystem.getPose();
-    vision.setPipelineIndex(1); //placeholder
+    vision.pipelineIndex(1); //placeholder
   }
 
   // Called every time the scheduler runs while the command is scheduled.

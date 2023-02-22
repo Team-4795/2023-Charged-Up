@@ -20,10 +20,7 @@ public class Vision extends SubsystemBase{
     final double TargetHeight = VisionConstants.kTargetHeight;
     final double cameraPitchRadians = VisionConstants.kCameraPitchRadians;
     public boolean hasTargets = false;
-    public boolean isTargeting = false;
-
-        public boolean isTargeting = true;
-    private double targetAngle = 0;
+    public boolean isTargeting = true;
 
     private double targetAngle = VisionConstants.kTargetAngle;
     double forwardSpeed;
@@ -58,7 +55,6 @@ public class Vision extends SubsystemBase{
         pipelineIndex(0);
         enableLED();
       }
-
       public void targetingLED() {
         if (isTargeting == false) {
           disableLED();
@@ -94,17 +90,8 @@ public class Vision extends SubsystemBase{
             hasTargets = false;
           } else {
             hasTargets = true;
-
-        var result = camera.getLatestResult();
-
-        if (result.hasTargets()) {
-            hasTargets = true;
-            targetAngle = result.getBestTarget().getPitch(); //pitch or yaw?
-          } else {
-            hasTargets = false;
-//            targetAngle = -1;
-          }
     }
+          /* 
     @Override
     public void initSendable(SendableBuilder builder) {
       builder.setSmartDashboardType("Vision");
@@ -114,8 +101,8 @@ public class Vision extends SubsystemBase{
       SmartDashboard.putNumber("LimelightX", x);
       SmartDashboard.putNumber("LimelightY", y);
       SmartDashboard.putNumber("LimelightArea", area);
-
     }
-}
+    */
 
-hhhhhhh
+}
+}
