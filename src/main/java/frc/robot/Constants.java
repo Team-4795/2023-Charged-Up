@@ -74,9 +74,6 @@ public final class Constants {
     
     public static final double kCubeSlowIntakeSpeed = 0.1;
     public static final double kConeSlowIntakeSpeed = 0.1;
-
-    public static final double kCubeOuttakeSpeed = -0.3;
-    public static final double kConeOuttakeSpeed = -0.3;
   }
 
   public static final class ModuleConstants {
@@ -184,6 +181,7 @@ public final class Constants {
     public static final double kReverseLimit = 10;
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;
+    public static final double kSensorChangeTime = 0.5;
   }
   public static class VisionConstants {
     public static final String SnakeEyesCamera = "OV5647";

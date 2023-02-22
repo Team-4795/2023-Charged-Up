@@ -38,10 +38,14 @@ public class StateManager {
 
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
+
+        SmartDashboard.putString("Gamepiece", "Cube");
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
+
+        SmartDashboard.putString("Gamepiece", "Cone");
     }
 
     public void stow() {
@@ -109,12 +113,12 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.933, false, -0.3); break;
+            case LowPickup: result = new Setpoints(0.93, false, -0.3); break;
             case SingleFeeder: result = new Setpoints(0.7, false, -0.3); break;
             case DoubleFeeder: result = new Setpoints(0.64, true, -0.3); break;
-            case LowScore: result = new Setpoints(0.91, false, -0.3); break;
-            case MidScore: result = new Setpoints(0.7, true, -0.3); break;
-            case HighScore: result = new Setpoints(.64, true, -0.3); break;
+            case LowScore: result = new Setpoints(0.89, false, -0.3); break;
+            case MidScore: result = new Setpoints(0.69, true, -0.3); break;
+            case HighScore: result = new Setpoints(.62, true, -0.3); break;
             case StowInFrame: result = new Setpoints(0.16, false, -0.3); break;
             case StowLow: result = new Setpoints(0.96, false, -0.3); break;
         }
@@ -126,11 +130,11 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.955, false, -0.4); break;
+            case LowPickup: result = new Setpoints(0.94, false, -0.4); break;
             case SingleFeeder: result = new Setpoints(0.6, false, -0.4); break;
             case DoubleFeeder: result = new Setpoints(0.64, true, -0.4); break;
             case LowScore: result = new Setpoints(0.87, false, -0.4); break;
-            case MidScore: result = new Setpoints(0.73, false, -0.4); break;
+            case MidScore: result = new Setpoints(0.71, false, -0.4); break;
             case HighScore: result = new Setpoints(.64, true, -0.4); break;
             case StowInFrame: result = new Setpoints(0.16, false, -0.4); break;
             case StowLow: result = new Setpoints(0.96, false, -0.4); break;

@@ -154,9 +154,7 @@ public class RobotContainer {
 
 
     // Intake triggers
-    final Trigger outtake = new Trigger(() -> m_driverController.getPOV() == 90);
-    // final JoystickButton reverseIntake = new JoystickButton(m_driverController, 8);
-    // final JoystickButton intake = new JoystickButton(m_driverController, 7);
+    final Trigger outtake = new POVButton(m_driverController, 90);
 
     // Keybinds:
     // https://docs.google.com/document/d/170FNOZ3DKwVowGESMP2AQLjpuYHfxeh4vl-hTgFNpbM/edit?usp=sharing
@@ -187,8 +185,8 @@ public class RobotContainer {
     povDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
     povRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
 
-    overrideStoring.onTrue(new InstantCommand(() -> m_intake.overrideStoring(true), m_intake));
-    overrideStoring.onFalse(new InstantCommand(() -> m_intake.overrideStoring(false), m_intake));
+    overrideStoring.onTrue(new InstantCommand(() -> m_intake.overrideStoring(true)));
+    overrideStoring.onFalse(new InstantCommand(() -> m_intake.overrideStoring(false)));
 
     setxbutton.whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
