@@ -45,12 +45,12 @@ public class Vision extends SubsystemBase{
       }
 
       public void switchToTag() {
-        pipelineIndex(1);
+        pipelineIndex(0);
         disableLED();
       }
     
       public void switchToTape() {
-        pipelineIndex(0);
+        pipelineIndex(1);
         enableLED();
       }
 
