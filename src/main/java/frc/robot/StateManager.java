@@ -38,11 +38,13 @@ public class StateManager {
 
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
+        SmartDashboard.putString("Gamepiece", "Cube");
         vision.switchToTag();
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
+        SmartDashboard.putString("Gamepiece", "Cone");
         vision.switchToTape();
     }
 

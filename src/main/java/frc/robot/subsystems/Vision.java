@@ -41,7 +41,7 @@ public class Vision extends SubsystemBase{
       }
 
       public void pipelineIndex(int index) {
-        camera.setPipelineIndex(1);
+        camera.setPipelineIndex(index);
       }
 
       public void switchToTag() {

@@ -34,10 +34,12 @@ public class TapeAlign extends CommandBase {
   public TapeAlign(
     DriveSubsystem driveSubsystem, 
     Vision vision,
-    Supplier<Double> xpeedSupplier, 
+    Supplier<Double> xspeedSupplier, 
     Supplier<Double> yspeedSupplier) {
     this.driveSubsystem = driveSubsystem;
     this.vision = vision;
+    this.xspeedSupplier = xspeedSupplier;
+    this.yspeedSupplier = yspeedSupplier;
 
     rotationPID = new PIDController(0.01, 0, 0);
     rotationPID.enableContinuousInput(-180, 180);
@@ -50,7 +52,6 @@ public class TapeAlign extends CommandBase {
   public void initialize() {
     isAligned = false;
     var robotPose = driveSubsystem.getPose();
-    vision.pipelineIndex(1); //placeholder
   }
   
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,9 +59,9 @@ public class TapeAlign extends CommandBase {
   public void execute() {
     double forwardSpeed;
     double x_speed;
-    //double xSpeed = xspeedSupplier.get();
+    double xSpeed = xspeedSupplier.get();
     double y_speed;
-    //double ySpeed = yspeedSupplier.get();
+    double ySpeed = yspeedSupplier.get();
     var robotPose2d = driveSubsystem.getPose();
 
     if (vision.getTargetAngle() < 2) {
@@ -70,16 +71,15 @@ public class TapeAlign extends CommandBase {
     if (vision.hasTargets == true) {
       double currentHeading = driveSubsystem.getvisionheading();
       double rotation = rotationPID.calculate(currentHeading,0);
-      
 
       x_speed = controller.calculate(vision.getTargetAngle(), 0);
       //y_speed = controller.calculate(vision.getTargetAngle(), 0);
 
-      driveSubsystem.drive(x_speed,0, rotation,true, true);
+      driveSubsystem.drive(x_speed,ySpeed, rotation,true, true);
     } else {
       double currentHeading = driveSubsystem.getvisionheading();
       double rotation = rotationPID.calculate(currentHeading,0);
-      driveSubsystem.drive(0,0,rotation,true,true);
+      driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
     }
   }
   @Override
