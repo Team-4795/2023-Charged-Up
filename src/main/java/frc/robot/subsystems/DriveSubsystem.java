@@ -19,6 +19,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.util.datalog.DataLog;
@@ -78,10 +80,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   DoubleArrayLogEntry odometryEntry;
 
+  public Field2d m_field = new Field2d();
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     driveLog = DataLogManager.getLog();
     odometryEntry = new DoubleArrayLogEntry(driveLog, "/odometry");
+    SmartDashboard.putData(m_field);
   }
 
   @Override
@@ -104,7 +109,7 @@ public class DriveSubsystem extends SubsystemBase {
         });
     
     odometryEntry.append(new double[]{getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()});
-   
+    m_field.setRobotPose(getPose());
   }
 
   /**
