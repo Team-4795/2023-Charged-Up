@@ -6,7 +6,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -130,24 +132,35 @@ public final class Constants {
   }
 
   public static final class ControlContants {
+    public static final GenericHID driverController = new GenericHID(OIConstants.kDriverControllerPort);
+    public static final GenericHID operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
+
     public static final int kArmUpAxis = 3;
     public static final int kArmDownAxis = 2;
 
-    public static final int kSetxButton = 1;
-    public static final int kResetHeadingButton = 2;
-    public static final int kTapeAlignButton = 3;
+    public static final JoystickButton driverA = new JoystickButton(driverController, 1);
+    public static final JoystickButton driverB = new JoystickButton(driverController, 2);
+    public static final JoystickButton driverX = new JoystickButton(driverController, 3);
+    public static final JoystickButton driverY = new JoystickButton(driverController, 4);
+    public static final JoystickButton driverBumperLeft = new JoystickButton(driverController, 5);
+    public static final JoystickButton driverBumperRight = new JoystickButton(driverController, 6);
 
-    public static final int kReverseIntakePOV = 90;
-    public static final int kIntakePOV = 270;
+    public static final POVButton driverDpadUp = new POVButton(driverController, 0);
+    public static final POVButton driverDpadLeft = new POVButton(driverController, 270);
+    public static final POVButton driverDpadDown = new POVButton(driverController, 180);
+    public static final POVButton driverDpadRight = new POVButton(driverController, 90);
 
-    public static final int kPickConeButton = 5;
-    public static final int kPickCubeButton = 6;
+    public static final JoystickButton operatorA = new JoystickButton(operatorController, 1);
+    public static final JoystickButton operatorB = new JoystickButton(operatorController, 2);
+    public static final JoystickButton operatorX = new JoystickButton(operatorController, 3);
+    public static final JoystickButton operatorY = new JoystickButton(operatorController, 4);
+    public static final JoystickButton operatorBumperLeft = new JoystickButton(operatorController, 5);
+    public static final JoystickButton operatorBumperRight = new JoystickButton(operatorController, 6);
 
-    public static final int kExtendButton = 3;
-    public static final int kRetractButton = 4;
-
-    public static final int kIsStoringButton = 2;
-    public static final int kIsNotStoringButton = 1;
+    public static final POVButton operatorDpadUp = new POVButton(operatorController, 0);
+    public static final POVButton operatorDpadLeft = new POVButton(operatorController, 270);
+    public static final POVButton operatorDpadDown = new POVButton(operatorController, 180);
+    public static final POVButton operatorDpadRight = new POVButton(operatorController, 90);
   }
 
   public static final class AutoConstants {
