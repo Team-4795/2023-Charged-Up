@@ -36,12 +36,6 @@ public class PipelineSwitch extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (pipelineIndex == 1) {
-      vision.switchToTag();
-    }
-    else {
-      vision.switchToTape();
-    }
   }
 
   // public boolean targetLED() {
