@@ -27,11 +27,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.List;
 import frc.robot.Commands.TapeAlign;
-import frc.robot.Constants.VisionConstants;
+// import frc.robot.Constants.VisionConstants;
+// import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 
 /*
@@ -218,8 +218,7 @@ public class RobotContainer {
         m_intake));
 
     //vision align
-    //tapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision));
-
+    tapeAlign.whileTrue(new TapeAlign(m_robotDrive, m_Vision, MathUtil.applyDeadband(m_driverController.getRawAxis(0), OIConstants.kDriveDeadband)MathUtil.applyDeadband(-m_driverController.getRawAxis(1), OIConstants.kDriveDeadband)));
   }
 
 

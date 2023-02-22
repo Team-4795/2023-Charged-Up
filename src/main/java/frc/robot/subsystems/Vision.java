@@ -4,7 +4,7 @@ import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import frc.robot.Constants;
+//import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 
 
@@ -33,6 +33,10 @@ public class Vision extends SubsystemBase{
     
       public void disableLED() {
         camera.setLED(VisionLEDMode.kOff);
+      }
+
+      public void setLEDBrightness() {
+        //set led brightness here
       }
 
       public void pipelineIndex(int index) {

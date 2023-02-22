@@ -6,6 +6,7 @@ package frc.robot.Commands;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,19 +21,25 @@ public class TapeAlign extends CommandBase {
   private final Vision vision;
   private boolean isAligned;
   private PIDController rotationPID;
-  private final PhotonCamera camera;
   boolean interrupted = false;
 
+  private Supplier<Double> xspeedSupplier;
+  private Supplier<Double> yspeedSupplier;
 
   final double P_GAIN = 0.011;
   final double D_GAIN = 0;
   //placeholders
   PIDController controller = new PIDController(P_GAIN, 0, D_GAIN);
 
-  public TapeAlign(DriveSubsystem driveSubsystem, Vision vision, PhotonCamera camera) {
+  public TapeAlign(
+    DriveSubsystem driveSubsystem, 
+    Vision vision,
+    Supplier<Double> xpeedSupplier, 
+    Supplier<Double> yspeedSupplier) {
     this.driveSubsystem = driveSubsystem;
     this.vision = vision;
-    this.camera = camera;
+    xspeedSupplier = xspeedSupplier;
+    yspeedSupplier = yspeedSupplier;
 
     rotationPID = new PIDController(0.01, 0, 0);
     rotationPID.enableContinuousInput(-180, 180);
@@ -45,7 +52,7 @@ public class TapeAlign extends CommandBase {
   public void initialize() {
     isAligned = false;
     var robotPose = driveSubsystem.getPose();
-    camera.setPipelineIndex(1); //placeholder
+    vision.pipelineIndex(1); //placeholder
   }
   
   // Called every time the scheduler runs while the command is scheduled.
@@ -53,8 +60,9 @@ public class TapeAlign extends CommandBase {
   public void execute() {
     double forwardSpeed;
     double x_speed;
+    double xSpeed = xspeedSupplier.get();
     double y_speed;
-    var result = camera.getLatestResult();
+    double ySpeed = yspeedSupplier.get();
     var robotPose2d = driveSubsystem.getPose();
 
     if (vision.getTargetAngle() < 2) {
@@ -66,13 +74,14 @@ public class TapeAlign extends CommandBase {
       double rotation = rotationPID.calculate(currentHeading,180);
 
       x_speed = controller.calculate(vision.getTargetAngle(), 0);
-      y_speed = controller.calculate(vision.getTargetAngle(), 0);
+      //y_speed = controller.calculate(vision.getTargetAngle(), 0);
 
-      driveSubsystem.drive(0,y_speed, rotation,true, 
+      driveSubsystem.drive(-x_speed,ySpeed, rotation,true, 
       true);
       //driveSubsystem.drive(-x_speed, 0, 0,true, true);
     } else {
-      driveSubsystem.drive(0,0,0,true, true);
+      driveSubsystem.drive(xSpeed,ySpeed, rotation,true, 
+      true);
     }
   }
   @Override
