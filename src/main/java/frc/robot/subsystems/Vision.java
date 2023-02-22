@@ -9,14 +9,14 @@ import frc.robot.Constants.VisionConstants;
 
 
 public class Vision extends SubsystemBase{
-    private final PhotonCamera camera = new PhotonCamera(VisionConstants.SnakeEyesCamera);
-    final double CameraHeight = VisionConstants.CameraHeight;
-    final double TargetHeight = VisionConstants.TargetHeight;
-    final double cameraPitchRadians = VisionConstants.cameraPitchRadians;
+    private final PhotonCamera camera = new PhotonCamera(VisionConstants.kSnakeEyesCamera);
+    final double CameraHeight = VisionConstants.kCameraHeight;
+    final double TargetHeight = VisionConstants.kTargetHeight;
+    final double cameraPitchRadians = VisionConstants.kCameraPitchRadians;
     public boolean hasTargets = false;
-    private double targetAngle = 0;
+    private double targetAngle = VisionConstants.kTargetAngle;
     double forwardSpeed;
-    double x_pitch = 0;
+    double x_pitch = VisionConstants.kX_Pitch;
 
       public boolean hasTargets() {
         return hasTargets;
