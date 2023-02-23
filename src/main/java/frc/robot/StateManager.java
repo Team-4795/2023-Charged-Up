@@ -1,44 +1,55 @@
 package frc.robot;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import frc.robot.subsystems.Vision;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.subsystems.LiftArm;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.CubeSetpointConstants;
+import frc.robot.Constants.ConeSetpointConstants;
 
 public class StateManager {
     // What state were in
     private State state;
+    private Vision vision;
 
     // Either what were picking or what were holding
     private Gamepiece gamepiece;
 
     // If we are or are not storing a gamepiece
-    // Temporary
-    private boolean storing = false;
+    private BooleanSupplier isStoring;
+    private boolean overrideStoring;
+
 
     public enum LED {
         Cone,
         Cube,
     }
 
-    enum Gamepiece {
+    public enum Gamepiece {
         Cube,
         Cone,
         None,
     }
 
-    public StateManager() {
+    public StateManager(BooleanSupplier isStoring, Vision vision) {
         this.state = State.StowLow;
         this.gamepiece = Gamepiece.None;
+        this.isStoring = isStoring;
+        this.vision = vision;
     }
 
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
+        SmartDashboard.putString("Gamepiece", "Cube");
+        vision.switchToTag();
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
+        SmartDashboard.putString("Gamepiece", "Cone");
+        vision.switchToTape();
     }
 
     public void stow() {
@@ -46,9 +57,9 @@ public class StateManager {
     }
 
     public void handleDpad(int angle) {
-        if (storing) {
+        if (isStoring.getAsBoolean() ^ overrideStoring) {
             switch (angle) {
-                case 0: state = State.HighScoreCube; break;
+                case 0: state = State.HighScore; break;
                 case 270: state = State.MidScore; break;
                 case 180: state = State.LowScore; break;
                 case 90: state = State.StowInFrame; break;
@@ -67,24 +78,12 @@ public class StateManager {
         SmartDashboard.putString("State", state.name());
     }
 
-    public void toggleStoring() {
-        storing = !storing;
-    }
-
-    public void setStoring() {
-        storing = true;
-    }
-
-    public void setNotStoring() {
-        storing = false;
-    }
-
     public Optional<Double> getArmSetpoint() {
         return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.arm);
     }
 
-    public Optional<Double> getIntakeSetpoint() {
-        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.intake);
+    public Optional<Double> getOuttakeSetpoint() {
+        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.outtake);
     }
 
     public Optional<LED> getLED() {
@@ -98,6 +97,10 @@ public class StateManager {
     public State getState() {
         return this.state;
     }
+
+    public Gamepiece getGamepiece() {
+        return this.gamepiece;
+    }
 }
 
 enum State {
@@ -106,7 +109,7 @@ enum State {
     DoubleFeeder,
     LowScore,
     MidScore,
-    HighScoreCube,
+    HighScore,
     StowInFrame,
     StowLow;
 
@@ -114,14 +117,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.933, false, 0.5); break;
-            case SingleFeeder: result = new Setpoints(0.7, false, 0.5); break;
-            case DoubleFeeder: result = new Setpoints(0.64, true, 0.5); break;
-            case LowScore: result = new Setpoints(0.91, false, 0.1); break;
-            case MidScore: result = new Setpoints(0.7, true, 0.1); break;
-            case HighScoreCube: result = new Setpoints(.64, true, 0.1); break;
-            case StowInFrame: result = new Setpoints(0.16, false, 0.1); break;
-            case StowLow: result = new Setpoints(0.96, false, 0.1); break;
+            case LowPickup: result = new Setpoints(CubeSetpointConstants.kLowPickupArm, CubeSetpointConstants.kLowPickupWrist,CubeSetpointConstants.kLowPickupOuttake); break;
+            case SingleFeeder: result = new Setpoints(CubeSetpointConstants.kSingleFeederArm, CubeSetpointConstants.kSingleFeederWrist, CubeSetpointConstants.kSingleFeederOuttake); break;
+            case DoubleFeeder: result = new Setpoints(CubeSetpointConstants.kDoubleFeederArm, CubeSetpointConstants.kDoubleFeederWrist, CubeSetpointConstants.kDoubleFeederOuttake); break;
+            case LowScore: result = new Setpoints(CubeSetpointConstants.kLowScoreArm, CubeSetpointConstants.kLowScoreWrist, CubeSetpointConstants.kLowScoreOuttake); break;
+            case MidScore: result = new Setpoints(CubeSetpointConstants.kMidScoreArm, CubeSetpointConstants.kMidScoreWrist, CubeSetpointConstants.kMidScoreOuttake); break;
+            case HighScore: result = new Setpoints(CubeSetpointConstants.kHighScoreArm, CubeSetpointConstants.kHighScoreWrist, CubeSetpointConstants.kHighScoreOuttake); break;
+            case StowInFrame: result = new Setpoints(CubeSetpointConstants.kStowInFrameArm, CubeSetpointConstants.kStowInFrameWrist, CubeSetpointConstants.kStowInFrameOuttake); break;
+            case StowLow: result = new Setpoints(CubeSetpointConstants.kStowLowArm, CubeSetpointConstants.kStowLowWrist, CubeSetpointConstants.kStowLowOuttake); break;
         }
 
         return Optional.ofNullable(result);
@@ -131,14 +134,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.955, false, 1.0); break;
-            case SingleFeeder: result = new Setpoints(0.6, false, 1.0); break;
-            case DoubleFeeder: result = new Setpoints(0.64, true, 1.0); break;
-            case LowScore: result = new Setpoints(0.87, false, 0.1); break;//not really tested
-            case MidScore: result = new Setpoints(0.73, false, 0.1); break;
-            case HighScoreCube: result = new Setpoints(.64, true, 0.1); break;
-            case StowInFrame: result = new Setpoints(0.16, false, 0.1); break;
-            case StowLow: result = new Setpoints(0.96, false, 0.1); break;
+            case LowPickup: result = new Setpoints(ConeSetpointConstants.kLowPickupArm, ConeSetpointConstants.kLowPickupWrist,ConeSetpointConstants.kLowPickupOuttake); break;
+            case SingleFeeder: result = new Setpoints(ConeSetpointConstants.kSingleFeederArm, ConeSetpointConstants.kSingleFeederWrist, ConeSetpointConstants.kSingleFeederOuttake); break;
+            case DoubleFeeder: result = new Setpoints(ConeSetpointConstants.kDoubleFeederArm, ConeSetpointConstants.kDoubleFeederWrist, ConeSetpointConstants.kDoubleFeederOuttake); break;
+            case LowScore: result = new Setpoints(ConeSetpointConstants.kLowScoreArm, ConeSetpointConstants.kLowScoreWrist, ConeSetpointConstants.kLowScoreOuttake); break;
+            case MidScore: result = new Setpoints(ConeSetpointConstants.kMidScoreArm, ConeSetpointConstants.kMidScoreWrist, ConeSetpointConstants.kMidScoreOuttake); break;
+            case HighScore: result = new Setpoints(ConeSetpointConstants.kHighScoreArm, ConeSetpointConstants.kHighScoreWrist, ConeSetpointConstants.kHighScoreOuttake); break;
+            case StowInFrame: result = new Setpoints(ConeSetpointConstants.kStowInFrameArm, ConeSetpointConstants.kStowInFrameWrist, ConeSetpointConstants.kStowInFrameOuttake); break;
+            case StowLow: result = new Setpoints(ConeSetpointConstants.kStowLowArm, ConeSetpointConstants.kStowLowWrist, ConeSetpointConstants.kStowLowOuttake); break;
         }
 
         return Optional.ofNullable(result);
@@ -164,11 +167,11 @@ enum State {
 class Setpoints {
     double arm;
     boolean wrist;
-    double intake;
+    double outtake;
 
-    Setpoints(double arm, boolean wrist, double intake) {
+    Setpoints(double arm, boolean wrist, double outtake) {
         this.arm = arm;
         this.wrist = wrist;
-        this.intake = intake;
+        this.outtake = outtake;
     }
 }
