@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.time.Instant;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Commands.TapeAlign;
@@ -30,14 +33,14 @@ public class AutoSelector {
   // All Path Planner paths
 
   // S shape path
-  PathPlannerTrajectory SPath = PathPlanner.loadPath("S Path", new PathConstraints(4, 3));
+  PathPlannerTrajectory SPath = PathPlanner.loadPath("S Path", new PathConstraints(1, 1));
 
   // Robot go spin while driving straight path
-  PathPlannerTrajectory HolonomicDemo = PathPlanner.loadPath("Holonomic Demo", new PathConstraints(4, 3));
+  PathPlannerTrajectory HolonomicDemo = PathPlanner.loadPath("Holonomic Demo", new PathConstraints(1, 1));
   // 2 Game piece Auto part 1 (from first score to first intake)
-  PathPlannerTrajectory TwoGamePiece1 = PathPlanner.loadPath("2 Game Piece 1", new PathConstraints(4, 3));
+  PathPlannerTrajectory TwoGamePiece1 = PathPlanner.loadPath("2 Game Piece 1", new PathConstraints(1, 1));
   // 2 Game piece Auto part 2 (from intake to first second score)
-  PathPlannerTrajectory TwoGamePiece2 = PathPlanner.loadPath("2 Game Piece 2", new PathConstraints(4, 3));
+  PathPlannerTrajectory TwoGamePiece2 = PathPlanner.loadPath("2 Game Piece 2", new PathConstraints(1, 1));
 
 
   //PathPlannerTrajectory preload_01 = PathPlanner.loadPath("Preload (01)", new PathConstraints(4, 3));
@@ -203,16 +206,16 @@ public class AutoSelector {
         //Align
         new TapeAlign(
           drivebase,
-          m_vision,() -> AutoConstants.VisionXspeed, () ->AutoConstants.VisionYspeed ),
+          m_vision,() -> AutoConstants.VisionXspeed, () ->AutoConstants.VisionYspeed ).withTimeout(1.5),
   
         // move arm to intake cone low
-        new RunCommand(m_manager::pickCone),
-        new RunCommand(() -> m_manager.handleDpad(180)),
-        new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-       
+        new InstantCommand(m_manager::pickCone),
+        new InstantCommand(() -> m_manager.handleDpad(180)),
+        new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
+        new WaitCommand(1.5),
         // outake in order to score pre loaded
-        new RunCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1),
-        
+        new InstantCommand(() -> m_intake.outtake(), m_intake).withTimeout(1),
+        new WaitCommand(1),
         
         new InstantCommand(() -> {
           // Put the trajectory in glass
@@ -235,11 +238,11 @@ public class AutoSelector {
         ),
         
        // move arm to intake low cone
-       new RunCommand(m_manager::pickCone),
-       new RunCommand(() -> m_manager.handleDpad(180)),
-       new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
+       new InstantCommand(m_manager::pickCone),
+       new InstantCommand(() -> m_manager.handleDpad(180)),
+       new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
         // Run intake for .5 seconds
-       new RunCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(.5),
+       new InstantCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(.5),
 
 
 
@@ -270,14 +273,14 @@ public class AutoSelector {
         //Align
         new TapeAlign(
           drivebase,
-          m_vision,() -> AutoConstants.VisionXspeed, () ->AutoConstants.VisionYspeed ),
+          m_vision,() -> AutoConstants.VisionXspeed, () ->AutoConstants.VisionYspeed ).withTimeout(1.5),
   
         // move arm to mid cone
-        new RunCommand(m_manager::pickCone),
-        new RunCommand(() -> m_manager.handleDpad(270)),
-        new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
+        new InstantCommand(m_manager::pickCone),
+        new InstantCommand(() -> m_manager.handleDpad(270)),
+        new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
         //Run outake for 1 second to score
-        new RunCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1)
+        new InstantCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1)
 
     ));
 

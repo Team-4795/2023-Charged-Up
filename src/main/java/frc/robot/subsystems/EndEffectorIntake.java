@@ -74,7 +74,7 @@ public class EndEffectorIntake extends SubsystemBase {
         this.extendedTarget = extend;
     }
 
-    public void intakeFromGamepiece(StateManager.Gamepiece gamepiece) {
+    public void intakeFromGamepiece(StateManager.Gamepiece gamepiece, boolean isStowing) {
         double speed = 0;
 
         if (isStoring()) {
@@ -89,6 +89,10 @@ public class EndEffectorIntake extends SubsystemBase {
                 case Cone: speed = DriveConstants.kConeIntakeSpeed; break;
                 default: break;
             }
+        }
+
+        if (!isStoring() && isStowing) {
+            speed = 0;
         }
 
         requestedSpeed = speed;

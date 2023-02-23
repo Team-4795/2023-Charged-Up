@@ -118,7 +118,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // m_robotContainer.m_manager.getIntakeSetpoint().ifPresent(value -> armSetpoint.append(value));
-    m_robotContainer.m_manager.getArmSetpoint().ifPresent(value -> intake.append(value));
+    //m_robotContainer.m_manager.getArmSetpoint().ifPresent(value -> intake.append(value));
     //state.append(m_robotContainer.m_manager.getState().name());
     swerveStates.append(m_robotContainer.m_robotDrive.getModuleStates());
     rotation.append(m_robotContainer.m_robotDrive.getHeading().getDegrees());

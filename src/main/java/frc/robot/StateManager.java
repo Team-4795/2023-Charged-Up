@@ -34,7 +34,7 @@ public class StateManager {
     }
 
     public StateManager(BooleanSupplier isStoring, Vision vision) {
-        this.state = State.StowLow;
+        this.state = State.StowInFrame;
         this.gamepiece = Gamepiece.None;
         this.isStoring = isStoring;
         this.vision = vision;
@@ -96,6 +96,13 @@ public class StateManager {
 
     public State getState() {
         return this.state;
+    }
+
+    public boolean isStowing() {
+        switch (this.state) {
+            case StowInFrame: return true;
+            default: return false;
+        }
     }
 
     public Gamepiece getGamepiece() {
