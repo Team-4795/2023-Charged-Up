@@ -185,8 +185,8 @@ public class RobotContainer {
     ControlContants.driverX.whileTrue(new TapeAlign(
         m_robotDrive,
         m_Vision,
-        () -> ControlContants.driverController.getRawAxis(0),
-        () -> -ControlContants.driverController.getRawAxis(1)
+        () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
+        () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
     ));
   }
 
