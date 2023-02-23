@@ -6,7 +6,8 @@ import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.subsystems.LiftArm;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.CubeSetpointConstants;
+import frc.robot.Constants.ConeSetpointConstants;
 
 public class StateManager {
     // What state were in
@@ -116,14 +117,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.93, false, -0.3); break;
-            case SingleFeeder: result = new Setpoints(0.7, false, -0.3); break;
-            case DoubleFeeder: result = new Setpoints(0.64, true, -0.3); break;
-            case LowScore: result = new Setpoints(0.89, false, -0.3); break;
-            case MidScore: result = new Setpoints(0.69, true, -0.3); break;
-            case HighScore: result = new Setpoints(.62, true, -0.3); break;
-            case StowInFrame: result = new Setpoints(0.16, false, -0.3); break;
-            case StowLow: result = new Setpoints(0.96, false, -0.3); break;
+            case LowPickup: result = new Setpoints(CubeSetpointConstants.kLowPickupArm, CubeSetpointConstants.kLowPickupWrist,CubeSetpointConstants.kLowPickupIntake); break;
+            case SingleFeeder: result = new Setpoints(CubeSetpointConstants.kSingleFeederArm, CubeSetpointConstants.kSingleFeederWrist, CubeSetpointConstants.kSingleFeederIntake); break;
+            case DoubleFeeder: result = new Setpoints(CubeSetpointConstants.kDoubleFeederArm, CubeSetpointConstants.kDoubleFeederWrist, CubeSetpointConstants.kDoubleFeederIntake); break;
+            case LowScore: result = new Setpoints(CubeSetpointConstants.kLowScoreArm, CubeSetpointConstants.kLowScoreWrist, CubeSetpointConstants.kLowScoreIntake); break;
+            case MidScore: result = new Setpoints(CubeSetpointConstants.kMidScoreArm, CubeSetpointConstants.kMidScoreWrist, CubeSetpointConstants.kMidScoreIntake); break;
+            case HighScore: result = new Setpoints(CubeSetpointConstants.kHighScoreArm, CubeSetpointConstants.kHighScoreWrist, CubeSetpointConstants.kHighScoreIntake); break;
+            case StowInFrame: result = new Setpoints(CubeSetpointConstants.kStowInFrameArm, CubeSetpointConstants.kStowInFrameWrist, CubeSetpointConstants.kStowInFrameIntake); break;
+            case StowLow: result = new Setpoints(CubeSetpointConstants.kStowLowArm, CubeSetpointConstants.kStowLowWrist, CubeSetpointConstants.kStowLowIntake); break;
         }
 
         return Optional.ofNullable(result);
@@ -133,14 +134,14 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(0.94, false, -0.4); break;
-            case SingleFeeder: result = new Setpoints(0.6, false, -0.4); break;
-            case DoubleFeeder: result = new Setpoints(0.64, true, -0.4); break;
-            case LowScore: result = new Setpoints(0.87, false, -0.4); break;
-            case MidScore: result = new Setpoints(0.71, false, -0.4); break;
-            case HighScore: result = new Setpoints(.64, true, -0.4); break;
-            case StowInFrame: result = new Setpoints(0.16, false, -0.4); break;
-            case StowLow: result = new Setpoints(0.96, false, -0.4); break;
+            case LowPickup: result = new Setpoints(ConeSetpointConstants.kLowPickupArm, ConeSetpointConstants.kLowPickupWrist,ConeSetpointConstants.kLowPickupIntake); break;
+            case SingleFeeder: result = new Setpoints(ConeSetpointConstants.kSingleFeederArm, ConeSetpointConstants.kSingleFeederWrist, ConeSetpointConstants.kSingleFeederIntake); break;
+            case DoubleFeeder: result = new Setpoints(ConeSetpointConstants.kDoubleFeederArm, ConeSetpointConstants.kDoubleFeederWrist, ConeSetpointConstants.kDoubleFeederIntake); break;
+            case LowScore: result = new Setpoints(ConeSetpointConstants.kLowScoreArm, ConeSetpointConstants.kLowScoreWrist, ConeSetpointConstants.kLowScoreIntake); break;
+            case MidScore: result = new Setpoints(ConeSetpointConstants.kMidScoreArm, ConeSetpointConstants.kMidScoreWrist, ConeSetpointConstants.kMidScoreIntake); break;
+            case HighScore: result = new Setpoints(ConeSetpointConstants.kHighScoreArm, ConeSetpointConstants.kHighScoreWrist, ConeSetpointConstants.kHighScoreIntake); break;
+            case StowInFrame: result = new Setpoints(ConeSetpointConstants.kStowInFrameArm, ConeSetpointConstants.kStowInFrameWrist, ConeSetpointConstants.kStowInFrameIntake); break;
+            case StowLow: result = new Setpoints(ConeSetpointConstants.kStowLowArm, ConeSetpointConstants.kStowLowWrist, ConeSetpointConstants.kStowLowIntake); break;
         }
 
         return Optional.ofNullable(result);

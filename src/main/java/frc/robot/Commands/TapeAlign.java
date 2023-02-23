@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.Constants.TapeAlignConstants;
+import frc.robot.Constants.RotationConstants;
+
 
 public class TapeAlign extends CommandBase {
   private final DriveSubsystem driveSubsystem;
@@ -26,10 +29,9 @@ public class TapeAlign extends CommandBase {
   private Supplier<Double> xspeedSupplier;
   private Supplier<Double> yspeedSupplier;
 
-  final double P_GAIN = 0.011;
-  final double D_GAIN = 0;
-  //placeholders
-  PIDController controller = new PIDController(P_GAIN, 0, D_GAIN);
+
+  
+  PIDController controller = new PIDController(TapeAlignConstants.kP, TapeAlignConstants.kI, TapeAlignConstants.kD);
 
   public TapeAlign(
     DriveSubsystem driveSubsystem, 
@@ -41,9 +43,9 @@ public class TapeAlign extends CommandBase {
     this.xspeedSupplier = xspeedSupplier;
     this.yspeedSupplier = yspeedSupplier;
 
-    rotationPID = new PIDController(0.01, 0, 0);
-    rotationPID.enableContinuousInput(-180, 180);
-    
+    rotationPID = new PIDController(RotationConstants.kP, RotationConstants.kI, RotationConstants.kD);
+    rotationPID.enableContinuousInput(RotationConstants.kMinimumAngle, RotationConstants.kMaximumAngle);
+
     addRequirements(driveSubsystem);
   }
 

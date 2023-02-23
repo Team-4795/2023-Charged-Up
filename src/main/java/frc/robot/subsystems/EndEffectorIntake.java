@@ -20,16 +20,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.StateManager;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IntakeConstants;
+
 //Sensor imports
 import frc.robot.Sensors.HiLetGo;
 
 
 public class EndEffectorIntake extends SubsystemBase {
     private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
-    private final CANSparkMax intakeMotor = new CANSparkMax(24, MotorType.kBrushed);
-    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
-    private final PneumaticHub m_ph = new PneumaticHub(1);
-    private final HiLetGo hiLetGo = new HiLetGo(0);
+    private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kIntakeCANID, MotorType.kBrushed);
+    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, IntakeConstants.kForwardChannel, IntakeConstants.kReverseChannel);
+    private final PneumaticHub m_ph = new PneumaticHub(IntakeConstants.kPHCANID);
+    private final HiLetGo hiLetGo = new HiLetGo(IntakeConstants.kHiLetGoPort);
+
+    public double intakeSpeed = IntakeConstants.kStartIntakeSpeed;
+    public double requestedSpeed = IntakeConstants.kStartIntakeSpeed;
 
     public boolean extendedTarget = false;
     public boolean extended = false;
@@ -39,19 +44,19 @@ public class EndEffectorIntake extends SubsystemBase {
 
     private double outtakeSpeed = 0.0;
 
-    private double requestedSpeed;
-
     private boolean overrideStoring = false;
 
     public EndEffectorIntake(){
         intakeMotor.restoreFactoryDefaults();
         intakeMotor.setInverted(true);
         intakeMotor.setIdleMode(IdleMode.kBrake);
-        intakeMotor.setSmartCurrentLimit(25);
+        intakeMotor.setSmartCurrentLimit(IntakeConstants.kCurrentLimit);
         intakeMotor.burnFlash();
-        compressor.enableAnalog(90, 120);
-        hasBeenStoring.reset();
+
         hasBeenStoring.start();
+        hasBeenStoring.reset();
+
+        compressor.enableAnalog(IntakeConstants.kMinPressure, IntakeConstants.kMaxPressure);
     }
 
     public void extend() {
