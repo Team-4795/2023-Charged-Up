@@ -151,6 +151,10 @@ public class AutoSelector {
           // Put it in break mode
           drivebase.setBreakMode();
         }),
+        new InstantCommand(() -> {
+          // Put the trajectory in glass
+          m_field.getObject("traj").setTrajectory(TwoGamePiece1);
+        }),
 
         new PPSwerveControllerCommand(
             TwoGamePiece1,
@@ -166,15 +170,16 @@ public class AutoSelector {
                   // Optional, defaults to true
             drivebase // Requires this drive subsystem
         ),
-        new InstantCommand(() -> {
-          // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(TwoGamePiece1);
-        }),
+        
 
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
           drivebase.resetOdometry(TwoGamePiece2.getInitialHolonomicPose()); // May need to rethink this so it faces the
                                                                             // right direction
+        }),
+        new InstantCommand(() -> {
+          // Put the trajectory in glass
+          m_field.getObject("traj").setTrajectory(TwoGamePiece2);
         }),
 
         new PPSwerveControllerCommand(
@@ -191,10 +196,12 @@ public class AutoSelector {
                   // Optional, defaults to true
             drivebase // Requires this drive subsystem
         ),
-        new InstantCommand(() -> {
-          // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(TwoGamePiece2);
-        })
+
+        new InstantCommand( () -> {
+          drivebase.drive(0,0,0,true,true);
+        }
+        )
+        
     ));
 
 

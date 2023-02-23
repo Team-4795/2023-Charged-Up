@@ -41,12 +41,5 @@
         "open": true
       }
     }
-  },
-  "NetworkTables": {
-    "transitory": {
-      "SmartDashboard": {
-        "open": true
-      }
-    }
   }
 }
