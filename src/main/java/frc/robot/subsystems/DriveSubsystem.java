@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -110,6 +111,9 @@ public class DriveSubsystem extends SubsystemBase {
     
     odometryEntry.append(new double[]{getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()});
     m_field.setRobotPose( m_odometry.getPoseMeters());
+    SmartDashboard.putNumber("x", getPose().getX());
+    SmartDashboard.putNumber("y", getPose().getY());
+    SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putData("pose", m_field);
   }
 
