@@ -60,7 +60,7 @@ public class RobotContainer {
 
 
   StateManager m_manager = new StateManager(m_intake::isStoring, m_Vision);
-  AutoSelector autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_robotDrive.m_field, m_manager);
+  AutoSelector autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_robotDrive.m_field, m_manager, m_Vision);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */

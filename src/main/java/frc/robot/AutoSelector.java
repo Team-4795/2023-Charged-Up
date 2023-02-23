@@ -1,42 +1,25 @@
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Commands.TapeAlign;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
-import frc.robot.StateManager;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-
-import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.Vision;
 
 
 public class AutoSelector {
@@ -61,8 +44,7 @@ public class AutoSelector {
  // PathPlannerTrajectory balance_10 = PathPlanner.loadPath("Balance (10)", new PathConstraints(4, 3));
 
   // Define Auto Selector
-  public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
-      StateManager m_manager) {
+  public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field, StateManager m_manager, Vision m_vision) {
 
     // Define first path option as Holonomic Demo
     chooser.setDefaultOption("Holonomic Demo", new SequentialCommandGroup(
@@ -206,8 +188,8 @@ public class AutoSelector {
 
 
 
-    // Add option of two game peice split into parts with commands
-    chooser.addOption("TwoGamePieceWCommands", new SequentialCommandGroup( // REVIEW THIS BEFORE RUNNING
+    // Add option of Vision based two game peice split into parts with commands
+    chooser.addOption("VisionTwoGamePieceWCommands", new SequentialCommandGroup( 
 
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
@@ -218,14 +200,24 @@ public class AutoSelector {
           // Put it in break mode
           drivebase.setBreakMode();
         }),
+        //Align
+        new TapeAlign(
+          drivebase,
+          m_vision,() -> AutoConstants.VisionXspeed, () ->AutoConstants.VisionYspeed ),
+  
         // move arm to intake cone low
         new RunCommand(m_manager::pickCone),
-        new RunCommand(() -> m_manager.handleDpad(270)),
+        new RunCommand(() -> m_manager.handleDpad(180)),
         new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        // run intake at max speed
-        new RunCommand(() -> m_intake.intake(1), m_intake), 
-        // wait one second or so we have enough time to pick it up | Can't use intale.timeout(1) because the motor will stop spinning after
+       
+        // outake in order to score pre loaded
+        new RunCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1),
         
+        
+        new InstantCommand(() -> {
+          // Put the trajectory in glass
+          m_field.getObject("traj").setTrajectory(TwoGamePiece1);
+        }),
 
         new PPSwerveControllerCommand(
             TwoGamePiece1,
@@ -241,26 +233,13 @@ public class AutoSelector {
                   // Optional, defaults to true
             drivebase // Requires this drive subsystem
         ),
-        new InstantCommand(() -> {
-          // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(TwoGamePiece1);
-        }),
-
-        // move arm to outtake cone
-        new RunCommand(m_manager::pickCone),
-        new RunCommand(() -> m_manager.handleDpad(180)),
-        // run outake for 1 second
-        new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new RunCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1),
-
-       // ensure it doesn't collide with scoring station and change cube to cone accordiingly
-
-       // move arm to intake cone
+        
+       // move arm to intake low cone
        new RunCommand(m_manager::pickCone),
        new RunCommand(() -> m_manager.handleDpad(180)),
-       // run outake for 1 second
        new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-       new RunCommand(() -> m_intake.intake(-.5), m_intake),
+        // Run intake for .5 seconds
+       new RunCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(.5),
 
 
 
@@ -268,6 +247,10 @@ public class AutoSelector {
           // Reset odometry for the first path you run during auto
           drivebase.resetOdometry(TwoGamePiece2.getInitialHolonomicPose()); // May need to rethink this so it faces the
                                                                             // right direction
+        }),
+        new InstantCommand(() -> {
+          // Put the trajectory in glass
+          m_field.getObject("traj").setTrajectory(TwoGamePiece2);
         }),
 
         new PPSwerveControllerCommand(
@@ -284,16 +267,17 @@ public class AutoSelector {
                   // Optional, defaults to true
             drivebase // Requires this drive subsystem
         ),
-        new InstantCommand(() -> {
-          // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(TwoGamePiece2);
-        }),
+        //Align
+        new TapeAlign(
+          drivebase,
+          m_vision,() -> AutoConstants.VisionXspeed, () ->AutoConstants.VisionYspeed ),
+  
         // move arm to mid cone
         new RunCommand(m_manager::pickCone),
         new RunCommand(() -> m_manager.handleDpad(270)),
-        // run outake for 1 second
         new RunCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new RunCommand(() -> m_intake.intake(.5), m_intake).withTimeout(1)
+        //Run outake for 1 second to score
+        new RunCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1)
 
     ));
 
