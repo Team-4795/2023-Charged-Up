@@ -268,14 +268,14 @@ public final class Constants {
     public static final boolean kStowInFrameWrist = false;
     public static final boolean kStowLowWrist = false;
 
-    public static final double kLowPickupIntake = -0.3;
-    public static final double kSingleFeederIntake = -0.3;
-    public static final double kDoubleFeederIntake = -0.3;
-    public static final double kLowScoreIntake = -0.3;
-    public static final double kMidScoreIntake = -0.3;
-    public static final double kHighScoreIntake = -0.3;
-    public static final double kStowInFrameIntake = -0.3;
-    public static final double kStowLowIntake = -0.3;
+    public static final double kLowPickupOuttake = -0.3;
+    public static final double kSingleFeederOuttake = -0.3;
+    public static final double kDoubleFeederOuttake = -0.3;
+    public static final double kLowScoreOuttake = -0.3;
+    public static final double kMidScoreOuttake = -0.3;
+    public static final double kHighScoreOuttake = -0.3;
+    public static final double kStowInFrameOuttake = -0.3;
+    public static final double kStowLowOuttake = -0.3;
 
   }
 
@@ -298,14 +298,14 @@ public final class Constants {
     public static final boolean kStowInFrameWrist = false;
     public static final boolean kStowLowWrist = false;
 
-    public static final double kLowPickupIntake = -0.4;
-    public static final double kSingleFeederIntake = -0.4;
-    public static final double kDoubleFeederIntake = -0.4;
-    public static final double kLowScoreIntake = -0.4;
-    public static final double kMidScoreIntake = -0.4;
-    public static final double kHighScoreIntake = -0.4;
-    public static final double kStowInFrameIntake = -0.4;
-    public static final double kStowLowIntake = -0.4;
+    public static final double kLowPickupOuttake = -0.4;
+    public static final double kSingleFeederOuttake = -0.4;
+    public static final double kDoubleFeederOuttake = -0.4;
+    public static final double kLowScoreOuttake = -0.4;
+    public static final double kMidScoreOuttake = -0.4;
+    public static final double kHighScoreOuttake = -0.4;
+    public static final double kStowInFrameOuttake = -0.4;
+    public static final double kStowLowOuttake = -0.4;
 
   }
   public static class VisionConstants {
