@@ -14,6 +14,8 @@ public class Vision extends SubsystemBase{
     final double TargetHeight = VisionConstants.kTargetHeight;
     final double cameraPitchRadians = VisionConstants.kCameraPitchRadians;
     public boolean hasTargets = false;
+    public boolean isTargeting = true;
+   
     private double targetAngle = VisionConstants.kTargetAngle;
     double forwardSpeed;
     double x_pitch = VisionConstants.kX_Pitch;
@@ -21,28 +23,50 @@ public class Vision extends SubsystemBase{
       public boolean hasTargets() {
         return hasTargets;
       }
-
+       
       public double getTargetAngle() {
         return targetAngle;
       }
-
+    
       public void enableLED() {
         camera.setLED(VisionLEDMode.kOn);
       }
-
+    
       public void disableLED() {
         camera.setLED(VisionLEDMode.kOff);
       }
 
-      public void setPipelineIndex(int index){
+      public void setLEDBrightness() {
+        //set led brightness here
+      }
+
+      public void pipelineIndex(int index) {
         camera.setPipelineIndex(index);
       }
 
+      public void switchToTag() {
+        pipelineIndex(0);
+        disableLED();
+      }
+    
+      public void switchToTape() {
+        pipelineIndex(1);
+        enableLED();
+      }
+
+      public void targetingLED() {
+        if (isTargeting == false) {
+          disableLED();
+        }
+        else {
+          enableLED();
+        }
+      }
 
     @Override
     public void periodic() {
         var result = camera.getLatestResult();
-
+        camera.setDriverMode(false);
         if (result.hasTargets()) {
             hasTargets = true;
             targetAngle = result.getBestTarget().getPitch(); //pitch or yaw?
@@ -57,4 +81,8 @@ public class Vision extends SubsystemBase{
       builder.addBooleanProperty("Has target", () -> hasTargets, null);
       builder.addDoubleProperty("Goal angle", () -> targetAngle, null);
     }
+
+
 }
+
+

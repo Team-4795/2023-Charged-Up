@@ -140,6 +140,8 @@ public final class Constants {
     public static final int kDriveXSpeedAxis = 0;
     public static final int kDriveYSpeedAxis = 1;
     public static final int kDriveRotationAxis = 4;
+    public static final int kAlignXSpeedAxis = 0;
+    public static final int kAlignYSpeedAxis = 1;
 
     public static final JoystickButton driverA = new JoystickButton(driverController, 1);
     public static final JoystickButton driverB = new JoystickButton(driverController, 2);
@@ -221,15 +223,12 @@ public final class Constants {
     public static final double kReverseLimit = 10;
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;
+    public static final double kSensorChangeTime = 0.5;
     public static final double kLowSetpointLimit = 0.12;
     public static final double kHighSetpointLimit = 0.97;
   }
 
   public static final class IntakeConstants{
-    public static final double kIntakeSpeed = 1;
-    public static final double kOuttakeSpeed = -0.3;
-    public static final double kSlowCubeIntakeSpeed = 0.5;
-    public static final double kSlowConeIntakeSpeed = 0.5;
     public static final double kStartIntakeSpeed = 0.0;
     public static final int kIntakeCANID = 24;
     public static final int kPHCANID = 1;
@@ -240,15 +239,21 @@ public final class Constants {
     public static final int kReverseChannel = 2;
     public static final int kCurrentLimit = 25;
 
+    public static final double kCubeIntakeSpeed = 0.5;
+    public static final double kConeIntakeSpeed = 1.0;
+    
+    public static final double kCubeSlowIntakeSpeed = 0.1;
+    public static final double kConeSlowIntakeSpeed = 0.1;
+
   }
 
   public static final class CubeSetpointConstants{
-    public static final double kLowPickupArm = 0.933;
+    public static final double kLowPickupArm = 0.93;
     public static final double kSingleFeederArm = 0.7;
     public static final double kDoubleFeederArm = 0.64;
-    public static final double kLowScoreArm = 0.91;
-    public static final double kMidScoreArm = 0.7;
-    public static final double kHighScoreArm = 0.64;
+    public static final double kLowScoreArm = 0.89;
+    public static final double kMidScoreArm = 0.69;
+    public static final double kHighScoreArm = .62;
     public static final double kStowInFrameArm = 0.16;
     public static final double kStowLowArm = 0.96;
     
@@ -261,24 +266,24 @@ public final class Constants {
     public static final boolean kStowInFrameWrist = false;
     public static final boolean kStowLowWrist = false;
 
-    public static final double kLowPickupIntake = 0.5;
-    public static final double kSingleFeederIntake = 0.5;
-    public static final double kDoubleFeederIntake = 0.5;
-    public static final double kLowScoreIntake = 0.1;
-    public static final double kMidScoreIntake = 0.1;
-    public static final double kHighScoreIntake = 0.1;
-    public static final double kStowInFrameIntake = 0.1;
-    public static final double kStowLowIntake = 0.1;
+    public static final double kLowPickupOuttake = -0.3;
+    public static final double kSingleFeederOuttake = -0.3;
+    public static final double kDoubleFeederOuttake = -0.3;
+    public static final double kLowScoreOuttake = -0.3;
+    public static final double kMidScoreOuttake = -0.3;
+    public static final double kHighScoreOuttake = -0.3;
+    public static final double kStowInFrameOuttake = -0.3;
+    public static final double kStowLowOuttake = -0.3;
 
   }
 
   public static final class ConeSetpointConstants{
-    public static final double kLowPickupArm = 0.955;
+    public static final double kLowPickupArm = 0.94;
     public static final double kSingleFeederArm = 0.6;
     public static final double kDoubleFeederArm = 0.64;
     public static final double kLowScoreArm = 0.87;
-    public static final double kMidScoreArm = 0.73;
-    public static final double kHighScoreArm = 0.64;
+    public static final double kMidScoreArm = 0.71;
+    public static final double kHighScoreArm = .64;
     public static final double kStowInFrameArm = 0.16;
     public static final double kStowLowArm = 0.96;
     
@@ -287,18 +292,18 @@ public final class Constants {
     public static final boolean kDoubleFeederWrist = true;
     public static final boolean kLowScoreWrist = false;
     public static final boolean kMidScoreWrist = false;
-    public static final boolean kHighScoreWrist = false;
+    public static final boolean kHighScoreWrist = true;
     public static final boolean kStowInFrameWrist = false;
     public static final boolean kStowLowWrist = false;
 
-    public static final double kLowPickupIntake = 1.0;
-    public static final double kSingleFeederIntake = 1.0;
-    public static final double kDoubleFeederIntake = 1.0;
-    public static final double kLowScoreIntake = 0.1;
-    public static final double kMidScoreIntake = 0.1;
-    public static final double kHighScoreIntake = 0.1;
-    public static final double kStowInFrameIntake = 0.1;
-    public static final double kStowLowIntake = 0.1;
+    public static final double kLowPickupOuttake = -0.4;
+    public static final double kSingleFeederOuttake = -0.4;
+    public static final double kDoubleFeederOuttake = -0.4;
+    public static final double kLowScoreOuttake = -0.4;
+    public static final double kMidScoreOuttake = -0.4;
+    public static final double kHighScoreOuttake = -0.4;
+    public static final double kStowInFrameOuttake = -0.4;
+    public static final double kStowLowOuttake = -0.4;
 
   }
   public static class VisionConstants {

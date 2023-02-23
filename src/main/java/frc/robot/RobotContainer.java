@@ -36,7 +36,8 @@ import java.util.ResourceBundle.Control;
 import javax.naming.ldap.ControlFactory;
 
 import frc.robot.Commands.TapeAlign;
-import frc.robot.Constants.VisionConstants;
+// import frc.robot.Constants.VisionConstants;
+// import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 
 /*
@@ -48,16 +49,16 @@ import frc.robot.Constants.VisionConstants;
 public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final EndEffectorIntake m_intake = new EndEffectorIntake();;
+  private final EndEffectorIntake m_intake = new EndEffectorIntake();
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
 
   // State manager
-  StateManager m_manager = new StateManager();
-  
+  StateManager m_manager = new StateManager(m_intake::isStoring, m_Vision);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
-   */   
+   */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
@@ -77,10 +78,10 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
         new RunCommand(
             () -> {
-                m_intake.intakeAutomatic();
+                m_intake.intakeFromGamepiece(m_manager.getGamepiece());
 
                 m_intake.extended = m_intake.extendedTarget;
-                
+
                 if (m_arm.setpoint < ArmConstants.kLowWristLimit) {
                     m_intake.extended = false;
                 }
@@ -97,7 +98,7 @@ public class RobotContainer {
             },
             m_intake
         )
-    
+
     );
 
 
@@ -142,7 +143,7 @@ public class RobotContainer {
    */
 
 
-  
+
   private void configureButtonBindings() {
     // Pick cone, cube
     ControlContants.operatorBumperLeft.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
@@ -154,9 +155,9 @@ public class RobotContainer {
     ControlContants.operatorDpadDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
     ControlContants.operatorDpadRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
 
-    // Storing, not storing
-    ControlContants.operatorY.onTrue(new InstantCommand(m_manager::setStoring, m_arm));
-    ControlContants.operatorX.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
+    // HiLetGo override
+    ControlContants.operatorA.onTrue(new InstantCommand(() -> m_intake.overrideStoring(true)));
+    ControlContants.operatorA.onFalse(new InstantCommand(() -> m_intake.overrideStoring(false)));
 
     // Set x
     ControlContants.driverA.whileTrue(new RunCommand(
@@ -165,14 +166,10 @@ public class RobotContainer {
 
     // Reset heading
     ControlContants.driverB.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
-
-    // Intake, outtake
-    ControlContants.operatorDpadLeft.whileTrue(new RunCommand(
-        () -> m_intake.intake(IntakeConstants.kIntakeSpeed),
-        m_intake));
     
+    // Outtake
     ControlContants.operatorDpadRight.whileTrue(new RunCommand(
-        () -> m_intake.intake(IntakeConstants.kOuttakeSpeed),
+        m_intake::outtake,
         m_intake));
 
     // Pneumatic override
@@ -185,8 +182,12 @@ public class RobotContainer {
         m_intake));
 
     // Vision align
-    ControlContants.driverX.whileTrue(new TapeAlign(m_robotDrive,m_Vision));
-
+    ControlContants.driverX.whileTrue(new TapeAlign(
+        m_robotDrive,
+        m_Vision,
+        () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
+        () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
+    ));
   }
 
 
@@ -240,7 +241,7 @@ public class RobotContainer {
 
   private void setStates() {
     m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
-    m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
+    m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed);
     m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }
 }

@@ -4,13 +4,14 @@
 
 package frc.robot.Commands;
 
-//import org.photonvision.PhotonCamera;
-//import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
-//import edu.wpi.first.math.geometry.Rotation2d;
-//import edu.wpi.first.networktables.NetworkTableInstance;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -25,14 +26,22 @@ public class TapeAlign extends CommandBase {
   private PIDController rotationPID;
   boolean interrupted = false;
 
+  private Supplier<Double> xspeedSupplier;
+  private Supplier<Double> yspeedSupplier;
 
 
   
   PIDController controller = new PIDController(TapeAlignConstants.kP, TapeAlignConstants.kI, TapeAlignConstants.kD);
 
-  public TapeAlign(DriveSubsystem driveSubsystem, Vision vision) {
+  public TapeAlign(
+    DriveSubsystem driveSubsystem, 
+    Vision vision,
+    Supplier<Double> xspeedSupplier, 
+    Supplier<Double> yspeedSupplier) {
     this.driveSubsystem = driveSubsystem;
     this.vision = vision;
+    this.xspeedSupplier = xspeedSupplier;
+    this.yspeedSupplier = yspeedSupplier;
 
     rotationPID = new PIDController(RotationConstants.kP, RotationConstants.kI, RotationConstants.kD);
     rotationPID.enableContinuousInput(RotationConstants.kMinimumAngle, RotationConstants.kMaximumAngle);
@@ -45,29 +54,36 @@ public class TapeAlign extends CommandBase {
   public void initialize() {
     isAligned = false;
     var robotPose = driveSubsystem.getPose();
-    vision.setPipelineIndex(1); //placeholder
   }
-
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double forwardSpeed;
     double x_speed;
+    double xSpeed = xspeedSupplier.get();
+    double y_speed;
+    double ySpeed = yspeedSupplier.get();
     var robotPose2d = driveSubsystem.getPose();
 
-    double currentHeading = driveSubsystem.getvisionheading();
-    double rotation = rotationPID.calculate(currentHeading,TapeAlignConstants.kRotationSetpoint);
-    x_speed = controller.calculate(vision.getTargetAngle(), TapeAlignConstants.kTranslationSetpoint);
-    driveSubsystem.drive(x_speed,-.1, rotation,true, 
-    true);
-
-    if (vision.getTargetAngle() < TapeAlignConstants.kAngularThreshold) {
+    if (vision.getTargetAngle() < 2) {
       interrupted = true;
+    }
 
+    if (vision.hasTargets == true) {
+      double currentHeading = driveSubsystem.getvisionheading();
+      double rotation = rotationPID.calculate(currentHeading,0);
+
+      x_speed = controller.calculate(vision.getTargetAngle(), 0);
+      //y_speed = controller.calculate(vision.getTargetAngle(), 0);
+
+      driveSubsystem.drive(x_speed,ySpeed, rotation,true, true);
+    } else {
+      double currentHeading = driveSubsystem.getvisionheading();
+      double rotation = rotationPID.calculate(currentHeading,0);
+      driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
     }
- 
-    }
-  
+  }
   @Override
   public void end(boolean interrupted) {  }
   // Returns true when the command should end.
