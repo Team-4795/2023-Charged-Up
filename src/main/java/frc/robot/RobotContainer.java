@@ -54,7 +54,7 @@ public class RobotContainer {
   private final Vision m_Vision = new Vision();
 
   // State manager
-  StateManager m_manager = new StateManager(m_intake::isStoring, m_Vision);
+  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -102,9 +102,7 @@ public class RobotContainer {
     );
 
 
-    // Axis 2 = to battery, axis 3 = away
-    // Subtract up movement by down movement so they cancell out if both are pressed at once
-    // Max speed is number multiplying this
+    // Subtract up movement by down movement so they cancel out if both are pressed at once
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> {
@@ -150,10 +148,10 @@ public class RobotContainer {
     ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
 
     // Setpoints
-    ControlContants.operatorDpadUp.onTrue(new InstantCommand(() -> {m_manager.handleDpad(0); setStates();}, m_arm));
-    ControlContants.operatorDpadLeft.onTrue(new InstantCommand(() -> {m_manager.handleDpad(270); setStates();}, m_arm));
-    ControlContants.operatorDpadDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
-    ControlContants.operatorDpadRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
+    ControlContants.operatorDpadUp.onTrue(new InstantCommand(() -> m_manager.dpadUp(), m_arm));
+    ControlContants.operatorDpadLeft.onTrue(new InstantCommand(() -> m_manager.dpadLeft(), m_arm));
+    ControlContants.operatorDpadDown.onTrue(new InstantCommand(() -> m_manager.dpadDown(), m_arm));
+    ControlContants.operatorDpadRight.onTrue(new InstantCommand(() -> m_manager.dpadRight(), m_arm));
 
     // HiLetGo override
     ControlContants.operatorA.onTrue(new InstantCommand(() -> m_intake.overrideStoring(true)));
@@ -237,11 +235,5 @@ public class RobotContainer {
     //return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
     return new InstantCommand();
 
-  }
-
-  private void setStates() {
-    m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
-    m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed);
-    m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }
 }
