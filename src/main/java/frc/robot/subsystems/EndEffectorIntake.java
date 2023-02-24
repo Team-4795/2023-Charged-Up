@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //robot imports
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.StateManager;
 //Sensor imports
@@ -79,14 +78,14 @@ public class EndEffectorIntake extends SubsystemBase {
 
         if (isStoring()) {
             switch (gamepiece) {
-                case Cube: speed = DriveConstants.kCubeSlowIntakeSpeed; break;
-                case Cone: speed = DriveConstants.kConeSlowIntakeSpeed; break;
+                case Cube: speed = IntakeConstants.kCubeSlowIntakeSpeed; break;
+                case Cone: speed = IntakeConstants.kConeSlowIntakeSpeed; break;
                 default: break;
             }
         } else {
             switch (gamepiece) {
-                case Cube: speed = DriveConstants.kCubeIntakeSpeed; break;
-                case Cone: speed = DriveConstants.kConeIntakeSpeed; break;
+                case Cube: speed = IntakeConstants.kCubeIntakeSpeed; break;
+                case Cone: speed = IntakeConstants.kConeIntakeSpeed; break;
                 default: break;
             }
         }

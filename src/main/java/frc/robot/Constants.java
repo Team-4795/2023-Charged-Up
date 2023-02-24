@@ -71,12 +71,6 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 9;
 
     public static final boolean kGyroReversed = false;
-
-    public static final double kCubeIntakeSpeed = 0.5;
-    public static final double kConeIntakeSpeed = 1.0;
-    
-    public static final double kCubeSlowIntakeSpeed = 0.1;
-    public static final double kConeSlowIntakeSpeed = 0.1;
   }
 
   public static final class ModuleConstants {
@@ -147,6 +141,8 @@ public final class Constants {
     public static final int kDriveXSpeedAxis = 0;
     public static final int kDriveYSpeedAxis = 1;
     public static final int kDriveRotationAxis = 4;
+    public static final int kAlignXSpeedAxis = 0;
+    public static final int kAlignYSpeedAxis = 1;
 
     public static final JoystickButton driverA = new JoystickButton(driverController, 1);
     public static final JoystickButton driverB = new JoystickButton(driverController, 2);
@@ -242,10 +238,6 @@ public final class Constants {
   }
 
   public static final class IntakeConstants{
-    public static final double kIntakeSpeed = 1;
-    public static final double kOuttakeSpeed = -0.3;
-    public static final double kSlowCubeIntakeSpeed = 0.5;
-    public static final double kSlowConeIntakeSpeed = 0.5;
     public static final double kStartIntakeSpeed = 0.0;
     public static final int kIntakeCANID = 24;
     public static final int kPHCANID = 1;
@@ -255,6 +247,12 @@ public final class Constants {
     public static final int kForwardChannel = 1;
     public static final int kReverseChannel = 2;
     public static final int kCurrentLimit = 25;
+
+    public static final double kCubeIntakeSpeed = 0.5;
+    public static final double kConeIntakeSpeed = 1.0;
+    
+    public static final double kCubeSlowIntakeSpeed = 0.1;
+    public static final double kConeSlowIntakeSpeed = 0.1;
 
   }
 
