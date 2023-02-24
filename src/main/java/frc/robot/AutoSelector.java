@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Commands.TapeAlign;
@@ -212,7 +213,7 @@ public class AutoSelector {
         new InstantCommand(m_manager::pickCone),
         new InstantCommand(() -> m_manager.handleDpad(180)),
         new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new WaitCommand(1.5),
+        new WaitUntilCommand(() -> m_arm.atSetpoint()),
         // outake in order to score pre loaded
         new InstantCommand(() -> m_intake.outtake(), m_intake).withTimeout(1),
         new WaitCommand(1),

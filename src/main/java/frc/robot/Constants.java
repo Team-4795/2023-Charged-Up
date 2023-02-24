@@ -238,6 +238,7 @@ public final class Constants {
     public static final double kSensorChangeTime = 0.5;
     public static final double kLowSetpointLimit = 0.12;
     public static final double kHighSetpointLimit = 0.97;
+    public static final double kPositionThreshold = 0.025;
   }
 
   public static final class IntakeConstants{
