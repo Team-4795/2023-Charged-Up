@@ -148,6 +148,8 @@ public final class Constants {
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
 
+    public static final double toZeroBound = 0.000001;
+
     public static final double platformMaxAngle = 10;
     public static final double balanceSpeed = 0.0684;
 

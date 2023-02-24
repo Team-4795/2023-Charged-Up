@@ -26,6 +26,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import frc.utils.RotationMatrix;
 import frc.utils.SwerveUtils;
 
 
@@ -60,8 +61,7 @@ public class DriveSubsystem extends SubsystemBase {
   AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
 
-  private double[][] rotation = new double[3][3];
-  private double[] rotationChanges = new double[3];
+  private RotationMatrix rotation;
   private double balanceSpeed = 0.0;
 
   // Slew rate filter variables for controlling lateral acceleration
@@ -96,6 +96,7 @@ public class DriveSubsystem extends SubsystemBase {
     elevationAngle = new DoubleLogEntry(driveLog, "/elevationAngle");
     elevationVelocity = new DoubleLogEntry(driveLog, "/elevationVelocity");
     speedOfBalance = new DoubleLogEntry(driveLog, "/balanceSpeed");
+    rotation = new RotationMatrix();
   }
 
   @Override
@@ -105,8 +106,6 @@ public class DriveSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("Angle", m_gyro.getAngle());
     //SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
     //SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
-
-    
 
     m_odometry.update(
       Rotation2d.fromDegrees(-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset),
@@ -121,8 +120,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
     SmartDashboard.putNumber("Elevation velocity", getElevationVelocity());
-    /*SmartDashboard.putNumber("Angle of Elevation (w/ Matrix)", getElevationAngleV2());
-    SmartDashboard.putNumber("Elevation velocity (w/ Matrix)", getElevationVelocityV2());*/
+    SmartDashboard.putNumber("Angle of Elevation (w/ Matrix)", getElevationAngleV2());
+    SmartDashboard.putNumber("Elevation velocity (w/ Matrix)", getElevationVelocityV2());
     SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
     SmartDashboard.putData("Field", m_field);
     m_field.setRobotPose(m_odometry.getPoseMeters());
@@ -294,11 +293,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getElevationVelocity(){
-    return m_gyro.getRawGyroX();
+    return rotation.findElevationVelocity(m_gyro.getPitch(), m_gyro.getRoll(), getHeading().getDegrees(), m_gyro.getRawGyroX(), m_gyro.getRawGyroY(), m_gyro.getRawGyroZ());
   }
 
   public double getElevationAngleV2(){
-    return 0.0; //in the process of remaking
+    return rotation.findElevationAngle(m_gyro.getPitch(), m_gyro.getRoll(), getHeading().getDegrees());
   }
 
   public double getElevationVelocityV2(){

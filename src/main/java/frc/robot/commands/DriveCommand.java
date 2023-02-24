@@ -25,13 +25,13 @@ public class DriveCommand extends CommandBase{
 
     @Override
     public void initialize(){
-        elevationAngle = drive.getElevationAngle();
+        elevationAngle = drive.getElevationAngleV2();
     }
 
     @Override
     public void execute(){
         drive.drive(0, speed, 0, true, true);
-        elevationAngle = drive.getElevationAngle();
+        elevationAngle = drive.getElevationAngleV2();
         if(Math.abs(elevationAngle) > angleThreshold){
             if(!check){
                 time = System.currentTimeMillis();
