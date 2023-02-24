@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -214,9 +215,10 @@ public class AutoSelector {
         new InstantCommand(m_manager::pickCone),
         new InstantCommand(() -> m_manager.handleDpad(180)),
         new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new WaitUntilCommand(() -> m_arm.atSetpoint()),
+        new WaitUntilCommand(m_arm::atSetpoint),
         // outake in order to score pre loaded
-        new InstantCommand(() -> m_intake.outtake(), m_intake).withTimeout(1),
+        // Use RunCommand to continuously run this
+        new RunCommand(m_intake::outtake, m_intake).withTimeout(1),
         new WaitCommand(1),
         
         new InstantCommand(() -> {
@@ -243,9 +245,9 @@ public class AutoSelector {
        new InstantCommand(m_manager::pickCone),
        new InstantCommand(() -> m_manager.handleDpad(180)),
        new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-       new WaitUntilCommand(() -> m_arm.atSetpoint()),
+       new WaitUntilCommand(m_arm::atSetpoint),
         // Run intake for 1 seconds
-       new InstantCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1),
+       new RunCommand(m_intake::outtake, m_intake).withTimeout(1),
 
 
 
@@ -282,9 +284,9 @@ public class AutoSelector {
         new InstantCommand(m_manager::pickCone),
         new InstantCommand(() -> m_manager.handleDpad(270)),
         new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new WaitUntilCommand(() -> m_arm.atSetpoint()),
+        new WaitUntilCommand(m_arm::atSetpoint),
         //Run outake for 1 second to score
-        new InstantCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1)
+        new RunCommand(m_intake::outtake, m_intake).withTimeout(1)
 
     ));
 
@@ -313,9 +315,9 @@ public class AutoSelector {
     new InstantCommand(m_manager::pickCone),
     new InstantCommand(() -> m_manager.handleDpad(180)),
     new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-    new WaitUntilCommand(() -> m_arm.atSetpoint()),
+    new WaitUntilCommand(m_arm::atSetpoint),
     // outake in order to score pre loaded
-    new InstantCommand(() -> m_intake.outtake(), m_intake).withTimeout(1),
+    new RunCommand(m_intake::outtake, m_intake).withTimeout(1),
     new WaitCommand(1),
     
     new InstantCommand(() -> {
@@ -342,9 +344,9 @@ public class AutoSelector {
    new InstantCommand(m_manager::pickCone),
    new InstantCommand(() -> m_manager.handleDpad(180)),
    new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-   new WaitUntilCommand(() -> m_arm.atSetpoint()),
+   new WaitUntilCommand(m_arm::atSetpoint),
     // Run intake for 1 seconds
-   new InstantCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1),
+   new RunCommand(m_intake::outtake, m_intake).withTimeout(1),
 
 
 
@@ -381,9 +383,9 @@ public class AutoSelector {
     new InstantCommand(m_manager::pickCone),
     new InstantCommand(() -> m_manager.handleDpad(270)),
     new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-    new WaitUntilCommand(() -> m_arm.atSetpoint()),
+    new WaitUntilCommand(m_arm::atSetpoint),
     //Run outake for 1 second to score
-    new InstantCommand(() -> m_intake.intake(-.5), m_intake).withTimeout(1)
+    new RunCommand(m_intake::outtake, m_intake).withTimeout(1)
 
 ));
     // chooser.addOption("Preload + balance", new SequentialCommandGroup( // REVIEW THIS BEFORE RUNNING
