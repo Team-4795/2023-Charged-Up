@@ -31,11 +31,12 @@ public class AutoBalanceOld extends CommandBase{
         output = updateDrive();
         //not sure if Field relative is correct, but whatever
         drive.drive(output, 0, 0, false, true);
+        drive.setBalanceSpeed(output);
     }
 
     private double updateDrive() {
         //assuming we drive straight in the x direction for now
-        return -(elevationAngle / elevationAngle)*(Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
+        return -signOf(elevationAngle)*(Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
     }
 
     private int signOf(double num){
@@ -49,8 +50,14 @@ public class AutoBalanceOld extends CommandBase{
     }
 
     @Override
+    public void end(boolean interrupted){
+        drive.setBalanceSpeed(0);
+    }
+
+    @Override
     public boolean isFinished(){
-        return(Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
+        return false;
+        //return(Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
     }
 
 }

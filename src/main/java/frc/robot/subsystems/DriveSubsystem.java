@@ -121,8 +121,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
     SmartDashboard.putNumber("Elevation velocity", getElevationVelocity());
-    SmartDashboard.putNumber("Angle of Elevation (w/ Matrix)", getElevationAngleV2());
-    SmartDashboard.putNumber("Elevation velocity (w/ Matrix)", getElevationVelocityV2());
+    /*SmartDashboard.putNumber("Angle of Elevation (w/ Matrix)", getElevationAngleV2());
+    SmartDashboard.putNumber("Elevation velocity (w/ Matrix)", getElevationVelocityV2());*/
     SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
     SmartDashboard.putData("Field", m_field);
     m_field.setRobotPose(m_odometry.getPoseMeters());

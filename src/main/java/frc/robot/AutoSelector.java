@@ -39,10 +39,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 public class AutoSelector {
     
   private final SendableChooser<Command> chooser = new SendableChooser<>();
-  private final EndEffectorIntake m_intake = new EndEffectorIntake();
-  private final LiftArm m_arm = new LiftArm();
+  private EndEffectorIntake m_intake;
+  private LiftArm m_arm;
   Field2d m_field = new Field2d();
-  StateManager m_manager = new StateManager();
+  StateManager m_manager;
   Timer time = new Timer();
 
   //All Path Planner paths
@@ -77,8 +77,10 @@ public class AutoSelector {
 
 
   //Define Auto Selector
-  public AutoSelector(DriveSubsystem drivebase) {
-
+  public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake intake, StateManager manager, LiftArm arm) {
+    this.m_arm = arm;
+    this.m_intake = intake;
+    this.m_manager = manager;
    
 
     //Define first path option as S path
@@ -195,7 +197,7 @@ public class AutoSelector {
           //new WaitCommand(5),
          // new InstantCommand(drivebase::disableXstance, drivebase),
               new FollowPathWithEvents(new PPSwerveControllerCommand(
-                OnePathGroup.get(1),
+                OnePathGroup.get(0),
           drivebase::getPose, // Pose supplier
         DriveConstants.kDriveKinematics, // SwerveDriveKinematics
           new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
@@ -205,7 +207,7 @@ public class AutoSelector {
           true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
           drivebase // Requires this drive subsystem
               ),
-              OnePathGroup.get(1).getMarkers(),
+              OnePathGroup.get(0).getMarkers(),
            AutoEventMap1),
            new InstantCommand(() -> {
             //Put the trajectory in glass
@@ -251,7 +253,7 @@ public class AutoSelector {
       //new WaitCommand(5),
      // new InstantCommand(drivebase::disableXstance, drivebase),
           new FollowPathWithEvents(new PPSwerveControllerCommand(
-            OnePathGroupNoEvent.get(1),
+            OnePathGroupNoEvent.get(0),
       drivebase::getPose, // Pose supplier
     DriveConstants.kDriveKinematics, // SwerveDriveKinematics
       new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
@@ -261,7 +263,7 @@ public class AutoSelector {
       true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
       drivebase // Requires this drive subsystem
           ),
-          OnePathGroupNoEvent.get(1).getMarkers(),
+          OnePathGroupNoEvent.get(0).getMarkers(),
           AutoEventMap1NoEvent),
        new InstantCommand(() -> {
         //Put the trajectory in glass

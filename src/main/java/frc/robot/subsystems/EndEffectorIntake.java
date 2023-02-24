@@ -22,7 +22,7 @@ import frc.robot.Sensors.HiLetGo;
 
 
 public class EndEffectorIntake extends SubsystemBase {
-    private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
+    private final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     private final CANSparkMax intakeMotor = new CANSparkMax(24, MotorType.kBrushed);
     private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
     private final PneumaticHub m_ph = new PneumaticHub(1);

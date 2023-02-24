@@ -64,7 +64,7 @@ public class RobotContainer {
    */   
   public RobotContainer() {
     // Configure the button bindings
-    autoSelector = new AutoSelector(m_robotDrive);
+    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_manager, m_arm);
 
     configureButtonBindings();
 
@@ -154,20 +154,20 @@ public class RobotContainer {
     final JoystickButton setxbutton = new JoystickButton(m_driverController, 1);
     final JoystickButton resetheadingButton = new JoystickButton(m_driverController, 2);
 
-    final JoystickButton balanceButton_pos = new JoystickButton(m_driverController, 3);
-    final JoystickButton balanceButton_neg = new JoystickButton(m_driverController, 4);
+    final JoystickButton balanceButton_neg = new JoystickButton(m_driverController, 3);
+    final JoystickButton balanceButton_pos = new JoystickButton(m_driverController, 4);
 
-    balanceButton_pos.onTrue(new SequentialCommandGroup(
-        new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+    balanceButton_pos.whileTrue(new SequentialCommandGroup(
+        //new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
         new DriveCommand(m_robotDrive, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
-        new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+        //new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
         new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
 
-    balanceButton_neg.onTrue(new SequentialCommandGroup(
-        new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+    balanceButton_neg.whileTrue(new SequentialCommandGroup(
+        //new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
         new DriveCommand(m_robotDrive, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
-        new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+        //new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
         new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
 
