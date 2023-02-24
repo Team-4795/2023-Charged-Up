@@ -28,7 +28,7 @@ public class RotationMatrix {
         rotation[0][0] = Math.cos(y) * Math.cos(z);
         rotation[0][1] = Math.sin(x) * Math.sin(y) * Math.cos(z) - Math.cos(x) * Math.sin(z);
         rotation[0][2] = Math.cos(x) * Math.sin(y) * Math.cos(z) - Math.sin(x) * Math.sin(z);
-        rotation[1][0] = Math.cos(y) * Math.cos(z);
+        rotation[1][0] = Math.sin(z) * Math.cos(y);
         rotation[1][1] = Math.sin(x) * Math.sin(y) * Math.sin(z) + Math.cos(x) * Math.cos(z);
         rotation[1][2] = Math.cos(x) * Math.sin(y) * Math.sin(z) - Math.sin(x) * Math.cos(z);
         rotation[2][0] = -Math.sin(y);
