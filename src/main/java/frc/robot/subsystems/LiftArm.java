@@ -96,13 +96,14 @@ public class LiftArm extends SubsystemBase {
     m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
   }
 
-  public boolean atSetpoint() {
-    return Math.abs(this.getPosition() - setpoint) < ArmConstants.kPositionThreshold;
-  }
 
   // Gets absolute position
   public double getPosition() {
     return liftEncoder.getPosition();
+  }
+  
+  public boolean atSetpoint() {
+    return Math.abs(this.getPosition() - setpoint) < ArmConstants.kPositionThreshold;
   }
 
   @Override
