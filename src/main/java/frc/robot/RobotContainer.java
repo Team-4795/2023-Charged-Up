@@ -148,18 +148,18 @@ public class RobotContainer {
     ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
 
     // Setpoints
-    ControlContants.operatorDpadUp.onTrue(new InstantCommand(() -> m_manager.dpadUp(), m_arm));
-    ControlContants.operatorDpadLeft.onTrue(new InstantCommand(() -> m_manager.dpadLeft(), m_arm));
-    ControlContants.operatorDpadDown.onTrue(new InstantCommand(() -> m_manager.dpadDown(), m_arm));
-    ControlContants.operatorDpadRight.onTrue(new InstantCommand(() -> m_manager.dpadRight(), m_arm));
+    ControlContants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
+    ControlContants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
+    ControlContants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    ControlContants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
 
     // HiLetGo override
-    ControlContants.operatorA.onTrue(new InstantCommand(() -> m_intake.overrideStoring(true)));
-    ControlContants.operatorA.onFalse(new InstantCommand(() -> m_intake.overrideStoring(false)));
+    ControlContants.operatorA.onTrue(new InstantCommand(m_intake::overrideStoring));
+    ControlContants.operatorA.onFalse(new InstantCommand(m_intake::overrideStoring));
 
     // Set x
     ControlContants.driverA.whileTrue(new RunCommand(
-        () -> m_robotDrive.setX(),
+        m_robotDrive::setX,
         m_robotDrive));
 
     // Reset heading
@@ -172,11 +172,11 @@ public class RobotContainer {
 
     // Pneumatic override
     ControlContants.operatorX.whileTrue(new RunCommand(
-        () -> m_intake.extend(),
+        m_intake::extend,
         m_intake));
 
     ControlContants.operatorY.whileTrue(new RunCommand(
-        () -> m_intake.retract(),
+        m_intake::retract,
         m_intake));
 
     // Vision align

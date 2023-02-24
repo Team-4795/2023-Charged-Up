@@ -114,8 +114,8 @@ public class EndEffectorIntake extends SubsystemBase {
         return storing ^ overrideStoring;
     }
 
-    public void overrideStoring(boolean override) {
-        this.overrideStoring = override;
+    public void overrideStoring() {
+        this.overrideStoring = !this.overrideStoring;
     }
 
     @Override
