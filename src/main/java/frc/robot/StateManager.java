@@ -7,8 +7,6 @@ import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import frc.robot.subsystems.LiftArm;
 import frc.robot.Constants.CubeSetpointConstants;
 import frc.robot.Constants.ConeSetpointConstants;
 
@@ -20,7 +18,7 @@ public class StateManager {
     // What state were in
     private State state;
 
-    // Either what were picking or what were holding
+    // Either what were picking or what were storing
     private Gamepiece gamepiece;
 
     public enum LED {
