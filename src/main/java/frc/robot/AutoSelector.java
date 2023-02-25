@@ -225,7 +225,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
   
         // move arm to intake score mid
         new InstantCommand(m_manager::pickCone),
-        new InstantCommand(() -> m_manager.handleDpad(270)),
+        new InstantCommand(() -> m_manager.dpadRight()),
         new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
         new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
         new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
@@ -257,10 +257,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
         
        // move arm to intake low cone
        new InstantCommand(m_manager::pickCone),
-       new InstantCommand(() -> m_manager.handleDpad(180)),
-       new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-       new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
-       new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+       new InstantCommand(() -> m_manager.dpadDown()),
        new WaitUntilCommand(m_arm::atSetpoint),
         // Run intake for 1 seconds
        new WaitCommand(1),
@@ -299,10 +296,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
   
         // move arm to low cone
         new InstantCommand(m_manager::pickCone),
-        new InstantCommand(() -> m_manager.handleDpad(180)),
-        new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
-        new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+        new InstantCommand(() -> m_manager.dpadDown()),
         new WaitUntilCommand(m_arm::atSetpoint),
         //Run outake for 1 second to score
         new RunCommand(m_intake::outtake, m_intake).withTimeout(1)
@@ -337,10 +331,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
 
     // move arm to intake score mid
     new InstantCommand(m_manager::pickCube),
-    new InstantCommand(() -> m_manager.handleDpad(270)),
-    new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-    new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
-    new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+    new InstantCommand(() -> m_manager.dpadRight()),
     new WaitUntilCommand(m_arm::atSetpoint),
     // outake in order to score pre loaded
     // Use RunCommand to continuously run this
@@ -369,10 +360,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
     
    // move arm to intake low cone
    new InstantCommand(m_manager::pickCube),
-   new InstantCommand(() -> m_manager.handleDpad(180)),
-   new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-   new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
-   new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+   new InstantCommand(() -> m_manager.dpadDown()),
    new WaitUntilCommand(m_arm::atSetpoint),
     // Run intake for 1 seconds
    new WaitCommand(1),
@@ -411,10 +399,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
 
     // move arm to low cube
     new InstantCommand(m_manager::pickCube),
-    new InstantCommand(() -> m_manager.handleDpad(180)),
-    new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-    new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
-    new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+    new InstantCommand(() -> m_manager.dpadDown()),
     new WaitUntilCommand(m_arm::atSetpoint),
     //Run outake for 1 second to score
     new RunCommand(m_intake::outtake, m_intake).withTimeout(1)
@@ -449,10 +434,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
 
     // move arm to intake score mid
     new InstantCommand(m_manager::pickCone),
-    new InstantCommand(() -> m_manager.handleDpad(270)),
-    new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-    new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
-    new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+    new InstantCommand(() -> m_manager.dpadRight()),
     new WaitUntilCommand(m_arm::atSetpoint),
     // outake in order to score pre loaded
     new RunCommand(m_intake::outtake, m_intake).withTimeout(1),
@@ -503,10 +485,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
   
         // move arm to intake score mid
         new InstantCommand(m_manager::pickCone),
-        new InstantCommand(() -> m_manager.handleDpad(270)),
-        new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
-        new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+        new InstantCommand(() -> m_manager.dpadRight()),
         new WaitUntilCommand(m_arm::atSetpoint),
         // outake in order to score pre loaded
         // Use RunCommand to continuously run this
@@ -535,10 +514,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
         
        // move arm to intake low cone
        new InstantCommand(m_manager::pickCone),
-       new InstantCommand(() -> m_manager.handleDpad(180)),
-       new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-       new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
-       new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+       new InstantCommand(() -> m_manager.dpadDown()),
        new WaitUntilCommand(m_arm::atSetpoint),
         // Run intake for 1 seconds
        new WaitCommand(1),
@@ -578,10 +554,7 @@ PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new Pat
   
         // move arm to low cone
         new InstantCommand(m_manager::pickCone),
-        new InstantCommand(() -> m_manager.handleDpad(180)),
-        new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
-        new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
-        new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+        new InstantCommand(() -> m_manager.dpadDown()),
         new WaitUntilCommand(m_arm::atSetpoint),
         //Run outake for 1 second to score
         new RunCommand(m_intake::outtake, m_intake).withTimeout(1)
