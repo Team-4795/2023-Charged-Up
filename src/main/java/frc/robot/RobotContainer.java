@@ -158,12 +158,12 @@ public class RobotContainer {
     ControlContants.operatorA.onFalse(new InstantCommand(m_intake::overrideStoring));
 
     // Set x
-    ControlContants.driverA.whileTrue(new RunCommand(
+    ControlContants.driverBumperLeft.whileTrue(new RunCommand(
         m_robotDrive::setX,
         m_robotDrive));
 
     // Reset heading
-    ControlContants.driverB.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
+    ControlContants.driverBumperRight.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     
     // Outtake
     ControlContants.driverDpadRight.whileTrue(new RunCommand(
@@ -180,7 +180,7 @@ public class RobotContainer {
         m_intake));
 
     // Vision align
-    ControlContants.driverX.whileTrue(new TapeAlign(
+    ControlContants.driverDpadLeft.whileTrue(new TapeAlign(
         m_robotDrive,
         m_Vision,
         () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
