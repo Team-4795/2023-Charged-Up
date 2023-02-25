@@ -72,8 +72,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
-  DataLog driveLog;
-
   private RotationMatrix rotation;
   private double balanceSpeed = 0.0;
 
@@ -99,18 +97,9 @@ public class DriveSubsystem extends SubsystemBase {
       });
 
 
-  DoubleLogEntry elevationAngle;
-  DoubleLogEntry elevationVelocity;
-  DoubleLogEntry speedOfBalance;
-
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    driveLog = DataLogManager.getLog();
-
     SmartDashboard.putData(m_field);
-    elevationAngle = new DoubleLogEntry(driveLog, "/elevationAngle");
-    elevationVelocity = new DoubleLogEntry(driveLog, "/elevationVelocity");
-    speedOfBalance = new DoubleLogEntry(driveLog, "/balanceSpeed");
     rotation = new RotationMatrix();
   }
 

@@ -28,11 +28,11 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private DataLog log;
-  private DoubleLogEntry armSetpoint;
-  private DoubleLogEntry intake;
-  private StringLogEntry state;
   private DoubleArrayLogEntry swerveStates;
   private DoubleLogEntry rotation;
+  DoubleLogEntry elevationAngle;
+  DoubleLogEntry elevationVelocity;
+  DoubleLogEntry speedOfBalance;
   
 
   /**
@@ -44,16 +44,17 @@ public class Robot extends TimedRobot {
 
     DataLogManager.start();
     log = DataLogManager.getLog();
-    log.setFilename("Odometry Testing Log");
+    log.setFilename("Auto Testing Log");
+    elevationAngle = new DoubleLogEntry(log, "/elevationAngle");
+    elevationVelocity = new DoubleLogEntry(log, "/elevationVelocity");
+    speedOfBalance = new DoubleLogEntry(log, "/balanceSpeed");
     swerveStates = new DoubleArrayLogEntry(log, "/swerveStates");
-    rotation = new DoubleLogEntry(log, "rotation");
+    rotation = new DoubleLogEntry(log, "/rotation");
     PathPlannerServer.startServer(4795); // 4795 = port number 
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
-    DataLogManager.start();
   }
 
   /**
@@ -118,9 +119,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // m_robotContainer.m_manager.getIntakeSetpoint().ifPresent(value -> armSetpoint.append(value));
-    //m_robotContainer.m_manager.getArmSetpoint().ifPresent(value -> intake.append(value));
-    //state.append(m_robotContainer.m_manager.getState().name());
+    speedOfBalance.append(m_robotContainer.m_robotDrive.getBalanceSpeed());
+    elevationAngle.append(m_robotContainer.m_robotDrive.getElevationAngleV2());
+    elevationVelocity.append(m_robotContainer.m_robotDrive.getElevationVelocityV2());
     swerveStates.append(m_robotContainer.m_robotDrive.getModuleStates());
     rotation.append(m_robotContainer.m_robotDrive.getHeading().getDegrees());
   }
