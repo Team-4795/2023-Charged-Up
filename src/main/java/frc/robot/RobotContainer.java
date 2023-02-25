@@ -18,6 +18,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Commands.*;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ControlContants;
 
@@ -28,6 +29,7 @@ import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -40,6 +42,7 @@ import javax.naming.ldap.ControlFactory;
 import frc.robot.Commands.TapeAlign;
 // import frc.robot.Constants.VisionConstants;
 // import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.VisionConstants;
 
 
 /*
@@ -55,6 +58,10 @@ public class RobotContainer {
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
 
+  // The driver's controller
+  GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
+  GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
+
   // State manager
 
 
@@ -66,6 +73,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
+    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision);
+
     configureButtonBindings();
 
     // Configure default commands
@@ -159,6 +168,25 @@ public class RobotContainer {
     ControlContants.operatorDpadLeft.onTrue(new InstantCommand(() -> {m_manager.handleDpad(270); setStates();}, m_arm));
     ControlContants.operatorDpadDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
     ControlContants.operatorDpadRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
+    final JoystickButton balanceButton_neg = new JoystickButton(m_driverController, 3);
+    final JoystickButton balanceButton_pos = new JoystickButton(m_driverController, 4);
+
+    balanceButton_pos.whileTrue(new SequentialCommandGroup(
+        //new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+        new DriveCommand(m_robotDrive, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
+        //new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+        new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
+    ));
+
+    balanceButton_neg.whileTrue(new SequentialCommandGroup(
+        //new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+        new DriveCommand(m_robotDrive, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
+        //new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+        new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
+    ));
+
+    //vision align button
+    final JoystickButton tapeAlign = new JoystickButton(m_driverController, 3);
 
     // HiLetGo override
     ControlContants.operatorA.onTrue(new InstantCommand(() -> m_intake.overrideStoring(true)));

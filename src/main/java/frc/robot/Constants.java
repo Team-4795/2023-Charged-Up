@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.HashMap;
+
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -10,6 +12,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.Command;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -171,7 +175,7 @@ public final class Constants {
 
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3; 
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
@@ -184,10 +188,24 @@ public final class Constants {
     public static final double kPThetaController = 1;
     public static final double VisionXspeed = 0;
     public static final double VisionYspeed = 0;
+
+    
+
+    public static final double toZeroBound = 0.000001;
+
+    public static final double platformMaxAngle = 10;
+    public static final double balanceSpeed = 0.0684;
+
+    public static final double driveAngleThreshold = 8; //degrees
+    public static final double driveBalanceSpeed = 0.4;
+    public static final double angularVelocityErrorThreshold = 0.15;
+    public static final double polyCoeff = 1.5;
+    public static final double checkDuration = 0.075;
+    public static final HashMap<String, Command> AutoEventMap = new HashMap<>();
+
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-    
 
   }
 

@@ -163,7 +163,9 @@ public class MAXSwerveModule {
     m_drivingEncoder.setPosition(0);
   }
 
-  public void setBreakMode() {
+  
+  public void setBreakMode()
+  {
     m_drivingSparkMax.setIdleMode(IdleMode.kBrake);
     m_turningSparkMax.setIdleMode(IdleMode.kBrake);
   }
