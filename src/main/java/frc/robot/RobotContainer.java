@@ -106,7 +106,7 @@ public class RobotContainer {
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> {
-                double up = MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kArmDownAxis), OIConstants.kArmDeadband);
+                double up = MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kArmUpAxis), OIConstants.kArmDeadband);
                 double down = MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kArmDownAxis), OIConstants.kArmDeadband);
                 
                 // Get amount to change the setpoint
@@ -166,7 +166,7 @@ public class RobotContainer {
     ControlContants.driverB.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     
     // Outtake
-    ControlContants.operatorDpadRight.whileTrue(new RunCommand(
+    ControlContants.driverDpadRight.whileTrue(new RunCommand(
         m_intake::outtake,
         m_intake));
 
