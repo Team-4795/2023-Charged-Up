@@ -79,7 +79,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
         new RunCommand(
             () -> {
-                m_intake.intakeFromGamepiece(m_manager.getGamepiece());
+                m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing());
 
                 m_intake.extended = m_intake.extendedTarget;
 
