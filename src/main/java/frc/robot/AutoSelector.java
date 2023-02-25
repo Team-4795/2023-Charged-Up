@@ -432,6 +432,7 @@ public class AutoSelector {
 
         new WaitUntilCommand(m_arm::atSetpoint),
         // outake in order to score pre loaded
+        new InstantCommand(m_intake::extend, m_intake),
         new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
         new WaitCommand(1),
         new ParallelCommandGroup(
