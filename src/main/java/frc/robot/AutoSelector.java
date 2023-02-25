@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Commands.AutoBalanceOld;
 import frc.robot.Commands.DriveCommand;
 import frc.robot.Commands.TapeAlign;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
@@ -50,7 +50,12 @@ public class AutoSelector {
 
 
 //Auto Balence with 1 cone
-PathPlannerTrajectory AutoBalence = PathPlanner.loadPath("Auto Balence", new PathConstraints(1, 1));
+PathPlannerTrajectory AutoBalence = PathPlanner.loadPath("Auto Balance", new PathConstraints(1, 1));
+
+//Path using vision from further back for cone.
+PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));
+
+
 
   // Define Auto Selector
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field, StateManager m_manager, Vision m_vision) {
@@ -475,11 +480,119 @@ PathPlannerTrajectory AutoBalence = PathPlanner.loadPath("Auto Balence", new Pat
     ));
 
     
+    //Srinivas idea
+    chooser.addOption("Srinivas", new SequentialCommandGroup( 
+        
+        new InstantCommand(() -> {
+          // Reset odometry for the first path you run during auto
+          drivebase.resetOdometry(ConeTwoGamePiece1.getInitialHolonomicPose()); // May need to rethink this so it faces the
+                                                                            // right direction
+        }),
+        new InstantCommand(() -> {
+          // Put it in break mode
+          drivebase.setBreakMode();
+        }),
+        //Set pipeline to tape 
+        new InstantCommand(() -> {
+          m_vision.switchToTape();
+        }),
+        //Align
+        new TapeAlign(
+          drivebase,
+          m_vision,() -> AutoConstants.VisionXspeed, () ->AutoConstants.VisionYspeed ).withTimeout(1.5),
+  
+        // move arm to intake score mid
+        new InstantCommand(m_manager::pickCone),
+        new InstantCommand(() -> m_manager.handleDpad(270)),
+        new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
+        new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
+        new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+        new WaitUntilCommand(m_arm::atSetpoint),
+        // outake in order to score pre loaded
+        // Use RunCommand to continuously run this
+        new RunCommand(m_intake::outtake, m_intake).withTimeout(1),
+        new WaitCommand(1),
+        
+        new InstantCommand(() -> {
+          // Put the trajectory in glass
+          m_field.getObject("traj").setTrajectory(ConeTwoGamePiece1);
+        }),
+
+        new PPSwerveControllerCommand(
+          ConeTwoGamePiece1,
+            drivebase::getPose, // Pose supplier
+            DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+            AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
+                                           // use feedforwards.
+            AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+            AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
+                                                  // 0 will only use feedforwards.
+            drivebase::setModuleStates, // Module states consumer
+            true, // Should the path be automatically mirrored depending on alliance color.
+                  // Optional, defaults to true
+            drivebase // Requires this drive subsystem
+        ),
+        
+       // move arm to intake low cone
+       new InstantCommand(m_manager::pickCone),
+       new InstantCommand(() -> m_manager.handleDpad(180)),
+       new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
+       new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
+       new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+       new WaitUntilCommand(m_arm::atSetpoint),
+        // Run intake for 1 seconds
+       new WaitCommand(1),
+        //Do I need an intake command?
+      
+
+
+        new InstantCommand(() -> {
+          // Reset odometry for the first path you run during auto
+          drivebase.resetOdometry(EarlyVision.getInitialHolonomicPose()); // May need to rethink this so it faces the
+                                                                            // right direction
+        }),
+        new InstantCommand(() -> {
+          // Put the trajectory in glass
+          m_field.getObject("traj").setTrajectory(EarlyVision);
+        }),
+
+        new PPSwerveControllerCommand(
+          EarlyVision,
+            drivebase::getPose, // Pose supplier
+            DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+            AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
+                                           // use feedforwards.
+            AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+            AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
+                                                  // 0 will only use feedforwards.
+            drivebase::setModuleStates, // Module states consumer
+            true, // Should the path be automatically mirrored depending on alliance color.
+                  // Optional, defaults to true
+            drivebase // Requires this drive subsystem
+        ),
+        //Align
+        
+        new TapeAlign(
+          drivebase,
+          m_vision,() -> AutoConstants.VisionMoveFastX, () ->AutoConstants.VisionMoveFastY ).withTimeout(1.5),
+  
+        // move arm to low cone
+        new InstantCommand(m_manager::pickCone),
+        new InstantCommand(() -> m_manager.handleDpad(180)),
+        new InstantCommand(() ->  m_manager.getArmSetpoint().ifPresent(m_arm::setPosition)),
+        new InstantCommand(() ->  m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed)),
+        new InstantCommand(() -> m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget)),
+        new WaitUntilCommand(m_arm::atSetpoint),
+        //Run outake for 1 second to score
+        new RunCommand(m_intake::outtake, m_intake).withTimeout(1)
+
+    ));
 
     SmartDashboard.putData("Auto Selector", chooser);
 
   }
   
+
 
   public Command getSelected() {
     return chooser.getSelected();
