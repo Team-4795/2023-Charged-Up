@@ -124,7 +124,14 @@ public class EndEffectorIntake extends SubsystemBase {
             hasBeenStoring.reset();
         }
 
-        if (hasBeenStoring.hasElapsed(ArmConstants.kSensorChangeTime)) {
+        double changeTime;
+        if (storing) {
+            changeTime = ArmConstants.kOuttakeSensorChangeTime;
+        } else {
+            changeTime = ArmConstants.kIntakeSensorChangeTime;
+        }
+
+        if (hasBeenStoring.hasElapsed(changeTime)) {
             storing = !storing;
             hasBeenStoring.reset();
         }
