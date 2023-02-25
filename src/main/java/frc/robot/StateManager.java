@@ -32,7 +32,7 @@ public class StateManager {
         None,
     }
 
-    public StateManager(BooleanSupplier isStoring, Vision vision) {
+    public StateManager( Vision vision,LiftArm arm, EndEffectorIntake intake) {
         this.state = State.StowInFrame;
         this.gamepiece = Gamepiece.None;
 

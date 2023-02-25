@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -67,7 +68,7 @@ public class RobotContainer {
 
 
 
-  StateManager m_manager = new StateManager(m_intake::isStoring, m_Vision);
+  StateManager m_manager = new StateManager( m_Vision, m_arm, m_intake);
   AutoSelector autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_robotDrive.m_field, m_manager, m_Vision);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -163,20 +164,10 @@ public class RobotContainer {
     ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
 
     // Setpoints
-    final JoystickButton balanceButton_neg = new JoystickButton(m_driverController, 3);
-    final JoystickButton balanceButton_pos = new JoystickButton(m_driverController, 4);
+    final JoystickButton balanceButton = new JoystickButton(m_driverController, 4);
 
-    balanceButton_pos.whileTrue(new SequentialCommandGroup(
-        //new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
-        new DriveCommand(m_robotDrive, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
-        //new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
-        new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
-    ));
-
-    balanceButton_neg.whileTrue(new SequentialCommandGroup(
-        //new RunCommand(()-> m_robotDrive.drive(0, 0, (Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
-        new DriveCommand(m_robotDrive, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
-        //new RunCommand(()-> m_robotDrive.drive(0, 0, -(Math.PI / 4), false, false), m_robotDrive).withTimeout(1),
+    balanceButton.whileTrue(new SequentialCommandGroup(
+        new DriveCommandOld(m_robotDrive, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
         new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
 

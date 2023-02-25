@@ -140,6 +140,7 @@ public class EndEffectorIntake extends SubsystemBase {
     }
 
     public void intake(double speed) {
+        requestedSpeed = speed;
          intakeMotor.set(speed);
     }
 }
