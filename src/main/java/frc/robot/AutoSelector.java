@@ -428,13 +428,15 @@ public class AutoSelector {
             m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1.5),
 
         // move arm to intake score mid
-        new InstantCommand(() -> m_manager.dpadUp(), m_arm, m_intake),
+        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
+        new InstantCommand(() -> m_intake.extend(), m_intake),
+
 
         new WaitUntilCommand(m_arm::atSetpoint),
         // outake in order to score pre loaded
         new InstantCommand(m_intake::extend, m_intake),
         new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new WaitCommand(1),
+        new InstantCommand(m_intake::retract, m_intake),
         new ParallelCommandGroup(
             new PPSwerveControllerCommand(
                 AutoBalance,
