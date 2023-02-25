@@ -251,7 +251,7 @@ public final class Constants {
     public static final double kReverseLimit = 10;
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;
-    public static final double kSensorChangeTime = 0.5;
+    public static final double kSensorChangeTime = 3;
     public static final double kLowSetpointLimit = 0.12;
     public static final double kHighSetpointLimit = 0.97;
     public static final double kPositionThreshold = 0.025;
@@ -279,10 +279,10 @@ public final class Constants {
   public static final class CubeSetpointConstants{
     public static final double kLowPickupArm = 0.93;
     public static final double kSingleFeederArm = 0.7;
-    public static final double kDoubleFeederArm = 0.64;
+    public static final double kDoubleFeederArm = 0.62;
     public static final double kLowScoreArm = 0.89;
     public static final double kMidScoreArm = 0.69;
-    public static final double kHighScoreArm = .62;
+    public static final double kHighScoreArm = .615;
     public static final double kStowInFrameArm = 0.16;
     public static final double kStowLowArm = 0.96;
     
@@ -309,7 +309,7 @@ public final class Constants {
   public static final class ConeSetpointConstants{
     public static final double kLowPickupArm = 0.94;
     public static final double kSingleFeederArm = 0.6;
-    public static final double kDoubleFeederArm = 0.64;
+    public static final double kDoubleFeederArm = 0.62;
     public static final double kLowScoreArm = 0.87;
     public static final double kMidScoreArm = 0.71;
     public static final double kHighScoreArm = .64;

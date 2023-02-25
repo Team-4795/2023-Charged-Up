@@ -61,6 +61,7 @@ public class RobotContainer {
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
+  // State manager
 
   // State manager
 
@@ -116,13 +117,11 @@ public class RobotContainer {
     );
 
 
-    // Axis 2 = to battery, axis 3 = away
-    // Subtract up movement by down movement so they cancell out if both are pressed at once
-    // Max speed is number multiplying this
+    // Subtract up movement by down movement so they cancel out if both are pressed at once
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> {
-                double up = MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kArmDownAxis), OIConstants.kArmDeadband);
+                double up = MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kArmUpAxis), OIConstants.kArmDeadband);
                 double down = MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kArmDownAxis), OIConstants.kArmDeadband);
                 
                 // Get amount to change the setpoint
@@ -164,10 +163,6 @@ public class RobotContainer {
     ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
 
     // Setpoints
-    ControlContants.operatorDpadUp.onTrue(new InstantCommand(() -> {m_manager.handleDpad(0); setStates();}, m_arm));
-    ControlContants.operatorDpadLeft.onTrue(new InstantCommand(() -> {m_manager.handleDpad(270); setStates();}, m_arm));
-    ControlContants.operatorDpadDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
-    ControlContants.operatorDpadRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
     final JoystickButton balanceButton_neg = new JoystickButton(m_driverController, 3);
     final JoystickButton balanceButton_pos = new JoystickButton(m_driverController, 4);
 
@@ -187,35 +182,39 @@ public class RobotContainer {
 
     //vision align button
     final JoystickButton tapeAlign = new JoystickButton(m_driverController, 3);
+    ControlContants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
+    ControlContants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
+    ControlContants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    ControlContants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
 
     // HiLetGo override
-    ControlContants.operatorA.onTrue(new InstantCommand(() -> m_intake.overrideStoring(true)));
-    ControlContants.operatorA.onFalse(new InstantCommand(() -> m_intake.overrideStoring(false)));
+    ControlContants.operatorA.onTrue(new InstantCommand(m_intake::overrideStoring));
+    ControlContants.operatorA.onFalse(new InstantCommand(m_intake::overrideStoring));
 
     // Set x
-    ControlContants.driverA.whileTrue(new RunCommand(
-        () -> m_robotDrive.setX(),
+    ControlContants.driverBumperLeft.whileTrue(new RunCommand(
+        m_robotDrive::setX,
         m_robotDrive));
 
     // Reset heading
-    ControlContants.driverB.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
+    ControlContants.driverBumperRight.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     
     // Outtake
-    ControlContants.operatorDpadRight.whileTrue(new RunCommand(
+    ControlContants.driverDpadRight.whileTrue(new RunCommand(
         m_intake::outtake,
         m_intake));
 
     // Pneumatic override
     ControlContants.operatorX.whileTrue(new RunCommand(
-        () -> m_intake.extend(),
+        m_intake::extend,
         m_intake));
 
     ControlContants.operatorY.whileTrue(new RunCommand(
-        () -> m_intake.retract(),
+        m_intake::retract,
         m_intake));
 
     // Vision align
-    ControlContants.driverX.whileTrue(new TapeAlign(
+    ControlContants.driverDpadLeft.whileTrue(new TapeAlign(
         m_robotDrive,
         m_Vision,
         () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
@@ -232,11 +231,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     
     return autoSelector.getSelected();
-  }
-
-  private void setStates() {
-    m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
-    m_manager.getOuttakeSetpoint().ifPresent(m_intake::setOuttakeSpeed);
-    m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }
 }
