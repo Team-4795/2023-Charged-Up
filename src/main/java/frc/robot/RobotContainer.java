@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 import java.util.ResourceBundle.Control;
 
+import javax.imageio.plugins.tiff.GeoTIFFTagSet;
 import javax.naming.ldap.ControlFactory;
 
 import frc.robot.Commands.TapeAlign;
@@ -167,7 +168,16 @@ public class RobotContainer {
     
     // Outtake
     ControlContants.driverDpadRight.whileTrue(new RunCommand(
-        m_intake::outtake,
+        () -> {
+            m_intake.outtake();
+            switch (m_manager.getState()) {
+                case MidScore: switch (m_manager.getGamepiece()) {
+                    case Cone: m_intake.extend();
+                    default: break;
+                };
+                default: break;
+            }
+        },
         m_intake));
 
     // Pneumatic override
