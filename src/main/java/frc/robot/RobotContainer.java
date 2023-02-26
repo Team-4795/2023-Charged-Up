@@ -167,7 +167,7 @@ public class RobotContainer {
     final JoystickButton balanceButton = new JoystickButton(m_driverController, 4);
 
     balanceButton.whileTrue(new SequentialCommandGroup(
-        new DriveCommandOld(m_robotDrive, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration, AutoConstants.overrideDuration),
+        new DriveCommandOld(m_robotDrive, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
         new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
 

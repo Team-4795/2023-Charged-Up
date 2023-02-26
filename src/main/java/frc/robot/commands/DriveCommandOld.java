@@ -14,20 +14,13 @@ public class DriveCommandOld extends CommandBase{
     double time;
     boolean check;
 
-    double overrideDuration;
-    double overrideTime;
-    boolean override;
-
     double elevationAngle;
 
-    public DriveCommandOld(DriveSubsystem drive, double speed, double angleThreshold, double checkDuration, double overrideDuration){
+    public DriveCommandOld(DriveSubsystem drive, double speed, double angleThreshold, double checkDuration){
         this.drive = drive;
         this.angleThreshold = angleThreshold;
         this.speed = speed;
         this.duration = checkDuration;
-        this.overrideDuration = overrideDuration;
-        this.overrideTime = Timer.getFPGATimestamp() + 100;
-        this.override = false;
         this.time = 0;
         this.check = false;
         addRequirements(drive);
@@ -51,21 +44,10 @@ public class DriveCommandOld extends CommandBase{
             check = false;
             time = 0;
         }
-
-        if((Timer.getFPGATimestamp() + 100 - overrideTime) > overrideDuration){
-            override = true;
-        }  
-    }
-
-    @Override
-    public void end(boolean interrupted){
-        if(override){
-            drive.setX();
-        }
     }
 
     @Override
     public boolean isFinished(){
-        return (((Timer.getFPGATimestamp() + 100 - time) > duration) && check) || override;
+        return (((Timer.getFPGATimestamp() + 100 - time) > duration) && check);
     }
 }
