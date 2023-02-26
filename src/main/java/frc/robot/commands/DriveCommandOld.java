@@ -1,5 +1,6 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -12,13 +13,21 @@ public class DriveCommandOld extends CommandBase{
     double duration;
     double time;
     boolean check;
+
+    double overrideDuration;
+    double overrideTime;
+    boolean override;
+
     double elevationAngle;
 
-    public DriveCommandOld(DriveSubsystem drive, double speed, double angleThreshold, double checkDuration){
+    public DriveCommandOld(DriveSubsystem drive, double speed, double angleThreshold, double checkDuration, double overrideDuration){
         this.drive = drive;
         this.angleThreshold = angleThreshold;
         this.speed = speed;
-        this.duration = 1000 * checkDuration;
+        this.duration = checkDuration;
+        this.overrideDuration = overrideDuration;
+        this.overrideTime = Timer.getFPGATimestamp() + 100;
+        this.override = false;
         this.time = 0;
         this.check = false;
         addRequirements(drive);
@@ -35,17 +44,28 @@ public class DriveCommandOld extends CommandBase{
         elevationAngle = drive.getElevationAngle();
         if(Math.abs(elevationAngle) > angleThreshold){
             if(!check){
-                time = System.currentTimeMillis();
+                time = Timer.getFPGATimestamp() + 100;
                 check = true;
             }
         } else {
             check = false;
             time = 0;
         }
+
+        if((Timer.getFPGATimestamp() + 100 - overrideTime) > overrideDuration){
+            override = true;
+        }  
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        if(override){
+            drive.setX();
+        }
     }
 
     @Override
     public boolean isFinished(){
-        return (((System.currentTimeMillis() - time) > duration) && check);
+        return (((Timer.getFPGATimestamp() + 100 - time) > duration) && check) || override;
     }
 }

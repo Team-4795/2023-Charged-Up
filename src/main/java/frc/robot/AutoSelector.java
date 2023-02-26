@@ -460,7 +460,7 @@ public class AutoSelector {
                 new WaitUntilCommand(m_arm::atSetpoint))),
 
         new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
-            AutoConstants.checkDuration),
+            AutoConstants.checkDuration, AutoConstants.overrideDuration),
         new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)
 
     ));

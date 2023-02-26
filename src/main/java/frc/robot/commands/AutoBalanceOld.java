@@ -1,8 +1,10 @@
 package frc.robot.Commands;
 
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
+
 
 public class AutoBalanceOld extends CommandBase{
     DriveSubsystem drive;
@@ -11,6 +13,7 @@ public class AutoBalanceOld extends CommandBase{
     double errorThreshold;
     double output;
 
+
     public AutoBalanceOld(DriveSubsystem drive, double errorThreshold){
         this.errorThreshold = errorThreshold;
         this.drive = drive;
@@ -18,11 +21,13 @@ public class AutoBalanceOld extends CommandBase{
         addRequirements(drive);
     }
 
+
     @Override
     public void initialize(){
         elevationAngle = drive.getElevationAngle();
         elevationVelocity = drive.getElevationVelocity();
     }
+
 
     @Override
     public void execute(){
@@ -34,10 +39,12 @@ public class AutoBalanceOld extends CommandBase{
         drive.setBalanceSpeed(output);
     }
 
+
     private double updateDrive() {
         //assuming we drive straight in the x direction for now
         return -signOf(elevationAngle)*(Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
     }
+
 
     private int signOf(double num){
         if(num < 0){
@@ -49,10 +56,12 @@ public class AutoBalanceOld extends CommandBase{
         }
     }
 
+
     @Override
     public void end(boolean interrupted){
         drive.setBalanceSpeed(0);
     }
+
 
     @Override
     public boolean isFinished(){
@@ -60,4 +69,7 @@ public class AutoBalanceOld extends CommandBase{
         //return(Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
     }
 
+
 }
+
+

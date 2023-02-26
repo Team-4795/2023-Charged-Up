@@ -202,6 +202,7 @@ public final class Constants {
     public static final double angularVelocityErrorThreshold = 0.15;
     public static final double polyCoeff = 1.5;
     public static final double checkDuration = 0.075;
+    public static final double overrideDuration = 6;
     public static final HashMap<String, Command> AutoEventMap = new HashMap<>();
 
     // Constraint for the motion profiled robot angle controller
