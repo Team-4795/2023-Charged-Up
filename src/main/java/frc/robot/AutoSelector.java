@@ -429,9 +429,6 @@ public class AutoSelector {
 
         // move arm to intake score mid
         new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-        new InstantCommand(() -> m_intake.extend(), m_intake),
-
-
         new WaitUntilCommand(m_arm::atSetpoint),
         // outake in order to score pre loaded
         new InstantCommand(m_intake::extend, m_intake),
@@ -457,7 +454,9 @@ public class AutoSelector {
             new SequentialCommandGroup(
                 new InstantCommand(m_manager::pickCube),
                 new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-                new WaitUntilCommand(m_arm::atSetpoint))),
+                new WaitUntilCommand(m_arm::atSetpoint)
+            )
+        ),
 
         new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
             AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
