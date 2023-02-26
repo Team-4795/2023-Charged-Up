@@ -59,10 +59,12 @@ public class EndEffectorIntake extends SubsystemBase {
     }
 
     public void extend() {
+        extended = true;
         solenoid.set(Value.kForward);
     }
 
     public void retract() {
+        extended = false;
         solenoid.set(Value.kReverse);
     }
 
