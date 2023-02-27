@@ -319,19 +319,15 @@ public class AutoSelector {
           // Put it in break mode
           drivebase.setBreakMode();
         }),
-        // Set pipeline to tag
-        new InstantCommand(() -> {
-          m_vision.switchToTag();
-        }),
+        new InstantCommand(m_manager::pickCube),
         // Align
         new TapeAlign(
             drivebase,
             m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1.5),
 
-        // move arm to intake score mid
-        new InstantCommand(m_manager::pickCube),
-        new InstantCommand(() -> m_manager.dpadUp()),
+        new InstantCommand(() -> m_manager.dpadLeft()),
         new WaitCommand(.5),
+        new InstantCommand(m_intake::extend),
         new WaitUntilCommand(m_arm::atSetpoint),
         // outake in order to score pre loaded
         // Use RunCommand to continuously run this
@@ -360,15 +356,13 @@ public class AutoSelector {
                 drivebase // Requires this drive subsystem
             ),
             new SequentialCommandGroup(
-                // move arm to intake low cone
+                new InstantCommand(m_intake::retract),           
                 new InstantCommand(m_manager::pickCube),
                 new InstantCommand(() -> m_manager.dpadDown()),
-
                 new WaitUntilCommand(m_arm::atSetpoint))),
-        // Run intake for 1 seconds
-        new WaitCommand(1),
-        // Do I need an intake command?
-
+        // Run intake for 1 second
+        new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
+          .withTimeout(1),
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
           drivebase.resetOdometry(CubeTwoGamePiece2.getInitialHolonomicPose()); // May need to rethink this so it faces
