@@ -25,6 +25,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.LandingGear;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -52,6 +53,7 @@ public class RobotContainer {
   private final EndEffectorIntake m_intake = new EndEffectorIntake();
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
+  private final LandingGear m_landing = new LandingGear();
 
   // State manager
   StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake);
@@ -128,6 +130,8 @@ public class RobotContainer {
             m_arm
         )
     );
+
+    //m_landing.setDefaultCommand(new RunCommand)
   }
 
   /**
@@ -186,6 +190,11 @@ public class RobotContainer {
         () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
         () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
     ));
+
+    //Landing Gear
+    ControlContants.operatorUp.whileTrue(new RunCommand(
+        m_landing::land, 
+        null));
   }
 
 

@@ -161,6 +161,7 @@ public final class Constants {
     public static final JoystickButton operatorY = new JoystickButton(operatorController, 4);
     public static final JoystickButton operatorBumperLeft = new JoystickButton(operatorController, 5);
     public static final JoystickButton operatorBumperRight = new JoystickButton(operatorController, 6);
+    public static final JoystickButton operatorUp = new JoystickButton(operatorController, 7);
 
     public static final POVButton operatorDpadUp = new POVButton(operatorController, 0);
     public static final POVButton operatorDpadLeft = new POVButton(operatorController, 270);
