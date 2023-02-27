@@ -194,7 +194,7 @@ public class RobotContainer {
     //Landing Gear
     ControlContants.operatorUp.whileTrue(new RunCommand(
         m_landing::land, 
-        null));
+        m_landing));
   }
 
 
