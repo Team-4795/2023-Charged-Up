@@ -62,7 +62,7 @@ public class TapeAlign extends CommandBase {
     double forwardSpeed;
     double x_speed;
     double xSpeed = xspeedSupplier.get();
-    double y_speed;
+    double y_speed; 
     double ySpeed = yspeedSupplier.get();
     var robotPose2d = driveSubsystem.getPose();
 
