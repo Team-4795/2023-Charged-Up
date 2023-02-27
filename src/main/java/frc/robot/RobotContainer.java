@@ -33,6 +33,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.List;
 import java.util.ResourceBundle.Control;
 
@@ -191,6 +193,8 @@ public class RobotContainer {
         () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
         () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
     ));
+
+    new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
   }
 
 

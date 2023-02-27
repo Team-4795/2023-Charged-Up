@@ -36,13 +36,16 @@ public class LEDs extends SubsystemBase {
     
 
     public LEDs() {
-        
-        led = new AddressableLED(3);
+        led = new AddressableLED(9);
         buffer = new AddressableLEDBuffer(LED_LENGTH);
         timer = new Timer();
         
         led.setLength(buffer.getLength());
         timer.start();
+        this.init();
+    }
+
+    private void init() {
         this.setRGB(255, 255, 255);
     }
 
@@ -93,6 +96,10 @@ public class LEDs extends SubsystemBase {
     
     public void setHSV(HSV hsv) {
         setColor(hsv.h, hsv.s, hsv.v, true, 1);
+    }
+
+    public void reset() {
+        setColor(0, 0, 0, false, 1);
     }
 
     public void setLEDState(StateManager.LED state) {
