@@ -22,6 +22,7 @@ public class Vision extends SubsystemBase{
     public boolean hasTargets = false;
     public boolean isTargeting = true;
 
+   
     private double targetAngle = VisionConstants.kTargetAngle;
     double forwardSpeed;
     double x_pitch = VisionConstants.kX_Pitch;
@@ -29,32 +30,36 @@ public class Vision extends SubsystemBase{
       public boolean hasTargets() {
         return hasTargets;
       }
-
+       
       public double getTargetAngle() {
         return targetAngle;
-      }
-//odometry 
+      }    
       public void enableLED() {
         camera.setLED(VisionLEDMode.kOn);
       }
-
+    
       public void disableLED() {
         camera.setLED(VisionLEDMode.kOff);
       }
 
+      public void setLEDBrightness() {
+        //set led brightness here
+      }
+
       public void pipelineIndex(int index) {
-        camera.setPipelineIndex(1);
+        camera.setPipelineIndex(index);
       }
 
       public void switchToTag() {
-        pipelineIndex(1);
+        pipelineIndex(0);
         disableLED();
       }
     
       public void switchToTape() {
-        pipelineIndex(0);
+        pipelineIndex(1);
         enableLED();
       }
+
       public void targetingLED() {
         if (isTargeting == false) {
           disableLED();
@@ -107,3 +112,7 @@ public class Vision extends SubsystemBase{
 
 }
 }
+
+
+
+

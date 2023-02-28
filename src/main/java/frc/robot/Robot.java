@@ -117,7 +117,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.m_manager.getIntakeSetpoint().ifPresent(value -> armSetpoint.append(value));
+    // m_robotContainer.m_manager.getIntakeSetpoint().ifPresent(value -> armSetpoint.append(value));
     m_robotContainer.m_manager.getArmSetpoint().ifPresent(value -> intake.append(value));
     state.append(m_robotContainer.m_manager.getState().name());
     swerveStates.append(m_robotContainer.m_robotDrive.getModuleStates());

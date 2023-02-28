@@ -36,7 +36,8 @@ import java.util.ResourceBundle.Control;
 import javax.naming.ldap.ControlFactory;
 
 import frc.robot.Commands.TapeAlign;
-import frc.robot.Constants.VisionConstants;
+// import frc.robot.Constants.VisionConstants;
+// import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 
 /*
@@ -48,16 +49,16 @@ import frc.robot.Constants.VisionConstants;
 public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final EndEffectorIntake m_intake = new EndEffectorIntake();;
+  private final EndEffectorIntake m_intake = new EndEffectorIntake();
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
 
   // State manager
-  StateManager m_manager = new StateManager();
-  
+  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
-   */   
+   */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
@@ -77,10 +78,10 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
         new RunCommand(
             () -> {
-                m_intake.intakeAutomatic();
+                m_intake.intakeFromGamepiece(m_manager.getGamepiece());
 
                 m_intake.extended = m_intake.extendedTarget;
-                
+
                 if (m_arm.setpoint < ArmConstants.kLowWristLimit) {
                     m_intake.extended = false;
                 }
@@ -97,17 +98,15 @@ public class RobotContainer {
             },
             m_intake
         )
-    
+
     );
 
 
-    // Axis 2 = to battery, axis 3 = away
-    // Subtract up movement by down movement so they cancell out if both are pressed at once
-    // Max speed is number multiplying this
+    // Subtract up movement by down movement so they cancel out if both are pressed at once
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> {
-                double up = MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kArmDownAxis), OIConstants.kArmDeadband);
+                double up = MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kArmUpAxis), OIConstants.kArmDeadband);
                 double down = MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kArmDownAxis), OIConstants.kArmDeadband);
                 
                 // Get amount to change the setpoint
@@ -142,51 +141,51 @@ public class RobotContainer {
    */
 
 
-  
+
   private void configureButtonBindings() {
     // Pick cone, cube
     ControlContants.operatorBumperLeft.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
     ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
 
     // Setpoints
-    ControlContants.operatorDpadUp.onTrue(new InstantCommand(() -> {m_manager.handleDpad(0); setStates();}, m_arm));
-    ControlContants.operatorDpadLeft.onTrue(new InstantCommand(() -> {m_manager.handleDpad(270); setStates();}, m_arm));
-    ControlContants.operatorDpadDown.onTrue(new InstantCommand(() -> {m_manager.handleDpad(180); setStates();}, m_arm));
-    ControlContants.operatorDpadRight.onTrue(new InstantCommand(() -> {m_manager.handleDpad(90); setStates();}, m_arm));
+    ControlContants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
+    ControlContants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
+    ControlContants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    ControlContants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
 
-    // Storing, not storing
-    ControlContants.operatorY.onTrue(new InstantCommand(m_manager::setStoring, m_arm));
-    ControlContants.operatorX.onTrue(new InstantCommand(m_manager::setNotStoring, m_arm));
+    // HiLetGo override
+    ControlContants.operatorA.onTrue(new InstantCommand(m_intake::overrideStoring));
+    ControlContants.operatorA.onFalse(new InstantCommand(m_intake::overrideStoring));
 
     // Set x
     ControlContants.driverA.whileTrue(new RunCommand(
-        () -> m_robotDrive.setX(),
+        m_robotDrive::setX,
         m_robotDrive));
 
     // Reset heading
     ControlContants.driverB.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
-
-    // Intake, outtake
-    ControlContants.operatorDpadLeft.whileTrue(new RunCommand(
-        () -> m_intake.intake(IntakeConstants.kIntakeSpeed),
-        m_intake));
     
-    ControlContants.operatorDpadRight.whileTrue(new RunCommand(
-        () -> m_intake.intake(IntakeConstants.kOuttakeSpeed),
+    // Outtake
+    ControlContants.driverDpadRight.whileTrue(new RunCommand(
+        m_intake::outtake,
         m_intake));
 
     // Pneumatic override
     ControlContants.operatorX.whileTrue(new RunCommand(
-        () -> m_intake.extend(),
+        m_intake::extend,
         m_intake));
 
     ControlContants.operatorY.whileTrue(new RunCommand(
-        () -> m_intake.retract(),
+        m_intake::retract,
         m_intake));
 
     // Vision align
-    ControlContants.driverX.whileTrue(new TapeAlign(m_robotDrive,m_Vision));
-
+    ControlContants.driverX.whileTrue(new TapeAlign(
+        m_robotDrive,
+        m_Vision,
+        () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
+        () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
+    ));
   }
 
 
@@ -236,11 +235,5 @@ public class RobotContainer {
     //return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
     return new InstantCommand();
 
-  }
-
-  private void setStates() {
-    m_manager.getArmSetpoint().ifPresent(m_arm::setPosition);
-    m_manager.getIntakeSetpoint().ifPresent(m_intake::setIntakeSpeed);
-    m_manager.getWristExtended().ifPresent(m_intake::setExtendedTarget);
   }
 }
