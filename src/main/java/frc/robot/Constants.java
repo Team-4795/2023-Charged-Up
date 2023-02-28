@@ -252,7 +252,8 @@ public final class Constants {
     public static final double kReverseLimit = 10;
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;
-    public static final double kSensorChangeTime = 3;
+    public static final double kOuttakeSensorChangeTime = 1.0;
+    public static final double kIntakeSensorChangeTime = 3.0;
     public static final double kLowSetpointLimit = 0.12;
     public static final double kHighSetpointLimit = 0.97;
     public static final double kPositionThreshold = 0.025;
