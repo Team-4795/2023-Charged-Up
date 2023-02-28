@@ -202,6 +202,15 @@ public final class Constants {
     public static final double kTranslationSetpoint = 0;
   }
 
+  public static final class AprilTagConstants { //these are all untested placeholders
+    public static final double kP = .011;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kAngularThreshold = 2;
+    public static final double kRotationSetpoint = 0;
+    public static final double kTranslationSetpoint = 0;
+  }
+
   public static final class ArmConstants {
     public static final int kLeftArmMotorCANID = 10;
     public static final int kRightArmMotorCANID = 11;

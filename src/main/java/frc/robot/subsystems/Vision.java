@@ -33,7 +33,7 @@ public class Vision extends SubsystemBase{
       public double getTargetAngle() {
         return targetAngle;
       }
-
+//odometry 
       public void enableLED() {
         camera.setLED(VisionLEDMode.kOn);
       }
@@ -74,6 +74,7 @@ public class Vision extends SubsystemBase{
       double area;
       double y;
       double x;
+      NetworkTableEntry botPose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose"); //AHHHHHHH
       
       float tv = tv_value.getFloat();
       
@@ -83,7 +84,7 @@ public class Vision extends SubsystemBase{
       double x = tx.getDouble(0.0);
       double y = ty.getDouble(0.0);
       double area = ta.getDouble(0.0);
-
+      double targetAngle = x; //need to find out if tx is angle or distance
       float steering_adjust = 0.0f;
 
         if (tv == 0.0) {

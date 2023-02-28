@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -26,6 +26,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import java.lang.annotation.Target;
 
 
+
+
 public class Align extends CommandBase {
 
   private final DriveSubsystem driveSubsystem;
@@ -33,7 +35,6 @@ public class Align extends CommandBase {
   private boolean isAligned;
   private long alignStart; 
   private PIDController rotationPID;
-  private final PhotonCamera camera;
 
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
@@ -54,7 +55,6 @@ public class Align extends CommandBase {
   public Align(DriveSubsystem driveSubsystem, Vision vision, PhotonCamera camera) {
     this.driveSubsystem = driveSubsystem;
     this.vision = vision;
-    this.camera = camera;
     rotationPID = new PIDController(0.1, 0, 0);
 
     xController.setTolerance(0.2);
@@ -77,7 +77,7 @@ public class Align extends CommandBase {
     xController.reset(robotPose.getX());
     yController.reset(robotPose.getY());
 
-    camera.setPipelineIndex(0); //placeholder
+    vision.pipelineIndex(0); //placeholder
 
   }
 
@@ -90,7 +90,7 @@ public class Align extends CommandBase {
      */
 
 
-    var photonRes = camera.getLatestResult();
+    //var photonRes = vision.getLatestResult();
     var robotPose2d = driveSubsystem.getPose();
     var robotPose = 
     new Pose3d(
@@ -98,16 +98,16 @@ public class Align extends CommandBase {
         robotPose2d.getY(),
         0.0, 
         new Rotation3d(0.0, 0.0, robotPose2d.getRotation().getRadians()));
-        if (photonRes.hasTargets()) {
+        if (vision.hasTargets()) {
           // Find the tag we want to chase
-          var targetOpt = photonRes.getTargets().stream()
+          var targetOpt = camera.getTargets().stream()
               .filter(t -> t.getFiducialId() == TAG_TO_CHASE)
               .filter(t -> !t.equals(lastTarget) && t.getPoseAmbiguity() <= .2 && t.getPoseAmbiguity() != -1)
               .findFirst();
           if (targetOpt.isPresent()) {
             var target = targetOpt.get();
             // This is new target data, so recalculate the goal
-            lastTarget = target;
+            //lastTarget = vision.get;
             
             // Transform the robot's pose to find the camera's pose
             var cameraPose = robotPose.transformBy(ROBOT_TO_CAMERA);
