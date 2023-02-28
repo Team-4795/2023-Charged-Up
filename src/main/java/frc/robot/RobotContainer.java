@@ -130,8 +130,6 @@ public class RobotContainer {
             m_arm
         )
     );
-
-    //m_landing.setDefaultCommand(new RunCommand)
   }
 
   /**
@@ -194,6 +192,10 @@ public class RobotContainer {
     //Landing Gear
     ControlContants.operatorUp.whileTrue(new RunCommand(
         m_landing::land, 
+        m_landing));
+
+    ControlContants.operatorDown.whileTrue(new RunCommand(
+        m_landing::retract, 
         m_landing));
   }
 
