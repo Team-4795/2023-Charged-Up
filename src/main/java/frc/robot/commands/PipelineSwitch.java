@@ -5,8 +5,17 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.StateManager;
 import frc.robot.subsystems.Vision;
+import frc.robot.StateManager;
+// import frc.robot.commands.Align;
+// import frc.robot.commands.TapeAlign;
+// import org.photonvision.targeting.PhotonPipelineResult;
+// import org.photonvision.PhotonCamera;
+// import frc.robot.Constants;
+// import org.photonvision.common.hardware.VisionLEDMode;
+// import frc.robot.Constants.VisionConstants;
+// import edu.wpi.first.wpilibj2.command.CommandBase;
+// import edu.wpi.first.vision.VisionPipeline;
 
 
 public class PipelineSwitch extends CommandBase {
@@ -27,12 +36,6 @@ public class PipelineSwitch extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (pipelineIndex == 1) {
-      vision.switchToTag();
-    }
-    else {
-      vision.switchToTape();
-    }
   }
 
   // public boolean targetLED() {
