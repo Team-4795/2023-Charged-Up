@@ -195,14 +195,20 @@ public final class Constants {
     public static final double toZeroBound = 0.000001;
 
     public static final double platformMaxAngle = 10;
+    //constant speed during command
     public static final double balanceSpeed = 0.0684;
 
-    public static final double driveAngleThreshold = 8; //degrees
+    public static final double driveAngleThreshold = 8; //angle at which checking angle duration starts, in degrees
+    //constant drive up speed
     public static final double driveBalanceSpeed = 0.4;
+    //useless for Asheville
     public static final double angularVelocityErrorThreshold = 0.15;
+    //coeffiecient of the polynomial function to calculate balancing speed
     public static final double polyCoeff = 1.5;
+    //duration of checking for the angle to start autobalance 
     public static final double checkDuration = 0.075;
-    public static final double overrideDuration = 6;
+    //override duration for drive up to avoid foul
+    public static final double overrideDuration = 4;
     public static final HashMap<String, Command> AutoEventMap = new HashMap<>();
 
     // Constraint for the motion profiled robot angle controller
