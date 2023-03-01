@@ -71,6 +71,8 @@ public class Vision extends SubsystemBase{
     public void periodic() {
         var result = camera.getLatestResult();
         camera.setDriverMode(false);
+        
+
         if (result.hasTargets()) {
             hasTargets = true;
             targetAngle = result.getBestTarget().getPitch(); //pitch or yaw?
@@ -81,9 +83,11 @@ public class Vision extends SubsystemBase{
                     Units.degreesToRadians(result.getBestTarget().getPitch()));
           } else {
             hasTargets = false;
-            range = -1;
+            range = -2;
             //targetAngle = -1;
           }
+
+        SmartDashboard.putBoolean("Has target", hasTargets);   
         SmartDashboard.putNumber("Distance between target", range);   
     }
     @Override

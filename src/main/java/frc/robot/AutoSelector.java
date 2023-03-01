@@ -51,10 +51,13 @@ public class AutoSelector {
   PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Cube 2 Game Piece 2", new PathConstraints(1, 2));
 
   // Auto Balence with 1 cone
-  PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance", new PathConstraints(1, 1));
+  PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance", new PathConstraints(3, 3));
 
   // Path using vision from further back for cone.
   PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));
+  
+  PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(3, 3));
+  PathPlannerTrajectory GrapBalance2 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(3, 3));
 
   // Define Auto Selector
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
@@ -419,13 +422,14 @@ public class AutoSelector {
         // Align
         new TapeAlign(
             drivebase,
-            m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1.5),
+            m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(.2),
 
         // move arm to intake score mid
         new InstantCommand(() -> m_manager.dpadUp(), m_arm),
         new WaitUntilCommand(m_arm::atSetpoint),
         // outake in order to score pre loaded
         new InstantCommand(m_intake::extend, m_intake),
+
         new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
         new InstantCommand(m_intake::retract, m_intake),
         new ParallelCommandGroup(

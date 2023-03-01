@@ -194,7 +194,7 @@ public final class Constants {
 
     public static final double toZeroBound = 0.000001;
 
-    public static final double platformMaxAngle = 10;
+    public static final double platformMaxAngle = 15;
     //constant speed during command
     public static final double balanceSpeed = 0.0684;
 
@@ -285,12 +285,12 @@ public final class Constants {
   }
 
   public static final class CubeSetpointConstants{
-    public static final double kLowPickupArm = 0.93;
+    public static final double kLowPickupArm = 0.918;
     public static final double kSingleFeederArm = 0.7;
     public static final double kDoubleFeederArm = 0.62;
     public static final double kLowScoreArm = 0.89;
     public static final double kMidScoreArm = 0.69;
-    public static final double kHighScoreArm = .615;
+    public static final double kHighScoreArm = .613;
     public static final double kStowInFrameArm = 0.16;
     public static final double kStowLowArm = 0.96;
     
@@ -308,7 +308,7 @@ public final class Constants {
     public static final double kDoubleFeederOuttake = -0.3;
     public static final double kLowScoreOuttake = -0.3;
     public static final double kMidScoreOuttake = -0.3;
-    public static final double kHighScoreOuttake = -0.3;
+    public static final double kHighScoreOuttake = -0.5;
     public static final double kStowInFrameOuttake = -0.3;
     public static final double kStowLowOuttake = -0.3;
 

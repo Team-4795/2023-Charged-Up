@@ -135,6 +135,10 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevation velocity (w/ Matrix)", getElevationVelocityV2());
     SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
     SmartDashboard.putData("Field", m_field);
+
+    SmartDashboard.putNumberArray("Swerve states", getModuleStates());
+    SmartDashboard.putNumberArray("Odometry", new double[]{getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()});
+
     m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 

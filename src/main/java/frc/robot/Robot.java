@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
     speedOfBalance = new DoubleLogEntry(log, "/balanceSpeed");
     swerveStates = new DoubleArrayLogEntry(log, "/swerveStates");
     rotation = new DoubleLogEntry(log, "/rotation");
-    PathPlannerServer.startServer(4795); // 4795 = port number 
+    PathPlannerServer.startServer(5811); // 4795 = port number 
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
