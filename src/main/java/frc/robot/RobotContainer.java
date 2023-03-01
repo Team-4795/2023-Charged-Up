@@ -63,7 +63,6 @@ public class RobotContainer {
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
-  // State manager
 
   // State manager
 
