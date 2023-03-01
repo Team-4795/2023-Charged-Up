@@ -114,6 +114,13 @@ public class StateManager {
         return this.state;
     }
 
+    public boolean isStowing() {
+        switch (this.state) {
+            case StowInFrame: return true;
+            default: return false;
+        }
+    }
+
     public Gamepiece getGamepiece() {
         return this.gamepiece;
     }

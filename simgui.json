@@ -20,11 +20,23 @@
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto Selector": "String Chooser",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/pose": "Field2d"
     }
   },
   "NetworkTables": {
     "transitory": {
+      "Shuffleboard": {
+        ".metadata": {
+          "open": true
+        },
+        ".recording": {
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "open": true
       }

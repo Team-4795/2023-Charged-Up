@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -11,18 +15,37 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import frc.utils.RotationMatrix;
 import frc.utils.SwerveUtils;
 
 
 public class DriveSubsystem extends SubsystemBase {
+  //Create field2d
+  public final Field2d m_field = new Field2d();
+  
   // Create MAXSwerveModules
   
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
@@ -49,6 +72,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
+  private RotationMatrix rotation;
+  private double balanceSpeed = 0.0;
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -71,10 +96,11 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-
-
+    SmartDashboard.putData(m_field);
+    rotation = new RotationMatrix();
   }
 
   @Override
@@ -84,7 +110,7 @@ public class DriveSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("Angle", m_gyro.getAngle());
     //SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
     //SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
-
+    
     m_odometry.update(
       Rotation2d.fromDegrees(-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset),
         
@@ -95,7 +121,25 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
             
         });
-   
+    
+
+    m_field.setRobotPose( m_odometry.getPoseMeters());
+    SmartDashboard.putNumber("x", getPose().getX());
+    SmartDashboard.putNumber("y", getPose().getY());
+    SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
+    SmartDashboard.putData("pose", m_field);
+
+    SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
+    SmartDashboard.putNumber("Elevation velocity", getElevationVelocity());
+    SmartDashboard.putNumber("Angle of Elevation (w/ Matrix)", getElevationAngleV2());
+    SmartDashboard.putNumber("Elevation velocity (w/ Matrix)", getElevationVelocityV2());
+    SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
+    SmartDashboard.putData("Field", m_field);
+
+    SmartDashboard.putNumberArray("Swerve states", getModuleStates());
+    SmartDashboard.putNumberArray("Odometry", new double[]{getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()});
+
+    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
   /**
@@ -236,6 +280,14 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.resetEncoders();
   }
 
+  public void setBalanceSpeed(double value){
+    balanceSpeed = value;
+  }
+  //pick up these changes please
+  public double getBalanceSpeed(){
+    return balanceSpeed;
+  }
+
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.reset();
@@ -248,6 +300,23 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return Rotation2d.fromDegrees(-m_gyro.getAngle()+ Constants.DriveConstants.kChassisAngularOffset);
+  }
+
+  //angle between xy-plane and the forward vector of the drivebase - potentially doesn't work
+  public double getElevationAngle(){
+    return Rotation2d.fromDegrees(m_gyro.getPitch()).getDegrees();
+  }
+
+  public double getElevationVelocity(){
+    return rotation.findElevationVelocity(m_gyro.getPitch(), m_gyro.getRoll(), getHeading().getDegrees(), m_gyro.getRawGyroX(), m_gyro.getRawGyroY(), m_gyro.getRawGyroZ());
+  }
+
+  public double getElevationAngleV2(){
+    return rotation.findElevationAngle(m_gyro.getPitch(), m_gyro.getRoll(), getHeading().getDegrees());
+  }
+
+  public double getElevationVelocityV2(){
+    return 0.0; //in the process of remaking
   }
 
   public double getvisionheading(){
@@ -267,6 +336,13 @@ public class DriveSubsystem extends SubsystemBase {
     return swerveStates;
   }
 
+  public void setBreakMode(){
+    m_frontLeft.setBreakMode();
+    m_frontRight.setBreakMode();
+    m_rearLeft.setBreakMode();
+    m_rearRight.setBreakMode();
+  }
+
   /**
    * Returns the turn rate of the robot.
    *
@@ -275,4 +351,6 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
+
+
 }

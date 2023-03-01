@@ -14,11 +14,13 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Commands.*;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ControlContants;
 
@@ -35,14 +37,18 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+
+import java.nio.channels.spi.AbstractSelector;
 import java.util.List;
 import java.util.ResourceBundle.Control;
 
+import javax.imageio.plugins.tiff.GeoTIFFTagSet;
 import javax.naming.ldap.ControlFactory;
 
 import frc.robot.Commands.TapeAlign;
 // import frc.robot.Constants.VisionConstants;
 // import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.VisionConstants;
 
 
 /*
@@ -60,14 +66,21 @@ public class RobotContainer {
   private final LEDs m_led = new LEDs();
 
 
+  // The driver's controller
+  GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
+  GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
+
   // State manager
   StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led);
 
+  AutoSelector autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_robotDrive.m_field, m_manager, m_Vision);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
+    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision);
+
     configureButtonBindings();
 
     // Configure default commands
@@ -85,7 +98,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
         new RunCommand(
             () -> {
-                m_intake.intakeFromGamepiece(m_manager.getGamepiece());
+                m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing());
 
                 m_intake.extended = m_intake.extendedTarget;
 
@@ -155,6 +168,15 @@ public class RobotContainer {
     ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm, m_Vision, m_led));
 
     // Setpoints
+    final JoystickButton balanceButton = new JoystickButton(m_driverController, 4);
+
+    balanceButton.whileTrue(new SequentialCommandGroup(
+        new DriveCommandOld(m_robotDrive, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
+        new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
+    ));
+
+    //vision align button
+    final JoystickButton tapeAlign = new JoystickButton(m_driverController, 3);
     ControlContants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlContants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
     ControlContants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
@@ -165,16 +187,25 @@ public class RobotContainer {
     ControlContants.operatorA.onFalse(new InstantCommand(m_intake::overrideStoring));
 
     // Set x
-    ControlContants.driverA.whileTrue(new RunCommand(
+    ControlContants.driverBumperLeft.whileTrue(new RunCommand(
         m_robotDrive::setX,
         m_robotDrive));
 
     // Reset heading
-    ControlContants.driverB.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
+    ControlContants.driverBumperRight.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     
     // Outtake
     ControlContants.driverDpadRight.whileTrue(new RunCommand(
-        m_intake::outtake,
+        () -> {
+            m_intake.outtake();
+            switch (m_manager.getState()) {
+                case MidScore: switch (m_manager.getGamepiece()) {
+                    case Cone: m_intake.extend();
+                    default: break;
+                };
+                default: break;
+            }
+        },
         m_intake));
 
     // Pneumatic override
@@ -187,7 +218,7 @@ public class RobotContainer {
         m_intake));
 
     // Vision align
-    ControlContants.driverX.whileTrue(new TapeAlign(
+    ControlContants.driverDpadLeft.whileTrue(new TapeAlign(
         m_robotDrive,
         m_Vision,
         () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
@@ -204,45 +235,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
-
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
-
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    //return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
-    return new InstantCommand();
-
+    
+    return autoSelector.getSelected();
   }
 }

@@ -36,12 +36,12 @@ public class TapeAlign extends CommandBase {
   public TapeAlign(
     DriveSubsystem driveSubsystem, 
     Vision vision,
-    Supplier<Double> xspeedSupplier, 
-    Supplier<Double> yspeedSupplier) {
+    Supplier<Double> i, 
+    Supplier<Double> j) {
     this.driveSubsystem = driveSubsystem;
     this.vision = vision;
-    this.xspeedSupplier = xspeedSupplier;
-    this.yspeedSupplier = yspeedSupplier;
+    this.xspeedSupplier = i;
+    this.yspeedSupplier = j;
 
     rotationPID = new PIDController(RotationConstants.kP, RotationConstants.kI, RotationConstants.kD);
     rotationPID.enableContinuousInput(RotationConstants.kMinimumAngle, RotationConstants.kMaximumAngle);
@@ -62,7 +62,7 @@ public class TapeAlign extends CommandBase {
     double forwardSpeed;
     double x_speed;
     double xSpeed = xspeedSupplier.get();
-    double y_speed;
+    double y_speed; 
     double ySpeed = yspeedSupplier.get();
     var robotPose2d = driveSubsystem.getPose();
 

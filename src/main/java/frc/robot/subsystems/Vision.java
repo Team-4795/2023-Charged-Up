@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 
@@ -17,6 +20,7 @@ public class Vision extends SubsystemBase{
     public boolean isTargeting = true;
    
     private double targetAngle = VisionConstants.kTargetAngle;
+    private double range;
     double forwardSpeed;
     double x_pitch = VisionConstants.kX_Pitch;
 
@@ -67,13 +71,24 @@ public class Vision extends SubsystemBase{
     public void periodic() {
         var result = camera.getLatestResult();
         camera.setDriverMode(false);
+        
+
         if (result.hasTargets()) {
             hasTargets = true;
             targetAngle = result.getBestTarget().getPitch(); //pitch or yaw?
+            range = PhotonUtils.calculateDistanceToTargetMeters(
+                    CameraHeight,
+                    TargetHeight,
+                    cameraPitchRadians ,
+                    Units.degreesToRadians(result.getBestTarget().getPitch()));
           } else {
             hasTargets = false;
-//            targetAngle = -1;
+            range = -2;
+            //targetAngle = -1;
           }
+
+        SmartDashboard.putBoolean("Has target", hasTargets);   
+        SmartDashboard.putNumber("Distance between target", range);   
     }
     @Override
     public void initSendable(SendableBuilder builder) {

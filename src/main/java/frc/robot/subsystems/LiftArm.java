@@ -96,9 +96,14 @@ public class LiftArm extends SubsystemBase {
     m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
   }
 
+
   // Gets absolute position
   public double getPosition() {
     return liftEncoder.getPosition();
+  }
+  
+  public boolean atSetpoint() {
+    return Math.abs(this.getPosition() - setpoint) < ArmConstants.kPositionThreshold;
   }
 
   @Override
@@ -109,6 +114,7 @@ public class LiftArm extends SubsystemBase {
     SmartDashboard.putNumber("Applied Speed", rightArmMotor.getAppliedOutput());
     SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
     SmartDashboard.putNumber("Arm setpoint", setpoint);
+    SmartDashboard.putBoolean("At arm setpoint", this.atSetpoint());
     liftRelativeEncoder.setPosition(this.getPosition());
   }
 }
