@@ -19,6 +19,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Commands.*;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ControlContants;
@@ -26,6 +27,7 @@ import frc.robot.Constants.ControlContants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,6 +35,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 import java.nio.channels.spi.AbstractSelector;
 import java.util.List;
@@ -59,16 +63,16 @@ public class RobotContainer {
   private final EndEffectorIntake m_intake = new EndEffectorIntake();
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
+  private final LEDs m_led = new LEDs();
+
 
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
+  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led);
 
-
-
-  StateManager m_manager = new StateManager( m_Vision, m_arm, m_intake);
   AutoSelector autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_robotDrive.m_field, m_manager, m_Vision);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -160,8 +164,8 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // Pick cone, cube
-    ControlContants.operatorBumperLeft.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
-    ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
+    ControlContants.operatorBumperLeft.onTrue(new InstantCommand(m_manager::pickCone, m_arm, m_Vision, m_led));
+    ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm, m_Vision, m_led));
 
     // Setpoints
     final JoystickButton balanceButton = new JoystickButton(m_driverController, 4);
@@ -220,6 +224,8 @@ public class RobotContainer {
         () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
         () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
     ));
+
+    new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
   }
 
 

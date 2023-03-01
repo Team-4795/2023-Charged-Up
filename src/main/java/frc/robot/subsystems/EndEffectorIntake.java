@@ -30,7 +30,6 @@ public class EndEffectorIntake extends SubsystemBase {
     private final PneumaticHub m_ph = new PneumaticHub(IntakeConstants.kPHCANID);
     private final HiLetGo hiLetGo = new HiLetGo(IntakeConstants.kHiLetGoPort);
 
-    public double intakeSpeed = IntakeConstants.kStartIntakeSpeed;
     public double requestedSpeed = IntakeConstants.kStartIntakeSpeed;
 
     public boolean extendedTarget = false;

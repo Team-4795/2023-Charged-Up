@@ -1,8 +1,8 @@
 package frc.robot;
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 
 import frc.robot.subsystems.EndEffectorIntake;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
 
@@ -14,6 +14,7 @@ public class StateManager {
     private Vision vision;
     private LiftArm arm;
     private EndEffectorIntake intake;
+    private LEDs leds;
 
     // What state were in
     private State state;
@@ -32,24 +33,28 @@ public class StateManager {
         None,
     }
 
-    public StateManager( Vision vision,LiftArm arm, EndEffectorIntake intake) {
+    public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds) {
         this.state = State.StowInFrame;
         this.gamepiece = Gamepiece.None;
 
         this.vision = vision;
         this.arm = arm;
         this.intake = intake;
+        this.leds = leds;
     }
 
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
         SmartDashboard.putString("Gamepiece", "Cube");
+        leds.setRGB(127, 0, 255);
         vision.switchToTag();
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
         SmartDashboard.putString("Gamepiece", "Cone");
+        leds.setRGB(255, 255, 0);
+
         vision.switchToTape();
     }
 
