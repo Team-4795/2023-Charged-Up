@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import frc.utils.Setpoints;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -266,7 +265,7 @@ public final class Constants {
     public static final double kPositionThreshold = 0.025;
   }
 
-  public static final class IntakeConstants {
+  public static final class IntakeConstants{
     public static final double kStartIntakeSpeed = 0.0;
     public static final int kIntakeCANID = 24;
     public static final int kPHCANID = 1;
@@ -314,27 +313,36 @@ public final class Constants {
     public static final double kStowLowOuttake = -0.3;
 
   }
-  
-  public static final class CubeSetpointConstants {
-    public static final Setpoints kLowPickup = new Setpoints(0.93, false, -0.3);
-    public static final Setpoints kSingleFeeder = new Setpoints(0.7, false, -0.3);
-    public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.3);
-    public static final Setpoints kLowScore = new Setpoints(0.89, false, -0.3);
-    public static final Setpoints kMidScore = new Setpoints(0.69, true, -0.3);
-    public static final Setpoints kHighScore = new Setpoints(0.615, true, -0.3);
-    public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.3);
-  }
 
-  public static final class ConeSetpointConstants {
-    public static final Setpoints kLowPickup = new Setpoints(0.94, false, -0.4);
-    public static final Setpoints kSingleFeeder = new Setpoints(0.6, false, -0.4);
-    public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.4);
-    public static final Setpoints kLowScore = new Setpoints(0.87, false, -0.4);
-    public static final Setpoints kMidScore = new Setpoints(0.71, false, -0.4);
-    public static final Setpoints kHighScore = new Setpoints(0.64, true, -0.4);
-    public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.4);
+  public static final class ConeSetpointConstants{
+    public static final double kLowPickupArm = 0.94;
+    public static final double kSingleFeederArm = 0.6;
+    public static final double kDoubleFeederArm = 0.62;
+      public static final double kLowScoreArm = 0.87;
+    public static final double kMidScoreArm = 0.71;
+    public static final double kHighScoreArm = .64;
+    public static final double kStowInFrameArm = 0.16;
+    public static final double kStowLowArm = 0.96;
+    
+    public static final boolean kLowPickupWrist = false;
+    public static final boolean kSingleFeederWrist = false;
+    public static final boolean kDoubleFeederWrist = true;
+    public static final boolean kLowScoreWrist = false;
+    public static final boolean kMidScoreWrist = false;
+    public static final boolean kHighScoreWrist = true;
+    public static final boolean kStowInFrameWrist = false;
+    public static final boolean kStowLowWrist = false;
+
+    public static final double kLowPickupOuttake = -0.4;
+    public static final double kSingleFeederOuttake = -0.4;
+    public static final double kDoubleFeederOuttake = -0.4;
+    public static final double kLowScoreOuttake = -0.4;
+    public static final double kMidScoreOuttake = -0.4;
+    public static final double kHighScoreOuttake = -0.4;
+    public static final double kStowInFrameOuttake = -0.4;
+    public static final double kStowLowOuttake = -0.4;
+
   }
-  
   public static class VisionConstants {
     public static final String kSnakeEyesCamera = "OV5647";
     public static final double kCameraHeight = 21;
@@ -351,5 +359,4 @@ public final class Constants {
     public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
   }
 
-  
 }

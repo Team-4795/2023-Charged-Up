@@ -27,8 +27,6 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Wrist;
-import frc.utils.Gamepiece;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -59,17 +57,19 @@ public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final EndEffectorIntake m_intake = new EndEffectorIntake();
-  private final Wrist m_wrist = new Wrist();
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
 
   // The driver's controller
   GenericHID m_driverController = new GenericHID(OIConstants.kDriverControllerPort);
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
-  
   // State manager
-  StateManager m_manager = new StateManager(m_arm, m_intake, m_wrist);
-  
+
+  // State manager
+
+
+
+  StateManager m_manager = new StateManager( m_Vision, m_arm, m_intake);
   AutoSelector autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_robotDrive.m_field, m_manager, m_Vision);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -94,11 +94,30 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
         new RunCommand(
-            () -> m_intake.intake(),
+            () -> {
+                m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing());
+
+                m_intake.extended = m_intake.extendedTarget;
+
+                if (m_arm.setpoint < ArmConstants.kLowWristLimit) {
+                    m_intake.extended = false;
+                }
+
+                if (m_arm.setpoint > ArmConstants.kHighWristLimit) {
+                    m_intake.extended = false;
+                }
+
+                if (m_intake.extended) {
+                    m_intake.extend();
+                } else {
+                    m_intake.retract();
+                }
+            },
             m_intake
         )
 
     );
+
 
     // Subtract up movement by down movement so they cancel out if both are pressed at once
     m_arm.setDefaultCommand(
@@ -126,25 +145,6 @@ public class RobotContainer {
             m_arm
         )
     );
-
-    m_wrist.setDefaultCommand(new RunCommand(
-        () -> {
-            m_wrist.extended = m_wrist.extendedTarget;
-
-            if (m_arm.getPosition() > ArmConstants.kHighWristLimit || 
-                m_arm.getPosition() < ArmConstants.kLowWristLimit)
-            {
-                m_wrist.extended = false;
-            }
-
-            if (m_wrist.extended) {
-                m_wrist.extend();
-            } else {
-                m_wrist.retract();
-            }
-        },
-        m_wrist)
-    );
   }
 
   /**
@@ -161,15 +161,8 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // Pick cone, cube
-    ControlContants.operatorBumperLeft.onTrue(new InstantCommand(() -> {
-        Gamepiece.pickCone();
-        m_Vision.switchToTape();
-    }, m_Vision));
-
-    ControlContants.operatorBumperRight.onTrue(new InstantCommand(() -> {
-        Gamepiece.pickCube();
-        m_Vision.switchToTag();
-    }, m_Vision));
+    ControlContants.operatorBumperLeft.onTrue(new InstantCommand(m_manager::pickCone, m_arm));
+    ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm));
 
     // Setpoints
     final JoystickButton balanceButton = new JoystickButton(m_driverController, 4);
@@ -213,9 +206,13 @@ public class RobotContainer {
         m_intake));
 
     // Pneumatic override
-    ControlContants.operatorX.onTrue(new InstantCommand(m_wrist::extend, m_wrist));
+    ControlContants.operatorX.whileTrue(new RunCommand(
+        m_intake::extend,
+        m_intake));
 
-    ControlContants.operatorY.onTrue(new InstantCommand(m_wrist::retract, m_wrist));
+    ControlContants.operatorY.whileTrue(new RunCommand(
+        m_intake::retract,
+        m_intake));
 
     // Vision align
     ControlContants.driverDpadLeft.whileTrue(new TapeAlign(

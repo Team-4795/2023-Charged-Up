@@ -21,14 +21,20 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.StateManager;
 //Sensor imports
 import frc.robot.Sensors.HiLetGo;
-import frc.utils.Gamepiece;
 
 
 public class EndEffectorIntake extends SubsystemBase {
+    private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kIntakeCANID, MotorType.kBrushed);
+    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, IntakeConstants.kForwardChannel, IntakeConstants.kReverseChannel);
+    private final PneumaticHub m_ph = new PneumaticHub(IntakeConstants.kPHCANID);
     private final HiLetGo hiLetGo = new HiLetGo(IntakeConstants.kHiLetGoPort);
 
+    public double intakeSpeed = IntakeConstants.kStartIntakeSpeed;
     public double requestedSpeed = IntakeConstants.kStartIntakeSpeed;
+
+    public boolean extendedTarget = false;
+    public boolean extended = false;
 
     private boolean storing = false;
     private Timer hasBeenStoring = new Timer();
@@ -47,19 +53,39 @@ public class EndEffectorIntake extends SubsystemBase {
         hasBeenStoring.start();
         hasBeenStoring.reset();
 
+        compressor.enableAnalog(IntakeConstants.kMinPressure, IntakeConstants.kMaxPressure);
     }
 
-    public void intake() {
+    public void extend() {
+        extended = true;
+        solenoid.set(Value.kForward);
+    }
+
+    public void retract() {
+        extended = false;
+        solenoid.set(Value.kReverse);
+    }
+
+    public void stop() {
+        //solenoid.set(DoubleSolenoid.Value.kOff);
+
+    }
+
+    public void setExtendedTarget(boolean extend) {
+        this.extendedTarget = extend;
+    }
+
+    public void intakeFromGamepiece(StateManager.Gamepiece gamepiece, boolean isStowing) {
         double speed = 0;
 
         if (isStoring()) {
-            switch (Gamepiece.getGamepiece()) {
+            switch (gamepiece) {
                 case Cube: speed = IntakeConstants.kCubeSlowIntakeSpeed; break;
                 case Cone: speed = IntakeConstants.kConeSlowIntakeSpeed; break;
                 default: break;
             }
         } else {
-            switch (Gamepiece.getGamepiece()) {
+            switch (gamepiece) {
                 case Cube: speed = IntakeConstants.kCubeIntakeSpeed; break;
                 case Cone: speed = IntakeConstants.kConeIntakeSpeed; break;
                 default: break;
@@ -114,6 +140,9 @@ public class EndEffectorIntake extends SubsystemBase {
             hasBeenStoring.reset();
         }
 
+        SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
+        SmartDashboard.putBoolean("Wrist extended target", extendedTarget);
+        SmartDashboard.putBoolean("Wrist extended", extended);
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putNumber("Outtake speed", outtakeSpeed);
         SmartDashboard.putBoolean("HiLetGoing?", isHiLetGoing());
