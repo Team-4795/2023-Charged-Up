@@ -341,8 +341,8 @@ public final class Constants {
     public static final double kHighScoreOuttake = -0.4;
     public static final double kStowInFrameOuttake = -0.4;
     public static final double kStowLowOuttake = -0.4;
-
   }
+  
   public static class VisionConstants {
     public static final String kSnakeEyesCamera = "OV5647";
     public static final double kCameraHeight = 21;
