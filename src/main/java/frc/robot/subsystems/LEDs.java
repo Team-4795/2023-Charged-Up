@@ -36,7 +36,7 @@ public class LEDs extends SubsystemBase {
     
 
     public LEDs() {
-        led = new AddressableLED(9);
+        led = new AddressableLED(2);
         buffer = new AddressableLEDBuffer(LED_LENGTH);
         timer = new Timer();
         
