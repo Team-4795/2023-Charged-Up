@@ -28,9 +28,8 @@ public class StateManager {
         LowScore,
         MidScore,
         HighScore,
-        StowInFrame,
-        StowLow;
-    
+        StowInFrame;
+            
         private Setpoints getCubeSetpoints() {
             switch (this) {
                 case LowPickup: return CubeSetpointConstants.kLowPickup;
@@ -40,7 +39,6 @@ public class StateManager {
                 case MidScore: return CubeSetpointConstants.kMidScore;
                 case HighScore: return CubeSetpointConstants.kHighScore;
                 case StowInFrame: return CubeSetpointConstants.kStowInFrame;
-                case StowLow: return CubeSetpointConstants.kStowLow;
                 default: return null;
             }
         }
@@ -54,7 +52,6 @@ public class StateManager {
                 case MidScore: return ConeSetpointConstants.kMidScore;
                 case HighScore: return ConeSetpointConstants.kHighScore;
                 case StowInFrame: return ConeSetpointConstants.kStowInFrame;
-                case StowLow: return ConeSetpointConstants.kStowLow;
                 default: return null;
             }
         }

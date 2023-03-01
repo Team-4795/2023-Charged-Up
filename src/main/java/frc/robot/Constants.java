@@ -256,7 +256,6 @@ public final class Constants {
     public static final Setpoints kMidScore = new Setpoints(0.69, true, -0.3);
     public static final Setpoints kHighScore = new Setpoints(0.62, true, -0.3);
     public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.3);
-    public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.3);
   }
 
   public static final class ConeSetpointConstants {
@@ -267,8 +266,8 @@ public final class Constants {
     public static final Setpoints kMidScore = new Setpoints(0.71, false, -0.4);
     public static final Setpoints kHighScore = new Setpoints(0.64, true, -0.4);
     public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.4);
-    public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.4);
   }
+  
   public static class VisionConstants {
     public static final String kSnakeEyesCamera = "OV5647";
     public static final double kCameraHeight = 21;
