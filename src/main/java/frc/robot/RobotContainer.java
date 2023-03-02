@@ -225,7 +225,8 @@ public class RobotContainer {
         () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
     ));
 
-    new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
+    // reset LEDs when were not targeting
+    // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
   }
 
 
