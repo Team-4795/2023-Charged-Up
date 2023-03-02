@@ -564,19 +564,8 @@ public class AutoSelector {
           // Reset odometry for the first path you run during auto
           drivebase.zeroHeading();
           drivebase.resetOdometry(PathPlannerTrajectory
-              .transformTrajectoryForAlliance(GrapBalance1, DriverStation.getAlliance()).getInitialHolonomicPose()); // May
-                                                                                                                     // need
-                                                                                                                     // to
-                                                                                                                     // rethink
-                                                                                                                     // this
-                                                                                                                     // so
-                                                                                                                     // it
-                                                                                                                     // faces
-          // the
-          // right direction
+              .transformTrajectoryForAlliance(GrapBalance1, DriverStation.getAlliance()).getInitialHolonomicPose()); 
         }),
-
-        // new InstantCommand(drivebase::res)
 
         new InstantCommand(() -> m_intake.setOverrideStoring(true)),
 
@@ -626,22 +615,13 @@ public class AutoSelector {
                     new WaitCommand(1.5),
                     new InstantCommand(m_intake::retract),
                     new InstantCommand(m_manager::pickCube),
-                    new InstantCommand(() -> m_intake.setOverrideStoring(false)),
                     new InstantCommand(() -> m_manager.dpadDown()),
                     new WaitUntilCommand(m_arm::atSetpoint))),
-            // Run intake for 1 second
-            new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()),
+=            new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()),
                 m_intake)
                 .withTimeout(1)),
 
         new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-
-        new InstantCommand(() -> {
-          // Reset odometry for the first path you run during auto
-          // drivebase.resetOdometry(GrapBalance2.getInitialHolonomicPose()); // May need to rethink this so it faces
-                                                                           // the
-          // right direction
-        }),
         new InstantCommand(() -> {
           // Put the trajectory in glass
           m_field.getObject("traj").setTrajectory(GrapBalance2);
