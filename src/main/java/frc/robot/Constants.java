@@ -37,7 +37,7 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 3 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 1.7; // radians per second
+    public static final double kDirectionSlewRate = 2.2; // radians per second
     public static final double kMagnitudeSlewRate = 2.3; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 2.5; // percent per second (1 = 100%)
 
@@ -248,7 +248,7 @@ public final class Constants {
     public static final double kFF = 0;
     public static final double kMinOutput = -0.75;
     public static final double kMaxOutput = 0.75;
-    public static final double kRampRate = 0.1;
+    public static final double kRampRate = 0.25;
     public static final double kConversionFactor = 1;
     public static final int kCurrentLimit = 60;
     public static final double kGearing = 72;
@@ -290,7 +290,7 @@ public final class Constants {
     public static final double kDoubleFeederArm = 0.62;
     public static final double kLowScoreArm = 0.89;
     public static final double kMidScoreArm = 0.69;
-    public static final double kHighScoreArm = .613;
+    public static final double kHighScoreArm = .565;
     public static final double kStowInFrameArm = 0.16;
     public static final double kStowLowArm = 0.96;
     

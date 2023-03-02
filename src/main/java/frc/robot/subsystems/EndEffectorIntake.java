@@ -121,6 +121,10 @@ public class EndEffectorIntake extends SubsystemBase {
         this.overrideStoring = !this.overrideStoring;
     }
 
+    public void setOverrideStoring(boolean override) {
+        this.overrideStoring = override;
+    }
+
     @Override
     public void periodic() {
         if (storing == isHiLetGoing()) {

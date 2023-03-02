@@ -183,8 +183,8 @@ public class RobotContainer {
     ControlContants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
 
     // HiLetGo override
-    ControlContants.operatorA.onTrue(new InstantCommand(m_intake::overrideStoring));
-    ControlContants.operatorA.onFalse(new InstantCommand(m_intake::overrideStoring));
+    ControlContants.operatorA.onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)));
+    ControlContants.operatorA.onFalse(new InstantCommand(() -> m_intake.setOverrideStoring(false)));
 
     // Set x
     ControlContants.driverBumperLeft.whileTrue(new RunCommand(
@@ -195,7 +195,8 @@ public class RobotContainer {
     ControlContants.driverBumperRight.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     
     // Outtake
-    ControlContants.driverDpadRight.whileTrue(new RunCommand(
+    ControlContants.driverDpadRight.whileTrue(
+    new RunCommand(
         () -> {
             m_intake.outtake();
             switch (m_manager.getState()) {
