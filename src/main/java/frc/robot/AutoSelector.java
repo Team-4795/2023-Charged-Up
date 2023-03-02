@@ -56,7 +56,7 @@ public class AutoSelector {
   // Path using vision from further back for cone.
   PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));
   
-  PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(2, 1));
+  PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
   PathPlannerTrajectory GrapBalance2 = PathPlanner.loadPath("Balance + grab 2", new PathConstraints(3, 3));
 
   // Define Auto Selector
@@ -620,13 +620,14 @@ public class AutoSelector {
             new WaitCommand(1.5),
             new InstantCommand(m_intake::retract),           
             new InstantCommand(m_manager::pickCube),
+            new InstantCommand(m_intake::overrideStoring),
             new InstantCommand(() -> m_manager.dpadDown()),
             new WaitUntilCommand(m_arm::atSetpoint))),
     // Run intake for 1 second
     new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
       .withTimeout(1)),
 
-
+    new InstantCommand(m_intake::overrideStoring),
 
     new InstantCommand(() -> {
       // Reset odometry for the first path you run during auto
