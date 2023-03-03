@@ -110,6 +110,7 @@ public class AutoSelector {
                     new InstantCommand(m_manager::pickCube),
                     new InstantCommand(() -> m_manager.dpadDown()),
                     new WaitUntilCommand(m_arm::atSetpoint))),
+
             new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()),
                 m_intake)
                 .withTimeout(1),
@@ -121,7 +122,7 @@ public class AutoSelector {
 
         new ParallelCommandGroup(
           new PPSwerveControllerCommand(
-              CubeTwoGamePiece1,
+              CubeTwoGamePiece2,
               drivebase::getPose, // Pose supplier
               DriveConstants.kDriveKinematics, // SwerveDriveKinematics
               AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will
