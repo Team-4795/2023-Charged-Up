@@ -30,10 +30,13 @@ import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -195,19 +198,27 @@ public class RobotContainer {
     ControlContants.driverBumperRight.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     
     // Outtake
+    // If at cone mid score, extend wrist and outtake after a set time
     ControlContants.driverDpadRight.whileTrue(
-    new RunCommand(
-        () -> {
-            m_intake.outtake();
-            switch (m_manager.getState()) {
-                case MidScore: switch (m_manager.getGamepiece()) {
-                    case Cone: m_intake.extend();
-                    default: break;
-                };
-                default: break;
+        new ConditionalCommand(
+            new ParallelCommandGroup(
+                new RunCommand(m_intake::extend), // should also require m_intake, but since wrist and intake are together its not possible
+                new SequentialCommandGroup(
+                    new WaitCommand(0.5), 
+                    new RunCommand(m_intake::outtake, m_intake)
+                )
+            ),
+            new RunCommand(m_intake::outtake, m_intake),
+            () -> {
+                switch (m_manager.getState()) {
+                    case MidScore: switch (m_manager.getGamepiece()) {
+                        case Cone: return true;
+                        default: return false;
+                    }
+                    default: return false;
+                }
             }
-        },
-        m_intake));
+        ));
 
     // Pneumatic override
     ControlContants.operatorX.whileTrue(new RunCommand(
