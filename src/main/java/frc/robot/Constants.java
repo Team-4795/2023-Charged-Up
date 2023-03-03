@@ -286,7 +286,7 @@ public final class Constants {
 
   public static final class CubeSetpointConstants{
     public static final double kLowPickupArm = 0.918;
-    public static final double kSingleFeederArm = 0.7;
+    public static final double kStowHighArm = 0.5;
     public static final double kDoubleFeederArm = 0.62;
     public static final double kLowScoreArm = 0.89;
     public static final double kMidScoreArm = 0.69;
@@ -295,7 +295,7 @@ public final class Constants {
     public static final double kStowLowArm = 0.96;
     
     public static final boolean kLowPickupWrist = false;
-    public static final boolean kSingleFeederWrist = false;
+    public static final boolean kStowHighWrist = false;
     public static final boolean kDoubleFeederWrist = true;
     public static final boolean kLowScoreWrist = false;
     public static final boolean kMidScoreWrist = true;
@@ -304,7 +304,7 @@ public final class Constants {
     public static final boolean kStowLowWrist = false;
 
     public static final double kLowPickupOuttake = -0.3;
-    public static final double kSingleFeederOuttake = -0.3;
+    public static final double kStowHighOuttake = -0.3;
     public static final double kDoubleFeederOuttake = -0.3;
     public static final double kLowScoreOuttake = -0.3;
     public static final double kMidScoreOuttake = -0.3;
@@ -316,7 +316,7 @@ public final class Constants {
 
   public static final class ConeSetpointConstants{
     public static final double kLowPickupArm = 0.94;
-    public static final double kSingleFeederArm = 0.6;
+    public static final double kStowHighArm = 0.5;
     public static final double kDoubleFeederArm = 0.62;
     public static final double kLowScoreArm = 0.87;
     public static final double kMidScoreArm = 0.71;
@@ -325,7 +325,7 @@ public final class Constants {
     public static final double kStowLowArm = 0.96;
     
     public static final boolean kLowPickupWrist = false;
-    public static final boolean kSingleFeederWrist = false;
+    public static final boolean kStowHighWrist = false;
     public static final boolean kDoubleFeederWrist = true;
     public static final boolean kLowScoreWrist = false;
     public static final boolean kMidScoreWrist = false;
@@ -334,7 +334,7 @@ public final class Constants {
     public static final boolean kStowLowWrist = false;
 
     public static final double kLowPickupOuttake = -0.4;
-    public static final double kSingleFeederOuttake = -0.4;
+    public static final double kStowHighOuttake = -0.4;
     public static final double kDoubleFeederOuttake = -0.4;
     public static final double kLowScoreOuttake = -0.4;
     public static final double kMidScoreOuttake = -0.4;

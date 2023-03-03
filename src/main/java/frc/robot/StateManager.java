@@ -149,7 +149,7 @@ enum State {
 
         switch (this) {
             case LowPickup: result = new Setpoints(CubeSetpointConstants.kLowPickupArm, CubeSetpointConstants.kLowPickupWrist,CubeSetpointConstants.kLowPickupOuttake); break;
-            case SingleFeeder: result = new Setpoints(CubeSetpointConstants.kSingleFeederArm, CubeSetpointConstants.kSingleFeederWrist, CubeSetpointConstants.kSingleFeederOuttake); break;
+            case SingleFeeder: result = new Setpoints(CubeSetpointConstants.kStowHighArm, CubeSetpointConstants.kStowHighWrist, CubeSetpointConstants.kStowHighOuttake); break;
             case DoubleFeeder: result = new Setpoints(CubeSetpointConstants.kDoubleFeederArm, CubeSetpointConstants.kDoubleFeederWrist, CubeSetpointConstants.kDoubleFeederOuttake); break;
             case LowScore: result = new Setpoints(CubeSetpointConstants.kLowScoreArm, CubeSetpointConstants.kLowScoreWrist, CubeSetpointConstants.kLowScoreOuttake); break;
             case MidScore: result = new Setpoints(CubeSetpointConstants.kMidScoreArm, CubeSetpointConstants.kMidScoreWrist, CubeSetpointConstants.kMidScoreOuttake); break;
@@ -166,7 +166,7 @@ enum State {
 
         switch (this) {
             case LowPickup: result = new Setpoints(ConeSetpointConstants.kLowPickupArm, ConeSetpointConstants.kLowPickupWrist,ConeSetpointConstants.kLowPickupOuttake); break;
-            case SingleFeeder: result = new Setpoints(ConeSetpointConstants.kSingleFeederArm, ConeSetpointConstants.kSingleFeederWrist, ConeSetpointConstants.kSingleFeederOuttake); break;
+            case SingleFeeder: result = new Setpoints(ConeSetpointConstants.kStowHighArm, ConeSetpointConstants.kStowHighWrist, ConeSetpointConstants.kStowHighOuttake); break;
             case DoubleFeeder: result = new Setpoints(ConeSetpointConstants.kDoubleFeederArm, ConeSetpointConstants.kDoubleFeederWrist, ConeSetpointConstants.kDoubleFeederOuttake); break;
             case LowScore: result = new Setpoints(ConeSetpointConstants.kLowScoreArm, ConeSetpointConstants.kLowScoreWrist, ConeSetpointConstants.kLowScoreOuttake); break;
             case MidScore: result = new Setpoints(ConeSetpointConstants.kMidScoreArm, ConeSetpointConstants.kMidScoreWrist, ConeSetpointConstants.kMidScoreOuttake); break;
