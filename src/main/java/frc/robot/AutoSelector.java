@@ -403,71 +403,14 @@ public class AutoSelector {
         // Run outake for 1 second to score
         new RunCommand(m_intake::outtake, m_intake).withTimeout(1)));
 
-    // Auto Balance with 1 cone
-
-    chooser.setDefaultOption("Auto Balance", new SequentialCommandGroup(
-
-        new InstantCommand(() -> {
-          // Reset odometry for the first path you run during auto
-          drivebase.resetOdometry(AutoBalance.getInitialHolonomicPose()); // May need to rethink this so it faces the
-                                                                          // right direction
-        }),
-
-        new InstantCommand(() -> {
-          // Put it in break mode
-          drivebase.setBreakMode();
-        }),
-        // Set pipeline to tape
-        new InstantCommand(m_manager::pickCube),
-        // Align
-        new TapeAlign(
-            drivebase,
-            m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(.2),
-
-        // move arm to intake score mid
-        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-        new WaitUntilCommand(m_arm::atSetpoint),
-        // outake in order to score pre loaded
-        new InstantCommand(m_intake::extend, m_intake),
-
-        new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new ParallelCommandGroup(
-            new PPSwerveControllerCommand(
-                AutoBalance,
-                drivebase::getPose, // Pose supplier
-                DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-                AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will
-                                               // only
-                                               // use feedforwards.
-                AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-                AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving
-                                                      // them
-                                                      // 0 will only use feedforwards.
-                drivebase::setModuleStates, // Module states consumer
-                true, // Should the path be automatically mirrored depending on alliance color.
-                      // Optional, defaults to true
-                drivebase // Requires this drive subsystem
-            ),
-            new SequentialCommandGroup(
-                new InstantCommand(m_manager::pickCube),
-                new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-                new WaitUntilCommand(m_arm::atSetpoint))),
-
-        new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
-            AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)
-
-    ));
-
     // Srinivas idea
     chooser.addOption("Srinivas", new SequentialCommandGroup(
 
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
-          drivebase.resetOdometry(ConeTwoGamePiece1.getInitialHolonomicPose()); // May need to rethink this so it faces
-                                                                                // the
-          // right direction
+          drivebase.resetOdometry(ConeTwoGamePiece1.getInitialHolonomicPose());
+          drivebase.resetOdometry(PathPlannerTrajectory
+              .transformTrajectoryForAlliance(ConeTwoGamePiece1, DriverStation.getAlliance()).getInitialHolonomicPose()); 
         }),
         new InstantCommand(() -> {
           // Put it in break mode
@@ -558,28 +501,62 @@ public class AutoSelector {
 
     ));
 
+    chooser.setDefaultOption("Auto Balance", new SequentialCommandGroup(
+
+        new InstantCommand(() -> {
+          drivebase.zeroHeading();
+          drivebase.resetOdometry(PathPlannerTrajectory
+              .transformTrajectoryForAlliance(AutoBalance, DriverStation.getAlliance()).getInitialHolonomicPose()); 
+            drivebase.setBreakMode();
+        }),
+        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+        new InstantCommand(m_manager::pickCube),
+        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
+        new WaitUntilCommand(m_arm::atSetpoint),
+        new InstantCommand(m_intake::extend, m_intake),
+        new WaitCommand(0.5),
+        new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+        new InstantCommand(m_intake::retract, m_intake),
+        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+        new ParallelCommandGroup(
+            new PPSwerveControllerCommand(
+                AutoBalance,
+                drivebase::getPose, // Pose supplier
+                DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+                AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will
+                                               // only
+                                               // use feedforwards.
+                AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+                AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving
+                                                      // them
+                                                      // 0 will only use feedforwards.
+                drivebase::setModuleStates, // Module states consumer
+                true, // Should the path be automatically mirrored depending on alliance color.
+                      // Optional, defaults to true
+                drivebase // Requires this drive subsystem
+            ),
+            new SequentialCommandGroup(
+                new InstantCommand(m_manager::pickCube),
+                new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
+                new WaitUntilCommand(m_arm::atSetpoint))),
+
+        new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
+            AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
+        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)
+    ));
+
     // Add option of Vision based two game peice split into parts with commands Cube
     chooser.addOption("GrapBalance", new SequentialCommandGroup(
         new InstantCommand(() -> {
-          // Reset odometry for the first path you run during auto
           drivebase.zeroHeading();
           drivebase.resetOdometry(PathPlannerTrajectory
               .transformTrajectoryForAlliance(GrapBalance1, DriverStation.getAlliance()).getInitialHolonomicPose()); 
-        }),
-
-        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-
-        new InstantCommand(() -> {
-          // Put it in break mode
           drivebase.setBreakMode();
         }),
+        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
         new InstantCommand(m_manager::pickCube),
-        // Align
-
-        // move arm to intake score mid
         new InstantCommand(() -> m_manager.dpadUp(), m_arm),
         new WaitUntilCommand(m_arm::atSetpoint),
-        // outake in order to score pre loaded
         new InstantCommand(m_intake::extend, m_intake),
         new WaitCommand(0.5),
         new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
