@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -228,6 +229,16 @@ public class RobotContainer {
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
   }
 
+ /*public void setDriverRumble(double rumble){
+      ControlContants.driverController.setRumble(RumbleType.kLeftRumble, rumble);
+      ControlContants.driverController.setRumble(RumbleType.kRightRumble, rumble);
+  }
+
+
+  public void setDriverRumble(double rumble){
+    ControlContants.driverController.setRumble(RumbleType.kLeftRumble, rumble);
+    ControlContants.driverController.setRumble(RumbleType.kRightRumble, rumble);
+}*/
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
