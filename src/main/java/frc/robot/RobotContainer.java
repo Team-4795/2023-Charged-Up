@@ -176,8 +176,6 @@ public class RobotContainer {
         new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
 
-    //vision align button
-    final JoystickButton tapeAlign = new JoystickButton(m_driverController, 3);
     ControlContants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlContants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
     ControlContants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
@@ -240,7 +238,6 @@ public class RobotContainer {
     ControlContants.operatorController.setRumble(RumbleType.kLeftRumble, rumble);
     ControlContants.operatorController.setRumble(RumbleType.kRightRumble, rumble);
   }
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
