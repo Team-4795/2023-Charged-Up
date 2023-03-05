@@ -229,16 +229,15 @@ public class RobotContainer {
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
   }
 
- /*public void setDriverRumble(double rumble){
-      ControlContants.driverController.setRumble(RumbleType.kLeftRumble, rumble);
-      ControlContants.driverController.setRumble(RumbleType.kRightRumble, rumble);
-  }
-
-
-  public void setDriverRumble(double rumble){
+  public void setDriverRumble(double rumble) {
     ControlContants.driverController.setRumble(RumbleType.kLeftRumble, rumble);
     ControlContants.driverController.setRumble(RumbleType.kRightRumble, rumble);
-}*/
+  }
+
+  public void setOperatorRumble(double rumble) {
+    ControlContants.operatorController.setRumble(RumbleType.kLeftRumble, rumble);
+    ControlContants.operatorController.setRumble(RumbleType.kRightRumble, rumble);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

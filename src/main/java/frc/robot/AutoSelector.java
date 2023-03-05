@@ -202,8 +202,8 @@ public class AutoSelector {
             ),
 
             new SequentialCommandGroup(
-                new WaitCommand(1.5),
-                new InstantCommand(m_intake::retract),
+                new WaitCommand(1), // decrease considering 15 seconds
+                new InstantCommand(m_intake::retract), 
                 new InstantCommand(m_manager::pickCube),
                 new InstantCommand(() -> m_manager.dpadDown()),
                 new WaitUntilCommand(m_arm::atSetpoint))),
@@ -234,16 +234,13 @@ public class AutoSelector {
                   // Optional, defaults to true
             drivebase // Requires this drive subsystem
         ),
-        new SequentialCommandGroup(
+        new SequentialCommandGroup( 
             new InstantCommand(m_manager::pickCube),
             new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
             new WaitUntilCommand(m_arm::atSetpoint))),
-
-
             new TapeAlign(
               drivebase,
               m_vision, () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5)
-  
     
 
 ));
@@ -380,7 +377,19 @@ public class AutoSelector {
 
     ));
 
-    chooser.addOption("Nothing", Commands.none());
+  chooser.addOption("One Game piece", new SequentialCommandGroup(
+    new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+    new InstantCommand(m_manager::pickCube),
+    new InstantCommand(() -> m_manager.dpadUp(), m_arm),
+    new WaitUntilCommand(m_arm::atSetpoint),
+    new InstantCommand(m_intake::extend, m_intake),
+    new WaitCommand(0.5),
+    new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+    new InstantCommand(m_intake::retract, m_intake),
+    new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+    new InstantCommand(() -> m_manager.dpadRight()),
+    new WaitUntilCommand(m_arm::atSetpoint),  
+));
 
     SmartDashboard.putData("Auto Selector", chooser);
 
