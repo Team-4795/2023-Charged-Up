@@ -201,8 +201,8 @@ public class AutoSelector {
             ),
 
             new SequentialCommandGroup(
-                new WaitCommand(1.5),
-                new InstantCommand(m_intake::retract),
+                new WaitCommand(1), // decrease considering 15 seconds
+                new InstantCommand(m_intake::retract), 
                 new InstantCommand(m_manager::pickCube),
                 new InstantCommand(() -> m_manager.dpadDown()),
                 new WaitUntilCommand(m_arm::atSetpoint))),
@@ -233,16 +233,13 @@ public class AutoSelector {
                   // Optional, defaults to true
             drivebase // Requires this drive subsystem
         ),
-        new SequentialCommandGroup(
+        new SequentialCommandGroup( 
             new InstantCommand(m_manager::pickCube),
             new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
             new WaitUntilCommand(m_arm::atSetpoint))),
-
-
             new TapeAlign(
               drivebase,
               m_vision, () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5)
-  
     
 
 ));
@@ -393,9 +390,12 @@ public class AutoSelector {
     new InstantCommand(m_manager::pickCube),
     new InstantCommand(() -> m_manager.dpadDown()),
     new WaitUntilCommand(m_arm::atSetpoint),
+
     new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()),
     m_intake),
     new InstantCommand(() -> m_intake.setOverrideStoring(true))
+
+    
 ));
 
 
