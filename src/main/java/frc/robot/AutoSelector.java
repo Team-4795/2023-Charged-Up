@@ -378,6 +378,27 @@ public class AutoSelector {
 
     ));
 
+  chooser.addOption("One Game piece", new SequentialCommandGroup(
+
+    new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+    new InstantCommand(m_manager::pickCube),
+    new InstantCommand(() -> m_manager.dpadUp(), m_arm),
+    new WaitUntilCommand(m_arm::atSetpoint),
+    new InstantCommand(m_intake::extend, m_intake),
+    new WaitCommand(0.5),
+    new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+    new InstantCommand(m_intake::retract, m_intake),
+    new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+    new InstantCommand(m_intake::retract),
+    new InstantCommand(m_manager::pickCube),
+    new InstantCommand(() -> m_manager.dpadDown()),
+    new WaitUntilCommand(m_arm::atSetpoint),
+    new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()),
+    m_intake),
+    new InstantCommand(() -> m_intake.setOverrideStoring(true))
+));
+
+
     SmartDashboard.putData("Auto Selector", chooser);
 
   }
