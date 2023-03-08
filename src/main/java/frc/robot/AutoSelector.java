@@ -131,7 +131,7 @@ public class AutoSelector {
           new InstantCommand(() -> m_manager.dpadDown()),
           new WaitUntilCommand(m_arm::atSetpoint),
           new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
-            .withTimeout(1),
+              .withTimeout(1),
           new InstantCommand(() -> m_intake.setOverrideStoring(true)));
 
     } else if (gamepeice.equals("cone")) {
@@ -141,11 +141,19 @@ public class AutoSelector {
           new InstantCommand(() -> m_manager.dpadDown()),
           new WaitUntilCommand(m_arm::atSetpoint),
           new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
-            .withTimeout(1),
+              .withTimeout(1),
           new InstantCommand(() -> m_intake.setOverrideStoring(true)));
     }
 
     return null;
+  }
+
+  public Command stow(EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm) {
+    return new SequentialCommandGroup(
+        new SequentialCommandGroup(
+            new InstantCommand(m_manager::pickCube),
+            new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
+            new WaitUntilCommand(m_arm::atSetpoint)));
   }
 
   // Define Auto Selector
@@ -161,7 +169,7 @@ public class AutoSelector {
             drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
             new SequentialCommandGroup(
                 new WaitCommand(1.5),
-                this.intake("cube",m_intake,m_manager,m_arm))),
+                this.intake("cube", m_intake, m_manager, m_arm))),
 
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
@@ -196,15 +204,12 @@ public class AutoSelector {
 
             new SequentialCommandGroup(
                 new WaitCommand(1.5),
-                this.intake("cube",m_intake,m_manager,m_arm))),
+                this.intake("cube", m_intake, m_manager, m_arm))),
 
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(EarlyVision),
 
-            new SequentialCommandGroup(
-                new InstantCommand(m_manager::pickCube),
-                new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-                new WaitUntilCommand(m_arm::atSetpoint))),
+            this.stow(m_intake, m_manager, m_arm)),
 
         new TapeAlign(
             drivebase, m_vision,
@@ -219,10 +224,7 @@ public class AutoSelector {
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(AutoBalance),
 
-            new SequentialCommandGroup(
-                new InstantCommand(m_manager::pickCube),
-                new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-                new WaitUntilCommand(m_arm::atSetpoint))),
+            this.stow(m_intake, m_manager, m_arm)),
 
         new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
             AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
@@ -238,15 +240,11 @@ public class AutoSelector {
 
             new SequentialCommandGroup(
                 new WaitCommand(1.5),
-                this.intake("cube",m_intake,m_manager,m_arm))),
-
+                this.intake("cube", m_intake, m_manager, m_arm))),
 
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(GrapBalance2),
-            new SequentialCommandGroup(
-                new InstantCommand(m_manager::pickCube),
-                new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-                new WaitUntilCommand(m_arm::atSetpoint))),
+            this.stow(m_intake, m_manager, m_arm)),
 
         new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
             AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
