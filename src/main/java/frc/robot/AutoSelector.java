@@ -51,24 +51,88 @@ public class AutoSelector {
 
   PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
   PathPlannerTrajectory GrapBalance2 = PathPlanner.loadPath("Balance + grab 2", new PathConstraints(3, 3));
-  
+
+  public Command score(String gamepeice, String setpoint, EndEffectorIntake m_intake, StateManager m_manager,
+      LiftArm m_arm) {
+
+    if (gamepeice.equals("cube")) {
+
+      if (setpoint.equals("high")) {
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            new InstantCommand(m_manager::pickCube),
+            new InstantCommand(() -> m_manager.dpadUp(), m_arm),
+            new WaitUntilCommand(m_arm::atSetpoint),
+            new InstantCommand(m_intake::extend, m_intake),
+            new WaitCommand(0.5),
+            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+            new InstantCommand(m_intake::retract, m_intake),
+            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+      }
+      if (setpoint.equals("mid")) {
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            new InstantCommand(m_manager::pickCube),
+            new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
+            new WaitUntilCommand(m_arm::atSetpoint),
+            new InstantCommand(m_intake::extend, m_intake),
+            new WaitCommand(0.5),
+            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+            new InstantCommand(m_intake::retract, m_intake),
+            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+      }
+      if (setpoint.equals("low")) {
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            new InstantCommand(m_manager::pickCube),
+            new InstantCommand(() -> m_manager.dpadDown(), m_arm),
+            new WaitUntilCommand(m_arm::atSetpoint),
+            new InstantCommand(m_intake::retract, m_intake),
+            new WaitCommand(0),
+            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+      }
+    }
+    else if (gamepeice.equals("cone"))
+    {
+      
+      if (setpoint.equals("mid")) {
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            new InstantCommand(m_manager::pickCone),
+            new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
+            new WaitUntilCommand(m_arm::atSetpoint),
+            new InstantCommand(m_intake::extend, m_intake),
+            new WaitCommand(0.5),
+            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+            new InstantCommand(m_intake::retract, m_intake),
+            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+      }
+      if (setpoint.equals("low")) {
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            new InstantCommand(m_manager::pickCone),
+            new InstantCommand(() -> m_manager.dpadDown(), m_arm),
+            new WaitUntilCommand(m_arm::atSetpoint),
+            new InstantCommand(m_intake::retract, m_intake),
+            new WaitCommand(0),
+            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+      }
+    }
+    
+    return null;
+
+  }
+
   // Define Auto Selector
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision) {
 
     // Add option of Vision based two game peice split into parts with commands Cube
-    chooser.addOption("CubeVisionTwoGamePieceWCommands", new SequentialCommandGroup(
-      drivebase.AutoStartUp( CubeTwoGamePiece1),
-
-        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(m_manager::pickCube),
-        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-        new WaitUntilCommand(m_arm::atSetpoint),
-        new InstantCommand(m_intake::extend, m_intake),
-        new WaitCommand(0.5),
-        new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+    chooser.addOption("CubeTwoGamePiece", new SequentialCommandGroup(
+        drivebase.AutoStartUp(CubeTwoGamePiece1),
+        this.score("cube","high", m_intake,m_manager, m_arm),
 
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
@@ -107,17 +171,9 @@ public class AutoSelector {
     // Srinivas idea
     chooser.addOption("Grap community", new SequentialCommandGroup(
 
-    drivebase.AutoStartUp( GrapBalance1),
-    
-        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(m_manager::pickCube),
-        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-        new WaitUntilCommand(m_arm::atSetpoint),
-        new InstantCommand(m_intake::extend, m_intake),
-        new WaitCommand(0.5),
-        new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+        drivebase.AutoStartUp(GrapBalance1),
+
+        this.score("cube","high", m_intake,m_manager, m_arm),
 
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(GrapBalance1),
@@ -133,7 +189,6 @@ public class AutoSelector {
             .withTimeout(1),
 
         new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-   
 
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(EarlyVision),
@@ -151,16 +206,8 @@ public class AutoSelector {
 
     chooser.setDefaultOption("Auto Balance", new SequentialCommandGroup(
 
-        drivebase.AutoStartUp( AutoBalance),
-        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(m_manager::pickCube),
-        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-        new WaitUntilCommand(m_arm::atSetpoint),
-        new InstantCommand(m_intake::extend, m_intake),
-        new WaitCommand(0.5),
-        new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+        drivebase.AutoStartUp(AutoBalance),
+        this.score("cube","high", m_intake,m_manager, m_arm),
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(AutoBalance),
 
@@ -175,16 +222,8 @@ public class AutoSelector {
 
     // Add option of Vision based two game peice split into parts with commands Cube
     chooser.addOption("GrapBalance", new SequentialCommandGroup(
-        drivebase.AutoStartUp( GrapBalance1),
-        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(m_manager::pickCube),
-        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-        new WaitUntilCommand(m_arm::atSetpoint),
-        new InstantCommand(m_intake::extend, m_intake),
-        new WaitCommand(0.5),
-        new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+        drivebase.AutoStartUp(GrapBalance1),
+        this.score("cube","high", m_intake,m_manager, m_arm),
 
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(GrapBalance1),
