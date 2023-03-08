@@ -5,6 +5,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -50,26 +51,14 @@ public class AutoSelector {
 
   PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
   PathPlannerTrajectory GrapBalance2 = PathPlanner.loadPath("Balance + grab 2", new PathConstraints(3, 3));
-
+  
   // Define Auto Selector
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision) {
 
     // Add option of Vision based two game peice split into parts with commands Cube
     chooser.addOption("CubeVisionTwoGamePieceWCommands", new SequentialCommandGroup(
-
-        new InstantCommand(() -> {
-          // Reset odometry for the first path you run during auto
-          drivebase.resetOdometry(CubeTwoGamePiece1.getInitialHolonomicPose());
-          drivebase.resetOdometry(PathPlannerTrajectory
-              .transformTrajectoryForAlliance(CubeTwoGamePiece1, DriverStation.getAlliance())
-              .getInitialHolonomicPose());
-        }),
-
-        new InstantCommand(() -> {
-          // Put it in break mode
-          drivebase.setBreakMode();
-        }),
+      drivebase.AutoStartUp( CubeTwoGamePiece1),
 
         new InstantCommand(() -> m_intake.setOverrideStoring(true)),
         new InstantCommand(m_manager::pickCube),
@@ -118,12 +107,8 @@ public class AutoSelector {
     // Srinivas idea
     chooser.addOption("Grap community", new SequentialCommandGroup(
 
-        new InstantCommand(() -> {
-          drivebase.zeroHeading();
-          drivebase.resetOdometry(PathPlannerTrajectory
-              .transformTrajectoryForAlliance(GrapBalance1, DriverStation.getAlliance()).getInitialHolonomicPose());
-          drivebase.setBreakMode();
-        }),
+    drivebase.AutoStartUp( GrapBalance1),
+    
         new InstantCommand(() -> m_intake.setOverrideStoring(true)),
         new InstantCommand(m_manager::pickCube),
         new InstantCommand(() -> m_manager.dpadUp(), m_arm),
@@ -148,10 +133,7 @@ public class AutoSelector {
             .withTimeout(1),
 
         new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(() -> {
-          // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(EarlyVision);
-        }),
+   
 
         new ParallelCommandGroup(
             drivebase.followTrajectoryCommand(EarlyVision),
@@ -169,12 +151,7 @@ public class AutoSelector {
 
     chooser.setDefaultOption("Auto Balance", new SequentialCommandGroup(
 
-        new InstantCommand(() -> {
-          drivebase.zeroHeading();
-          drivebase.resetOdometry(PathPlannerTrajectory
-              .transformTrajectoryForAlliance(AutoBalance, DriverStation.getAlliance()).getInitialHolonomicPose());
-          drivebase.setBreakMode();
-        }),
+        drivebase.AutoStartUp( AutoBalance),
         new InstantCommand(() -> m_intake.setOverrideStoring(true)),
         new InstantCommand(m_manager::pickCube),
         new InstantCommand(() -> m_manager.dpadUp(), m_arm),
@@ -198,12 +175,7 @@ public class AutoSelector {
 
     // Add option of Vision based two game peice split into parts with commands Cube
     chooser.addOption("GrapBalance", new SequentialCommandGroup(
-        new InstantCommand(() -> {
-          drivebase.zeroHeading();
-          drivebase.resetOdometry(PathPlannerTrajectory
-              .transformTrajectoryForAlliance(GrapBalance1, DriverStation.getAlliance()).getInitialHolonomicPose());
-          drivebase.setBreakMode();
-        }),
+        drivebase.AutoStartUp( GrapBalance1),
         new InstantCommand(() -> m_intake.setOverrideStoring(true)),
         new InstantCommand(m_manager::pickCube),
         new InstantCommand(() -> m_manager.dpadUp(), m_arm),
