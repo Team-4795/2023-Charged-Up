@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 
@@ -23,13 +25,16 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import com.kauailabs.navx.frc.AHRS;
-
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
@@ -351,6 +356,28 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
-
-
+  
+  public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> {
+        // Reset odometry for trajectory
+        // Might not need to set this for each path
+        this.resetOdometry(traj.getInitialHolonomicPose());
+      }),
+      new PPSwerveControllerCommand(
+        traj,
+        this::getPose, // Pose supplier
+        DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+        AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
+                                        // use feedforwards.
+        AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+        AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
+                                              // 0 will only use feedforwards.
+        this::setModuleStates, // Module states consumer
+        true, // Should the path be automatically mirrored depending on alliance color.
+              // Optional, defaults to true
+        this // Requires this drive subsystem
+      )
+    );
+    }
 }
