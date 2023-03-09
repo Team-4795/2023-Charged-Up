@@ -10,9 +10,8 @@ public class LandingGear extends SubsystemBase{
     //placeholders, change later
 
     public LandingGear(){
-
     }
-    
+
     public void land() {
         solenoid.set(Value.kForward);
     }

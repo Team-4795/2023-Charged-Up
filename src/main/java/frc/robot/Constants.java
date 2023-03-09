@@ -162,6 +162,7 @@ public final class Constants {
     public static final JoystickButton operatorBumperLeft = new JoystickButton(operatorController, 5);
     public static final JoystickButton operatorBumperRight = new JoystickButton(operatorController, 6);
     //testing needed for following two button bindings:
+    //also these are placeholder names we can change them later
     public static final JoystickButton operatorUp = new JoystickButton(operatorController, 7);
     public static final JoystickButton operatorDown = new JoystickButton(operatorController, 8);
 
