@@ -27,6 +27,7 @@ import frc.robot.Constants.ControlContants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
+import frc.robot.subsystems.LandingGear;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,6 +65,7 @@ public class RobotContainer {
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
   private final LEDs m_led = new LEDs();
+  private final LandingGear m_landing = new LandingGear();
 
 
   // The driver's controller
@@ -223,6 +225,15 @@ public class RobotContainer {
         () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
         () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
     ));
+
+    //Landing Gear
+    ControlContants.operatorUp.whileTrue(new RunCommand(
+        m_landing::land, 
+        m_landing));
+
+    ControlContants.operatorDown.whileTrue(new RunCommand(
+        m_landing::retract, 
+        m_landing));
 
     // reset LEDs when were not targeting
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
