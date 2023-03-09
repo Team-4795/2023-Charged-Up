@@ -9,7 +9,6 @@ import frc.robot.subsystems.DriveSubsystem;
 public class AutoBalanceOld extends CommandBase{
     DriveSubsystem drive;
     double elevationAngle;
-    double elevationVelocity;
     double errorThreshold;
     double output;
 
@@ -25,14 +24,17 @@ public class AutoBalanceOld extends CommandBase{
     @Override
     public void initialize(){
         elevationAngle = drive.getElevationAngle();
-        elevationVelocity = drive.getElevationVelocity();
     }
 
 
     @Override
     public void execute(){
         elevationAngle = drive.getElevationAngle();
-        elevationVelocity = drive.getElevationVelocity();
+        if(elevationAngle < -AutoConstants.platformMaxAngle){
+            elevationAngle = -AutoConstants.platformMaxAngle;
+        } else if(elevationAngle > AutoConstants.platformMaxAngle){
+            elevationAngle = AutoConstants.platformMaxAngle;
+        }
         output = updateDrive();
         //not sure if Field relative is correct, but whatever
         drive.drive(output, 0, 0, false, true);
@@ -66,7 +68,6 @@ public class AutoBalanceOld extends CommandBase{
     @Override
     public boolean isFinished(){
         return false;
-        //return(Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
     }
 
 
