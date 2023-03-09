@@ -6,21 +6,19 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Compressor;
 //pneumatics imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticHub;
-
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //robot imports
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.StateManager;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeConstants;
-
+import frc.robot.StateManager;
 //Sensor imports
 import frc.robot.Sensors.HiLetGo;
 
@@ -32,7 +30,6 @@ public class EndEffectorIntake extends SubsystemBase {
     private final PneumaticHub m_ph = new PneumaticHub(IntakeConstants.kPHCANID);
     private final HiLetGo hiLetGo = new HiLetGo(IntakeConstants.kHiLetGoPort);
 
-    public double intakeSpeed = IntakeConstants.kStartIntakeSpeed;
     public double requestedSpeed = IntakeConstants.kStartIntakeSpeed;
 
     public boolean extendedTarget = false;
@@ -59,10 +56,12 @@ public class EndEffectorIntake extends SubsystemBase {
     }
 
     public void extend() {
+        extended = true;
         solenoid.set(Value.kForward);
     }
 
     public void retract() {
+        extended = false;
         solenoid.set(Value.kReverse);
     }
 
@@ -75,7 +74,7 @@ public class EndEffectorIntake extends SubsystemBase {
         this.extendedTarget = extend;
     }
 
-    public void intakeFromGamepiece(StateManager.Gamepiece gamepiece) {
+    public void intakeFromGamepiece(StateManager.Gamepiece gamepiece, boolean isStowing) {
         double speed = 0;
 
         if (isStoring()) {
@@ -90,6 +89,10 @@ public class EndEffectorIntake extends SubsystemBase {
                 case Cone: speed = IntakeConstants.kConeIntakeSpeed; break;
                 default: break;
             }
+        }
+
+        if (!isStoring() && isStowing) {
+            speed = 0;
         }
 
         requestedSpeed = speed;
@@ -114,7 +117,11 @@ public class EndEffectorIntake extends SubsystemBase {
         return storing ^ overrideStoring;
     }
 
-    public void overrideStoring(boolean override) {
+    public void overrideStoring() {
+        this.overrideStoring = !this.overrideStoring;
+    }
+
+    public void setOverrideStoring(boolean override) {
         this.overrideStoring = override;
     }
 
@@ -124,7 +131,14 @@ public class EndEffectorIntake extends SubsystemBase {
             hasBeenStoring.reset();
         }
 
-        if (hasBeenStoring.hasElapsed(ArmConstants.kSensorChangeTime)) {
+        double changeTime;
+        if (storing) {
+            changeTime = ArmConstants.kOuttakeSensorChangeTime;
+        } else {
+            changeTime = ArmConstants.kIntakeSensorChangeTime;
+        }
+
+        if (hasBeenStoring.hasElapsed(changeTime)) {
             storing = !storing;
             hasBeenStoring.reset();
         }
@@ -135,5 +149,10 @@ public class EndEffectorIntake extends SubsystemBase {
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putNumber("Outtake speed", outtakeSpeed);
         SmartDashboard.putBoolean("HiLetGoing?", isHiLetGoing());
+    }
+
+    public void intake(double speed) {
+        requestedSpeed = speed;
+         intakeMotor.set(speed);
     }
 }
