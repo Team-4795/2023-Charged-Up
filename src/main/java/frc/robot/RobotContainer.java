@@ -79,7 +79,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision);
+    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision); // huh? see above
 
     configureButtonBindings();
 

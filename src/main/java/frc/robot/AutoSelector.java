@@ -30,10 +30,13 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
-
+import frc.robot.auto.CubeTwoGamePiece;
 public class AutoSelector {
 
+
   private final SendableChooser<Command> chooser = new SendableChooser<>();
+
+
 
   private final Timer timer = new Timer();
   // All Path Planner paths
@@ -161,36 +164,9 @@ public class AutoSelector {
       StateManager m_manager, Vision m_vision) {
 
     // Add option of Vision based two game peice split into parts with commands Cube
-    chooser.addOption("CubeTwoGamePiece", new SequentialCommandGroup(
-        drivebase.AutoStartUp(CubeTwoGamePiece1),
-        this.score("cube", "high", m_intake, m_manager, m_arm),
-
-        new ParallelCommandGroup(
-            drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
-            new SequentialCommandGroup(
-                new WaitCommand(1.5),
-                this.intake("cube", m_intake, m_manager, m_arm))),
-
-        new ParallelCommandGroup(
-            drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
-            new SequentialCommandGroup(
-                new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-                new InstantCommand(m_manager::pickCube),
-                new InstantCommand(() -> m_manager.dpadDown(), m_arm),
-                new WaitUntilCommand(m_arm::atSetpoint),
-                new InstantCommand(m_intake::extend, m_intake))),
-        // Align
-        new InstantCommand(() -> {
-          m_vision.switchToTag();
-        }),
-        new TapeAlign(
-            drivebase,
-            m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
-
-        // Run outake for 1 second to scorenew RunCommand(m_intake::outtake,
-        // m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false))));
+    
+    chooser.addOption("CubeTwoGamePiece", new CubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
+     m_manager, m_vision, this));
 
     // Srinivas idea
     chooser.addOption("Grap community", new SequentialCommandGroup(
