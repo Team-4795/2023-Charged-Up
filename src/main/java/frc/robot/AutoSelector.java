@@ -3,44 +3,29 @@ package frc.robot;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Commands.AutoBalanceOld;
-import frc.robot.Commands.DriveCommand;
-import frc.robot.Commands.DriveCommandOld;
-import frc.robot.Commands.PipelineSwitch;
-import frc.robot.Commands.TapeAlign;
+import frc.robot.autoPaths.CubeTwoGamePiece;
+import frc.robot.autoPaths.GrapBalance;
+import frc.robot.autoPaths.GrapCommunity;
+import frc.robot.autoPaths.PathAutoBalance;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
-import frc.robot.auto.CubeTwoGamePiece;
 public class AutoSelector {
-
 
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-
-
-  private final Timer timer = new Timer();
   // All Path Planner paths
-
   // Cube 2 Game piece Auto part 1 (from first score to first intake)
   PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Cube 2 Game Piece 1", new PathConstraints(1, 2));
   // Cube 2 Game piece Auto part 2 (from intake to first second score)
@@ -159,74 +144,23 @@ public class AutoSelector {
             new WaitUntilCommand(m_arm::atSetpoint)));
   }
 
-  // Define Auto Selector
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision) {
 
     // Add option of Vision based two game peice split into parts with commands Cube
-    
     chooser.addOption("CubeTwoGamePiece", new CubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
      m_manager, m_vision, this));
 
     // Srinivas idea
-    chooser.addOption("Grap community", new SequentialCommandGroup(
+    chooser.addOption("Grap community", new GrapCommunity(drivebase, m_intake, m_arm, m_field,
+    m_manager, m_vision, this));
 
-        drivebase.AutoStartUp(GrapBalance1),
-
-        this.score("cube", "high", m_intake, m_manager, m_arm),
-
-        new ParallelCommandGroup(
-            drivebase.followTrajectoryCommand(GrapBalance1),
-
-            new SequentialCommandGroup(
-                new WaitCommand(1.5),
-                this.intake("cube", m_intake, m_manager, m_arm))),
-
-        new ParallelCommandGroup(
-            drivebase.followTrajectoryCommand(EarlyVision),
-
-            this.stow(m_intake, m_manager, m_arm)),
-
-        new TapeAlign(
-            drivebase, m_vision,
-            () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5)
-
-    ));
-
-    chooser.setDefaultOption("Auto Balance", new SequentialCommandGroup(
-
-        drivebase.AutoStartUp(AutoBalance),
-        this.score("cube", "high", m_intake, m_manager, m_arm),
-        new ParallelCommandGroup(
-            drivebase.followTrajectoryCommand(AutoBalance),
-
-            this.stow(m_intake, m_manager, m_arm)),
-
-        new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
-            AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)));
-
+    chooser.setDefaultOption("Auto Balance", new PathAutoBalance(drivebase, m_intake, m_arm, m_field,
+     m_manager, m_vision, this));
+     
     // Add option of Vision based two game peice split into parts with commands Cube
-    chooser.addOption("GrapBalance", new SequentialCommandGroup(
-        drivebase.AutoStartUp(GrapBalance1),
-        this.score("cube", "high", m_intake, m_manager, m_arm),
-
-        new ParallelCommandGroup(
-            drivebase.followTrajectoryCommand(GrapBalance1),
-
-            new SequentialCommandGroup(
-                new WaitCommand(1.5),
-                this.intake("cube", m_intake, m_manager, m_arm))),
-
-        new ParallelCommandGroup(
-            drivebase.followTrajectoryCommand(GrapBalance2),
-            this.stow(m_intake, m_manager, m_arm)),
-
-        new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
-            AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)
-
-    ));
+    chooser.addOption("GrapBalance", new GrapBalance(drivebase, m_intake, m_arm, m_field,
+     m_manager, m_vision, this));
 
     SmartDashboard.putData("Auto Selector", chooser);
 
