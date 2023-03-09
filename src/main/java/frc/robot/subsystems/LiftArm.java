@@ -45,10 +45,10 @@ public class LiftArm extends SubsystemBase {
     // Temporary values
     m_PIDController.setOutputRange(ArmConstants.kMinOutput, ArmConstants.kMaxOutput);
 
-  
-
     leftArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
     rightArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
+    leftArmMotor.setClosedLoopRampRate(ArmConstants.kRampRate);
+    rightArmMotor.setClosedLoopRampRate(ArmConstants.kRampRate);
 
     liftRelativeEncoder.setPositionConversionFactor(ArmConstants.kConversionFactor);
     liftEncoder.setPositionConversionFactor(ArmConstants.kConversionFactor);
