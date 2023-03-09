@@ -69,7 +69,7 @@ public class AutoSelector {
             new InstantCommand(m_intake::retract, m_intake),
             new InstantCommand(() -> m_intake.setOverrideStoring(false)));
       }
-      if (setpoint.equals("mid")) {
+     else  if (setpoint.equals("mid")) {
         return new SequentialCommandGroup(
             new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
@@ -81,7 +81,7 @@ public class AutoSelector {
             new InstantCommand(m_intake::retract, m_intake),
             new InstantCommand(() -> m_intake.setOverrideStoring(false)));
       }
-      if (setpoint.equals("low")) {
+      else if (setpoint.equals("low")) {
         return new SequentialCommandGroup(
             new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
@@ -106,7 +106,7 @@ public class AutoSelector {
             new InstantCommand(m_intake::retract, m_intake),
             new InstantCommand(() -> m_intake.setOverrideStoring(false)));
       }
-      if (setpoint.equals("low")) {
+      else if (setpoint.equals("low")) {
         return new SequentialCommandGroup(
             new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCone),
