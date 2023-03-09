@@ -35,7 +35,7 @@ public class LiftArm extends SubsystemBase {
     rightArmMotor.restoreFactoryDefaults();
     
     liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    liftRelativeEncoder= leftArmMotor.getEncoder();
+    liftRelativeEncoder = leftArmMotor.getEncoder();
 
     m_PIDController = leftArmMotor.getPIDController();
     m_PIDController.setFeedbackDevice(liftEncoder);
@@ -86,11 +86,12 @@ public class LiftArm extends SubsystemBase {
     leftArmMotor.burnFlash();
     rightArmMotor.burnFlash();
 
-    this.setpoint = liftEncoder.getPosition();
-    SmartDashboard.putNumber("Arm setpoint", setpoint);
+    this.setTargetPosition(this.getPosition());
 
     motionTimer.start();
     motionTimer.reset();
+
+    this.updateMotionProfile();
   }
 
   private void updateMotionProfile() {
@@ -101,9 +102,9 @@ public class LiftArm extends SubsystemBase {
   }
 
   // Sets setpoint, where setpoint is 0 to 1
-  public void setTargetPosition(double setpoint) {
-    if (setpoint != this.setpoint) {
-      this.setpoint = setpoint;
+  public void setTargetPosition(double newSetpoint) {
+    if (newSetpoint != this.setpoint) {
+      this.setpoint = newSetpoint;
       updateMotionProfile();
     }
   }
