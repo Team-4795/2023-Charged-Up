@@ -171,7 +171,7 @@ public class AutoSelector {
     }
 
     return new ParallelCommandGroup(
-      new TapeAlign(drivebase, m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed),
+      new TapeAlign(drivebase, m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
       new SequentialCommandGroup(new InstantCommand(() -> m_intake.setOverrideStoring(true)),
                                  new InstantCommand(m_intake::extend),
                                  coneOrCube),
