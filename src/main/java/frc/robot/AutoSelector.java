@@ -145,6 +145,43 @@ public class AutoSelector {
 
   }
 
+  public Command scoreV2(String gamepiece, String setpoint, EndEffectorIntake m_intake, StateManager m_manager,
+  LiftArm m_arm, DriveSubsystem drivebase, Vision m_vision){
+    InstantCommand positionCommand;
+    InstantCommand coneOrCube;
+
+    switch(gamepiece){
+      case "cube":
+        coneOrCube = new InstantCommand(m_manager::pickCube);
+      case "cone":
+        coneOrCube = new InstantCommand(m_manager::pickCone);
+      default:
+        coneOrCube = new InstantCommand();
+    }
+    
+    switch(setpoint){
+      case "high":
+        positionCommand = new InstantCommand(() -> m_manager.dpadUp(), m_arm);
+      case "mid":
+        positionCommand = new InstantCommand(() -> m_manager.dpadLeft(), m_arm);
+      case "low":
+        positionCommand = new InstantCommand(() -> m_manager.dpadDown(), m_arm);
+      default:
+        positionCommand = new InstantCommand();
+    }
+
+    return new ParallelCommandGroup(
+      new TapeAlign(drivebase, m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed),
+      new SequentialCommandGroup(new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+                                 new InstantCommand(m_intake::extend),
+                                 coneOrCube),
+      new SequentialCommandGroup(positionCommand,
+                                 new WaitCommand(0.5),
+                                 new RunCommand(m_intake::outtake, m_intake).withTimeout(0.5)
+      )
+    );
+  }
+
   public Command intake(String gamepeice, EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm) {
     if (gamepeice.equals("cube")) {
       return new SequentialCommandGroup(
