@@ -28,13 +28,13 @@ public class GrapCommunity extends SequentialCommandGroup {
 public GrapCommunity(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
 
-        PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));
-        PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
-
+  PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));
+  PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
+  
+  addCommands(
     new SequentialCommandGroup(
 
     drivebase.AutoStartUp(GrapBalance1),
-
     m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm),
 
     new ParallelCommandGroup(
@@ -46,14 +46,10 @@ public GrapCommunity(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftA
 
     new ParallelCommandGroup(
         drivebase.followTrajectoryCommand(EarlyVision),
-
         m_autoSelector.stow(m_intake, m_manager, m_arm)),
 
     new TapeAlign(
         drivebase, m_vision,
-        () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5)
-
-);
-
+        () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5)));
       }
     }

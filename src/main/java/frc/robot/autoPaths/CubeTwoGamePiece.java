@@ -34,6 +34,7 @@ public CubeTwoGamePiece(DriveSubsystem drivebase, EndEffectorIntake m_intake, Li
   PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Cube 2 Game Piece 2", new PathConstraints(1, 2));
 
     // Add option of Vision based two game peice split into parts with commands Cube
+  addCommands(
     new SequentialCommandGroup(
         drivebase.AutoStartUp(CubeTwoGamePiece1),
         m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm),
@@ -56,6 +57,7 @@ public CubeTwoGamePiece(DriveSubsystem drivebase, EndEffectorIntake m_intake, Li
         new InstantCommand(() -> {
           m_vision.switchToTag();
         }),
+        
         new TapeAlign(
             drivebase,
             m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
@@ -63,6 +65,7 @@ public CubeTwoGamePiece(DriveSubsystem drivebase, EndEffectorIntake m_intake, Li
         // Run outake for 1 second to scorenew RunCommand(m_intake::outtake,
         // m_intake).withTimeout(1.0),
         new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+        new InstantCommand(() -> m_intake.setOverrideStoring(false)))
+       );
       }
     }

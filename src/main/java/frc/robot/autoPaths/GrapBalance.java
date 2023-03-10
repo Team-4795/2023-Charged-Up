@@ -29,29 +29,26 @@ public class GrapBalance extends SequentialCommandGroup {
 public GrapBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
 
-        PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
-        PathPlannerTrajectory GrapBalance2 = PathPlanner.loadPath("Balance + grab 2", new PathConstraints(3, 3));
+  PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
+  PathPlannerTrajectory GrapBalance2 = PathPlanner.loadPath("Balance + grab 2", new PathConstraints(3, 3));
 
-        new SequentialCommandGroup(
-            drivebase.AutoStartUp(GrapBalance1),
-            m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm),
+  addCommands(
+    new SequentialCommandGroup(
+        drivebase.AutoStartUp(GrapBalance1),
+        m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm),
     
-            new ParallelCommandGroup(
-                drivebase.followTrajectoryCommand(GrapBalance1),
+        new ParallelCommandGroup( 
+              drivebase.followTrajectoryCommand(GrapBalance1),
     
-                new SequentialCommandGroup(
+              new SequentialCommandGroup(
                     new WaitCommand(1.5),
                     m_autoSelector.intake("cube", m_intake, m_manager, m_arm))),
     
-            new ParallelCommandGroup(
-                drivebase.followTrajectoryCommand(GrapBalance2),
-                m_autoSelector.stow(m_intake, m_manager, m_arm)),
+        new ParallelCommandGroup(
+            drivebase.followTrajectoryCommand(GrapBalance2),
+            m_autoSelector.stow(m_intake, m_manager, m_arm)),
     
-            new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
-                AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-            new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)
-    
-        );
-    
+        new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
+        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)));
       }
     }

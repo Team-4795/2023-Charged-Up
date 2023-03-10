@@ -28,11 +28,10 @@ public class PathAutoBalance extends SequentialCommandGroup {
 public PathAutoBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
 
-        PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance", new PathConstraints(3, 3));
+  PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance", new PathConstraints(3, 3));
 
-
-    new SequentialCommandGroup(
-
+  addCommands(
+   new SequentialCommandGroup(
     drivebase.AutoStartUp(AutoBalance),
     m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm),
     new ParallelCommandGroup(
@@ -42,7 +41,6 @@ public PathAutoBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, Lif
 
     new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
         AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-    new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold));
-    
+    new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)));
       }
     }
