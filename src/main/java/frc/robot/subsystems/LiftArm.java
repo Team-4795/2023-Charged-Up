@@ -146,6 +146,7 @@ public class LiftArm extends SubsystemBase {
     SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
     SmartDashboard.putNumber("Arm setpoint", setpoint);
     SmartDashboard.putBoolean("At arm setpoint", this.atSetpoint());
+    //SmartDashboard.putNumber("Trapezoidal setpoint", targetState.position);
     liftRelativeEncoder.setPosition(this.getPosition());
   }
 }

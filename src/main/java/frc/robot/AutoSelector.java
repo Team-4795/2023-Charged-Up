@@ -82,6 +82,7 @@ public class AutoSelector {
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
                     new InstantCommand(wrist::extend, wrist))
+                    
                 // new SequentialCommandGroup(
                 //     new InstantCommand(() -> {
                 //       m_vision.switchToTag();
