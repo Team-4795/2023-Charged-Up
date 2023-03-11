@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -71,7 +72,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led);
+  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive);
 
   AutoSelector autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_robotDrive.m_field, m_manager, m_Vision);
   /**
@@ -102,11 +103,11 @@ public class RobotContainer {
 
                 m_intake.extended = m_intake.extendedTarget;
 
-                if (m_arm.setpoint < ArmConstants.kLowWristLimit) {
+                if (m_arm.getPosition() < ArmConstants.kLowWristLimit) {
                     m_intake.extended = false;
                 }
 
-                if (m_arm.setpoint > ArmConstants.kHighWristLimit) {
+                if (m_arm.getPosition() > ArmConstants.kHighWristLimit) {
                     m_intake.extended = false;
                 }
 
@@ -143,7 +144,9 @@ public class RobotContainer {
                 }
 
                 // Set new arm setpoint and move to it
-                m_arm.setPosition(new_setpoint);
+                m_arm.setTargetPosition(new_setpoint);
+
+                m_arm.runAutomatic();
             },
             m_arm
         )
@@ -175,8 +178,6 @@ public class RobotContainer {
         new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
     ));
 
-    //vision align button
-    final JoystickButton tapeAlign = new JoystickButton(m_driverController, 3);
     ControlContants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlContants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
     ControlContants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
@@ -230,6 +231,16 @@ public class RobotContainer {
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
   }
 
+  public void setDriverRumble(double rumble) {
+    ControlContants.driverController.setRumble(RumbleType.kLeftRumble, rumble);
+    ControlContants.driverController.setRumble(RumbleType.kRightRumble, rumble);
+  }
+
+  public void setOperatorRumble(double rumble) {
+    ControlContants.operatorController.setRumble(RumbleType.kLeftRumble, rumble);
+    ControlContants.operatorController.setRumble(RumbleType.kRightRumble, rumble);
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -239,5 +250,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     
     return autoSelector.getSelected();
+  }
+
+  public void setNotStoring() {
+    m_intake.setOverrideStoring(false);
   }
 }

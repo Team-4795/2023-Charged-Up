@@ -1,10 +1,12 @@
 package frc.robot;
 import java.util.Optional;
 
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
+import frc.utils.Setpoints;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CubeSetpointConstants;
@@ -15,6 +17,7 @@ public class StateManager {
     private LiftArm arm;
     private EndEffectorIntake intake;
     private LEDs leds;
+    private DriveSubsystem drive;
 
     // What state were in
     private State state;
@@ -33,7 +36,7 @@ public class StateManager {
         None,
     }
 
-    public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds) {
+    public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds, DriveSubsystem drive) {
         this.state = State.StowInFrame;
         this.gamepiece = Gamepiece.None;
 
@@ -41,6 +44,7 @@ public class StateManager {
         this.arm = arm;
         this.intake = intake;
         this.leds = leds;
+        this.drive = drive;
     }
 
     public void pickCube() {
@@ -60,7 +64,12 @@ public class StateManager {
 
     public void dpadUp() {
         if (intake.isStoring()) {
-            state = State.HighScore;
+            if (Math.abs(drive.getPose().getRotation().getDegrees()) > 90.0) {
+                state = State.BackwardsHighScore;
+            } else {
+                state = State.HighScore;
+
+            }
         } else {
             state = State.DoubleFeeder;
         }
@@ -70,7 +79,11 @@ public class StateManager {
 
     public void dpadLeft() {
         if (intake.isStoring()) {
-            state = State.MidScore;
+            if (Math.abs(drive.getPose().getRotation().getDegrees()) > 90.0) {
+                state = State.BackwardsMidScore;
+            } else {
+                state = State.MidScore;
+            }
         } else {
             state = State.SingleFeeder;
         }
@@ -80,7 +93,11 @@ public class StateManager {
     
     public void dpadDown() {
         if (intake.isStoring()) {
-            state = State.LowScore;
+            if (Math.abs(drive.getPose().getRotation().getDegrees()) > 90.0) {
+                state = State.BackwardsLowScore;
+            } else {
+                state = State.LowScore;
+            }
         } else {
             state = State.LowPickup;
         }
@@ -126,7 +143,7 @@ public class StateManager {
     }
 
     private void setSetpoints() {
-        this.getArmSetpoint().ifPresent(arm::setPosition);
+        this.getArmSetpoint().ifPresent(arm::setTargetPosition);
         this.getOuttakeSetpoint().ifPresent(intake::setOuttakeSpeed);
         this.getWristExtended().ifPresent(intake::setExtendedTarget);
 
@@ -142,20 +159,26 @@ enum State {
     MidScore,
     HighScore,
     StowInFrame,
-    StowLow;
+    StowLow,
+    BackwardsMidScore,
+    BackwardsHighScore,
+    BackwardsLowScore;
 
     private Optional<Setpoints> getCubeSetpoints() {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(CubeSetpointConstants.kLowPickupArm, CubeSetpointConstants.kLowPickupWrist,CubeSetpointConstants.kLowPickupOuttake); break;
-            case SingleFeeder: result = new Setpoints(CubeSetpointConstants.kStowHighArm, CubeSetpointConstants.kStowHighWrist, CubeSetpointConstants.kStowHighOuttake); break;
-            case DoubleFeeder: result = new Setpoints(CubeSetpointConstants.kDoubleFeederArm, CubeSetpointConstants.kDoubleFeederWrist, CubeSetpointConstants.kDoubleFeederOuttake); break;
-            case LowScore: result = new Setpoints(CubeSetpointConstants.kLowScoreArm, CubeSetpointConstants.kLowScoreWrist, CubeSetpointConstants.kLowScoreOuttake); break;
-            case MidScore: result = new Setpoints(CubeSetpointConstants.kMidScoreArm, CubeSetpointConstants.kMidScoreWrist, CubeSetpointConstants.kMidScoreOuttake); break;
-            case HighScore: result = new Setpoints(CubeSetpointConstants.kHighScoreArm, CubeSetpointConstants.kHighScoreWrist, CubeSetpointConstants.kHighScoreOuttake); break;
-            case StowInFrame: result = new Setpoints(CubeSetpointConstants.kStowInFrameArm, CubeSetpointConstants.kStowInFrameWrist, CubeSetpointConstants.kStowInFrameOuttake); break;
-            case StowLow: result = new Setpoints(CubeSetpointConstants.kStowLowArm, CubeSetpointConstants.kStowLowWrist, CubeSetpointConstants.kStowLowOuttake); break;
+            case LowPickup: result = CubeSetpointConstants.kLowPickup; break;
+            case SingleFeeder: result = CubeSetpointConstants.kStowHigh; break;
+            case DoubleFeeder: result = CubeSetpointConstants.kDoubleFeeder; break;
+            case LowScore: result = CubeSetpointConstants.kLowScore; break;
+            case MidScore: result = CubeSetpointConstants.kMidScore; break;
+            case HighScore: result = CubeSetpointConstants.kHighScore; break;
+            case StowInFrame: result = CubeSetpointConstants.kStowInFrame; break;
+            case StowLow: result = CubeSetpointConstants.kStowLow; break;
+            case BackwardsMidScore: result = CubeSetpointConstants.kBackwardsMidScore; break;
+            case BackwardsHighScore: result = CubeSetpointConstants.kBackwardsHighScore; break;
+            case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
         }
 
         return Optional.ofNullable(result);
@@ -165,14 +188,15 @@ enum State {
         Setpoints result = null;
 
         switch (this) {
-            case LowPickup: result = new Setpoints(ConeSetpointConstants.kLowPickupArm, ConeSetpointConstants.kLowPickupWrist,ConeSetpointConstants.kLowPickupOuttake); break;
-            case SingleFeeder: result = new Setpoints(ConeSetpointConstants.kStowHighArm, ConeSetpointConstants.kStowHighWrist, ConeSetpointConstants.kStowHighOuttake); break;
-            case DoubleFeeder: result = new Setpoints(ConeSetpointConstants.kDoubleFeederArm, ConeSetpointConstants.kDoubleFeederWrist, ConeSetpointConstants.kDoubleFeederOuttake); break;
-            case LowScore: result = new Setpoints(ConeSetpointConstants.kLowScoreArm, ConeSetpointConstants.kLowScoreWrist, ConeSetpointConstants.kLowScoreOuttake); break;
-            case MidScore: result = new Setpoints(ConeSetpointConstants.kMidScoreArm, ConeSetpointConstants.kMidScoreWrist, ConeSetpointConstants.kMidScoreOuttake); break;
-            case HighScore: result = new Setpoints(ConeSetpointConstants.kHighScoreArm, ConeSetpointConstants.kHighScoreWrist, ConeSetpointConstants.kHighScoreOuttake); break;
-            case StowInFrame: result = new Setpoints(ConeSetpointConstants.kStowInFrameArm, ConeSetpointConstants.kStowInFrameWrist, ConeSetpointConstants.kStowInFrameOuttake); break;
-            case StowLow: result = new Setpoints(ConeSetpointConstants.kStowLowArm, ConeSetpointConstants.kStowLowWrist, ConeSetpointConstants.kStowLowOuttake); break;
+            case LowPickup: result = ConeSetpointConstants.kLowPickup; break;
+            case SingleFeeder: result = ConeSetpointConstants.kStowHigh; break;
+            case DoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
+            case LowScore: result = ConeSetpointConstants.kLowScore; break;
+            case MidScore: result = ConeSetpointConstants.kMidScore; break;
+            case HighScore: result = ConeSetpointConstants.kHighScore; break;
+            case StowInFrame: result = ConeSetpointConstants.kStowInFrame; break;
+            case StowLow: result = ConeSetpointConstants.kStowLow; break;
+            default: break;
         }
 
         return Optional.ofNullable(result);
@@ -192,17 +216,5 @@ enum State {
             case Cone: return Optional.of(StateManager.LED.Cone);
             default: return Optional.empty();
         }
-    }
-}
-
-class Setpoints {
-    double arm;
-    boolean wrist;
-    double outtake;
-
-    Setpoints(double arm, boolean wrist, double outtake) {
-        this.arm = arm;
-        this.wrist = wrist;
-        this.outtake = outtake;
     }
 }
