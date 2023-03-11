@@ -228,7 +228,7 @@ public class AutoSelector {
             new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
 
             new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
-            new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
+            new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
             .withTimeout(.5));
   }
 
