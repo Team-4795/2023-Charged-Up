@@ -28,16 +28,10 @@ import frc.robot.Sensors.HiLetGo;
 
 
 public class EndEffectorIntake extends SubsystemBase {
-    private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kIntakeCANID, MotorType.kBrushed);
-    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, IntakeConstants.kForwardChannel, IntakeConstants.kReverseChannel);
-    private final PneumaticHub m_ph = new PneumaticHub(IntakeConstants.kPHCANID);
     private final HiLetGo hiLetGo = new HiLetGo(IntakeConstants.kHiLetGoPort);
 
     public double requestedSpeed = IntakeConstants.kStartIntakeSpeed;
-
-    public boolean extendedTarget = false;
-    public boolean extended = false;
 
     private boolean storing = false;
     private boolean currentBasedStoring = false;
@@ -60,29 +54,8 @@ public class EndEffectorIntake extends SubsystemBase {
         hasBeenStoring.start();
         hasBeenStoring.reset();
 
-        compressor.enableAnalog(IntakeConstants.kMinPressure, IntakeConstants.kMaxPressure);
-
         current = new DoubleLogEntry(DataLogManager.getLog(), "/current");
         currentStoring = new BooleanLogEntry(DataLogManager.getLog(), "/currentStoring");
-    }
-
-    public void extend() {
-        extended = true;
-        solenoid.set(Value.kForward);
-    }
-
-    public void retract() {
-        extended = false;
-        solenoid.set(Value.kReverse);
-    }
-
-    public void stop() {
-        //solenoid.set(DoubleSolenoid.Value.kOff);
-
-    }
-
-    public void setExtendedTarget(boolean extend) {
-        this.extendedTarget = extend;
     }
 
     public void intakeFromGamepiece(StateManager.Gamepiece gamepiece, boolean isStowing) {
@@ -165,10 +138,6 @@ public class EndEffectorIntake extends SubsystemBase {
 
         SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
         SmartDashboard.putBoolean("currentBasedStoring", currentBasedStoring);
-
-        SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
-        SmartDashboard.putBoolean("Wrist extended target", extendedTarget);
-        SmartDashboard.putBoolean("Wrist extended", extended);
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putNumber("Outtake speed", outtakeSpeed);
         SmartDashboard.putBoolean("HiLetGoing?", isHiLetGoing());

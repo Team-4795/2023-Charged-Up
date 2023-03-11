@@ -30,6 +30,7 @@ import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -62,6 +63,7 @@ public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final EndEffectorIntake m_intake = new EndEffectorIntake();
+  private final Wrist m_wrist = new Wrist();
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
   private final LEDs m_led = new LEDs();
@@ -72,15 +74,15 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive);
+  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive, m_wrist);
 
-  AutoSelector autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_robotDrive.m_field, m_manager, m_Vision);
+  AutoSelector autoSelector;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
-    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision); // huh? see above
+    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision, m_wrist); // huh? see above
 
     configureButtonBindings();
 
@@ -100,27 +102,32 @@ public class RobotContainer {
         new RunCommand(
             () -> {
                 m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing());
+            }, m_intake
+        )
+    );
 
-                m_intake.extended = m_intake.extendedTarget;
+    m_wrist.setDefaultCommand(
+        new RunCommand(() -> {
+            m_wrist.extended = m_wrist.extendedTarget;
 
                 if (m_arm.getPosition() < ArmConstants.kLowWristLimit) {
-                    m_intake.extended = false;
+                    m_wrist.extended = false;
                 }
 
                 if (m_arm.getPosition() > ArmConstants.kHighWristLimit) {
-                    m_intake.extended = false;
+                    m_wrist.extended = false;
                 }
 
-                if (m_intake.extended) {
-                    m_intake.extend();
+                if (m_wrist.extended) {
+                    m_wrist.extend();
                 } else {
-                    m_intake.retract();
+                    m_wrist.retract();
                 }
-            },
-            m_intake
-        )
-
+        }, 
+        m_wrist)
     );
+
+    
 
 
     // Subtract up movement by down movement so they cancel out if both are pressed at once
@@ -202,22 +209,22 @@ public class RobotContainer {
             m_intake.outtake();
             switch (m_manager.getState()) {
                 case MidScore: switch (m_manager.getGamepiece()) {
-                    case Cone: m_intake.extend();
+                    case Cone: m_wrist.extend();
                     default: break;
                 };
                 default: break;
             }
         },
-        m_intake));
+        m_intake, m_wrist));
 
     // Pneumatic override
     ControlContants.operatorX.whileTrue(new RunCommand(
-        m_intake::extend,
-        m_intake));
+        m_wrist::extend,
+        m_wrist));
 
     ControlContants.operatorY.whileTrue(new RunCommand(
-        m_intake::retract,
-        m_intake));
+        m_wrist::retract,
+        m_wrist));
 
     // Vision align
     ControlContants.driverDpadLeft.whileTrue(new TapeAlign(
