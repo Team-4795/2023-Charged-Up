@@ -32,7 +32,7 @@ public SimpleHighCube(DriveSubsystem drivebase, EndEffectorIntake m_intake, Lift
 
   addCommands(
    new SequentialCommandGroup(
-    drivebase.AutoStartUp(AutoBalance),
+    drivebase.AutoStartUp(AutoBalance, true),
     m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision)));
       }
     }

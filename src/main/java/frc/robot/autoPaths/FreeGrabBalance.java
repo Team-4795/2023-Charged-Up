@@ -34,7 +34,7 @@ public FreeGrabBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, Lif
 
     addCommands(
         new SequentialCommandGroup(
-            drivebase.AutoStartUp(GrapBalance1),
+            drivebase.AutoStartUp(GrapBalance1, true),
             m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision),
 
             new ParallelCommandGroup(

@@ -159,9 +159,17 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param pose The pose to which to set the odometry.
    */
-  public void resetOdometry(Pose2d pose) {
+  public void resetOdometry(Pose2d pose, boolean flip) {
+    double offset;
+
+    if (flip) {
+      offset = 180;
+    } else {
+      offset = 0;
+    }
+
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
+        Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset + offset),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -296,7 +304,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_gyro.reset();
   }
 
-
+  public void zeroReverseHeading() {
+    this.zeroHeading();
+    m_gyro.setAngleAdjustment(balanceSpeed);
+  }
 
   /**
    * Returns the heading of the robot.
@@ -360,36 +371,29 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
-    return new SequentialCommandGroup(
-        new InstantCommand(() -> {
-          // Reset odometry for trajectory
-          // Might not need to set this for each path
-          this.resetOdometry(traj.getInitialHolonomicPose());
-        }),
-        new PPSwerveControllerCommand(
-            traj,
-            this::getPose, // Pose supplier
-            DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-            AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
-                                           // use feedforwards.
-            AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-            AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
-                                                  // 0 will only use feedforwards.
-            this::setModuleStates, // Module states consumer
-            true, // Should the path be automatically mirrored depending on alliance color.
-                  // Optional, defaults to true
-            this // Requires this drive subsystem
-        ));
+      return new PPSwerveControllerCommand(
+          traj,
+          this::getPose, // Pose supplier
+          DriveConstants.kDriveKinematics, // SwerveDriveKinematics
+          AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will only
+                                          // use feedforwards.
+          AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
+          AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving them
+                                                // 0 will only use feedforwards.
+          this::setModuleStates, // Module states consumer
+          true, // Should the path be automatically mirrored depending on alliance color.
+                // Optional, defaults to true
+          this // Requires this drive subsystem
+      );
   }
 
-  public Command AutoStartUp(PathPlannerTrajectory traj) {
+  public Command AutoStartUp(PathPlannerTrajectory traj, boolean flip) {
     return 
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
-          this.resetOdometry(traj.getInitialHolonomicPose());
           this.resetOdometry(PathPlannerTrajectory
               .transformTrajectoryForAlliance(traj, DriverStation.getAlliance())
-              .getInitialHolonomicPose());
+              .getInitialHolonomicPose(), flip);
           this.setBreakMode();
         });
 
