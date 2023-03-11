@@ -210,6 +210,25 @@ public class AutoSelector {
     return null;
   }
 
+  public Command intakeV2(String gamepiece, EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm, double duration){
+    InstantCommand coneOrCubeCommand = new InstantCommand();
+    switch(gamepiece){
+      case "cube":
+        coneOrCubeCommand = new InstantCommand(m_manager::pickCube);
+      case "cone":
+        coneOrCubeCommand = new InstantCommand(m_manager::pickCone);
+    }
+
+    return new SequentialCommandGroup(
+      new InstantCommand(m_intake::retract),
+      coneOrCubeCommand,
+      new InstantCommand(() -> m_manager.dpadDown()),
+      new WaitCommand(0.3),
+      new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
+          .withTimeout(duration)
+    );
+  }
+
   public Command stow(EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm) {
     return new SequentialCommandGroup(
         new SequentialCommandGroup(
