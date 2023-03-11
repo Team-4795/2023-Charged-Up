@@ -84,7 +84,7 @@ public class Shooooot extends SequentialCommandGroup {
                 new InstantCommand(m_manager::pickCube),
                 new ParallelRaceGroup(
                     new SequentialCommandGroup(
-                        new InstantCommand(() -> m_arm.setPosition(.35),m_arm),
+                        new InstantCommand(() -> m_arm.setTargetPosition(.35),m_arm),
                         new WaitUntilCommand(m_arm::atSetpoint),
                         new InstantCommand(m_intake::retract, m_intake)),
                     new SequentialCommandGroup(
