@@ -25,8 +25,10 @@ import frc.robot.autoPaths.FreeAutoBalance;
 import frc.robot.autoPaths.FreeCubeTwoGamePiece;
 import frc.robot.autoPaths.FreeGrabBalance;
 import frc.robot.autoPaths.FreeGrabCommunity;
+import frc.robot.autoPaths.Shooooot;
 import frc.robot.autoPaths.SimpleHighCube;
 import frc.robot.autoPaths.SimpleMidCone;
+import frc.robot.autoPaths.TwoScoreOnePickup;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
@@ -246,10 +248,7 @@ public class AutoSelector {
     chooser.addOption("Free Grab Balance", new FreeGrabBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.setDefaultOption("Cable Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
-        m_manager, m_vision, this));
-
-    chooser.addOption("Grab Balance", new FreeGrabBalance(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Grab Balance", new TwoScoreOnePickup(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
     chooser.addOption("High Cube", new SimpleHighCube(drivebase, m_intake, m_arm, m_field,
@@ -259,6 +258,9 @@ public class AutoSelector {
         m_manager, m_vision, this));
 
     chooser.addOption("Center Score Balance", new CenterScoreBalance(drivebase, m_intake, m_arm, 
+        m_manager, m_vision, this));
+
+    chooser.addOption("Shoooooot", new Shooooot(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
     SmartDashboard.putData("Auto Selector", chooser);
