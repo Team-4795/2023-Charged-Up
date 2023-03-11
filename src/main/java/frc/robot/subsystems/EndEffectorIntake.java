@@ -63,17 +63,17 @@ public class EndEffectorIntake extends SubsystemBase {
         currentStoring = new BooleanLogEntry(DataLogManager.getLog(), "/currentStoring");
     }
 
-    public void intakeFromGamepiece(StateManager.Gamepiece gamepiece, boolean isStowing) {
+    public void intakeFromGamepiece(boolean isStowing) {
         double speed = 0;
 
         if (isStoring()) {
-            switch (gamepiece) {
+            switch (StateManager.getGamepiece()) {
                 case Cube: speed = IntakeConstants.kCubeSlowIntakeSpeed; break;
                 case Cone: speed = IntakeConstants.kConeSlowIntakeSpeed; break;
                 default: break;
             }
         } else {
-            switch (gamepiece) {
+            switch (StateManager.getGamepiece()) {
                 case Cube: speed = IntakeConstants.kCubeIntakeSpeed; break;
                 case Cone: speed = IntakeConstants.kConeIntakeSpeed; break;
                 default: break;

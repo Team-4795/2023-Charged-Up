@@ -31,6 +31,10 @@ public class Wrist extends SubsystemBase{
         solenoid.set(Value.kReverse);
     }
 
+    public void flip() {
+        setExtendedTarget(!this.extendedTarget);
+    }
+
     public void setExtendedTarget(boolean extend) {
         this.extendedTarget = extend;
     }

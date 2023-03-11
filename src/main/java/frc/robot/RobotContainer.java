@@ -101,7 +101,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
         new RunCommand(
             () -> {
-                m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing());
+                m_intake.intakeFromGamepiece(m_manager.isStowing());
             }, m_intake
         )
     );
@@ -193,9 +193,11 @@ public class RobotContainer {
     ControlContants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
     ControlContants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
 
-    // HiLetGo override
-    ControlContants.operatorA.onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)));
-    ControlContants.operatorA.onFalse(new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+    ControlContants.operatorY
+        .onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)))
+        .onFalse(new InstantCommand(() -> m_intake.setOverrideStoring(true)));
+
+    ControlContants.operatorB.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
 
     // Set x
     ControlContants.driverBumperLeft.whileTrue(new RunCommand(
@@ -211,7 +213,7 @@ public class RobotContainer {
         () -> {
             m_intake.outtake();
             switch (m_manager.getState()) {
-                case MidScore: switch (m_manager.getGamepiece()) {
+                case MidScore: switch (StateManager.getGamepiece()) {
                     case Cone: m_wrist.extend();
                     default: break;
                 };
@@ -221,13 +223,7 @@ public class RobotContainer {
         m_intake, m_wrist));
 
     // Pneumatic override
-    ControlContants.operatorX.whileTrue(new RunCommand(
-        m_wrist::extend,
-        m_wrist));
-
-    ControlContants.operatorY.whileTrue(new RunCommand(
-        m_wrist::retract,
-        m_wrist));
+    ControlContants.operatorX.onTrue(new InstantCommand(m_wrist::flip, m_wrist));
 
     // Vision align
     ControlContants.driverDpadLeft.whileTrue(new TapeAlign(

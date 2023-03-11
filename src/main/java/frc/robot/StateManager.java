@@ -90,7 +90,8 @@ public class StateManager {
                 state = State.MidScore;
             }
         } else {
-            state = State.SingleFeeder;
+            // Switched to B for stow high
+            // state = State.StowHigh;
         }
 
         setSetpoints();
@@ -116,20 +117,22 @@ public class StateManager {
         setSetpoints();
     }
 
+    public void stowHigh() {
+        state = State.StowHigh;
+
+        setSetpoints();
+    }
+
     public Optional<Double> getArmSetpoint() {
-        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.arm);
+        return this.state.getSetpoints().map(setpoints -> setpoints.arm);
     }
 
     public Optional<Double> getOuttakeSetpoint() {
-        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.outtake);
-    }
-
-    public Optional<LED> getLED() {
-        return this.state.getLED(this.gamepiece);
+        return this.state.getSetpoints().map(setpoints -> setpoints.outtake);
     }
 
     public Optional<Boolean> getWristExtended() {
-        return this.state.getSetpoints(this.gamepiece).map(setpoints -> setpoints.wrist);
+        return this.state.getSetpoints().map(setpoints -> setpoints.wrist);
     }
 
     public State getState() {
@@ -158,7 +161,7 @@ public class StateManager {
 
 enum State {
     LowPickup,
-    SingleFeeder,
+    StowHigh,
     DoubleFeeder,
     LowScore,
     MidScore,
@@ -175,7 +178,7 @@ enum State {
 
         switch (this) {
             case LowPickup: result = CubeSetpointConstants.kLowPickup; break;
-            case SingleFeeder: result = CubeSetpointConstants.kStowHigh; break;
+            case StowHigh: result = CubeSetpointConstants.kStowHigh; break;
             case DoubleFeeder: result = CubeSetpointConstants.kDoubleFeeder; break;
             case LowScore: result = CubeSetpointConstants.kLowScore; break;
             case MidScore: result = CubeSetpointConstants.kMidScore; break;
@@ -196,7 +199,7 @@ enum State {
 
         switch (this) {
             case LowPickup: result = ConeSetpointConstants.kLowPickup; break;
-            case SingleFeeder: result = ConeSetpointConstants.kStowHigh; break;
+            case StowHigh: result = ConeSetpointConstants.kStowHigh; break;
             case DoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
             case LowScore: result = ConeSetpointConstants.kLowScore; break;
             case MidScore: result = ConeSetpointConstants.kMidScore; break;
@@ -209,18 +212,10 @@ enum State {
         return Optional.ofNullable(result);
     }
 
-    public Optional<Setpoints> getSetpoints(StateManager.Gamepiece gamepiece) {
-        switch (gamepiece) {
+    public Optional<Setpoints> getSetpoints() {
+        switch (StateManager.getGamepiece()) {
             case Cube: return getCubeSetpoints();
             case Cone: return getConeSetpoints();
-            default: return Optional.empty();
-        }
-    }
-
-    public Optional<StateManager.LED> getLED(StateManager.Gamepiece gamepiece) {
-        switch (gamepiece) {
-            case Cube: return Optional.of(StateManager.LED.Cube);
-            case Cone: return Optional.of(StateManager.LED.Cone);
             default: return Optional.empty();
         }
     }

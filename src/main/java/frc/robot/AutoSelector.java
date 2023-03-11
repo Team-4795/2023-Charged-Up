@@ -184,7 +184,7 @@ public class AutoSelector {
           new InstantCommand(m_manager::pickCube),
           new InstantCommand(() -> m_manager.dpadDown()),
           new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
-          new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
+          new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
               .withTimeout(1),
           new InstantCommand(() -> m_intake.setOverrideStoring(true)));
 
@@ -194,7 +194,7 @@ public class AutoSelector {
           new InstantCommand(m_manager::pickCone),
           new InstantCommand(() -> m_manager.dpadDown()),
           new WaitUntilCommand(m_arm::atSetpoint),
-          new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
+          new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
               .withTimeout(1),
           new InstantCommand(() -> m_intake.setOverrideStoring(true)));
     }
@@ -216,7 +216,7 @@ public class AutoSelector {
       coneOrCubeCommand,
       new InstantCommand(() -> m_manager.dpadDown()),
       new WaitCommand(0.3),
-      new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
+      new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
           .withTimeout(duration)
     );
   }
