@@ -286,7 +286,8 @@ public final class Constants {
     public static final double kCubeSlowIntakeSpeed = 0.3;
     public static final double kConeSlowIntakeSpeed = 0.6;
 
-    public static final double storingCurrentThreshold = 20;
+    public static final double storingCurrentThreshold = 13.5;
+    public static final int currentAvgSize = 25;
 
   }
 
