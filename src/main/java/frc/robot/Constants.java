@@ -233,7 +233,7 @@ public final class Constants {
   }
 
   public static final class TapeAlignConstants {
-    public static final double kP = .011;
+    public static final double kP = .015;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kAngularThreshold = 2;
@@ -323,7 +323,7 @@ public final class Constants {
     public static final double kTargetHeight = 0;
     public static final double kCameraPitchRadians = -5;
     public static final double kX_Pitch = 0;
-    public static final double kTargetAngle = 0;
+    public static final double kTargetAngle =- 4;
 
     /**
      * Physical location of the camera on the robot, relative to the center of the robot.
