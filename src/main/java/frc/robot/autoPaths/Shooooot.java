@@ -25,9 +25,9 @@ import frc.robot.Commands.DriveCommandOld;
 import frc.robot.Commands.TapeAlign;
 import frc.robot.Constants.AutoConstants;
 
-public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
+public class Shooooot extends SequentialCommandGroup {
 
-  public BalanceCubeTwoGamePiece(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
+  public Shooooot(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
 
     PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Free Cube 2 Game Piece 1",
