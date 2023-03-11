@@ -282,6 +282,8 @@ public final class Constants {
     public static final double kCubeSlowIntakeSpeed = 0.15;
     public static final double kConeSlowIntakeSpeed = 0.5;
 
+    public static final double storingCurrentThreshold = 20;
+
   }
 
   public static final class CubeSetpointConstants{

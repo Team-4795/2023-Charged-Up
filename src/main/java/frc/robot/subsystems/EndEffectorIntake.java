@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 //import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAnalogSensor.Mode;
 
 import edu.wpi.first.wpilibj.Compressor;
 //pneumatics imports
@@ -36,6 +37,7 @@ public class EndEffectorIntake extends SubsystemBase {
     public boolean extended = false;
 
     private boolean storing = false;
+    private boolean currentBasedStoring = false;
     private Timer hasBeenStoring = new Timer();
 
     private double outtakeSpeed = 0.0;
@@ -141,6 +143,12 @@ public class EndEffectorIntake extends SubsystemBase {
         if (hasBeenStoring.hasElapsed(changeTime)) {
             storing = !storing;
             hasBeenStoring.reset();
+        }
+
+        if(intakeMotor.getOutputCurrent() > IntakeConstants.storingCurrentThreshold){
+            currentBasedStoring = true;
+        } else {
+            currentBasedStoring = false;
         }
 
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
