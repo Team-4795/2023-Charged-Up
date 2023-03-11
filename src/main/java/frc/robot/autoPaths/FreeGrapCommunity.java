@@ -21,35 +21,31 @@ import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
 
-
-
 public class FreeGrapCommunity extends SequentialCommandGroup {
 
-public FreeGrapCommunity(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
+  public FreeGrapCommunity(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
 
-  PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));
-  PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
-  
-  addCommands(
-    new SequentialCommandGroup(
+    PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));
+    PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
 
-    drivebase.AutoStartUp(GrapBalance1),
-    m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision),
-
-    new ParallelCommandGroup(
-        drivebase.followTrajectoryCommand(GrapBalance1),
-
+    addCommands(
         new SequentialCommandGroup(
-            new WaitCommand(1.5),
-            m_autoSelector.intake("cube", m_intake, m_manager, m_arm))),
 
-    new ParallelCommandGroup(
-        drivebase.followTrajectoryCommand(EarlyVision),
-        m_autoSelector.stow(m_intake, m_manager, m_arm)),
+            drivebase.AutoStartUp(GrapBalance1),
+            m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision),
 
-    new TapeAlign(
-        drivebase, m_vision,
-        () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5)));
-      }
-    }
+            new ParallelCommandGroup(
+                drivebase.followTrajectoryCommand(GrapBalance1),
+
+                m_autoSelector.intake("cube", m_intake, m_manager, m_arm)),
+
+            new ParallelCommandGroup(
+                drivebase.followTrajectoryCommand(EarlyVision),
+                m_autoSelector.stow(m_intake, m_manager, m_arm)),
+
+            new TapeAlign(
+                drivebase, m_vision,
+                () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5)));
+  }
+}
