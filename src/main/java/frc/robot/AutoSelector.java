@@ -33,21 +33,6 @@ public class AutoSelector {
 
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-  // All Path Planner paths
-  // Cube 2 Game piece Auto part 1 (from first score to first intake)
-  PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Cube 2 Game Piece 1", new PathConstraints(1, 2));
-  // Cube 2 Game piece Auto part 2 (from intake to first second score)
-  PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Cube 2 Game Piece 2", new PathConstraints(1, 2));
-
-  // Auto Balence with 1 cone
-  PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance", new PathConstraints(3, 3));
-
-  // Path using vision from further back for cone.
-  PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));
-
-  PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
-  PathPlannerTrajectory GrapBalance2 = PathPlanner.loadPath("Balance + grab 2", new PathConstraints(3, 3));
-
   // Define command which scores gamepeieces at various setpoints
   // only the first command is documented
   public Command score(String gamepeice, String setpoint, EndEffectorIntake m_intake, StateManager m_manager,
@@ -180,7 +165,8 @@ public class AutoSelector {
                                  coneOrCube),
       new SequentialCommandGroup(positionCommand,
                                  new WaitCommand(0.5),
-                                 new RunCommand(m_intake::outtake, m_intake).withTimeout(0.5)
+                                 new RunCommand(m_intake::outtake, m_intake).withTimeout(0.5),
+                                 new InstantCommand(() -> m_intake.setOverrideStoring(false))
       )
     );
   }
