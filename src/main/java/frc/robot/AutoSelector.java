@@ -24,6 +24,8 @@ import frc.robot.autoPaths.FreeAutoBalance;
 import frc.robot.autoPaths.FreeCubeTwoGamePiece;
 import frc.robot.autoPaths.FreeGrapBalance;
 import frc.robot.autoPaths.FreeGrapCommunity;
+import frc.robot.autoPaths.SimpleHighCube;
+import frc.robot.autoPaths.SimpleMidCone;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
@@ -264,8 +266,13 @@ public class AutoSelector {
     chooser.setDefaultOption("Cable Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    
     chooser.addOption("GrapBalance", new FreeGrapBalance(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this));
+
+    chooser.addOption("HighCube", new SimpleHighCube(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this));
+
+    chooser.addOption("MidCone", new SimpleMidCone(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
     SmartDashboard.putData("Auto Selector", chooser);
