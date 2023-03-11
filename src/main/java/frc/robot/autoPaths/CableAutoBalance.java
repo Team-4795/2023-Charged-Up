@@ -23,12 +23,12 @@ import frc.robot.subsystems.Vision;
 
 
 
-public class PathAutoBalance extends SequentialCommandGroup {
+public class CableAutoBalance extends SequentialCommandGroup {
 
-public PathAutoBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
+public CableAutoBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
 
-  PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance", new PathConstraints(3, 3));
+  PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance Right", new PathConstraints(3, 3));
 
   addCommands(
    new SequentialCommandGroup(

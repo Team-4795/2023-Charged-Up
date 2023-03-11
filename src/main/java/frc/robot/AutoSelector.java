@@ -17,10 +17,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Commands.TapeAlign;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.autoPaths.CubeTwoGamePiece;
+import frc.robot.autoPaths.FreeCubeTwoGamePiece;
 import frc.robot.autoPaths.GrapBalance;
 import frc.robot.autoPaths.GrapCommunity;
-import frc.robot.autoPaths.PathAutoBalance;
+import frc.robot.autoPaths.CableAutoBalance;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
@@ -219,14 +219,14 @@ public class AutoSelector {
       StateManager m_manager, Vision m_vision) {
 
     // Add option of Vision based two game peice split into parts with commands Cube
-    chooser.addOption("CubeTwoGamePiece", new CubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("CubeTwoGamePiece", new FreeCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
     // Srinivas idea
     chooser.addOption("Grap community", new GrapCommunity(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.setDefaultOption("Auto Balance", new PathAutoBalance(drivebase, m_intake, m_arm, m_field,
+    chooser.setDefaultOption("Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
     // Add option of Vision based two game peice split into parts with commands Cube
