@@ -143,6 +143,8 @@ public class EndEffectorIntake extends SubsystemBase {
             hasBeenStoring.reset();
         }
 
+        SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
+
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
         SmartDashboard.putBoolean("Wrist extended target", extendedTarget);
         SmartDashboard.putBoolean("Wrist extended", extended);

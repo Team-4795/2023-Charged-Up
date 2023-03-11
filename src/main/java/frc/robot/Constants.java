@@ -242,29 +242,29 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final TrapezoidProfile.Constraints kArmMotionConstraint = new TrapezoidProfile.Constraints(2.0, 2.0);
+    public static final TrapezoidProfile.Constraints kArmMotionConstraint = new TrapezoidProfile.Constraints(2.4, 4.0);
     public static final int kLeftArmMotorCANID = 10;
     public static final int kRightArmMotorCANID = 11;
-    public static final double kP = 1.6;
+    public static final double kP = 3.5;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kFF = 0;
     public static final double kMinOutput = -0.75;
     public static final double kMaxOutput = 0.75;
-    public static final double kRampRate = 0.25;
+    public static final double kRampRate = 0.125;
     public static final double kConversionFactor = 1;
     public static final int kCurrentLimit = 60;
     public static final double kGearing = 72;
     public static final boolean kEnableForwardLimit = false;
     public static final boolean kEnableReverseLimit = false;
-    public static final double kForwardLimit = 0.95;
+    public static final double kForwardLimit = 0.92;
     public static final double kReverseLimit = 10;
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;
     public static final double kOuttakeSensorChangeTime = 1.0;
     public static final double kIntakeSensorChangeTime = 3.0;
-    public static final double kLowSetpointLimit = 0.12;
-    public static final double kHighSetpointLimit = 0.97;
+    public static final double kLowSetpointLimit = 0.16;
+    public static final double kHighSetpointLimit = 0.94;
     public static final double kPositionThreshold = 0.025;
   }
 
@@ -296,8 +296,9 @@ public final class Constants {
     public static final Setpoints kHighScore = new Setpoints(0.565, true, -0.5);
     public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.3);
     public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.3);
-    public static final Setpoints kBackwardsHighScore = new Setpoints(0.4, false, -0.5);
-    public static final Setpoints kBackwardsMidScore = new Setpoints(0.4, false, -0.5);
+    public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, false, -1.0);
+    public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, false, -0.7);
+    public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, false, -0.3);
   }
 
   public static final class ConeSetpointConstants {

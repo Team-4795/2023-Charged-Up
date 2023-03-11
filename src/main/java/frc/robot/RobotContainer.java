@@ -103,11 +103,11 @@ public class RobotContainer {
 
                 m_intake.extended = m_intake.extendedTarget;
 
-                if (m_arm.setpoint < ArmConstants.kLowWristLimit) {
+                if (m_arm.getPosition() < ArmConstants.kLowWristLimit) {
                     m_intake.extended = false;
                 }
 
-                if (m_arm.setpoint > ArmConstants.kHighWristLimit) {
+                if (m_arm.getPosition() > ArmConstants.kHighWristLimit) {
                     m_intake.extended = false;
                 }
 

@@ -64,7 +64,7 @@ public class StateManager {
 
     public void dpadUp() {
         if (intake.isStoring()) {
-            if (Math.abs(drive.getHeading().getDegrees()) > 90.0) {
+            if (Math.abs(drive.getPose().getRotation().getDegrees()) > 90.0) {
                 state = State.BackwardsHighScore;
             } else {
                 state = State.HighScore;
@@ -79,7 +79,7 @@ public class StateManager {
 
     public void dpadLeft() {
         if (intake.isStoring()) {
-            if (Math.abs(drive.getHeading().getDegrees()) > 90.0) {
+            if (Math.abs(drive.getPose().getRotation().getDegrees()) > 90.0) {
                 state = State.BackwardsMidScore;
             } else {
                 state = State.MidScore;
@@ -93,7 +93,11 @@ public class StateManager {
     
     public void dpadDown() {
         if (intake.isStoring()) {
-            state = State.LowScore;
+            if (Math.abs(drive.getPose().getRotation().getDegrees()) > 90.0) {
+                state = State.BackwardsLowScore;
+            } else {
+                state = State.LowScore;
+            }
         } else {
             state = State.LowPickup;
         }
@@ -157,7 +161,8 @@ enum State {
     StowInFrame,
     StowLow,
     BackwardsMidScore,
-    BackwardsHighScore;
+    BackwardsHighScore,
+    BackwardsLowScore;
 
     private Optional<Setpoints> getCubeSetpoints() {
         Setpoints result = null;
@@ -173,6 +178,7 @@ enum State {
             case StowLow: result = CubeSetpointConstants.kStowLow; break;
             case BackwardsMidScore: result = CubeSetpointConstants.kBackwardsMidScore; break;
             case BackwardsHighScore: result = CubeSetpointConstants.kBackwardsHighScore; break;
+            case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
         }
 
         return Optional.ofNullable(result);
