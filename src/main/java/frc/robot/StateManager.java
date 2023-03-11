@@ -70,10 +70,13 @@ public class StateManager {
                 state = State.BackwardsHighScore;
             } else {
                 state = State.HighScore;
-
             }
         } else {
-            state = State.DoubleFeeder;
+            if (Math.abs(drive.getYaw()) > 90.0) {
+                state = State.DoubleFeeder;
+            } else {
+                state = State.BackwardsDoubleFeeder;
+            }
         }
 
         setSetpoints();
@@ -164,7 +167,8 @@ enum State {
     StowLow,
     BackwardsMidScore,
     BackwardsHighScore,
-    BackwardsLowScore;
+    BackwardsLowScore,
+    BackwardsDoubleFeeder;
 
     private Optional<Setpoints> getCubeSetpoints() {
         Setpoints result = null;
@@ -181,6 +185,7 @@ enum State {
             case BackwardsMidScore: result = CubeSetpointConstants.kBackwardsMidScore; break;
             case BackwardsHighScore: result = CubeSetpointConstants.kBackwardsHighScore; break;
             case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
+            case BackwardsDoubleFeeder: result = CubeSetpointConstants.kBackwardsDoubleFeeder; break;
         }
 
         return Optional.ofNullable(result);
