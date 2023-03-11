@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
 //motor imports
 import com.revrobotics.CANSparkMax;
 //import com.revrobotics.CANSparkMaxLowLevel;
@@ -40,6 +42,9 @@ public class EndEffectorIntake extends SubsystemBase {
     private double outtakeSpeed = 0.0;
 
     private boolean overrideStoring = false;
+
+    private double[] currentValues = new double[IntakeConstants.currentAvgSize];
+    private int oldestIndex = 0;
 
     DoubleLogEntry current;
     BooleanLogEntry currentStoring;
@@ -111,9 +116,15 @@ public class EndEffectorIntake extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        currentValues[oldestIndex] = intakeMotor.getOutputCurrent();
+
         if (storing == isHiLetGoing()) {
             hasBeenStoring.reset();
         }
+
+        oldestIndex++;
+        oldestIndex = oldestIndex % currentValues.length;
 
         double changeTime;
         if (storing) {
@@ -127,7 +138,7 @@ public class EndEffectorIntake extends SubsystemBase {
             hasBeenStoring.reset();
         }
 
-        if(intakeMotor.getOutputCurrent() > IntakeConstants.storingCurrentThreshold){
+        if(avgCurrent() > IntakeConstants.storingCurrentThreshold){
             currentBasedStoring = true;
         } else {
             currentBasedStoring = false;
@@ -137,6 +148,7 @@ public class EndEffectorIntake extends SubsystemBase {
         currentStoring.append(currentBasedStoring);
 
         SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Average Current", avgCurrent());
         SmartDashboard.putBoolean("currentBasedStoring", currentBasedStoring);
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putNumber("Outtake speed", outtakeSpeed);
@@ -146,5 +158,13 @@ public class EndEffectorIntake extends SubsystemBase {
     public void intake(double speed) {
         requestedSpeed = speed;
          intakeMotor.set(speed);
+    }
+
+    private double avgCurrent(){
+        double sum = 0;
+        for(int i = 0; i < currentValues.length; i++){
+            sum += currentValues[i];
+        }
+        return (sum / currentValues.length);
     }
 }
