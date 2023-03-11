@@ -52,12 +52,12 @@ public class AutoSelector {
             new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
             // a command group which should finish when the arm gets to the set point
-            new ParallelRaceGroup(
+            new ParallelCommandGroup(
                 // move arm and extend intake then wait until at set point
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadUp(), m_arm),
                     new InstantCommand(m_intake::extend, m_intake),
-                    new WaitUntilCommand(m_arm::atSetpoint)),
+                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
                 // meanwhile auto align
                 new SequentialCommandGroup(
                     new InstantCommand(() -> {
@@ -65,7 +65,7 @@ public class AutoSelector {
                     }),
                     new TapeAlign(
                         drivebase, m_vision,
-                        () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
+                        () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed)))),
             // score and then tell statemachine of current state ie no gamepiece
             new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
             new InstantCommand(m_intake::retract, m_intake),
@@ -74,7 +74,7 @@ public class AutoSelector {
         return new SequentialCommandGroup(
             new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
-            new ParallelRaceGroup(
+            new ParallelCommandGroup(
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new WaitUntilCommand(m_arm::atSetpoint),
@@ -254,8 +254,8 @@ public class AutoSelector {
     chooser.addOption("Shoooooot", new Shooooot(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.addOption("Two Score One Pickup", new TwoScoreOnePickup(drivebase, m_intake, m_arm, m_field,
-        m_manager, m_vision, this));
+    //chooser.addOption("Two Score One Pickup", new TwoScoreOnePickup(drivebase, m_intake, m_arm, m_field,
+      //  m_manager, m_vision, this));
 
     chooser.addOption("High Cube", new SimpleHighCube(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));

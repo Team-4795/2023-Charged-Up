@@ -31,7 +31,7 @@ public class TwoScoreOnePickup extends SequentialCommandGroup {
                         new WaitCommand(2.5),
                         m_autoSelector.stow(m_intake, m_manager, m_arm),
                         new WaitCommand(1),
-                        m_autoSelector.scoreV2("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision),
+                        m_autoSelector.score("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision),
                         m_autoSelector.intake("cone", m_intake, m_manager, m_arm),
                         new WaitCommand(3.5),
                         m_autoSelector.stow(m_intake, m_manager, m_arm)
