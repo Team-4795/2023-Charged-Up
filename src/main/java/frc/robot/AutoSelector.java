@@ -80,15 +80,16 @@ public class AutoSelector {
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
-                    new WaitUntilCommand(m_arm::atSetpoint),
-                    new InstantCommand(wrist::extend, wrist)),
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> {
-                      m_vision.switchToTag();
-                    }),
-                    new TapeAlign(
-                        drivebase, m_vision,
-                        () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
+                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
+                    new InstantCommand(wrist::extend, wrist))
+                // new SequentialCommandGroup(
+                //     new InstantCommand(() -> {
+                //       m_vision.switchToTag();
+                //     }),
+                //     new TapeAlign(
+                //         drivebase, m_vision,
+                //         () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed)
+                        ),
             new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
             new InstantCommand(wrist::retract, wrist),
             new InstantCommand(() -> m_intake.setOverrideStoring(false)));
@@ -181,7 +182,7 @@ public class AutoSelector {
           new InstantCommand(wrist::retract),
           new InstantCommand(m_manager::pickCube),
           new InstantCommand(() -> m_manager.dpadDown()),
-          new WaitUntilCommand(m_arm::atSetpoint),
+          new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
           new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
               .withTimeout(1),
           new InstantCommand(() -> m_intake.setOverrideStoring(true)));
