@@ -56,16 +56,18 @@ public class AutoSelector {
                 // move arm and extend intake then wait until at set point
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-                    new InstantCommand(m_intake::extend, m_intake),
-                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
+                    new InstantCommand(m_intake::retract, m_intake),
+                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)
                 // meanwhile auto align
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> {
-                      m_vision.switchToTag();
-                    }),
-                    new TapeAlign(
-                        drivebase, m_vision,
-                        () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed)))),
+                // new SequentialCommandGroup(
+                //     new InstantCommand(() -> {
+                //       m_vision.switchToTag();
+                //     }),
+                //     new TapeAlign(
+                //         drivebase, m_vision,
+                //         () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))
+                        
+                        )),
             // score and then tell statemachine of current state ie no gamepiece
             new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
             new InstantCommand(m_intake::retract, m_intake),
@@ -78,7 +80,7 @@ public class AutoSelector {
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new WaitUntilCommand(m_arm::atSetpoint),
-                    new InstantCommand(m_intake::extend, m_intake)),
+                    new InstantCommand(m_intake::retract, m_intake)),
                 new SequentialCommandGroup(
                     new InstantCommand(() -> {
                       m_vision.switchToTag();

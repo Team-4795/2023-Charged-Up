@@ -129,6 +129,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("x", getPose().getX());
     SmartDashboard.putNumber("y", getPose().getY());
     SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("gyro angle", this.getYaw());
     SmartDashboard.putData("pose", m_field);
 
     SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
@@ -169,7 +170,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset + offset),
+        Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -397,5 +398,10 @@ public class DriveSubsystem extends SubsystemBase {
           this.setBreakMode();
         });
 
+  }
+
+  public double getYaw() {
+
+    return m_gyro.getYaw();
   }
 }

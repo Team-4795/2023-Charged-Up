@@ -39,7 +39,7 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 3 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 2.2; // radians per second
+    public static final double kDirectionSlewRate = 5.0; // radians per second
     public static final double kMagnitudeSlewRate = 2.3; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 2.5; // percent per second (1 = 100%)
 
@@ -301,6 +301,7 @@ public final class Constants {
     public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, false, -1.0);
     public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, false, -0.7);
     public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, false, -0.3);
+    public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, false, -.3);
   }
 
   public static final class ConeSetpointConstants {
