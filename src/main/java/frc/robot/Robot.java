@@ -14,6 +14,7 @@ import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -26,13 +27,19 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-
+  private long teleopStart;
+  private double m_rumble=0;
   private DataLog log;
   private DoubleArrayLogEntry swerveStates;
   private DoubleLogEntry rotation;
   DoubleLogEntry elevationAngle;
   DoubleLogEntry elevationVelocity;
   DoubleLogEntry speedOfBalance;
+  
+
+  private double getSeconds() {
+    return 135.0 - (System.currentTimeMillis() - teleopStart) / 1000.0;  // change for testing
+  }
   
 
   /**
@@ -104,6 +111,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+
+    teleopStart = System.currentTimeMillis();
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -119,6 +129,18 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    if (getSeconds() <= 30 && getSeconds() >= 28) {
+      m_robotContainer.setDriverRumble(1); m_rumble=1;
+    } else if (getSeconds() <=15 && getSeconds() >=13) {
+      m_robotContainer.setDriverRumble(0.5); m_rumble=0.5;
+    } else {
+      m_robotContainer.setDriverRumble(0); m_rumble=0;
+    }
+
+    SmartDashboard.putNumber("time", getSeconds());
+    SmartDashboard.putNumber("rumble log", m_rumble);
+    
     speedOfBalance.append(m_robotContainer.m_robotDrive.getBalanceSpeed());
     elevationAngle.append(m_robotContainer.m_robotDrive.getElevationAngleV2());
     elevationVelocity.append(m_robotContainer.m_robotDrive.getElevationVelocityV2());

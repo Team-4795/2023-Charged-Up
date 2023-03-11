@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -228,6 +229,16 @@ public class RobotContainer {
 
     // reset LEDs when were not targeting
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
+  }
+
+  public void setDriverRumble(double rumble) {
+    ControlContants.driverController.setRumble(RumbleType.kLeftRumble, rumble);
+    ControlContants.driverController.setRumble(RumbleType.kRightRumble, rumble);
+  }
+
+  public void setOperatorRumble(double rumble) {
+    ControlContants.operatorController.setRumble(RumbleType.kLeftRumble, rumble);
+    ControlContants.operatorController.setRumble(RumbleType.kRightRumble, rumble);
   }
 
 
