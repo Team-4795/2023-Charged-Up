@@ -251,4 +251,8 @@ public class RobotContainer {
     
     return autoSelector.getSelected();
   }
+
+  public void setNotStoring() {
+    m_intake.setOverrideStoring(false);
+  }
 }

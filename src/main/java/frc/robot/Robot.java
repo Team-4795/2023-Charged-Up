@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
     }
 
     DriverStation.startDataLog(log);
-
+    m_robotContainer.setNotStoring();
   }
 
   /** This function is called periodically during operator control. */
