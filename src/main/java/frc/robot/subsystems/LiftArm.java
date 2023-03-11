@@ -11,8 +11,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+
+import frc.robot.StateManager;
 //import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.StateManager.Gamepiece;
 
 public class LiftArm extends SubsystemBase {
   private final CANSparkMax leftArmMotor = new CANSparkMax(ArmConstants.kLeftArmMotorCANID, MotorType.kBrushless);
@@ -97,7 +100,11 @@ public class LiftArm extends SubsystemBase {
   private void updateMotionProfile() {
     TrapezoidProfile.State state = new TrapezoidProfile.State(liftEncoder.getPosition(), liftEncoder.getVelocity());
     TrapezoidProfile.State goal = new TrapezoidProfile.State(setpoint, 0.0);
-    profile = new TrapezoidProfile(ArmConstants.kArmMotionConstraint, goal, state);
+    switch (StateManager.getGamepiece()) {
+      case Cube: profile = new TrapezoidProfile(ArmConstants.kCubeMotionConstraint, goal, state);
+      case Cone: profile = new TrapezoidProfile(ArmConstants.kConeMotionConstraint, goal, state);
+      default: break;
+    }
     motionTimer.reset();
   }
 

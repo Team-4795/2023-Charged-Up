@@ -242,7 +242,8 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final TrapezoidProfile.Constraints kArmMotionConstraint = new TrapezoidProfile.Constraints(2.4, 4.0);
+    public static final TrapezoidProfile.Constraints kCubeMotionConstraint = new TrapezoidProfile.Constraints(2.4, 4.0);
+    public static final TrapezoidProfile.Constraints kConeMotionConstraint = new TrapezoidProfile.Constraints(1.0, 4.0);
     public static final int kLeftArmMotorCANID = 10;
     public static final int kRightArmMotorCANID = 11;
     public static final double kP = 3.5;
@@ -301,7 +302,7 @@ public final class Constants {
     public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, false, -1.0);
     public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, false, -0.7);
     public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, false, -0.3);
-    public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, false, -.3);
+    public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, false, -0.3);
   }
 
   public static final class ConeSetpointConstants {

@@ -25,7 +25,7 @@ public class StateManager {
     private State state;
 
     // Either what were picking or what were storing
-    private Gamepiece gamepiece;
+    private static Gamepiece gamepiece = Gamepiece.None;
 
     public enum LED {
         Cone,
@@ -40,7 +40,6 @@ public class StateManager {
 
     public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds, DriveSubsystem drive, Wrist wrist) {
         this.state = State.StowInFrame;
-        this.gamepiece = Gamepiece.None;
 
         this.vision = vision;
         this.arm = arm;
@@ -141,8 +140,8 @@ public class StateManager {
         }
     }
 
-    public Gamepiece getGamepiece() {
-        return this.gamepiece;
+    public static Gamepiece getGamepiece() {
+        return gamepiece;
     }
 
     private void setSetpoints() {
