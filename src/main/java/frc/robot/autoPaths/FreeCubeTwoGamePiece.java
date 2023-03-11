@@ -45,26 +45,7 @@ public class FreeCubeTwoGamePiece extends SequentialCommandGroup {
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
                 m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist)),
 
-            new ParallelCommandGroup(
-                drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-                    new InstantCommand(m_manager::pickCube),
-                    new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
-                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
-                    new InstantCommand(wrist::retract, wrist))),
-            // // Align
-            // new InstantCommand(() -> {
-            //   m_vision.switchToTag();
-            // }),
-
-            // new TapeAlign(
-            //     drivebase,
-            //     m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
-
-             //Run outake for 1 second to score
-             new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-            new InstantCommand(wrist::retract, wrist),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false))));
+            m_autoSelector.score("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)
+          ));
   }
 }
