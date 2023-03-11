@@ -16,7 +16,7 @@ import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
 
 public class TwoScoreOnePickup extends SequentialCommandGroup {
-    TwoScoreOnePickup(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
+    public TwoScoreOnePickup(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
     StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector){
         PathPlannerTrajectory TwoScorePickup = PathPlanner.loadPath("Two GP + Grab 1", new PathConstraints(3, 3));
 
