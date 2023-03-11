@@ -7,6 +7,8 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 //import frc.robot.Constants;
@@ -24,12 +26,16 @@ public class LiftArm extends SubsystemBase {
 
   public double setpoint;
 
+  private Timer motionTimer = new Timer();
+  private TrapezoidProfile profile;
+  private TrapezoidProfile.State targetState;
+
   public LiftArm(){
     leftArmMotor.restoreFactoryDefaults();
     rightArmMotor.restoreFactoryDefaults();
     
     liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    liftRelativeEncoder= leftArmMotor.getEncoder();
+    liftRelativeEncoder = leftArmMotor.getEncoder();
 
     m_PIDController = leftArmMotor.getPIDController();
     m_PIDController.setFeedbackDevice(liftEncoder);
@@ -80,20 +86,38 @@ public class LiftArm extends SubsystemBase {
     leftArmMotor.burnFlash();
     rightArmMotor.burnFlash();
 
-    this.setpoint = liftEncoder.getPosition();
-    SmartDashboard.putNumber("Arm setpoint", this.setpoint);
+    this.setTargetPosition(this.getPosition());
+
+    motionTimer.start();
+    motionTimer.reset();
+
+    this.updateMotionProfile();
   }
 
-  // Set speed of arm
-  public void move(double speed){
-    requestedSpeed = speed;
-    leftArmMotor.set(speed);
+  private void updateMotionProfile() {
+    TrapezoidProfile.State state = new TrapezoidProfile.State(liftEncoder.getPosition(), liftEncoder.getVelocity());
+    TrapezoidProfile.State goal = new TrapezoidProfile.State(setpoint, 0.0);
+    profile = new TrapezoidProfile(ArmConstants.kArmMotionConstraint, goal, state);
+    motionTimer.reset();
   }
 
   // Sets setpoint, where setpoint is 0 to 1
-  public void setPosition(double setpoint) {
-    this.setpoint = setpoint;
-    m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+  public void setTargetPosition(double newSetpoint) {
+    if (newSetpoint != this.setpoint) {
+      this.setpoint = newSetpoint;
+      updateMotionProfile();
+    }
+  }
+
+  public void runAutomatic() {
+    double elapsedTime = motionTimer.get();
+    if (profile.isFinished(elapsedTime)) {
+      targetState = new TrapezoidProfile.State(setpoint, 0.0);
+    } else {
+      targetState = profile.calculate(elapsedTime);
+    }
+
+    m_PIDController.setReference(targetState.position, CANSparkMax.ControlType.kPosition);
   }
 
 

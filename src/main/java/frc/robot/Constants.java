@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import frc.utils.Setpoints;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -240,6 +242,7 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    public static final TrapezoidProfile.Constraints kArmMotionConstraint = new TrapezoidProfile.Constraints(2.0, 2.0);
     public static final int kLeftArmMotorCANID = 10;
     public static final int kRightArmMotorCANID = 11;
     public static final double kP = 1.6;
@@ -285,67 +288,27 @@ public final class Constants {
   }
 
   public static final class CubeSetpointConstants{
-    public static final double kLowPickupArm = 0.918;
-    public static final double kStowHighArm = 0.5;
-    public static final double kDoubleFeederArm = 0.62;
-    public static final double kLowScoreArm = 0.89;
-    public static final double kMidScoreArm = 0.69;
-    public static final double kHighScoreArm = .565;
-    public static final double kStowInFrameArm = 0.16;
-    public static final double kStowLowArm = 0.96;
-    public static final double kBackwardsHighScoreArm = 0.4;
-    public static final double kBackwardsMidScoreArm = 0.4;
-    
-    public static final boolean kLowPickupWrist = false;
-    public static final boolean kStowHighWrist = false;
-    public static final boolean kDoubleFeederWrist = true;
-    public static final boolean kLowScoreWrist = false;
-    public static final boolean kMidScoreWrist = true;
-    public static final boolean kHighScoreWrist = true;
-    public static final boolean kStowInFrameWrist = false;
-    public static final boolean kStowLowWrist = false;
-    public static final boolean kBackwardsHighScoreWrist = false;
-    public static final boolean kBackwardsMidScoreWrist = false;
-
-    public static final double kLowPickupOuttake = -0.3;
-    public static final double kStowHighOuttake = -0.3;
-    public static final double kDoubleFeederOuttake = -0.3;
-    public static final double kLowScoreOuttake = -0.3;
-    public static final double kMidScoreOuttake = -0.3;
-    public static final double kHighScoreOuttake = -0.5;
-    public static final double kStowInFrameOuttake = -0.3;
-    public static final double kStowLowOuttake = -0.3;
-    public static final double kBackwardsHighScoreOuttake = -0.5;
-    public static final double kBackwardsMidScoreOuttake = -0.5;
+    public static final Setpoints kLowPickup = new Setpoints(0.918, false, -0.3);
+    public static final Setpoints kStowHigh = new Setpoints(0.5, false, -0.3);
+    public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.3);
+    public static final Setpoints kLowScore = new Setpoints(0.89, false, -0.3);
+    public static final Setpoints kMidScore = new Setpoints(0.69, true, -0.3);
+    public static final Setpoints kHighScore = new Setpoints(0.565, true, -0.5);
+    public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.3);
+    public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.3);
+    public static final Setpoints kBackwardsHighScore = new Setpoints(0.4, false, -0.5);
+    public static final Setpoints kBackwardsMidScore = new Setpoints(0.4, false, -0.5);
   }
 
-  public static final class ConeSetpointConstants{
-    public static final double kLowPickupArm = 0.94;
-    public static final double kStowHighArm = 0.5;
-    public static final double kDoubleFeederArm = 0.62;
-    public static final double kLowScoreArm = 0.87;
-    public static final double kMidScoreArm = 0.71;
-    public static final double kHighScoreArm = .64;
-    public static final double kStowInFrameArm = 0.16;
-    public static final double kStowLowArm = 0.96;
-    
-    public static final boolean kLowPickupWrist = false;
-    public static final boolean kStowHighWrist = false;
-    public static final boolean kDoubleFeederWrist = true;
-    public static final boolean kLowScoreWrist = false;
-    public static final boolean kMidScoreWrist = false;
-    public static final boolean kHighScoreWrist = true;
-    public static final boolean kStowInFrameWrist = false;
-    public static final boolean kStowLowWrist = false;
-
-    public static final double kLowPickupOuttake = -0.4;
-    public static final double kStowHighOuttake = -0.4;
-    public static final double kDoubleFeederOuttake = -0.4;
-    public static final double kLowScoreOuttake = -0.4;
-    public static final double kMidScoreOuttake = -0.4;
-    public static final double kHighScoreOuttake = -0.4;
-    public static final double kStowInFrameOuttake = -0.4;
-    public static final double kStowLowOuttake = -0.4;
+  public static final class ConeSetpointConstants {
+    public static final Setpoints kLowPickup = new Setpoints(0.94, false, -0.4);
+    public static final Setpoints kStowHigh = new Setpoints(0.5, false, -0.4);
+    public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.4);
+    public static final Setpoints kLowScore = new Setpoints(0.87, false, -0.4);
+    public static final Setpoints kMidScore = new Setpoints(0.71, false, -0.4);
+    public static final Setpoints kHighScore = new Setpoints(0.64, true, -0.4);
+    public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.4);
+    public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.4);
   }
   
   public static class VisionConstants {

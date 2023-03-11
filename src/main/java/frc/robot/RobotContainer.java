@@ -143,7 +143,9 @@ public class RobotContainer {
                 }
 
                 // Set new arm setpoint and move to it
-                m_arm.setPosition(new_setpoint);
+                m_arm.setTargetPosition(new_setpoint);
+
+                m_arm.runAutomatic();
             },
             m_arm
         )
