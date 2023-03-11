@@ -23,9 +23,9 @@ import frc.robot.subsystems.Vision;
 
 
 
-public class GrapCommunity extends SequentialCommandGroup {
+public class FreeGrapCommunity extends SequentialCommandGroup {
 
-public GrapCommunity(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
+public FreeGrapCommunity(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
 
   PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));

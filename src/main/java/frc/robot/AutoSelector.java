@@ -3,7 +3,7 @@ package frc.robot;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.wpilibj.Timer;
+
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,12 +15,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Commands.TapeAlign;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.autoPaths.FreeCubeTwoGamePiece;
-import frc.robot.autoPaths.GrapBalance;
-import frc.robot.autoPaths.GrapCommunity;
+import frc.robot.Commands.TapeAlign;
+import frc.robot.autoPaths.BalanceCubeTwoGamePiece;
 import frc.robot.autoPaths.CableAutoBalance;
+import frc.robot.autoPaths.CableCubeTwoGamePiece;
+import frc.robot.autoPaths.FreeAutoBalance;
+import frc.robot.autoPaths.FreeCubeTwoGamePiece;
+import frc.robot.autoPaths.FreeGrapBalance;
+import frc.robot.autoPaths.FreeGrapCommunity;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
@@ -217,20 +220,33 @@ public class AutoSelector {
 
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision) {
+    
+    chooser.addOption("2.5 Cube", new BalanceCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
+      m_manager, m_vision, this));
+      
+    chooser.addOption("Cable Auto Balence", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
+      m_manager, m_vision, this));
+    
+    chooser.addOption("Cable 2 Cube", new CableCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
+      m_manager, m_vision, this));
 
-    // Add option of Vision based two game peice split into parts with commands Cube
-    chooser.addOption("CubeTwoGamePiece", new FreeCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Free Auto Balance", new FreeAutoBalance(drivebase, m_intake, m_arm, m_field,
+      m_manager, m_vision, this));
+
+    chooser.addOption("Free 2 Cube", new FreeCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    // Srinivas idea
-    chooser.addOption("Grap community", new GrapCommunity(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Free Grap community", new FreeGrapCommunity(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.setDefaultOption("Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Free Grap Balance", new FreeGrapBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    // Add option of Vision based two game peice split into parts with commands Cube
-    chooser.addOption("GrapBalance", new GrapBalance(drivebase, m_intake, m_arm, m_field,
+    chooser.setDefaultOption("Cable Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this));
+
+    
+    chooser.addOption("GrapBalance", new FreeGrapBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
     SmartDashboard.putData("Auto Selector", chooser);
