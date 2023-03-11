@@ -20,10 +20,11 @@ import frc.robot.Commands.TapeAlign;
 import frc.robot.autoPaths.BalanceCubeTwoGamePiece;
 import frc.robot.autoPaths.CableAutoBalance;
 import frc.robot.autoPaths.CableCubeTwoGamePiece;
+import frc.robot.autoPaths.CenterScoreBalance;
 import frc.robot.autoPaths.FreeAutoBalance;
 import frc.robot.autoPaths.FreeCubeTwoGamePiece;
-import frc.robot.autoPaths.FreeGrapBalance;
-import frc.robot.autoPaths.FreeGrapCommunity;
+import frc.robot.autoPaths.FreeGrabBalance;
+import frc.robot.autoPaths.FreeGrabCommunity;
 import frc.robot.autoPaths.SimpleHighCube;
 import frc.robot.autoPaths.SimpleMidCone;
 import frc.robot.subsystems.DriveSubsystem;
@@ -137,16 +138,14 @@ public class AutoSelector {
 
   public Command scoreV2(String gamepiece, String setpoint, EndEffectorIntake m_intake, StateManager m_manager,
   LiftArm m_arm, DriveSubsystem drivebase, Vision m_vision){
-    InstantCommand positionCommand;
-    InstantCommand coneOrCube;
+    InstantCommand positionCommand = new InstantCommand();
+    InstantCommand coneOrCube = new InstantCommand();
 
     switch(gamepiece){
       case "cube":
         coneOrCube = new InstantCommand(m_manager::pickCube);
       case "cone":
         coneOrCube = new InstantCommand(m_manager::pickCone);
-      default:
-        coneOrCube = new InstantCommand();
     }
     
     switch(setpoint){
@@ -156,8 +155,6 @@ public class AutoSelector {
         positionCommand = new InstantCommand(() -> m_manager.dpadLeft(), m_arm);
       case "low":
         positionCommand = new InstantCommand(() -> m_manager.dpadDown(), m_arm);
-      default:
-        positionCommand = new InstantCommand();
     }
 
     return new ParallelCommandGroup(
@@ -231,7 +228,7 @@ public class AutoSelector {
     chooser.addOption("2.5 Cube", new BalanceCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
       m_manager, m_vision, this));
       
-    chooser.addOption("Cable Auto Balence", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Cable Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
       m_manager, m_vision, this));
     
     chooser.addOption("Cable 2 Cube", new CableCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
@@ -243,22 +240,25 @@ public class AutoSelector {
     chooser.addOption("Free 2 Cube", new FreeCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.addOption("Free Grap community", new FreeGrapCommunity(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Free Grab community", new FreeGrabCommunity(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.addOption("Free Grap Balance", new FreeGrapBalance(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Free Grab Balance", new FreeGrabBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
     chooser.setDefaultOption("Cable Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.addOption("GrapBalance", new FreeGrapBalance(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Grab Balance", new FreeGrabBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.addOption("HighCube", new SimpleHighCube(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("High Cube", new SimpleHighCube(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.addOption("MidCone", new SimpleMidCone(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Mid Cone", new SimpleMidCone(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this));
+
+    chooser.addOption("Center Score Balance", new CenterScoreBalance(drivebase, m_intake, m_arm, 
         m_manager, m_vision, this));
 
     SmartDashboard.putData("Auto Selector", chooser);

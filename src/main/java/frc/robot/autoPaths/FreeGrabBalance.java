@@ -25,9 +25,9 @@ import frc.robot.subsystems.Vision;
 
 
 
-public class FreeGrapBalance extends SequentialCommandGroup {
+public class FreeGrabBalance extends SequentialCommandGroup {
 
-public FreeGrapBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
+public FreeGrabBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
 
   PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
