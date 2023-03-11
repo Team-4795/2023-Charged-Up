@@ -117,31 +117,16 @@ public class EndEffectorIntake extends SubsystemBase {
     @Override
     public void periodic() {
 
-        currentValues[oldestIndex] = intakeMotor.getOutputCurrent();
-
-        if (storing == isHiLetGoing()) {
-            hasBeenStoring.reset();
-        }
-
-        oldestIndex++;
-        oldestIndex = oldestIndex % currentValues.length;
-
-        double changeTime;
-        if (storing) {
-            changeTime = ArmConstants.kOuttakeSensorChangeTime;
-        } else {
-            changeTime = ArmConstants.kIntakeSensorChangeTime;
-        }
-
-        if (hasBeenStoring.hasElapsed(changeTime)) {
-            storing = !storing;
-            hasBeenStoring.reset();
+        if(intakeMotor.getOutputCurrent() > 2){
+            currentValues[oldestIndex] = intakeMotor.getOutputCurrent();
+            oldestIndex++;
+            oldestIndex = oldestIndex % currentValues.length;
         }
 
         if(avgCurrent() > IntakeConstants.storingCurrentThreshold){
-            currentBasedStoring = true;
+            storing = true;
         } else {
-            currentBasedStoring = false;
+            storing = false;
         }
 
         current.append(intakeMotor.getOutputCurrent());
@@ -149,7 +134,7 @@ public class EndEffectorIntake extends SubsystemBase {
 
         SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
         SmartDashboard.putNumber("Average Current", avgCurrent());
-        SmartDashboard.putBoolean("currentBasedStoring", currentBasedStoring);
+        SmartDashboard.putBoolean("Storing?", storing);
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putNumber("Outtake speed", outtakeSpeed);
         SmartDashboard.putBoolean("HiLetGoing?", isHiLetGoing());

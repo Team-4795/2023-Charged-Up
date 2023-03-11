@@ -196,9 +196,9 @@ public final class Constants {
 
     public static final double toZeroBound = 0.000001;
 
-    public static final double platformMaxAngle = 15;
+    public static final double platformMaxAngle = 12;
     //constant speed during command
-    public static final double balanceSpeed = 0.0684;
+    public static final double balanceSpeed = 0.07;
 
     public static final double driveAngleThreshold = 8; //angle at which checking angle duration starts, in degrees
     //constant drive up speed
@@ -206,7 +206,7 @@ public final class Constants {
     //useless for Asheville
     public static final double angularVelocityErrorThreshold = 0.15;
     //coeffiecient of the polynomial function to calculate balancing speed
-    public static final double polyCoeff = 1.5;
+    public static final double polyCoeff = 1.7;
     //duration of checking for the angle to start autobalance 
     public static final double checkDuration = 0.075;
     //override duration for drive up to avoid foul
@@ -286,8 +286,8 @@ public final class Constants {
     public static final double kCubeSlowIntakeSpeed = 0.3;
     public static final double kConeSlowIntakeSpeed = 0.6;
 
-    public static final double storingCurrentThreshold = 13.5;
-    public static final int currentAvgSize = 25;
+    public static final double storingCurrentThreshold = 13;
+    public static final int currentAvgSize = 35;
 
   }
 
