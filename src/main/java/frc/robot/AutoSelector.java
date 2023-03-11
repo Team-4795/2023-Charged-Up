@@ -249,9 +249,6 @@ public class AutoSelector {
     chooser.addOption("Free Grap Balance", new FreeGrapBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
-    chooser.setDefaultOption("Cable Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
-        m_manager, m_vision, this));
-
     chooser.addOption("GrapBalance", new FreeGrapBalance(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this));
 
