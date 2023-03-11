@@ -101,9 +101,8 @@ public class LiftArm extends SubsystemBase {
     TrapezoidProfile.State state = new TrapezoidProfile.State(liftEncoder.getPosition(), liftEncoder.getVelocity());
     TrapezoidProfile.State goal = new TrapezoidProfile.State(setpoint, 0.0);
     switch (StateManager.getGamepiece()) {
-      case Cube: profile = new TrapezoidProfile(ArmConstants.kCubeMotionConstraint, goal, state);
-      case Cone: profile = new TrapezoidProfile(ArmConstants.kConeMotionConstraint, goal, state);
-      default: break;
+      case Cone: profile = new TrapezoidProfile(ArmConstants.kConeMotionConstraint, goal, state); break;
+      default: profile = new TrapezoidProfile(ArmConstants.kCubeMotionConstraint, goal, state); break;
     }
     motionTimer.reset();
   }
@@ -143,7 +142,7 @@ public class LiftArm extends SubsystemBase {
     SmartDashboard.putNumber("Relative location", liftRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Absolute location", liftEncoder.getPosition());
     SmartDashboard.putNumber("Applied Speed", rightArmMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
+    SmartDashboard.putNumber("Desired Spee  ed", requestedSpeed);
     SmartDashboard.putNumber("Arm setpoint", setpoint);
     SmartDashboard.putBoolean("At arm setpoint", this.atSetpoint());
     //SmartDashboard.putNumber("Trapezoidal setpoint", targetState.position);
