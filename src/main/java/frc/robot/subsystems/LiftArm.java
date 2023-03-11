@@ -127,6 +127,10 @@ public class LiftArm extends SubsystemBase {
     m_PIDController.setReference(targetState.position, CANSparkMax.ControlType.kPosition);
   }
 
+  public void runManual() {
+    m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+  }
+
 
   // Gets absolute position
   public double getPosition() {

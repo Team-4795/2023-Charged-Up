@@ -110,19 +110,19 @@ public class RobotContainer {
         new RunCommand(() -> {
             m_wrist.extended = m_wrist.extendedTarget;
 
-                if (m_arm.getPosition() < ArmConstants.kLowWristLimit) {
-                    m_wrist.extended = false;
-                }
+            if (m_arm.getPosition() < ArmConstants.kLowWristLimit) {
+                m_wrist.extended = false;
+            }
 
-                if (m_arm.getPosition() > ArmConstants.kHighWristLimit) {
-                    m_wrist.extended = false;
-                }
+            if (m_arm.getPosition() > ArmConstants.kHighWristLimit) {
+                m_wrist.extended = false;
+            }
 
-                if (m_wrist.extended) {
-                    m_wrist.extend();
-                } else {
-                    m_wrist.retract();
-                }
+            if (m_wrist.extended) {
+                m_wrist.extend();
+            } else {
+                m_wrist.retract();
+            }
         }, 
         m_wrist)
     );
@@ -150,10 +150,13 @@ public class RobotContainer {
                     new_setpoint = ArmConstants.kHighSetpointLimit;
                 }
 
-                // Set new arm setpoint and move to it
-                m_arm.setTargetPosition(new_setpoint);
-
-                m_arm.runAutomatic();
+                // Set new arm setpoint
+                if (new_setpoint != m_arm.setpoint) {
+                    m_arm.setpoint = new_setpoint;
+                    m_arm.runManual();
+                } else {
+                    m_arm.runAutomatic();
+                }
             },
             m_arm
         )
