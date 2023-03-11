@@ -7,7 +7,10 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAnalogSensor.Mode;
 
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DataLogManager;
 //pneumatics imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -44,6 +47,9 @@ public class EndEffectorIntake extends SubsystemBase {
 
     private boolean overrideStoring = false;
 
+    DoubleLogEntry current;
+    BooleanLogEntry currentStoring;
+
     public EndEffectorIntake(){
         intakeMotor.restoreFactoryDefaults();
         intakeMotor.setInverted(true);
@@ -55,6 +61,9 @@ public class EndEffectorIntake extends SubsystemBase {
         hasBeenStoring.reset();
 
         compressor.enableAnalog(IntakeConstants.kMinPressure, IntakeConstants.kMaxPressure);
+
+        current = new DoubleLogEntry(DataLogManager.getLog(), "/current");
+        currentStoring = new BooleanLogEntry(DataLogManager.getLog(), "/currentStoring");
     }
 
     public void extend() {
@@ -150,6 +159,12 @@ public class EndEffectorIntake extends SubsystemBase {
         } else {
             currentBasedStoring = false;
         }
+
+        current.append(intakeMotor.getOutputCurrent());
+        currentStoring.append(currentBasedStoring);
+
+        SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
+        SmartDashboard.putBoolean("currentBasedStoring", currentBasedStoring);
 
         SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
         SmartDashboard.putBoolean("Wrist extended target", extendedTarget);
