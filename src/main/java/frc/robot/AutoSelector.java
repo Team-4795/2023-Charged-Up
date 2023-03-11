@@ -57,7 +57,7 @@ public class AutoSelector {
                 // move arm and extend intake then wait until at set point
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-                    new InstantCommand(wrist::extend, wrist),
+                    new InstantCommand(wrist::retract, wrist),
                     new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)
                 // meanwhile auto align
                 // new SequentialCommandGroup(
@@ -81,7 +81,7 @@ public class AutoSelector {
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
-                    new InstantCommand(wrist::extend, wrist))
+                    new InstantCommand(wrist::retract, wrist))
                     
                 // new SequentialCommandGroup(
                 //     new InstantCommand(() -> {
@@ -222,11 +222,14 @@ public class AutoSelector {
   }
 
   public Command stow(EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm) {
-    return new SequentialCommandGroup(
+    return 
         new SequentialCommandGroup(
             new InstantCommand(m_manager::pickCube),
             new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-            new WaitUntilCommand(m_arm::atSetpoint)));
+
+            new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
+            new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()), m_intake)
+            .withTimeout(.5));
   }
 
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,

@@ -117,14 +117,17 @@ public class EndEffectorIntake extends SubsystemBase {
     @Override
     public void periodic() {
 
-        currentValues[oldestIndex] = intakeMotor.getOutputCurrent();
+        
 
         if (storing == isHiLetGoing()) {
             hasBeenStoring.reset();
         }
 
-        oldestIndex++;
-        oldestIndex = oldestIndex % currentValues.length;
+        if(intakeMotor.getOutputCurrent() > 2){
+            currentValues[oldestIndex] = intakeMotor.getOutputCurrent();
+            oldestIndex++;
+            oldestIndex = oldestIndex % currentValues.length;
+        }
 
         double changeTime;
         if (storing) {

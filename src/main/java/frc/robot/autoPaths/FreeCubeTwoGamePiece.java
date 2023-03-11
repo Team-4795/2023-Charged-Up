@@ -11,6 +11,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -30,9 +31,9 @@ public class FreeCubeTwoGamePiece extends SequentialCommandGroup {
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist ) {
 
     PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Free Cube 2 Game Piece 1",
-        new PathConstraints(1, 2));
+        new PathConstraints(2, 3));
     PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Free Cube 2 Game Piece 2",
-        new PathConstraints(1, 2));
+        new PathConstraints(2, 3));
 
     // Add option of Vision based two game peice split into parts with commands Cube
     addCommands(
@@ -50,19 +51,19 @@ public class FreeCubeTwoGamePiece extends SequentialCommandGroup {
                     new InstantCommand(() -> m_intake.setOverrideStoring(true)),
                     new InstantCommand(m_manager::pickCube),
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
-                    new WaitUntilCommand(m_arm::atSetpoint),
-                    new InstantCommand(wrist::extend, wrist))),
-            // Align
-            new InstantCommand(() -> {
-              m_vision.switchToTag();
-            }),
+                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
+                    new InstantCommand(wrist::retract, wrist))),
+            // // Align
+            // new InstantCommand(() -> {
+            //   m_vision.switchToTag();
+            // }),
 
-            new TapeAlign(
-                drivebase,
-                m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
+            // new TapeAlign(
+            //     drivebase,
+            //     m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
 
-            // Run outake for 1 second to scorenew RunCommand(m_intake::outtake,
-            // m_intake).withTimeout(1.0),
+             //Run outake for 1 second to score
+             new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
             new InstantCommand(wrist::retract, wrist),
             new InstantCommand(() -> m_intake.setOverrideStoring(false))));
   }
