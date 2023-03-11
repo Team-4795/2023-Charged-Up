@@ -71,7 +71,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led);
+  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive);
 
   AutoSelector autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm, m_robotDrive.m_field, m_manager, m_Vision);
   /**

@@ -293,6 +293,8 @@ public final class Constants {
     public static final double kHighScoreArm = .565;
     public static final double kStowInFrameArm = 0.16;
     public static final double kStowLowArm = 0.96;
+    public static final double kBackwardsHighScoreArm = 0.4;
+    public static final double kBackwardsMidScoreArm = 0.4;
     
     public static final boolean kLowPickupWrist = false;
     public static final boolean kStowHighWrist = false;
@@ -302,6 +304,8 @@ public final class Constants {
     public static final boolean kHighScoreWrist = true;
     public static final boolean kStowInFrameWrist = false;
     public static final boolean kStowLowWrist = false;
+    public static final boolean kBackwardsHighScoreWrist = false;
+    public static final boolean kBackwardsMidScoreWrist = false;
 
     public static final double kLowPickupOuttake = -0.3;
     public static final double kStowHighOuttake = -0.3;
@@ -311,7 +315,8 @@ public final class Constants {
     public static final double kHighScoreOuttake = -0.5;
     public static final double kStowInFrameOuttake = -0.3;
     public static final double kStowLowOuttake = -0.3;
-
+    public static final double kBackwardsHighScoreOuttake = -0.5;
+    public static final double kBackwardsMidScoreOuttake = -0.5;
   }
 
   public static final class ConeSetpointConstants{

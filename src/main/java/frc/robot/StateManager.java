@@ -1,6 +1,7 @@
 package frc.robot;
 import java.util.Optional;
 
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.LiftArm;
@@ -15,6 +16,7 @@ public class StateManager {
     private LiftArm arm;
     private EndEffectorIntake intake;
     private LEDs leds;
+    private DriveSubsystem drive;
 
     // What state were in
     private State state;
@@ -33,7 +35,7 @@ public class StateManager {
         None,
     }
 
-    public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds) {
+    public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds, DriveSubsystem drive) {
         this.state = State.StowInFrame;
         this.gamepiece = Gamepiece.None;
 
@@ -41,6 +43,7 @@ public class StateManager {
         this.arm = arm;
         this.intake = intake;
         this.leds = leds;
+        this.drive = drive;
     }
 
     public void pickCube() {
@@ -60,7 +63,12 @@ public class StateManager {
 
     public void dpadUp() {
         if (intake.isStoring()) {
-            state = State.HighScore;
+            if (Math.abs(drive.getHeading().getDegrees()) > 90.0) {
+                state = State.BackwardsHighScore;
+            } else {
+                state = State.HighScore;
+
+            }
         } else {
             state = State.DoubleFeeder;
         }
@@ -70,7 +78,11 @@ public class StateManager {
 
     public void dpadLeft() {
         if (intake.isStoring()) {
-            state = State.MidScore;
+            if (Math.abs(drive.getHeading().getDegrees()) > 90.0) {
+                state = State.BackwardsMidScore;
+            } else {
+                state = State.MidScore;
+            }
         } else {
             state = State.SingleFeeder;
         }
@@ -142,7 +154,9 @@ enum State {
     MidScore,
     HighScore,
     StowInFrame,
-    StowLow;
+    StowLow,
+    BackwardsMidScore,
+    BackwardsHighScore;
 
     private Optional<Setpoints> getCubeSetpoints() {
         Setpoints result = null;
@@ -156,6 +170,8 @@ enum State {
             case HighScore: result = new Setpoints(CubeSetpointConstants.kHighScoreArm, CubeSetpointConstants.kHighScoreWrist, CubeSetpointConstants.kHighScoreOuttake); break;
             case StowInFrame: result = new Setpoints(CubeSetpointConstants.kStowInFrameArm, CubeSetpointConstants.kStowInFrameWrist, CubeSetpointConstants.kStowInFrameOuttake); break;
             case StowLow: result = new Setpoints(CubeSetpointConstants.kStowLowArm, CubeSetpointConstants.kStowLowWrist, CubeSetpointConstants.kStowLowOuttake); break;
+            case BackwardsMidScore: result = new Setpoints(CubeSetpointConstants.kBackwardsMidScoreArm, CubeSetpointConstants.kBackwardsMidScoreWrist, CubeSetpointConstants.kBackwardsMidScoreOuttake); break;
+            case BackwardsHighScore: result = new Setpoints(CubeSetpointConstants.kBackwardsHighScoreArm, CubeSetpointConstants.kBackwardsHighScoreWrist, CubeSetpointConstants.kBackwardsHighScoreOuttake); break;
         }
 
         return Optional.ofNullable(result);
@@ -173,6 +189,7 @@ enum State {
             case HighScore: result = new Setpoints(ConeSetpointConstants.kHighScoreArm, ConeSetpointConstants.kHighScoreWrist, ConeSetpointConstants.kHighScoreOuttake); break;
             case StowInFrame: result = new Setpoints(ConeSetpointConstants.kStowInFrameArm, ConeSetpointConstants.kStowInFrameWrist, ConeSetpointConstants.kStowInFrameOuttake); break;
             case StowLow: result = new Setpoints(ConeSetpointConstants.kStowLowArm, ConeSetpointConstants.kStowLowWrist, ConeSetpointConstants.kStowLowOuttake); break;
+            default: break;
         }
 
         return Optional.ofNullable(result);
