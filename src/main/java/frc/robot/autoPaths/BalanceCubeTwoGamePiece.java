@@ -18,6 +18,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Commands.AutoBalanceOld;
@@ -28,7 +29,7 @@ import frc.robot.Constants.AutoConstants;
 public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
 
   public BalanceCubeTwoGamePiece(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
-      StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
+      StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist) {
 
     PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Free Cube 2 Game Piece 1",
         new PathConstraints(1, 2));
@@ -39,11 +40,11 @@ public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
     addCommands(
         new SequentialCommandGroup(
             drivebase.AutoStartUp(CubeTwoGamePiece1, true),
-            m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision),
+            m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
 
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
-                m_autoSelector.intake("cube", m_intake, m_manager, m_arm)),
+                m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist)),
 
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
@@ -52,7 +53,7 @@ public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
                     new InstantCommand(m_manager::pickCube),
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new WaitUntilCommand(m_arm::atSetpoint),
-                    new InstantCommand(m_intake::extend, m_intake))),
+                    new InstantCommand(wrist::extend, wrist))),
             // Align
             new InstantCommand(() -> {
               m_vision.switchToTag();
@@ -64,7 +65,7 @@ public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
 
             // Run outake for 1 second to scorenew RunCommand(m_intake::outtake,
             // m_intake).withTimeout(1.0),
-            new InstantCommand(m_intake::retract, m_intake),
+            new InstantCommand(wrist::retract, wrist),
             new InstantCommand(() -> m_intake.setOverrideStoring(false)),
 
             new ParallelCommandGroup(

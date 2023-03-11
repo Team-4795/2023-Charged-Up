@@ -6,6 +6,7 @@ import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Wrist;
 import frc.utils.Setpoints;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +19,7 @@ public class StateManager {
     private EndEffectorIntake intake;
     private LEDs leds;
     private DriveSubsystem drive;
+    private Wrist wrist;
 
     // What state were in
     private State state;
@@ -36,7 +38,7 @@ public class StateManager {
         None,
     }
 
-    public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds, DriveSubsystem drive) {
+    public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds, DriveSubsystem drive, Wrist wrist) {
         this.state = State.StowInFrame;
         this.gamepiece = Gamepiece.None;
 
@@ -45,6 +47,7 @@ public class StateManager {
         this.intake = intake;
         this.leds = leds;
         this.drive = drive;
+        this.wrist = wrist;
     }
 
     public void pickCube() {
@@ -145,7 +148,7 @@ public class StateManager {
     private void setSetpoints() {
         this.getArmSetpoint().ifPresent(arm::setTargetPosition);
         this.getOuttakeSetpoint().ifPresent(intake::setOuttakeSpeed);
-        this.getWristExtended().ifPresent(intake::setExtendedTarget);
+        this.getWristExtended().ifPresent(wrist::setExtendedTarget);
 
         SmartDashboard.putString("State", state.name());
     }

@@ -20,19 +20,20 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Wrist;
 
 
 
 public class SimpleMidCone extends SequentialCommandGroup {
 
 public SimpleMidCone(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
-      StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector) {
+      StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist) {
 
   PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance Left", new PathConstraints(3, 3));
 
   addCommands(
    new SequentialCommandGroup(
     drivebase.AutoStartUp(AutoBalance, true),
-    m_autoSelector.score("cone", "mid", m_intake, m_manager, m_arm, drivebase, m_vision)));
+    m_autoSelector.score("cone", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)));
       }
     }
