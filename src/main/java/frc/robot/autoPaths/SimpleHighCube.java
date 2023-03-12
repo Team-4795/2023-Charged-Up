@@ -9,6 +9,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoSelector;
@@ -34,6 +35,8 @@ public SimpleHighCube(DriveSubsystem drivebase, EndEffectorIntake m_intake, Lift
   addCommands(
    new SequentialCommandGroup(
     drivebase.AutoStartUp(AutoBalance, true, m_intake),
-    m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)));
+    m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+    new InstantCommand(() -> m_intake.setOverrideStoring(false))
+    ));
       }
     }

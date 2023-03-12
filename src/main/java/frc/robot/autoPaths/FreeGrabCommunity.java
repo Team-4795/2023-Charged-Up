@@ -38,6 +38,7 @@ public FreeGrabCommunity(DriveSubsystem drivebase, EndEffectorIntake m_intake, L
 
             drivebase.AutoStartUp(GrapBalance1,true, m_intake ),
             m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+            new InstantCommand(() -> m_intake.setOverrideStoring(false)),
 
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(GrapBalance1),

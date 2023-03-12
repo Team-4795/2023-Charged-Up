@@ -21,7 +21,9 @@ public class CenterScoreBalance extends SequentialCommandGroup {
             new SequentialCommandGroup(
                 new InstantCommand(() -> m_intake.setOverrideStoring(true)),
                 m_autoSelector.scoreV2("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+                new InstantCommand(() -> m_intake.setOverrideStoring(false)),
                 m_autoSelector.stow(m_intake, m_manager, m_arm),
+                
                 new DriveCommandOld(drivebase, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
                                     AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
                 new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)

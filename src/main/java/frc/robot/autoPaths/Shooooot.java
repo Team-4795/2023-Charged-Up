@@ -42,6 +42,7 @@ public class Shooooot extends SequentialCommandGroup {
                 new SequentialCommandGroup(
                         drivebase.AutoStartUp(CubeTwoGamePiece1, true, m_intake),
                         m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+                        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
 
                         new ParallelCommandGroup(
                                 drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
@@ -61,19 +62,15 @@ public class Shooooot extends SequentialCommandGroup {
                                                 AutoConstants.checkDuration)
                                                 .withTimeout(AutoConstants.overrideDuration),
                                         new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold),
-                                        new InstantCommand(m_vision::switchToTag),
-                                        new TapeAlign(
-                                                drivebase, m_vision,
-                                                () -> AutoConstants.VisionXspeed,
-                                                () -> AutoConstants.VisionYspeed).withTimeout(1),
-                                        new RunCommand(() -> m_intake.intake(-1), m_intake).withTimeout(.3)
+                                        new InstantCommand(m_vision::switchToTag)
+                                       
                                 ),
-
                                 new SequentialCommandGroup(
                                         new SequentialCommandGroup(
                                                 new InstantCommand(() -> m_arm.setTargetPosition(.325), m_arm),
                                                 new InstantCommand(wrist::retract, wrist),
-                                                new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)
+                                                new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
+                                                new RunCommand(() -> m_intake.intake(-1), m_intake).withTimeout(.3)
                                         )
                                 )
                         )
