@@ -29,12 +29,6 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private long teleopStart;
   private double m_rumble=0;
-  private DataLog log;
-  private DoubleArrayLogEntry swerveStates;
-  private DoubleLogEntry rotation;
-  DoubleLogEntry elevationAngle;
-  DoubleLogEntry elevationVelocity;
-  DoubleLogEntry speedOfBalance;
   
 
   private double getSeconds() {
@@ -49,14 +43,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    DataLogManager.start();
-    log = DataLogManager.getLog();
-    log.setFilename("Auto Testing Log");
-    elevationAngle = new DoubleLogEntry(log, "/elevationAngle");
-    elevationVelocity = new DoubleLogEntry(log, "/elevationVelocity");
-    speedOfBalance = new DoubleLogEntry(log, "/balanceSpeed");
-    swerveStates = new DoubleArrayLogEntry(log, "/swerveStates");
-    rotation = new DoubleLogEntry(log, "/rotation");
     PathPlannerServer.startServer(5811); // 4795 = port number 
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -121,8 +107,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    DriverStation.startDataLog(log);
     m_robotContainer.setNotStoring();
   }
 
@@ -140,12 +124,6 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("time", getSeconds());
     SmartDashboard.putNumber("rumble log", m_rumble);
-    
-    speedOfBalance.append(m_robotContainer.m_robotDrive.getBalanceSpeed());
-    elevationAngle.append(m_robotContainer.m_robotDrive.getElevationAngleV2());
-    elevationVelocity.append(m_robotContainer.m_robotDrive.getElevationVelocityV2());
-    swerveStates.append(m_robotContainer.m_robotDrive.getModuleStates());
-    rotation.append(m_robotContainer.m_robotDrive.getHeading().getDegrees());
   }
 
   @Override

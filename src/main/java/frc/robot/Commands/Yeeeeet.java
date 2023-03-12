@@ -9,7 +9,7 @@ import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Wrist;
 
-public class Yeeeeet extends CommandBase{
+public class Yeeeeet extends CommandBase {
     LiftArm arm;
     Wrist wrist;
     EndEffectorIntake intake;
@@ -20,7 +20,7 @@ public class Yeeeeet extends CommandBase{
     boolean yeet;
     boolean finish;
 
-    public Yeeeeet(LiftArm arm, Wrist wrist, EndEffectorIntake intake, StateManager manager, String gamepiece){
+    public Yeeeeet(LiftArm arm, Wrist wrist, EndEffectorIntake intake, StateManager manager, String gamepiece) {
         this.arm = arm;
         this.wrist = wrist;
         this.intake = intake;
@@ -32,33 +32,36 @@ public class Yeeeeet extends CommandBase{
     }
 
     @Override
-    public void initialize(){
-        if(arm.getPosition() > ArmConstants.armWindPoint){
+    public void initialize() {
+        if (arm.getPosition() > ArmConstants.armWindPoint) {
             finish = true;
+        } else {
+            switch (gamepiece) {
+                case "cone":
+                    manager.pickCone();
+                default:
+                    manager.pickCube();
+            }
+            arm.setTargetPosition(ArmConstants.YeetpointEnd);
+            arm.runAutomatic();
         }
-        switch(gamepiece){
-            case "cone": manager.pickCone();
-            default: manager.pickCube();
-        }
-        arm.setTargetPosition(ArmConstants.YeetpointEnd);
-        arm.runAutomatic();
     }
 
     @Override
-    public void execute(){
-        if(arm.getPosition() > ArmConstants.armWindPoint && !yeet){
+    public void execute() {
+        if (arm.getPosition() > ArmConstants.armWindPoint && !yeet) {
             wrist.extend();
             intake.setOuttakeSpeed(-0.9);
             intake.outtake();
             yeet = true;
         }
-        if(arm.atSetpoint()){
+        if (arm.atSetpoint()) {
             finish = true;
         }
     }
 
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return finish;
     }
 }
