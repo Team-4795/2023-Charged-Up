@@ -307,7 +307,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void zeroReverseHeading() {
     this.zeroHeading();
-    m_gyro.setAngleAdjustment(balanceSpeed);
+    m_gyro.setAngleAdjustment(180);
   }
 
   /**
@@ -393,6 +393,12 @@ public class DriveSubsystem extends SubsystemBase {
         new SequentialCommandGroup( 
           new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
+          if (flip) {
+            zeroReverseHeading();
+          } else {
+            zeroHeading();
+          }
+          
           this.resetOdometry(PathPlannerTrajectory
               .transformTrajectoryForAlliance(traj, DriverStation.getAlliance())
               .getInitialHolonomicPose(), flip);
@@ -403,7 +409,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getYaw() {
-
-    return m_gyro.getYaw();
+    double yaw = m_gyro.getAngle() % 360;
+    if (yaw < 0) yaw += 360;
+    return yaw;
   }
 }
