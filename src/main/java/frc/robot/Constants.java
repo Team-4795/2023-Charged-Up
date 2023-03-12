@@ -270,7 +270,7 @@ public final class Constants {
     public static final double kPositionThreshold = 0.025;
 
     public static final double maxWindPoint = 0.18;
-    public static final double YeetpointEnd = 0.6;
+    public static final double YeetpointEnd = 0.77;
     public static final double armWindPoint = 0.412;
   }
 

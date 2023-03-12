@@ -254,7 +254,13 @@ public class RobotContainer {
     }, m_arm)
     ));
     
-    ControlContants.driverY.onFalse(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
+    ControlContants.driverY.onFalse(new SequentialCommandGroup(
+                                            new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"),
+                                            new WaitCommand(0.3),
+                                            new InstantCommand(m_manager::pickCone),
+                                            new InstantCommand(m_manager::dpadRight),
+                                            new RunCommand(m_arm::runAutomatic).withTimeout(1)
+    ));
 
     // reset LEDs when were not targeting
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
