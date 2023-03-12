@@ -33,11 +33,11 @@ public FreeAutoBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, Lif
 
   addCommands(
    new SequentialCommandGroup(
-    drivebase.AutoStartUp(AutoBalance,false),
+    drivebase.AutoStartUp(AutoBalance,false, m_intake),
     m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+
     new ParallelCommandGroup(
         drivebase.followTrajectoryCommand(AutoBalance),
-
         m_autoSelector.stow(m_intake, m_manager, m_arm)),
 
     new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,

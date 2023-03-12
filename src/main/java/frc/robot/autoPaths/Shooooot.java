@@ -40,35 +40,16 @@ public class Shooooot extends SequentialCommandGroup {
     // Add option of Vision based two game peice split into parts with commands Cube
     addCommands(
         new SequentialCommandGroup(
-            drivebase.AutoStartUp(CubeTwoGamePiece1, true),
+            drivebase.AutoStartUp(CubeTwoGamePiece1, true, m_intake),
             m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
 
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
                 m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist)),
 
-            new ParallelCommandGroup(
-                drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-                    new InstantCommand(m_manager::pickCube),
-                    new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
-                    new WaitUntilCommand(m_arm::atSetpoint),
-                    new InstantCommand(wrist::extend, wrist))),
-            // Align
-            new InstantCommand(() -> {
-              m_vision.switchToTag();
-            }),
-
-            new TapeAlign(
-                drivebase,
-                m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
-
-            // Run outake for 1 second to scorenew RunCommand(m_intake::outtake,
-            // m_intake).withTimeout(1.0),
-            new InstantCommand(wrist::retract, wrist),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false)),
-
+            drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
+            m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+            
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(AutoBalance),
                 m_autoSelector.stow(m_intake, m_manager, m_arm)),
@@ -78,25 +59,27 @@ public class Shooooot extends SequentialCommandGroup {
                 new SequentialCommandGroup(
                     new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
                         AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-                    new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold))),
+                    new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)),
                     
-            new SequentialCommandGroup(
-                new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-                new InstantCommand(m_manager::pickCube),
-                new ParallelRaceGroup(
                     new SequentialCommandGroup(
-                        new InstantCommand(() -> m_arm.setTargetPosition(.325),m_arm),
-                        new WaitUntilCommand(m_arm::atSetpoint),
-                        new InstantCommand(wrist::retract, wrist)),
-                    new SequentialCommandGroup(
-                        new InstantCommand(() -> {
-                          m_vision.switchToTag();
-                        }),
-                        new TapeAlign(
-                            drivebase, m_vision,
-                            () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
-                new RunCommand(() -> m_intake.intake(-1),m_intake),withTimeout(.2),
-                new InstantCommand(() -> m_intake.setOverrideStoring(false)))));
+                        new ParallelCommandGroup(
+                            new SequentialCommandGroup(
+                                new InstantCommand(() -> m_arm.setTargetPosition(.325), m_arm),
+                                new InstantCommand(wrist::retract, wrist),
+                                new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
+                           // meanwhile auto align
+                            new SequentialCommandGroup(
+                                new InstantCommand(() -> {
+                                  m_vision.switchToTag();
+                                }),
+                                new TapeAlign(
+                                    drivebase, m_vision,
+                                    () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
+                            new RunCommand(() -> m_intake.intake(-1),m_intake),withTimeout(.2)))
+                        //not needed with current sensing
+                        //new InstantCommand(() -> m_intake.setOverrideStoring(false))
+
+                ));
 
   }
 }

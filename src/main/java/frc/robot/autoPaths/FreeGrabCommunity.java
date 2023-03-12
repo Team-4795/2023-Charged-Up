@@ -9,6 +9,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -35,7 +36,7 @@ public FreeGrabCommunity(DriveSubsystem drivebase, EndEffectorIntake m_intake, L
     addCommands(
         new SequentialCommandGroup(
 
-            drivebase.AutoStartUp(GrapBalance1,true ),
+            drivebase.AutoStartUp(GrapBalance1,true, m_intake ),
             m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
 
             new ParallelCommandGroup(
@@ -46,9 +47,12 @@ public FreeGrabCommunity(DriveSubsystem drivebase, EndEffectorIntake m_intake, L
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(EarlyVision),
                 m_autoSelector.stow(m_intake, m_manager, m_arm)),
-
+            new SequentialCommandGroup(
+                new InstantCommand(() -> {
+                    m_vision.switchToTag();
+                    }),
             new TapeAlign(
                 drivebase, m_vision,
-                () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5)));
+                () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5))));
   }
 }

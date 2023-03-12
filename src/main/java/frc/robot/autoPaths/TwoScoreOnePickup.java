@@ -23,7 +23,7 @@ public class TwoScoreOnePickup extends SequentialCommandGroup {
 
         addCommands(
             new SequentialCommandGroup(
-                drivebase.AutoStartUp(TwoScorePickup,true ),
+                drivebase.AutoStartUp(TwoScorePickup,true, m_intake ),
                 m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
                 new ParallelCommandGroup(
                     drivebase.followTrajectoryCommand(TwoScorePickup),

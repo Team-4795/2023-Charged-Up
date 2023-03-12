@@ -388,15 +388,17 @@ public class DriveSubsystem extends SubsystemBase {
       );
   }
 
-  public Command AutoStartUp(PathPlannerTrajectory traj, boolean flip) {
+  public Command AutoStartUp(PathPlannerTrajectory traj, boolean flip, EndEffectorIntake m_intake) {
     return 
-        new InstantCommand(() -> {
+        new SequentialCommandGroup( 
+          new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
           this.resetOdometry(PathPlannerTrajectory
               .transformTrajectoryForAlliance(traj, DriverStation.getAlliance())
               .getInitialHolonomicPose(), flip);
           this.setBreakMode();
-        });
+        }),
+          new InstantCommand(() -> m_intake.setOverrideStoring(true)));
 
   }
 

@@ -9,6 +9,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoSelector;
@@ -33,11 +34,11 @@ public CableAutoBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, Li
 
   addCommands(
    new SequentialCommandGroup(
-    drivebase.AutoStartUp(AutoBalance,false),
+    drivebase.AutoStartUp(AutoBalance,false, m_intake),
     m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+
     new ParallelCommandGroup(
         drivebase.followTrajectoryCommand(AutoBalance),
-
         m_autoSelector.stow(m_intake, m_manager, m_arm)),
 
     new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,

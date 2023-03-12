@@ -50,7 +50,8 @@ public class AutoSelector {
         return new SequentialCommandGroup(
             // ensure the state machine is aware of what we want ie have a game piece and in
             // cube mode
-            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            // we don't need this anymore with current sensing
+            //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
             // a command group which should finish when the arm gets to the set point
             new ParallelCommandGroup(
@@ -58,51 +59,32 @@ public class AutoSelector {
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadUp(), m_arm),
                     new InstantCommand(wrist::retract, wrist),
-                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)
-                // meanwhile auto align
-                // new SequentialCommandGroup(
-                //     new InstantCommand(() -> {
-                //       m_vision.switchToTag();
-                //     }),
-                //     new TapeAlign(
-                //         drivebase, m_vision,
-                //         () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))
-                        
-                        )),
+                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
+               // meanwhile auto align
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> {
+                      m_vision.switchToTag();
+                    }),
+                    new TapeAlign(
+                        drivebase, m_vision,
+                        () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
             // score and then tell statemachine of current state ie no gamepiece
             new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-            new InstantCommand(wrist::retract, wrist),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+            new InstantCommand(wrist::retract, wrist)
+            //not needed with current sensing
+            //new InstantCommand(() -> m_intake.setOverrideStoring(false))
+            );
       } else if (setpoint.equals("mid")) {
         return new SequentialCommandGroup(
-            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            // we don't need this anymore with current sensing
+            //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
-                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
-                    new InstantCommand(wrist::retract, wrist))
-                    
-                // new SequentialCommandGroup(
-                //     new InstantCommand(() -> {
-                //       m_vision.switchToTag();
-                //     }),
-                //     new TapeAlign(
-                //         drivebase, m_vision,
-                //         () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed)
-                        ),
-            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-            new InstantCommand(wrist::retract, wrist),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
-      } else if (setpoint.equals("low")) {
-        return new SequentialCommandGroup(
-            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-            new InstantCommand(m_manager::pickCube),
-            new ParallelRaceGroup(
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> m_manager.dpadDown(), m_arm),
                     new InstantCommand(wrist::retract, wrist),
-                    new WaitUntilCommand(m_arm::atSetpoint)),
+                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
+               // meanwhile auto align
                 new SequentialCommandGroup(
                     new InstantCommand(() -> {
                       m_vision.switchToTag();
@@ -111,31 +93,82 @@ public class AutoSelector {
                         drivebase, m_vision,
                         () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
             new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+            new InstantCommand(wrist::retract, wrist)
+            //not needed with current sensing
+            //new InstantCommand(() -> m_intake.setOverrideStoring(false))
+            );
+      } else if (setpoint.equals("low")) {
+        return new SequentialCommandGroup(
+          // we don't need this anymore with current sensing
+          //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+          new InstantCommand(m_manager::pickCube),
+          new ParallelCommandGroup(
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> m_manager.dpadDown(), m_arm),
+                  new InstantCommand(wrist::retract, wrist),
+                  new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
+             // meanwhile auto align
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> {
+                    m_vision.switchToTag();
+                  }),
+                  new TapeAlign(
+                      drivebase, m_vision,
+                      () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
+          new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+          new InstantCommand(wrist::retract, wrist)
+          //not needed with current sensing
+          //new InstantCommand(() -> m_intake.setOverrideStoring(false))
+          );
       }
     } else if (gamepeice.equals("cone")) {
 
       if (setpoint.equals("mid")) {
         return new SequentialCommandGroup(
-            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-            new InstantCommand(m_manager::pickCone),
-            new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
-            new WaitUntilCommand(m_arm::atSetpoint),
-            new InstantCommand(wrist::extend, wrist),
-            new WaitCommand(0.5),
-            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-            new InstantCommand(wrist::retract, wrist),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+          // we don't need this anymore with current sensing
+          //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+          new InstantCommand(m_manager::pickCone),
+          new ParallelCommandGroup(
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
+                  new InstantCommand(wrist::retract, wrist),
+                  new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
+             // meanwhile auto align
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> {
+                    m_vision.switchToTape();
+                  }),
+                  new TapeAlign(
+                      drivebase, m_vision,
+                      () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
+          new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+          new InstantCommand(wrist::retract, wrist)
+          //not needed with current sensing
+          //new InstantCommand(() -> m_intake.setOverrideStoring(false))
+          );
       } else if (setpoint.equals("low")) {
         return new SequentialCommandGroup(
-            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-            new InstantCommand(m_manager::pickCone),
-            new InstantCommand(() -> m_manager.dpadDown(), m_arm),
-            new WaitUntilCommand(m_arm::atSetpoint),
-            new InstantCommand(wrist::retract, wrist),
-            new WaitCommand(0),
-            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false)));
+          // we don't need this anymore with current sensing
+          //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+          new InstantCommand(m_manager::pickCone),
+          new ParallelCommandGroup(
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> m_manager.dpadDown(), m_arm),
+                  new InstantCommand(wrist::retract, wrist),
+                  new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
+             // meanwhile auto align
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> {
+                    m_vision.switchToTape();
+                  }),
+                  new TapeAlign(
+                      drivebase, m_vision,
+                      () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
+          new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+          new InstantCommand(wrist::retract, wrist)
+          //not needed with current sensing
+          //new InstantCommand(() -> m_intake.setOverrideStoring(false))
+          );
       }
     }
 
