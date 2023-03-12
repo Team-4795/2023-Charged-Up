@@ -106,19 +106,19 @@ public class AutoSelector {
               new SequentialCommandGroup(
                   new InstantCommand(() -> m_manager.dpadDown(), m_arm),
                   new InstantCommand(wrist::retract, wrist),
-                  new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
-             // meanwhile auto align
-              new SequentialCommandGroup(
-                  new InstantCommand(() -> {
-                    m_vision.switchToTag();
-                  }),
-                  new TapeAlign(
-                      drivebase, m_vision,
-                      () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed)))
+                  new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5))
+            //  // meanwhile auto align
+            //   new SequentialCommandGroup(
+            //       new InstantCommand(() -> {
+            //         m_vision.switchToTag();
+            //       }),
+            //       new TapeAlign(
+            //           drivebase, m_vision,
+            //           () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed)))
           
           //not needed with current sensing
           //new InstantCommand(() -> m_intake.setOverrideStoring(false))
-          );
+        ));
       }
     } else if (gamepeice.equals("cone")) {
 
@@ -267,7 +267,7 @@ public class AutoSelector {
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
       StateManager m_manager, Vision m_vision, Wrist wrist) {
     
-    chooser.addOption("2.5 Cube", new BalanceCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
+    chooser.addOption("Free 2 Cube Balance", new BalanceCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
       m_manager, m_vision, this, wrist));
       
     chooser.addOption("Cable Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,

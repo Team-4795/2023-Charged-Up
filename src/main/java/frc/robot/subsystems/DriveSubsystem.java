@@ -129,7 +129,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("x", getPose().getX());
     SmartDashboard.putNumber("y", getPose().getY());
     SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("gyro angle", this.getYaw());
+    SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
     SmartDashboard.putData("pose", m_field);
 
     SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
@@ -396,6 +396,7 @@ public class DriveSubsystem extends SubsystemBase {
           this.resetOdometry(PathPlannerTrajectory
               .transformTrajectoryForAlliance(traj, DriverStation.getAlliance())
               .getInitialHolonomicPose(), flip);
+          
           this.setBreakMode();
         }),
           new InstantCommand(() -> m_intake.setOverrideStoring(true)));
