@@ -123,11 +123,8 @@ public class EndEffectorIntake extends SubsystemBase {
             oldestIndex = oldestIndex % currentValues.length;
         }
 
-        if(avgCurrent() > IntakeConstants.storingCurrentThreshold){
-            storing = true;
-        } else {
-            storing = false;
-        }
+        // if(
+            
 
         current.append(intakeMotor.getOutputCurrent());
         currentStoring.append(currentBasedStoring);

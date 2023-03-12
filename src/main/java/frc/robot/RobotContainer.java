@@ -236,7 +236,7 @@ public class RobotContainer {
 
     ControlContants.driverY.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
 
-    ControlContants.driverY.whileTrue(new SequentialCommandGroup(
+    ControlContants.driverX.whileTrue(new SequentialCommandGroup(
         new WaitCommand(0.4),
         new RunCommand(() -> {
         double change = OIConstants.kArmManualSpeed * (-0.75);
@@ -254,7 +254,7 @@ public class RobotContainer {
     }, m_arm)
     ));
     
-    ControlContants.driverY.onFalse(new SequentialCommandGroup(
+    ControlContants.driverX.onFalse(new SequentialCommandGroup(
                                             new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"),
                                             new WaitCommand(0.3),
                                             new InstantCommand(m_manager::pickCone),

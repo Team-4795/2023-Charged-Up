@@ -19,6 +19,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Commands.TapeAlign;
 import frc.robot.autoPaths.BalanceCubeTwoGamePiece;
 import frc.robot.autoPaths.CableAutoBalance;
+import frc.robot.autoPaths.CableBalanceCubeTwoGame;
 import frc.robot.autoPaths.CableCubeTwoGamePiece;
 import frc.robot.autoPaths.CenterScoreBalance;
 import frc.robot.autoPaths.FreeAutoBalance;
@@ -59,18 +60,17 @@ public class AutoSelector {
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadUp(), m_arm),
                     new InstantCommand(wrist::retract, wrist),
-                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
+                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5))
                // meanwhile auto align
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> {
-                      m_vision.switchToTag();
-                    }),
-                    new TapeAlign(
-                        drivebase, m_vision,
-                        () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
+                // new SequentialCommandGroup(
+                //     new InstantCommand(() -> {
+                //       m_vision.switchToTag();
+                //     }),
+                //     new TapeAlign(
+                //         drivebase, m_vision,
+                //         () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))
+                        )
             // score and then tell statemachine of current state ie no gamepiece
-            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-            new InstantCommand(wrist::retract, wrist)
             //not needed with current sensing
             //new InstantCommand(() -> m_intake.setOverrideStoring(false))
             );
@@ -83,17 +83,17 @@ public class AutoSelector {
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new InstantCommand(wrist::retract, wrist),
-                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
-               // meanwhile auto align
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> {
-                      m_vision.switchToTag();
-                    }),
-                    new TapeAlign(
-                        drivebase, m_vision,
-                        () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
-            new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-            new InstantCommand(wrist::retract, wrist)
+                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5))
+              //  // meanwhile auto align
+              //   new SequentialCommandGroup(
+              //       new InstantCommand(() -> {
+              //         m_vision.switchToTag();
+              //       }),
+              //       new TapeAlign(
+              //           drivebase, m_vision,
+              //           () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))
+                        )
+           
             //not needed with current sensing
             //new InstantCommand(() -> m_intake.setOverrideStoring(false))
             );
@@ -114,9 +114,8 @@ public class AutoSelector {
                   }),
                   new TapeAlign(
                       drivebase, m_vision,
-                      () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
-          new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-          new InstantCommand(wrist::retract, wrist)
+                      () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed)))
+          
           //not needed with current sensing
           //new InstantCommand(() -> m_intake.setOverrideStoring(false))
           );
@@ -304,6 +303,8 @@ public class AutoSelector {
     chooser.addOption("Mid Cone", new SimpleMidCone(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this, wrist));
 
+    chooser.addOption("Cable 2 Balance", new CableBalanceCubeTwoGame(drivebase, m_intake, m_arm, m_field,
+    m_manager, m_vision, this, wrist));
     
 
     SmartDashboard.putData("Auto Selector", chooser);

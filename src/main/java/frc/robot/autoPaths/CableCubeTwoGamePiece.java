@@ -30,9 +30,9 @@ public class CableCubeTwoGamePiece extends SequentialCommandGroup {
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist) {
 
     PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Cable Cube 2 Game Piece 1",
-        new PathConstraints(1, 2));
+        new PathConstraints(3.5, 3.5));
     PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Cable Cube 2 Game Piece 2",
-        new PathConstraints(1, 2));
+        new PathConstraints(3.5, 3.5));
 
     // Add option of Vision based two game peice split into parts with commands Cube
     addCommands(
