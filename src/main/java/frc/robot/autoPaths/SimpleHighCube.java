@@ -4,6 +4,8 @@
 
 package frc.robot.autoPaths;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -20,6 +22,6 @@ public class SimpleHighCube extends SequentialCommandGroup {
         addCommands(
             new SequentialCommandGroup(
                 m_autoSelector.autoStartUp(AutoBalance, true),
-                m_autoSelector.score("cube", "high")));
+                m_autoSelector.scoreV2("cube", "high", Optional.empty())));
     }
 }

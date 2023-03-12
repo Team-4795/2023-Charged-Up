@@ -1,5 +1,7 @@
 package frc.robot.autoPaths;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -17,7 +19,7 @@ public class TwoScoreOnePickup extends SequentialCommandGroup {
         addCommands(
             new SequentialCommandGroup(
                 m_autoSelector.autoStartUp(TwoScorePickup, true),
-                m_autoSelector.score("cube", "high"),
+                m_autoSelector.scoreV2("cube", "high", Optional.empty()),
                 new ParallelCommandGroup(
                     m_autoSelector.followTrajectory(TwoScorePickup),
                     new SequentialCommandGroup(
@@ -25,7 +27,7 @@ public class TwoScoreOnePickup extends SequentialCommandGroup {
                         new WaitCommand(2.5),
                         m_autoSelector.stow(),
                         new WaitCommand(1),
-                        m_autoSelector.score("cube", "mid"),
+                        m_autoSelector.scoreV2("cube", "mid", Optional.empty()),
                         m_autoSelector.intake("cone"),
                         new WaitCommand(3.5),
                         m_autoSelector.stow()))));

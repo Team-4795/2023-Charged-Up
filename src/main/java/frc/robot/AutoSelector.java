@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -8,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -158,7 +162,7 @@ public class AutoSelector {
 
     }
 
-    public Command scoreV2(String gamepiece, String setpoint) {
+    public Command scoreV2(String gamepiece, String setpoint, Optional<PathPlannerTrajectory> traj) {
         State newState;
 
         // Set gamepiece
@@ -179,13 +183,16 @@ public class AutoSelector {
         // Align while moving arm then outtake
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new TapeAlign(drivebase, m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
+                // new TapeAlign(drivebase, m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
+                new ConditionalCommand(drivebase.followTrajectoryCommand(traj.get()), Commands.none(), () -> !traj.isEmpty()),
                 new ChangeStateCommand(true, newState, m_manager, m_arm, m_intake, wrist)
             ),
             new WaitCommand(0.25),
             new RunCommand(m_intake::outtake, m_intake).withTimeout(0.5)
         );
     }
+
+    
 
     public Command intake(String gamepeice) {
         if (gamepeice.equals("cube")) {
@@ -281,7 +288,7 @@ public class AutoSelector {
 
         chooser.addOption("Free 2 Cube", new FreeCubeTwoGamePiece(this));
 
-        chooser.setDefaultOption("Free Grab Balance", new FreeGrabBalance(this));
+        chooser.addOption("Free Grab Balance", new FreeGrabBalance(this));
 
         chooser.addOption("Free Grab community", new FreeGrabCommunity(this));
 

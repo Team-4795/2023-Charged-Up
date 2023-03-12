@@ -4,6 +4,8 @@
 
 package frc.robot.autoPaths;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -23,7 +25,7 @@ public class FreeGrabBalance extends SequentialCommandGroup {
         addCommands(
             new SequentialCommandGroup(
                 m_autoSelector.autoStartUp(GrapBalance1, true),
-                m_autoSelector.scoreV2("cube", "high"),
+                m_autoSelector.scoreV2("cube", "high", Optional.empty()),
 
                 new ParallelCommandGroup(
                     m_autoSelector.followTrajectory(GrapBalance1),

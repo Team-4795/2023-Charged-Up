@@ -4,6 +4,8 @@
 
 package frc.robot.autoPaths;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -21,6 +23,6 @@ public class SimpleMidCone extends SequentialCommandGroup {
         addCommands(
             new SequentialCommandGroup(
                 m_autoSelector.autoStartUp(AutoBalance, true),
-                m_autoSelector.score("cone", "mid")));
+                m_autoSelector.scoreV2("cone", "mid", Optional.empty())));
     }
 }
