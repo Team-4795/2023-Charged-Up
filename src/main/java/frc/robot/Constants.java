@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -267,6 +268,10 @@ public final class Constants {
     public static final double kLowSetpointLimit = 0.16;
     public static final double kHighSetpointLimit = 0.94;
     public static final double kPositionThreshold = 0.025;
+
+    public static final double maxWindPoint = 0.18;
+    public static final double YeetpointEnd = 0.6;
+    public static final double armWindPoint = 0.412;
   }
 
   public static final class IntakeConstants{
@@ -304,6 +309,7 @@ public final class Constants {
     public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, false, -0.7);
     public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, false, -0.3);
     public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, false, -0.3);
+  
   }
 
   public static final class ConeSetpointConstants {

@@ -33,9 +33,11 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -47,7 +49,6 @@ import java.util.ResourceBundle.Control;
 import javax.imageio.plugins.tiff.GeoTIFFTagSet;
 import javax.naming.ldap.ControlFactory;
 
-import frc.robot.Commands.TapeAlign;
 // import frc.robot.Constants.VisionConstants;
 // import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.VisionConstants;
@@ -232,6 +233,28 @@ public class RobotContainer {
         () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
         () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
     ));
+
+    ControlContants.driverY.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
+
+    ControlContants.driverY.whileTrue(new SequentialCommandGroup(
+        new WaitCommand(0.4),
+        new RunCommand(() -> {
+        double change = OIConstants.kArmManualSpeed * (-0.75);
+        double new_setpoint = m_arm.setpoint + change;
+
+        if(new_setpoint <= ArmConstants.maxWindPoint){
+            new_setpoint = ArmConstants.maxWindPoint;
+        }
+
+                // Set new arm setpoint
+        if (new_setpoint != m_arm.setpoint) {
+            m_arm.setpoint = new_setpoint;
+            m_arm.runManual();
+        }           
+    }, m_arm)
+    ));
+    
+    ControlContants.driverY.onFalse(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
 
     // reset LEDs when were not targeting
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
