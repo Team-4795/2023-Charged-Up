@@ -38,6 +38,68 @@ public class StateManager {
         None,
     }
 
+    public enum State {
+        LowPickup,
+        StowHigh,
+        DoubleFeeder,
+        LowScore,
+        MidScore,
+        HighScore,
+        StowInFrame,
+        StowLow,
+        BackwardsMidScore,
+        BackwardsHighScore,
+        BackwardsLowScore,
+        BackwardsDoubleFeeder;
+    
+        private Optional<Setpoints> getCubeSetpoints() {
+            Setpoints result = null;
+    
+            switch (this) {
+                case LowPickup: result = CubeSetpointConstants.kLowPickup; break;
+                case StowHigh: result = CubeSetpointConstants.kStowHigh; break;
+                case DoubleFeeder: result = CubeSetpointConstants.kDoubleFeeder; break;
+                case LowScore: result = CubeSetpointConstants.kLowScore; break;
+                case MidScore: result = CubeSetpointConstants.kMidScore; break;
+                case HighScore: result = CubeSetpointConstants.kHighScore; break;
+                case StowInFrame: result = CubeSetpointConstants.kStowInFrame; break;
+                case StowLow: result = CubeSetpointConstants.kStowLow; break;
+                case BackwardsMidScore: result = CubeSetpointConstants.kBackwardsMidScore; break;
+                case BackwardsHighScore: result = CubeSetpointConstants.kBackwardsHighScore; break;
+                case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
+                case BackwardsDoubleFeeder: result = CubeSetpointConstants.kBackwardsDoubleFeeder; break;
+            }
+    
+            return Optional.ofNullable(result);
+        }
+    
+        private Optional<Setpoints> getConeSetpoints() {
+            Setpoints result = null;
+    
+            switch (this) {
+                case LowPickup: result = ConeSetpointConstants.kLowPickup; break;
+                case StowHigh: result = ConeSetpointConstants.kStowHigh; break;
+                case DoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
+                case LowScore: result = ConeSetpointConstants.kLowScore; break;
+                case MidScore: result = ConeSetpointConstants.kMidScore; break;
+                case HighScore: result = ConeSetpointConstants.kHighScore; break;
+                case StowInFrame: result = ConeSetpointConstants.kStowInFrame; break;
+                case StowLow: result = ConeSetpointConstants.kStowLow; break;
+                default: break;
+            }
+    
+            return Optional.ofNullable(result);
+        }
+    
+        public Optional<Setpoints> getSetpoints() {
+            switch (StateManager.getGamepiece()) {
+                case Cube: return getCubeSetpoints();
+                case Cone: return getConeSetpoints();
+                default: return Optional.empty();
+            }
+        }
+    }
+
     public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds, DriveSubsystem drive, Wrist wrist) {
         this.state = State.StowInFrame;
 
@@ -66,17 +128,9 @@ public class StateManager {
 
     public void dpadUp() {
         if (intake.isStoring()) {
-            if (Math.abs(drive.getYaw()) > 90.0) {
-                state = State.BackwardsHighScore;
-            } else {
-                state = State.HighScore;
-            }
+            state = highScore();
         } else {
-            if (Math.abs(drive.getYaw()) > 90.0) {
-                state = State.DoubleFeeder;
-            } else {
-                state = State.BackwardsDoubleFeeder;
-            }
+            state = doubleFeeder();
         }
 
         setSetpoints();
@@ -84,11 +138,7 @@ public class StateManager {
 
     public void dpadLeft() {
         if (intake.isStoring()) {
-            if (Math.abs(drive.getYaw()) > 90.0) {
-                state = State.BackwardsMidScore;
-            } else {
-                state = State.MidScore;
-            }
+            state = midScore();
         } else {
             // Switched to B for stow high
             // state = State.StowHigh;
@@ -99,11 +149,7 @@ public class StateManager {
     
     public void dpadDown() {
         if (intake.isStoring()) {
-            if (Math.abs(drive.getYaw()) > 90.0) {
-                state = State.BackwardsLowScore;
-            } else {
-                state = State.LowScore;
-            }
+            state = lowScore();
         } else {
             state = State.LowPickup;
         }
@@ -113,6 +159,44 @@ public class StateManager {
 
     public void dpadRight() {
         state = State.StowInFrame;
+
+        setSetpoints();
+    }
+
+    public State highScore() {
+        if (Math.abs(drive.getYaw()) > 90.0) {
+            return State.BackwardsLowScore;
+        } else {
+            return State.LowScore;
+        }
+    }
+
+    public State midScore() {
+        if (Math.abs(drive.getYaw()) > 90.0) {
+            return State.BackwardsMidScore;
+        } else {
+            return State.MidScore;
+        }
+    }
+
+    public State lowScore() {
+        if (Math.abs(drive.getYaw()) > 90.0) {
+            return State.BackwardsLowScore;
+        } else {
+            return State.LowScore;
+        }
+    }
+
+    public State doubleFeeder() {
+        if (Math.abs(drive.getYaw()) > 90.0) {
+            return State.BackwardsLowScore;
+        } else {
+            return State.LowScore;
+        }
+    }
+
+    public void setState(State state) {
+        this.state = state;
 
         setSetpoints();
     }
@@ -156,67 +240,5 @@ public class StateManager {
         this.getWristExtended().ifPresent(wrist::setExtendedTarget);
 
         SmartDashboard.putString("State", state.name());
-    }
-}
-
-enum State {
-    LowPickup,
-    StowHigh,
-    DoubleFeeder,
-    LowScore,
-    MidScore,
-    HighScore,
-    StowInFrame,
-    StowLow,
-    BackwardsMidScore,
-    BackwardsHighScore,
-    BackwardsLowScore,
-    BackwardsDoubleFeeder;
-
-    private Optional<Setpoints> getCubeSetpoints() {
-        Setpoints result = null;
-
-        switch (this) {
-            case LowPickup: result = CubeSetpointConstants.kLowPickup; break;
-            case StowHigh: result = CubeSetpointConstants.kStowHigh; break;
-            case DoubleFeeder: result = CubeSetpointConstants.kDoubleFeeder; break;
-            case LowScore: result = CubeSetpointConstants.kLowScore; break;
-            case MidScore: result = CubeSetpointConstants.kMidScore; break;
-            case HighScore: result = CubeSetpointConstants.kHighScore; break;
-            case StowInFrame: result = CubeSetpointConstants.kStowInFrame; break;
-            case StowLow: result = CubeSetpointConstants.kStowLow; break;
-            case BackwardsMidScore: result = CubeSetpointConstants.kBackwardsMidScore; break;
-            case BackwardsHighScore: result = CubeSetpointConstants.kBackwardsHighScore; break;
-            case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
-            case BackwardsDoubleFeeder: result = CubeSetpointConstants.kBackwardsDoubleFeeder; break;
-        }
-
-        return Optional.ofNullable(result);
-    }
-
-    private Optional<Setpoints> getConeSetpoints() {
-        Setpoints result = null;
-
-        switch (this) {
-            case LowPickup: result = ConeSetpointConstants.kLowPickup; break;
-            case StowHigh: result = ConeSetpointConstants.kStowHigh; break;
-            case DoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
-            case LowScore: result = ConeSetpointConstants.kLowScore; break;
-            case MidScore: result = ConeSetpointConstants.kMidScore; break;
-            case HighScore: result = ConeSetpointConstants.kHighScore; break;
-            case StowInFrame: result = ConeSetpointConstants.kStowInFrame; break;
-            case StowLow: result = ConeSetpointConstants.kStowLow; break;
-            default: break;
-        }
-
-        return Optional.ofNullable(result);
-    }
-
-    public Optional<Setpoints> getSetpoints() {
-        switch (StateManager.getGamepiece()) {
-            case Cube: return getCubeSetpoints();
-            case Cone: return getConeSetpoints();
-            default: return Optional.empty();
-        }
     }
 }

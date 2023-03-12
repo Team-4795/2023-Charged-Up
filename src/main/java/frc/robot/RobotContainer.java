@@ -102,34 +102,17 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
         new RunCommand(
             () -> {
-                m_intake.intakeFromGamepiece(m_manager.isStowing());
+                m_intake.intakeAutomatic(m_arm.getPosition());
             }, m_intake
         )
     );
 
     m_wrist.setDefaultCommand(
         new RunCommand(() -> {
-            m_wrist.extended = m_wrist.extendedTarget;
-
-            if (m_arm.getPosition() < ArmConstants.kLowWristLimit) {
-                m_wrist.extended = false;
-            }
-
-            if (m_arm.getPosition() > ArmConstants.kHighWristLimit) {
-                m_wrist.extended = false;
-            }
-
-            if (m_wrist.extended) {
-                m_wrist.extend();
-            } else {
-                m_wrist.retract();
-            }
+            m_wrist.tryExtend(m_arm.getPosition());
         }, 
         m_wrist)
     );
-
-    
-
 
     // Subtract up movement by down movement so they cancel out if both are pressed at once
     m_arm.setDefaultCommand(

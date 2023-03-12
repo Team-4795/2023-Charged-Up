@@ -63,7 +63,7 @@ public class EndEffectorIntake extends SubsystemBase {
         currentStoring = new BooleanLogEntry(DataLogManager.getLog(), "/currentStoring");
     }
 
-    public void intakeFromGamepiece(boolean isStowing) {
+    public void intakeAutomatic(double position) {
         double speed = 0;
 
         if (isStoring()) {
@@ -80,8 +80,34 @@ public class EndEffectorIntake extends SubsystemBase {
             }
         }
 
-        if (!isStoring() && isStowing) {
+        if (!isStoring() && position < 0.18) {
             speed = 0;
+        }
+
+        requestedSpeed = speed;
+        intakeMotor.set(speed);
+    }
+
+    public void runIntake() {
+        double speed = 0;
+
+        switch (StateManager.getGamepiece()) {
+            case Cube: speed = IntakeConstants.kCubeIntakeSpeed; break;
+            case Cone: speed = IntakeConstants.kConeIntakeSpeed; break;
+            default: break;
+        }
+
+        requestedSpeed = speed;
+        intakeMotor.set(speed);
+    }
+
+    public void runStall() {
+        double speed = 0;
+
+        switch (StateManager.getGamepiece()) {
+            case Cube: speed = IntakeConstants.kCubeSlowIntakeSpeed; break;
+            case Cone: speed = IntakeConstants.kConeSlowIntakeSpeed; break;
+            default: break;
         }
 
         requestedSpeed = speed;

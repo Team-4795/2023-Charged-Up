@@ -85,6 +85,9 @@
         "open": true
       },
       "SmartDashboard": {
+        "Auto Selector": {
+          "open": true
+        },
         "open": true
       }
     }
