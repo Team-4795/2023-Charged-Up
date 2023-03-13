@@ -43,12 +43,12 @@ public class Yeeeeet extends CommandBase {
                     manager.pickCube();
             }
             arm.setTargetPosition(ArmConstants.YeetpointEnd);
-            arm.runAutomatic();
         }
     }
 
     @Override
     public void execute() {
+        arm.runAutomatic();
         if (arm.getPosition() > ArmConstants.armWindPoint && !yeet) {
             wrist.extend();
             intake.setOuttakeSpeed(-0.9);

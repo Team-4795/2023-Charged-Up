@@ -234,7 +234,7 @@ public class RobotContainer {
         () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
     ));
 
-    ControlContants.driverY.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
+    ControlContants.driverX.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
 
     ControlContants.driverX.whileTrue(new SequentialCommandGroup(
         new WaitCommand(0.4),
