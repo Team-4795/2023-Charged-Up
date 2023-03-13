@@ -66,13 +66,13 @@ public class StateManager {
 
     public void dpadUp() {
         if (intake.isStoring()) {
-            if (Math.abs(drive.getYaw()) > 90.0) {
+            if (Math.cos(drive.getAngle()) < 0) {
                 state = State.BackwardsHighScore;
             } else {
                 state = State.HighScore;
             }
         } else {
-            if (Math.abs(drive.getYaw()) > 90.0) {
+            if (Math.cos(drive.getAngle()) < 0) {
                 state = State.DoubleFeeder;
             } else {
                 state = State.BackwardsDoubleFeeder;
@@ -84,7 +84,7 @@ public class StateManager {
 
     public void dpadLeft() {
         if (intake.isStoring()) {
-            if (Math.abs(drive.getYaw()) > 90.0) {
+            if (Math.cos(drive.getAngle()) < 0) {
                 state = State.BackwardsMidScore;
             } else {
                 state = State.MidScore;
@@ -99,7 +99,7 @@ public class StateManager {
     
     public void dpadDown() {
         if (intake.isStoring()) {
-            if (Math.abs(drive.getYaw()) > 90.0) {
+            if (Math.cos(drive.getAngle()) < 0) {
                 state = State.BackwardsLowScore;
             } else {
                 state = State.LowScore;

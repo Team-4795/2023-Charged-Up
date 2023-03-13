@@ -409,9 +409,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   }
 
-  public double getYaw() {
-    double yaw = m_gyro.getAngle() % 360;
-    if (yaw < 0) yaw += 360;
-    return yaw;
+  public double getAngle() {
+    double angle = m_gyro.getAngle() % 360;
+    if (angle < 0) angle += 360;
+    return angle;
   }
 }
