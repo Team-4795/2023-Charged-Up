@@ -29,7 +29,7 @@ public class FreeGrabBalance extends SequentialCommandGroup {
 
                 new ParallelCommandGroup(
                     m_autoSelector.followTrajectory(GrapBalance1),
-                    m_autoSelector.intake("cube")),
+                    m_autoSelector.intakeV2("cube", 0.7)),
 
                 new ParallelCommandGroup(
                     m_autoSelector.followTrajectory(GrapBalance2),

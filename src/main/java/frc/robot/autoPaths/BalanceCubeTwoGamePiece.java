@@ -4,6 +4,8 @@
 
 package frc.robot.autoPaths;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -28,14 +30,13 @@ public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
         addCommands(
             new SequentialCommandGroup(
                 m_autoSelector.autoStartUp(CubeTwoGamePiece1, true),
-                m_autoSelector.score("cube", "high"),
+                m_autoSelector.scoreV2("cube", "high", Optional.empty()),
 
                 new ParallelCommandGroup(
                     m_autoSelector.followTrajectory(CubeTwoGamePiece1),
-                    m_autoSelector.intake("cube")),
+                    m_autoSelector.intakeV2("cube", 1)),
 
-                m_autoSelector.followTrajectory(CubeTwoGamePiece2),
-                m_autoSelector.score("cube", "mid"),
+                m_autoSelector.scoreV2("cube", "mid", Optional.of(CubeTwoGamePiece2)),
 
                 new ParallelCommandGroup(
                     m_autoSelector.followTrajectory(AutoBalance),

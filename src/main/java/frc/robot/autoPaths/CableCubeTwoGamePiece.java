@@ -32,7 +32,7 @@ public class CableCubeTwoGamePiece extends SequentialCommandGroup {
 
             new ParallelCommandGroup(
                 m_autoSelector.followTrajectory(CubeTwoGamePiece1),
-                m_autoSelector.intake("cube")),
+                m_autoSelector.intakeV2("cube", 1)),
 
             m_autoSelector.scoreV2("cube", "mid", Optional.of(CubeTwoGamePiece2))));
   }
