@@ -410,8 +410,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getAngle() {
-    double angle = m_gyro.getAngle() % 360;
-    if (angle < 0) angle += 360;
-    return angle;
+    return m_gyro.getAngle();
   }
 }
