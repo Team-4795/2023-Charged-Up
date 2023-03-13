@@ -123,7 +123,11 @@ public class EndEffectorIntake extends SubsystemBase {
             oldestIndex = oldestIndex % currentValues.length;
         }
 
-        // if(
+        if(avgCurrent() > IntakeConstants.storingCurrentThreshold){
+            storing = true;
+        } else {
+            storing = false;
+        }
             
 
         current.append(intakeMotor.getOutputCurrent());
@@ -131,10 +135,11 @@ public class EndEffectorIntake extends SubsystemBase {
 
         SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
         SmartDashboard.putNumber("Average Current", avgCurrent());
-        SmartDashboard.putBoolean("Storing?", storing);
+        SmartDashboard.putBoolean("Override Storing", overrideStoring);
+        SmartDashboard.putBoolean("Storing?", this.isStoring());
+        SmartDashboard.putBoolean("Current Storing", storing);
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putNumber("Outtake speed", outtakeSpeed);
-        SmartDashboard.putBoolean("HiLetGoing?", isHiLetGoing());
     }
 
     public void intake(double speed) {
