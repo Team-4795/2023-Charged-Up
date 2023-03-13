@@ -269,9 +269,10 @@ public final class Constants {
     public static final double kHighSetpointLimit = 0.94;
     public static final double kPositionThreshold = 0.025;
 
-    public static final double maxWindPoint = 0.18;
-    public static final double YeetpointEnd = 0.77;
-    public static final double armWindPoint = 0.412;
+    public static final double maxWindPoint = 0.79;
+    public static final double YeetpointEnd = 0.18;
+    public static final double armWindPoint = 0.593;
+    public static final Setpoints yeet = new Setpoints(armWindPoint, true, -0.3);
   }
 
   public static final class IntakeConstants{

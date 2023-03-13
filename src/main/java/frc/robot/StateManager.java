@@ -11,6 +11,7 @@ import frc.utils.Setpoints;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CubeSetpointConstants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ConeSetpointConstants;
 
 public class StateManager {
@@ -50,7 +51,8 @@ public class StateManager {
         BackwardsMidScore,
         BackwardsHighScore,
         BackwardsLowScore,
-        BackwardsDoubleFeeder;
+        BackwardsDoubleFeeder,
+        Yeet;
     
         private Optional<Setpoints> getCubeSetpoints() {
             Setpoints result = null;
@@ -68,6 +70,7 @@ public class StateManager {
                 case BackwardsHighScore: result = CubeSetpointConstants.kBackwardsHighScore; break;
                 case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
                 case BackwardsDoubleFeeder: result = CubeSetpointConstants.kBackwardsDoubleFeeder; break;
+                case Yeet: result = ArmConstants.yeet; break;
             }
     
             return Optional.ofNullable(result);
@@ -85,6 +88,7 @@ public class StateManager {
                 case HighScore: result = ConeSetpointConstants.kHighScore; break;
                 case StowInFrame: result = ConeSetpointConstants.kStowInFrame; break;
                 case StowLow: result = ConeSetpointConstants.kStowLow; break;
+                case Yeet: result = ArmConstants.yeet; break;
                 default: break;
             }
     

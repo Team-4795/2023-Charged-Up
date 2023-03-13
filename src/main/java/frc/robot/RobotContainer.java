@@ -21,6 +21,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.StateManager.State;
 import frc.robot.Commands.*;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ControlContants;
@@ -217,15 +218,15 @@ public class RobotContainer {
         () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
     ));
 
-    ControlContants.driverY.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
+    ControlContants.driverX.onTrue(new InstantCommand(() -> m_manager.setState(State.Yeet), m_arm));
 
-    ControlContants.driverY.whileTrue(new SequentialCommandGroup(
+    ControlContants.driverX.whileTrue(new SequentialCommandGroup(
         new WaitCommand(0.4),
         new RunCommand(() -> {
-        double change = OIConstants.kArmManualSpeed * (-0.75);
+        double change = OIConstants.kArmManualSpeed * (0.75);
         double new_setpoint = m_arm.setpoint + change;
 
-        if(new_setpoint <= ArmConstants.maxWindPoint){
+        if(new_setpoint >= ArmConstants.maxWindPoint){
             new_setpoint = ArmConstants.maxWindPoint;
         }
 
@@ -237,13 +238,7 @@ public class RobotContainer {
     }, m_arm)
     ));
     
-    ControlContants.driverY.onFalse(new SequentialCommandGroup(
-                                            new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"),
-                                            new WaitCommand(0.3),
-                                            new InstantCommand(m_manager::pickCone),
-                                            new InstantCommand(m_manager::dpadRight),
-                                            new RunCommand(m_arm::runAutomatic).withTimeout(1)
-    ));
+    ControlContants.driverX.onFalse(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
 
     // reset LEDs when were not targeting
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));

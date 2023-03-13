@@ -33,7 +33,7 @@ public class Yeeeeet extends CommandBase {
 
     @Override
     public void initialize() {
-        if (arm.getPosition() > ArmConstants.armWindPoint) {
+        if (arm.getPosition() < ArmConstants.armWindPoint) {
             finish = true;
         } else {
             switch (gamepiece) {
@@ -43,14 +43,14 @@ public class Yeeeeet extends CommandBase {
                     manager.pickCube();
             }
             arm.setTargetPosition(ArmConstants.YeetpointEnd);
-            arm.runAutomatic();
         }
     }
 
     @Override
     public void execute() {
-        if (arm.getPosition() > ArmConstants.armWindPoint && !yeet) {
-            wrist.extend();
+        arm.runAutomatic();
+        if (arm.getPosition() < ArmConstants.armWindPoint && !yeet) {
+            wrist.retract();
             intake.setOuttakeSpeed(-0.9);
             intake.outtake();
             yeet = true;
