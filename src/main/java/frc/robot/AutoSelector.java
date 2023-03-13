@@ -84,7 +84,7 @@ public class AutoSelector {
         );
     }
 
-    public Command intakeV2(String gamepiece, double maxDuration) {
+    public Command intakeV2(String gamepiece) {
         // Set gamepiece
         switch (gamepiece) {
             case "cube": m_manager.pickCube(); break;
@@ -92,11 +92,10 @@ public class AutoSelector {
             default: throw new IllegalArgumentException("\"" + gamepiece + "\" is not a valid gamepiece.");
         }
 
-        // Move arm and then run intake for maxDuration seconds
+        // Move arm and then run intake continuously
         return new SequentialCommandGroup(
             new ChangeStateCommand(true, State.LowPickup, m_manager, m_arm, m_intake, wrist).withTimeout(0.7),
             new RunCommand(() -> m_intake.runIntake(), m_intake)
-                .withTimeout(maxDuration)
         );
     }
 

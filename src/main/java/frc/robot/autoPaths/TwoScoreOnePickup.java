@@ -23,11 +23,11 @@ public class TwoScoreOnePickup extends SequentialCommandGroup {
                 new ParallelCommandGroup(
                     m_autoSelector.followTrajectory(TwoScorePickup),
                     new SequentialCommandGroup(
-                        m_autoSelector.intakeV2("cube", 0.5),
+                        m_autoSelector.intakeV2("cube").withTimeout(0.5),
                         m_autoSelector.stow(),
                         new WaitCommand(1),
                         m_autoSelector.scoreV2("cube", "mid", Optional.empty()),
-                        m_autoSelector.intakeV2("cone", 0.5),
+                        m_autoSelector.intakeV2("cone").withTimeout(0.5),
                         m_autoSelector.stow()))));
     }
 }

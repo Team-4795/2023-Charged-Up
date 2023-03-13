@@ -11,6 +11,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoSelector;
 
@@ -32,9 +33,9 @@ public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
                 m_autoSelector.autoStartUp(CubeTwoGamePiece1, true),
                 m_autoSelector.scoreV2("cube", "high", Optional.empty()),
 
-                new ParallelCommandGroup(
+                new ParallelDeadlineGroup(
                     m_autoSelector.followTrajectory(CubeTwoGamePiece1),
-                    m_autoSelector.intakeV2("cube", 1)),
+                    m_autoSelector.intakeV2("cube")),
 
                 m_autoSelector.scoreV2("cube", "mid", Optional.of(CubeTwoGamePiece2)),
 
