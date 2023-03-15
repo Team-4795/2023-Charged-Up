@@ -188,7 +188,7 @@ public class RobotContainer {
             new RunCommand(m_intake::outtake, m_intake),
             () -> {
                 switch (m_manager.getState()) {
-                    case BackwardsHighScore: switch (m_manager.getGamepiece()) {
+                    case BackwardsHighScore: switch (StateManager.getGamepiece()) {
                         case Cube: return true;
                         default: return false;
                     }
