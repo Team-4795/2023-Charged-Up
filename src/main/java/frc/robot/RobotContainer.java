@@ -5,53 +5,17 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.Commands.*;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ControlContants;
-
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.LiftArm;
-import frc.robot.subsystems.EndEffectorIntake;
-import frc.robot.subsystems.LEDs;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Wrist;
+import frc.robot.Constants.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-
-import java.nio.channels.spi.AbstractSelector;
-import java.util.List;
-import java.util.ResourceBundle.Control;
-
-import javax.imageio.plugins.tiff.GeoTIFFTagSet;
-import javax.naming.ldap.ControlFactory;
-
-// import frc.robot.Constants.VisionConstants;
-// import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.Constants.VisionConstants;
 
 
 /*
@@ -68,6 +32,7 @@ public class RobotContainer {
   private final LiftArm m_arm = new LiftArm();
   private final Vision m_Vision = new Vision();
   private final LEDs m_led = new LEDs();
+  private final LandingGear m_landing = new LandingGear();
 
 
   // The driver's controller
@@ -93,9 +58,9 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(ControlContants.driverController.getRawAxis(ControlContants.kDriveXSpeedAxis), OIConstants.kDriveDeadband),
-                MathUtil.applyDeadband(-ControlContants.driverController.getRawAxis(ControlContants.kDriveYSpeedAxis), OIConstants.kDriveDeadband),
-                MathUtil.applyDeadband(-ControlContants.driverController.getRawAxis(ControlContants.kDriveRotationAxis), OIConstants.kDriveDeadband),
+                MathUtil.applyDeadband(ControlConstants.driverController.getRawAxis(ControlConstants.kDriveXSpeedAxis), OIConstants.kDriveDeadband),
+                MathUtil.applyDeadband(-ControlConstants.driverController.getRawAxis(ControlConstants.kDriveYSpeedAxis), OIConstants.kDriveDeadband),
+                MathUtil.applyDeadband(-ControlConstants.driverController.getRawAxis(ControlConstants.kDriveRotationAxis), OIConstants.kDriveDeadband),
                 true,true),
             m_robotDrive));
 
@@ -105,6 +70,15 @@ public class RobotContainer {
                 m_intake.intakeFromGamepiece(m_manager.isStowing());
             }, m_intake
         )
+    );
+
+    m_landing.setDefaultCommand(
+        new RunCommand(() -> {
+            if(m_landing.getExtended() != m_landing.getTargetExtended()){
+                m_landing.updateExtended();
+            }
+        }
+        , m_landing)
     );
 
     m_wrist.setDefaultCommand(
@@ -135,8 +109,8 @@ public class RobotContainer {
     m_arm.setDefaultCommand(
         new RunCommand(
             () -> {
-                double up = MathUtil.applyDeadband(ControlContants.operatorController.getRawAxis(ControlContants.kArmUpAxis), OIConstants.kArmDeadband);
-                double down = MathUtil.applyDeadband(ControlContants.operatorController.getRawAxis(ControlContants.kArmDownAxis), OIConstants.kArmDeadband);
+                double up = MathUtil.applyDeadband(ControlConstants.operatorController.getRawAxis(ControlConstants.kArmUpAxis), OIConstants.kArmDeadband);
+                double down = MathUtil.applyDeadband(ControlConstants.operatorController.getRawAxis(ControlConstants.kArmDownAxis), OIConstants.kArmDeadband);
                 
                 // Get amount to change the setpoint
                 double change = OIConstants.kArmManualSpeed * (Math.pow(up, 3) - Math.pow(down, 3));
@@ -178,38 +152,30 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // Pick cone, cube
-    ControlContants.operatorBumperLeft.onTrue(new InstantCommand(m_manager::pickCone, m_arm, m_Vision, m_led));
-    ControlContants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm, m_Vision, m_led));
+    ControlConstants.operatorBumperLeft.onTrue(new InstantCommand(m_manager::pickCone, m_arm, m_Vision, m_led));
+    ControlConstants.operatorBumperRight.onTrue(new InstantCommand(m_manager::pickCube, m_arm, m_Vision, m_led));
 
-    // Setpoints
-    final JoystickButton balanceButton = new JoystickButton(m_driverController, 4);
+    ControlConstants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
+    ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
+    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    ControlConstants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
 
-    balanceButton.whileTrue(new SequentialCommandGroup(
-        new DriveCommandOld(m_robotDrive, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-        new AutoBalanceOld(m_robotDrive, AutoConstants.angularVelocityErrorThreshold)
-    ));
-
-    ControlContants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
-    ControlContants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
-    ControlContants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
-    ControlContants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
-
-    ControlContants.operatorY
+    ControlConstants.operatorY
         .onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)))
         .onFalse(new InstantCommand(() -> m_intake.setOverrideStoring(true)));
 
-    ControlContants.operatorB.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
+    ControlConstants.operatorB.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
 
     // Set x
-    ControlContants.driverBumperLeft.whileTrue(new RunCommand(
+    ControlConstants.driverBumperLeft.whileTrue(new RunCommand(
         m_robotDrive::setX,
         m_robotDrive));
 
     // Reset heading
-    ControlContants.driverBumperRight.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
+    ControlConstants.driverBumperRight.whileTrue(new RunCommand(m_robotDrive::zeroHeading));
     
     // Outtake
-    ControlContants.driverDpadRight.whileTrue(
+    ControlConstants.driverDpadRight.whileTrue(
     new RunCommand(
         () -> {
             m_intake.outtake();
@@ -224,19 +190,19 @@ public class RobotContainer {
         m_intake, m_wrist));
 
     // Pneumatic override
-    ControlContants.operatorX.onTrue(new InstantCommand(m_wrist::flip, m_wrist));
+    ControlConstants.operatorX.onTrue(new InstantCommand(m_wrist::flip, m_wrist));
 
     // Vision align
-    ControlContants.driverDpadLeft.whileTrue(new TapeAlign(
+    ControlConstants.driverDpadLeft.whileTrue(new TapeAlign(
         m_robotDrive,
         m_Vision,
-        () -> ControlContants.driverController.getRawAxis(ControlContants.kAlignXSpeedAxis),
-        () -> -ControlContants.driverController.getRawAxis(ControlContants.kAlignYSpeedAxis)
+        () -> ControlConstants.driverController.getRawAxis(ControlConstants.kAlignXSpeedAxis),
+        () -> -ControlConstants.driverController.getRawAxis(ControlConstants.kAlignYSpeedAxis)
     ));
 
-    ControlContants.driverX.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
+    ControlConstants.driverX.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
 
-    ControlContants.driverX.whileTrue(new SequentialCommandGroup(
+    ControlConstants.driverX.whileTrue(new SequentialCommandGroup(
         new WaitCommand(0.4),
         new RunCommand(() -> {
         double change = OIConstants.kArmManualSpeed * (-0.75);
@@ -254,7 +220,7 @@ public class RobotContainer {
     }, m_arm)
     ));
     
-    ControlContants.driverX.onFalse(new SequentialCommandGroup(
+    ControlConstants.driverX.onFalse(new SequentialCommandGroup(
                                             new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"),
                                             new WaitCommand(0.3),
                                             new InstantCommand(m_manager::pickCone),
@@ -262,18 +228,20 @@ public class RobotContainer {
                                             new RunCommand(m_arm::runAutomatic).withTimeout(1)
     ));
 
+    ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
+
     // reset LEDs when were not targeting
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
   }
 
   public void setDriverRumble(double rumble) {
-    ControlContants.driverController.setRumble(RumbleType.kLeftRumble, rumble);
-    ControlContants.driverController.setRumble(RumbleType.kRightRumble, rumble);
+    ControlConstants.driverController.setRumble(RumbleType.kLeftRumble, rumble);
+    ControlConstants.driverController.setRumble(RumbleType.kRightRumble, rumble);
   }
 
   public void setOperatorRumble(double rumble) {
-    ControlContants.operatorController.setRumble(RumbleType.kLeftRumble, rumble);
-    ControlContants.operatorController.setRumble(RumbleType.kRightRumble, rumble);
+    ControlConstants.operatorController.setRumble(RumbleType.kLeftRumble, rumble);
+    ControlConstants.operatorController.setRumble(RumbleType.kRightRumble, rumble);
   }
 
 

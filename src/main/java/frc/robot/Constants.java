@@ -139,7 +139,7 @@ public final class Constants {
     public static final double kArmManualSpeed = 0.01;
   }
 
-  public static final class ControlContants {
+  public static final class ControlConstants {
     public static final GenericHID driverController = new GenericHID(OIConstants.kDriverControllerPort);
     public static final GenericHID operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
@@ -337,6 +337,11 @@ public final class Constants {
     public static final Transform3d CAMERA_TO_ROBOT =
         new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
     public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+  }
+
+  public static class LandingGearConstants {
+    public static final int kForwardChannel = 8;
+    public static final int kBackwardChannel = 9;
   }
 
 }
