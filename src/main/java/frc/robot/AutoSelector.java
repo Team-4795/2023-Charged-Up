@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -60,8 +61,8 @@ public class AutoSelector {
                 // move arm and extend intake then wait until at set point
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-                    new InstantCommand(wrist::retract, wrist),
-                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5))
+                    new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
+                    new InstantCommand(wrist::retract, wrist)
                // meanwhile auto align
                 // new SequentialCommandGroup(
                 //     new InstantCommand(() -> {
@@ -84,7 +85,7 @@ public class AutoSelector {
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new InstantCommand(wrist::retract, wrist),
-                    new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5))
+                    new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))))
               //  // meanwhile auto align
               //   new SequentialCommandGroup(
               //       new InstantCommand(() -> {
@@ -107,7 +108,7 @@ public class AutoSelector {
               new SequentialCommandGroup(
                   new InstantCommand(() -> m_manager.dpadDown(), m_arm),
                   new InstantCommand(wrist::retract, wrist),
-                  new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5))
+                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)))
             //  // meanwhile auto align
             //   new SequentialCommandGroup(
             //       new InstantCommand(() -> {
@@ -132,7 +133,7 @@ public class AutoSelector {
               new SequentialCommandGroup(
                   new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                   new InstantCommand(wrist::retract, wrist),
-                  new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
+                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))),
              // meanwhile auto align
               new SequentialCommandGroup(
                   new InstantCommand(() -> {
@@ -155,7 +156,7 @@ public class AutoSelector {
               new SequentialCommandGroup(
                   new InstantCommand(() -> m_manager.dpadDown(), m_arm),
                   new InstantCommand(wrist::retract, wrist),
-                  new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5)),
+                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))),
              // meanwhile auto align
               new SequentialCommandGroup(
                   new InstantCommand(() -> {
@@ -216,7 +217,7 @@ public class AutoSelector {
           new InstantCommand(wrist::retract),
           new InstantCommand(m_manager::pickCube),
           new InstantCommand(() -> m_manager.dpadDown()),
-          new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
+          new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
           new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
               .withTimeout(1),
           new InstantCommand(() -> m_intake.setOverrideStoring(true))
@@ -260,10 +261,9 @@ public class AutoSelector {
         new SequentialCommandGroup(
             new InstantCommand(m_manager::pickCube),
             new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-
-            new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(.75),
-            new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
-            .withTimeout(.01));
+            new ParallelDeadlineGroup(
+              new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint),
+              new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)));
   }
 
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
