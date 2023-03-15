@@ -162,7 +162,7 @@ public class RobotContainer {
 
     ControlConstants.operatorY
         .onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)))
-        .onFalse(new InstantCommand(() -> m_intake.setOverrideStoring(true)));
+        .onFalse(new InstantCommand(() -> m_intake.setOverrideStoring(false)));
 
     ControlConstants.operatorB.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
 

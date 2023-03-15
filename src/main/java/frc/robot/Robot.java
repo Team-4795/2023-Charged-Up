@@ -29,12 +29,16 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private long teleopStart;
   private double m_rumble=0;
-  
+  private static boolean isTeleOp=true;
 
   private double getSeconds() {
     return 135.0 - (System.currentTimeMillis() - teleopStart) / 1000.0;  // change for testing
   }
   
+  public static boolean isTeleOp ()
+  {
+    return isTeleOp;
+  }
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -77,7 +81,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    isTeleOp=false;
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -99,7 +103,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
 
     teleopStart = System.currentTimeMillis();
-
+    isTeleOp = true; 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -113,7 +117,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
+    isTeleOp = true;
     if (getSeconds() <= 30 && getSeconds() >= 28) {
       m_robotContainer.setDriverRumble(1); m_rumble=1;
     } else if (getSeconds() <=15 && getSeconds() >=13) {

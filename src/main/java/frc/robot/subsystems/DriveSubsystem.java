@@ -389,8 +389,9 @@ public class DriveSubsystem extends SubsystemBase {
               .getInitialHolonomicPose(), flip);
           
           this.setBreakMode();
-        }),
-          new InstantCommand(() -> m_intake.setOverrideStoring(true)));
+        })
+         // new InstantCommand(() -> m_intake.setOverrideStoring(true))
+          );
 
   }
 

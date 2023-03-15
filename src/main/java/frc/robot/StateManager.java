@@ -63,6 +63,7 @@ public class StateManager {
 
         vision.switchToTape();
     }
+    
 
     public void dpadUp() {
         if (intake.isStoring()) {

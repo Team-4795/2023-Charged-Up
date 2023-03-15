@@ -23,6 +23,7 @@ import frc.robot.autoPaths.CableBalanceCubeTwoGame;
 import frc.robot.autoPaths.CableCubeTwoGamePiece;
 import frc.robot.autoPaths.CenterScoreBalance;
 import frc.robot.autoPaths.FreeAutoBalance;
+import frc.robot.autoPaths.FreeCubeTripleGamePiece;
 import frc.robot.autoPaths.FreeCubeTwoGamePiece;
 import frc.robot.autoPaths.FreeGrabBalance;
 import frc.robot.autoPaths.FreeGrabCommunity;
@@ -52,7 +53,7 @@ public class AutoSelector {
             // ensure the state machine is aware of what we want ie have a game piece and in
             // cube mode
             // we don't need this anymore with current sensing
-            //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
             // a command group which should finish when the arm gets to the set point
             new ParallelCommandGroup(
@@ -69,10 +70,10 @@ public class AutoSelector {
                 //     new TapeAlign(
                 //         drivebase, m_vision,
                 //         () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))
-                        )
+                        ),
             // score and then tell statemachine of current state ie no gamepiece
             //not needed with current sensing
-            //new InstantCommand(() -> m_intake.setOverrideStoring(false))
+            new InstantCommand(() -> m_intake.setOverrideStoring(false))
             );
       } else if (setpoint.equals("mid")) {
         return new SequentialCommandGroup(
@@ -218,7 +219,8 @@ public class AutoSelector {
           new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
           new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
               .withTimeout(1),
-          new InstantCommand(() -> m_intake.setOverrideStoring(true)));
+          new InstantCommand(() -> m_intake.setOverrideStoring(true))
+          );
 
     } else if (gamepeice.equals("cone")) {
       return new SequentialCommandGroup(
@@ -259,7 +261,7 @@ public class AutoSelector {
             new InstantCommand(m_manager::pickCube),
             new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
 
-            new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(.5),
+            new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(.75),
             new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
             .withTimeout(.01));
   }
@@ -304,6 +306,9 @@ public class AutoSelector {
         m_manager, m_vision, this, wrist));
 
     chooser.addOption("Cable 2 Balance", new CableBalanceCubeTwoGame(drivebase, m_intake, m_arm, m_field,
+    m_manager, m_vision, this, wrist));
+
+    chooser.addOption("Triple", new FreeCubeTripleGamePiece(drivebase, m_intake, m_arm, m_field, 
     m_manager, m_vision, this, wrist));
     
 
