@@ -85,7 +85,7 @@ public class AutoSelector {
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new InstantCommand(wrist::retract, wrist),
-                    new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))))
+                    new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))
               //  // meanwhile auto align
               //   new SequentialCommandGroup(
               //       new InstantCommand(() -> {
@@ -108,7 +108,7 @@ public class AutoSelector {
               new SequentialCommandGroup(
                   new InstantCommand(() -> m_manager.dpadDown(), m_arm),
                   new InstantCommand(wrist::retract, wrist),
-                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)))
+                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))
             //  // meanwhile auto align
             //   new SequentialCommandGroup(
             //       new InstantCommand(() -> {
@@ -133,7 +133,7 @@ public class AutoSelector {
               new SequentialCommandGroup(
                   new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                   new InstantCommand(wrist::retract, wrist),
-                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))),
+                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
              // meanwhile auto align
               new SequentialCommandGroup(
                   new InstantCommand(() -> {
@@ -156,7 +156,7 @@ public class AutoSelector {
               new SequentialCommandGroup(
                   new InstantCommand(() -> m_manager.dpadDown(), m_arm),
                   new InstantCommand(wrist::retract, wrist),
-                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))),
+                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
              // meanwhile auto align
               new SequentialCommandGroup(
                   new InstantCommand(() -> {
@@ -217,11 +217,10 @@ public class AutoSelector {
           new InstantCommand(wrist::retract),
           new InstantCommand(m_manager::pickCube),
           new InstantCommand(() -> m_manager.dpadDown()),
-          new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
+          new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint),
           new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
               .withTimeout(1),
-          new InstantCommand(() -> m_intake.setOverrideStoring(true))
-          );
+          new InstantCommand(() -> m_intake.setOverrideStoring(true)));
 
     } else if (gamepeice.equals("cone")) {
       return new SequentialCommandGroup(

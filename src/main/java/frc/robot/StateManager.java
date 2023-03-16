@@ -207,7 +207,10 @@ enum State {
             case HighScore: result = ConeSetpointConstants.kHighScore; break;
             case StowInFrame: result = ConeSetpointConstants.kStowInFrame; break;
             case StowLow: result = ConeSetpointConstants.kStowLow; break;
-            default: break;
+            case BackwardsMidScore: result = CubeSetpointConstants.kMidScore; break;
+            case BackwardsHighScore: result = CubeSetpointConstants.kHighScore; break;
+            case BackwardsLowScore: result = CubeSetpointConstants.kLowScore; break;
+            case BackwardsDoubleFeeder: result = CubeSetpointConstants.kDoubleFeeder; break;
         }
 
         return Optional.ofNullable(result);

@@ -305,7 +305,7 @@ public final class Constants {
     public static final Setpoints kHighScore = new Setpoints(0.565, true, -0.5);
     public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.3);
     public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.3);
-    public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, false, -1.0);
+    public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, true, -1.0);
     public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, false, -0.7);
     public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, false, -0.3);
     public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, false, -0.3);
