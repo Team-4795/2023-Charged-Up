@@ -9,9 +9,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.Commands.*;
 import frc.robot.Constants.*;
+import frc.robot.StateManager.Gamepiece;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -176,18 +179,35 @@ public class RobotContainer {
     
     // Outtake
     ControlConstants.driverDpadRight.whileTrue(
-    new RunCommand(
-        () -> {
-            m_intake.outtake();
-            switch (m_manager.getState()) {
-                case MidScore: switch (StateManager.getGamepiece()) {
-                    case Cone: m_wrist.extend();
-                    default: break;
-                };
-                default: break;
-            }
-        },
-        m_intake, m_wrist));
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                new InstantCommand(m_wrist::retract, m_wrist),
+                new WaitCommand(0.2),
+                new RunCommand(m_intake::outtake, m_intake)
+            ),
+            new RunCommand(m_intake::outtake, m_intake),
+            () -> {
+                switch (m_manager.getState()) {
+                    case BackwardsHighScore: switch (StateManager.getGamepiece()) {
+                        case Cube: return true;
+                        default: return false;
+                    }
+                    default: return false;
+                }
+            })
+    );
+    // new RunCommand(
+    //     () -> {
+    //         m_intake.outtake();
+    //         switch (m_manager.getState()) {
+    //             case MidScore: switch (StateManager.getGamepiece()) {
+    //                 case Cone: m_wrist.extend();
+    //                 default: break;
+    //             };
+    //             default: break;
+    //         }
+    //     },
+    //     m_intake, m_wrist));
 
     // Pneumatic override
     ControlConstants.operatorX.onTrue(new InstantCommand(m_wrist::flip, m_wrist));
