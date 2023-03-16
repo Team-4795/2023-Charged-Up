@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Commands.TapeAlign;
 import frc.robot.autoPaths.BalanceCubeTwoGamePiece;
 import frc.robot.autoPaths.CableAutoBalance;
@@ -48,80 +50,45 @@ public class AutoSelector {
       LiftArm m_arm, DriveSubsystem drivebase, Vision m_vision, Wrist wrist) {
 
     if (gamepeice.equals("cube")) {
-
       if (setpoint.equals("high")) {
         return new SequentialCommandGroup(
-            // ensure the state machine is aware of what we want ie have a game piece and in
-            // cube mode
-            // we don't need this anymore with current sensing
             new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
-            // a command group which should finish when the arm gets to the set point
             new ParallelCommandGroup(
-                // move arm and extend intake then wait until at set point
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-                    new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
-                    new InstantCommand(wrist::retract, wrist)
-               // meanwhile auto align
-                // new SequentialCommandGroup(
-                //     new InstantCommand(() -> {
-                //       m_vision.switchToTag();
-                //     }),
-                //     new TapeAlign(
-                //         drivebase, m_vision,
-                //         () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))
-                        ),
-            // score and then tell statemachine of current state ie no gamepiece
-            //not needed with current sensing
+                    new ParallelCommandGroup(
+                      new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
+                      new WaitCommand(0.4).andThen(new InstantCommand(wrist::extend, wrist))
+                    )
+                ),
             new InstantCommand(() -> m_intake.setOverrideStoring(false))
-            );
+        );
       } else if (setpoint.equals("mid")) {
         return new SequentialCommandGroup(
-            // we don't need this anymore with current sensing
-            //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+          new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new InstantCommand(wrist::retract, wrist),
                     new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))
-              //  // meanwhile auto align
-              //   new SequentialCommandGroup(
-              //       new InstantCommand(() -> {
-              //         m_vision.switchToTag();
-              //       }),
-              //       new TapeAlign(
-              //           drivebase, m_vision,
-              //           () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))
-                        )
-           
-            //not needed with current sensing
-            //new InstantCommand(() -> m_intake.setOverrideStoring(false))
-            );
+            ),
+            new InstantCommand(() -> m_intake.setOverrideStoring(false))
+        );
       } else if (setpoint.equals("low")) {
-        return new SequentialCommandGroup(
-          // we don't need this anymore with current sensing
-          //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-          new InstantCommand(m_manager::pickCube),
-          new ParallelCommandGroup(
-              new SequentialCommandGroup(
-                  new InstantCommand(() -> m_manager.dpadDown(), m_arm),
-                  new InstantCommand(wrist::retract, wrist),
-                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))
-            //  // meanwhile auto align
-            //   new SequentialCommandGroup(
-            //       new InstantCommand(() -> {
-            //         m_vision.switchToTag();
-            //       }),
-            //       new TapeAlign(
-            //           drivebase, m_vision,
-            //           () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed)))
-          
-          //not needed with current sensing
-          //new InstantCommand(() -> m_intake.setOverrideStoring(false))
-        ));
-      }
+          return new SequentialCommandGroup(
+            new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+            new InstantCommand(m_manager::pickCube),
+            new ParallelCommandGroup(
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> m_manager.dpadDown(), m_arm),
+                    new InstantCommand(wrist::retract, wrist),
+                    new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)
+                )
+            )
+        );
+    }
     } else if (gamepeice.equals("cone")) {
 
       if (setpoint.equals("mid")) {
@@ -255,14 +222,37 @@ public class AutoSelector {
     );
   }
 
-  public Command stow(EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm) {
+  public Command stow(EndEffectorIntake m_intake, StateManager m_manager, Wrist m_wrist, LiftArm m_arm) {
     return 
         new SequentialCommandGroup(
             new InstantCommand(m_manager::pickCube),
             new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
+            new InstantCommand(m_wrist::retract, m_wrist),
             new ParallelDeadlineGroup(
               new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint),
               new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)));
+  }
+
+  public Command outtake(EndEffectorIntake m_intake, StateManager m_manager, Wrist m_wrist, LiftArm m_arm, double time) {
+    return new SequentialCommandGroup(
+      new ConditionalCommand(
+            new SequentialCommandGroup(
+                new InstantCommand(m_wrist::retract, m_wrist),
+                new WaitCommand(IntakeConstants.kFlickTime),
+                new RunCommand(m_intake::outtake, m_intake).withTimeout(time)
+            ),
+            new RunCommand(m_intake::outtake, m_intake).withTimeout(time),
+            () -> {
+                switch (m_manager.getState()) {
+                    case BackwardsHighScore: switch (StateManager.getGamepiece()) {
+                        case Cube: return true;
+                        default: return false;
+                    }
+                    default: return false;
+                }
+            }),
+        new InstantCommand(() -> m_intake.setOverrideStoring(false))
+    );
   }
 
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,

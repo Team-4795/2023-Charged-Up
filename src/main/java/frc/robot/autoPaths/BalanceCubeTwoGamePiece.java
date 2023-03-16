@@ -42,8 +42,7 @@ public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
         new SequentialCommandGroup(
             drivebase.AutoStartUp(CubeTwoGamePiece1, true, m_intake),
             m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
-            new RunCommand(m_intake::outtake, m_intake).withTimeout(0.01),
-            new InstantCommand(wrist::retract, wrist),
+            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
             new InstantCommand(() -> m_intake.setOverrideStoring(false)),
 
             new ParallelCommandGroup(
@@ -54,12 +53,13 @@ public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
                 m_autoSelector.score("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)
                ),
-            new RunCommand(m_intake::outtake, m_intake).withTimeout(0.01),
-            new InstantCommand(wrist::retract, wrist),
+
+            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
+            new InstantCommand(() -> m_intake.setOverrideStoring(false)),
 
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(AutoBalance),
-                m_autoSelector.stow(m_intake, m_manager, m_arm)),
+                m_autoSelector.stow(m_intake, m_manager, wrist, m_arm)),
 
             new DriveCommandOld(drivebase, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
                 AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
