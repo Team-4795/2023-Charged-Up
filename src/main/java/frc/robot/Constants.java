@@ -294,6 +294,7 @@ public final class Constants {
     public static final double storingCurrentThreshold = 13;
     public static final int currentAvgSize = 35;
 
+    public static final double kFlickTime = 0.18;
   }
 
   public static final class CubeSetpointConstants{

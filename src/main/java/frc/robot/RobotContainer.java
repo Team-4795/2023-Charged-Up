@@ -182,7 +182,7 @@ public class RobotContainer {
         new ConditionalCommand(
             new SequentialCommandGroup(
                 new InstantCommand(m_wrist::retract, m_wrist),
-                new WaitCommand(0.2),
+                new WaitCommand(IntakeConstants.kFlickTime),
                 new RunCommand(m_intake::outtake, m_intake)
             ),
             new RunCommand(m_intake::outtake, m_intake),

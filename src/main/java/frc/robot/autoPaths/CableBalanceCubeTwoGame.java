@@ -62,9 +62,8 @@ public class CableBalanceCubeTwoGame extends SequentialCommandGroup {
             new InstantCommand(wrist::retract, wrist),
 
             new ParallelCommandGroup(
-                   
                 drivebase.followTrajectoryCommand(AutoBalance),
-                m_autoSelector.stow(m_intake, m_manager, m_arm)),
+                m_autoSelector.stow(m_intake, m_manager, wrist, m_arm)),
             //drivebase.followTrajectoryCommand(AutoDriveUp),
 
             new DriveCommandOld(drivebase, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
