@@ -26,19 +26,20 @@ public class TwoScoreOnePickup extends SequentialCommandGroup {
             new SequentialCommandGroup(
                 drivebase.AutoStartUp(TwoScorePickup,true, m_intake ),
                 m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
-                new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+                m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
 
                 new ParallelCommandGroup(
                     drivebase.followTrajectoryCommand(TwoScorePickup),
                     new SequentialCommandGroup(
                         m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist),
                         new WaitCommand(2.5),
-                        m_autoSelector.stow(m_intake, m_manager, m_arm),
+                        m_autoSelector.stow(m_intake, m_manager, wrist, m_arm),
                         new WaitCommand(1),
                         m_autoSelector.score("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+                        m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
                         m_autoSelector.intake("cone", m_intake, m_manager, m_arm, wrist),
                         new WaitCommand(3.5),
-                        m_autoSelector.stow(m_intake, m_manager, m_arm)
+                        m_autoSelector.stow(m_intake, m_manager, wrist, m_arm)
                     )
                 )
 

@@ -49,10 +49,11 @@ public class AutoSelector {
   public Command score(String gamepeice, String setpoint, EndEffectorIntake m_intake, StateManager m_manager,
       LiftArm m_arm, DriveSubsystem drivebase, Vision m_vision, Wrist wrist) {
 
+    m_intake.setOverrideStoring(true);
+
     if (gamepeice.equals("cube")) {
       if (setpoint.equals("high")) {
         return new SequentialCommandGroup(
-            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
@@ -66,7 +67,6 @@ public class AutoSelector {
         );
       } else if (setpoint.equals("mid")) {
         return new SequentialCommandGroup(
-          new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
@@ -78,7 +78,6 @@ public class AutoSelector {
         );
       } else if (setpoint.equals("low")) {
           return new SequentialCommandGroup(
-            new InstantCommand(() -> m_intake.setOverrideStoring(false)),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
@@ -86,15 +85,14 @@ public class AutoSelector {
                     new InstantCommand(wrist::retract, wrist),
                     new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)
                 )
-            )
+            ),
+            new InstantCommand(() -> m_intake.setOverrideStoring(false))
         );
     }
     } else if (gamepeice.equals("cone")) {
 
       if (setpoint.equals("mid")) {
         return new SequentialCommandGroup(
-          // we don't need this anymore with current sensing
-          //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
           new InstantCommand(m_manager::pickCone),
           new ParallelCommandGroup(
               new SequentialCommandGroup(

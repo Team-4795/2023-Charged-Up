@@ -53,7 +53,7 @@ public class Shooooot extends SequentialCommandGroup {
 
                         new ParallelCommandGroup(
                                 drivebase.followTrajectoryCommand(AutoBalance),
-                                m_autoSelector.stow(m_intake, m_manager, m_arm)),
+                                m_autoSelector.stow(m_intake, m_manager, wrist, m_arm)),
 
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(

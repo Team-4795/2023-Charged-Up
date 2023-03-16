@@ -36,11 +36,11 @@ public FreeAutoBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, Lif
    new SequentialCommandGroup(
     drivebase.AutoStartUp(AutoBalance,false, m_intake),
     m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
-    new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+    m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
 
     new ParallelCommandGroup(
         drivebase.followTrajectoryCommand(AutoBalance),
-        m_autoSelector.stow(m_intake, m_manager, m_arm)),
+        m_autoSelector.stow(m_intake, m_manager, wrist, m_arm)),
 
     new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
         AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
