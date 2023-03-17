@@ -32,18 +32,18 @@ public class FreeLowTripleGamePiece extends SequentialCommandGroup {
 
     PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Free Cube 2 Game Piece 1",
         new PathConstraints(2, 3));
-    PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Free Cube 2 Game Piece 2",
+    PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Free Cube 3 low 1",
         new PathConstraints(2, 3));
-    PathPlannerTrajectory CubeThreeGamePiece1 = PathPlanner.loadPath("Free Cube 3 1",
+    PathPlannerTrajectory CubeThreeGamePiece1 = PathPlanner.loadPath("Free Cube 3 low 2",
         new PathConstraints(2, 3));   
-        PathPlannerTrajectory CubeThreeGamePiece2 = PathPlanner.loadPath("Free Cube 3 2",
+        PathPlannerTrajectory CubeThreeGamePiece2 = PathPlanner.loadPath("Free Cube 3 low 3",
         new PathConstraints(2, 3));   
 
     // Add option of Vision based two game peice split into parts with commands Cube
     addCommands(
         new SequentialCommandGroup(
             drivebase.AutoStartUp(CubeTwoGamePiece1, true, m_intake),
-            m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+            m_autoSelector.score("cube", "low", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
             m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
 
             new ParallelCommandGroup(
@@ -52,7 +52,7 @@ public class FreeLowTripleGamePiece extends SequentialCommandGroup {
             
             new ParallelCommandGroup(  
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
-                m_autoSelector.score("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)),
+                m_autoSelector.score("cube", "low", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)),
 
             m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
 

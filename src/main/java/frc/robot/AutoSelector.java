@@ -45,7 +45,6 @@ public class AutoSelector {
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
   // Define command which scores gamepeieces at various setpoints
-  // only the first command is documented
   public Command score(String gamepeice, String setpoint, EndEffectorIntake m_intake, StateManager m_manager,
       LiftArm m_arm, DriveSubsystem drivebase, Vision m_vision, Wrist wrist) {
 
@@ -62,8 +61,7 @@ public class AutoSelector {
                       new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
                       new WaitCommand(0.4).andThen(new InstantCommand(wrist::extend, wrist))
                     )
-                ),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false))
+                )
         );
       } else if (setpoint.equals("mid")) {
         return new SequentialCommandGroup(
@@ -73,8 +71,7 @@ public class AutoSelector {
                     new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
                     new InstantCommand(wrist::retract, wrist),
                     new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))
-            ),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false))
+            )
         );
       } else if (setpoint.equals("low")) {
           return new SequentialCommandGroup(
@@ -85,8 +82,7 @@ public class AutoSelector {
                     new InstantCommand(wrist::retract, wrist),
                     new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)
                 )
-            ),
-            new InstantCommand(() -> m_intake.setOverrideStoring(false))
+            )
         );
     }
     } else if (gamepeice.equals("cone")) {
@@ -278,6 +274,9 @@ public class AutoSelector {
         m_manager, m_vision, this, wrist));
 
     chooser.addOption("Free Grab community", new FreeGrabCommunity(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this, wrist));
+
+    chooser.addOption("Triple Low Cube", new FreeLowTripleGamePiece(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this, wrist));
 
     chooser.addOption("Shoooooot", new Shooooot(drivebase, m_intake, m_arm, m_field,
