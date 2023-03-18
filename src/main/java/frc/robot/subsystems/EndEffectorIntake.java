@@ -107,10 +107,6 @@ public class EndEffectorIntake extends SubsystemBase {
         return storing ^ overrideStoring;
     }
 
-    public void overrideStoring() {
-        this.overrideStoring = !this.overrideStoring;
-    }
-
     public void setOverrideStoring(boolean override) {
         this.overrideStoring = override;
     }
@@ -118,18 +114,19 @@ public class EndEffectorIntake extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if(intakeMotor.getOutputCurrent() > 2){
-            currentValues[oldestIndex] = intakeMotor.getOutputCurrent();
-            oldestIndex++;
-            oldestIndex = oldestIndex % currentValues.length;
-        }
+        if (!Robot.isTeleOp()) {
+            if(intakeMotor.getOutputCurrent() > 2){
+                currentValues[oldestIndex] = intakeMotor.getOutputCurrent();
+                oldestIndex++;
+                oldestIndex = oldestIndex % currentValues.length;
+            }
 
-        if((avgCurrent() > IntakeConstants.storingCurrentThreshold)&& Robot.isTeleOp()){
-            storing = true;
-        } else {
-            storing = false;
-        }
-            
+            if (avgCurrent() > IntakeConstants.storingCurrentThreshold) {
+                storing = true;
+            } else {
+                storing = false;
+            }
+        }        
 
         current.append(intakeMotor.getOutputCurrent());
         currentStoring.append(currentBasedStoring);

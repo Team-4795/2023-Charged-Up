@@ -278,4 +278,8 @@ public class RobotContainer {
   public void setNotStoring() {
     m_intake.setOverrideStoring(false);
   }
+
+  public void resetArm() {
+      m_arm.resetPosition();
+  }
 }

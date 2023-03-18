@@ -22,18 +22,21 @@ public class AutoSelector {
   public Command score(String gamepeice, String setpoint, EndEffectorIntake m_intake, StateManager m_manager,
       LiftArm m_arm, DriveSubsystem drivebase, Vision m_vision, Wrist wrist) {
 
-    m_intake.setOverrideStoring(true);
-
     if (gamepeice.equals("cube")) {
       if (setpoint.equals("high")) {
         return new SequentialCommandGroup(
+          new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+          new WaitCommand(0.5),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
-                new SequentialCommandGroup(
+                new SequentialCommandGroup(   
                     new InstantCommand(() -> m_manager.dpadUp(), m_arm),
                     new ParallelCommandGroup(
-                      new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
-                      new WaitCommand(0.4).andThen(new InstantCommand(wrist::extend, wrist))
+                      new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint),
+                      new WaitCommand(0.1)
+                        .andThen(new InstantCommand(wrist::extend, wrist))
+                        .andThen(new WaitCommand(0.1))
+                      )
                     )
                 )
         );
@@ -49,6 +52,7 @@ public class AutoSelector {
         );
       } else if (setpoint.equals("low")) {
           return new SequentialCommandGroup(
+            new WaitCommand(0.5),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(

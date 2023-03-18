@@ -140,6 +140,11 @@ public class LiftArm extends SubsystemBase {
     return Math.abs(this.getPosition() - setpoint) < ArmConstants.kPositionThreshold;
   }
 
+  public void resetPosition() {
+    this.setTargetPosition(this.getPosition());
+    this.updateMotionProfile();
+  }
+
   @Override
   public void periodic() {
     // Logging
