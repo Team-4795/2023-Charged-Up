@@ -48,7 +48,7 @@ public class CableBalanceCubeTwoGame extends SequentialCommandGroup {
         new SequentialCommandGroup(
             drivebase.AutoStartUp(CubeTwoGamePiece1,true, m_intake),
             m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
-            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
+            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.2),
 
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
@@ -58,7 +58,7 @@ public class CableBalanceCubeTwoGame extends SequentialCommandGroup {
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
                 m_autoSelector.score("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)),
 
-            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
+            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.2),
 
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(AutoBalance),

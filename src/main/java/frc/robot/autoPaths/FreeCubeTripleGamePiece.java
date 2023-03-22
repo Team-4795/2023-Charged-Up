@@ -31,9 +31,9 @@ public class FreeCubeTripleGamePiece extends SequentialCommandGroup {
       StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist ) {
 
     PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Free Cube 2 Game Piece 1",
-        new PathConstraints(2, 3));
+        new PathConstraints(3.5, 3));
     PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Free Cube 2 Game Piece 2",
-        new PathConstraints(2, 3));
+        new PathConstraints(3.5, 3));
     PathPlannerTrajectory CubeThreeGamePiece1 = PathPlanner.loadPath("Free Cube 3 1",
         new PathConstraints(2, 3));   
         PathPlannerTrajectory CubeThreeGamePiece2 = PathPlanner.loadPath("Free Cube 3 2",
@@ -64,7 +64,7 @@ public class FreeCubeTripleGamePiece extends SequentialCommandGroup {
                 drivebase.followTrajectoryCommand(CubeThreeGamePiece2),
                 m_autoSelector.score("cube", "low", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)),
 
-            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
+            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.2),
             new InstantCommand(wrist::retract, wrist)
         ));
   }

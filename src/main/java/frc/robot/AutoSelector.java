@@ -26,7 +26,6 @@ public class AutoSelector {
       if (setpoint.equals("high")) {
         return new SequentialCommandGroup(
           new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-          new WaitCommand(0.5),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(   
@@ -42,6 +41,7 @@ public class AutoSelector {
         );
       } else if (setpoint.equals("mid")) {
         return new SequentialCommandGroup(
+            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
@@ -52,7 +52,7 @@ public class AutoSelector {
         );
       } else if (setpoint.equals("low")) {
           return new SequentialCommandGroup(
-            new WaitCommand(0.5),
+            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
             new InstantCommand(m_manager::pickCube),
             new ParallelCommandGroup(
                 new SequentialCommandGroup(
@@ -274,6 +274,8 @@ public class AutoSelector {
 
     chooser.addOption("Triple", new FreeCubeTripleGamePiece(drivebase, m_intake, m_arm, m_field, 
     m_manager, m_vision, this, wrist));
+
+    
     
 
     SmartDashboard.putData("Auto Selector", chooser);

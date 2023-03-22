@@ -47,9 +47,6 @@ public class EndEffectorIntake extends SubsystemBase {
     private double[] currentValues = new double[IntakeConstants.currentAvgSize];
     private int oldestIndex = 0;
 
-    DoubleLogEntry current;
-    BooleanLogEntry currentStoring;
-
     public EndEffectorIntake(){
         intakeMotor.restoreFactoryDefaults();
         intakeMotor.setInverted(true);
@@ -59,9 +56,6 @@ public class EndEffectorIntake extends SubsystemBase {
 
         hasBeenStoring.start();
         hasBeenStoring.reset();
-
-        current = new DoubleLogEntry(DataLogManager.getLog(), "/current");
-        currentStoring = new BooleanLogEntry(DataLogManager.getLog(), "/currentStoring");
     }
 
     public void intakeFromGamepiece(boolean isStowing) {
@@ -113,8 +107,7 @@ public class EndEffectorIntake extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        if (!Robot.isTeleOp()) {
+        if (Robot.isTeleOp()) {
             if(intakeMotor.getOutputCurrent() > 2){
                 currentValues[oldestIndex] = intakeMotor.getOutputCurrent();
                 oldestIndex++;
@@ -127,9 +120,6 @@ public class EndEffectorIntake extends SubsystemBase {
                 storing = false;
             }
         }        
-
-        current.append(intakeMotor.getOutputCurrent());
-        currentStoring.append(currentBasedStoring);
 
         SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
         SmartDashboard.putNumber("Average Current", avgCurrent());

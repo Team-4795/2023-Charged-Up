@@ -50,10 +50,9 @@ public class BalanceCubeTwoGamePiece extends SequentialCommandGroup {
             
             new ParallelCommandGroup(  
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
-                m_autoSelector.score("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)
-               ),
+                m_autoSelector.score("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)),
 
-            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01),
+            m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.1),
 
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(AutoBalance),

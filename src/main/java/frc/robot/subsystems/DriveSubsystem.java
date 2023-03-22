@@ -327,7 +327,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getvisionheading() {
-    return -m_gyro.getYaw();
+    double angle = getAngle() % 360;
+    if (angle < 0) {
+      angle += 360.0;
+    }
+
+    return (angle - 180);
   }
 
   public double[] getModuleStates() {
