@@ -329,8 +329,8 @@ public final class Constants {
     public static final String kSnakeEyesCamera = "OV5647";
     public static final double kCameraHeight = 21;
     public static final double kTargetHeight = 0;
-    public static final double kCameraPitchRadians = -5;
-    public static final double kX_Pitch = 0;
+    public static final double kCameraPitchRadians = 0;
+    public static final double kX_Pitch = 9;
     public static final double kTargetAngle = 2.6;
 
     /**

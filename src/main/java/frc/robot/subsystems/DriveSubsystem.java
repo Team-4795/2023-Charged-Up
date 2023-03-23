@@ -125,7 +125,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putNumber("backwards", Math.cos(Math.toRadians(this.getAngle())));
-
+    SmartDashboard.putNumber("Vision heading", getvisionheading());
     SmartDashboard.putNumberArray("Swerve states", getModuleStates());
     SmartDashboard.putNumberArray("Odometry",
         new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees() });
@@ -327,12 +327,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getvisionheading() {
-    double angle = getAngle() % 360;
+    double angle = (getAngle() - 180) % 360;
     if (angle < 0) {
       angle += 360.0;
     }
 
-    return (angle - 180);
+    angle += 180;
+
+    return -angle;
   }
 
   public double[] getModuleStates() {
