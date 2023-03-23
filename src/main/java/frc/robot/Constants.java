@@ -274,6 +274,11 @@ public final class Constants {
     public static final double armWindPoint = 0.412;
   }
 
+  public static final class RollerbarConstants {
+    public static final int kForwardChannel = 3;
+    public static final int kReverseChannel = 4;
+  }
+
   public static final class IntakeConstants{
     public static final double kStartIntakeSpeed = 0.0;
     public static final int kIntakeCANID = 24;
