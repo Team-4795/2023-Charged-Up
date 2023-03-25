@@ -36,6 +36,7 @@ public class RobotContainer {
   private final Vision m_Vision = new Vision();
   private final LEDs m_led = new LEDs();
   private final LandingGear m_landing = new LandingGear();
+  private final Rollerbar m_rollerbar = new Rollerbar();
 
 
   // The driver's controller
@@ -43,7 +44,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive, m_wrist);
+  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive, m_wrist, m_rollerbar);
 
   AutoSelector autoSelector;
   /**
@@ -105,9 +106,6 @@ public class RobotContainer {
         m_wrist)
     );
 
-    
-
-
     // Subtract up movement by down movement so they cancel out if both are pressed at once
     m_arm.setDefaultCommand(
         new RunCommand(
@@ -139,6 +137,28 @@ public class RobotContainer {
             m_arm
         )
     );
+
+    m_rollerbar.setDefaultCommand(new RunCommand(
+        () -> {
+            // If we want to extend/retract the rollerbar
+            // and if the current arm setpoint is too low
+            // then make the arm move high enough
+            // once it is high enough, automatically
+            // move the rollerbar and move back to the 
+            // true setpoint
+            if ((m_rollerbar.isExtended() != m_rollerbar.targetExtend) && (m_arm.setpoint < 0.25)) {
+                m_arm.setTargetPosition(RollerbarConstants.kBoundary + 0.02);
+            } else {
+                m_manager.setSetpoints();
+            }
+
+            m_rollerbar.tryMove(m_arm.getPosition());
+
+            if (m_intake.isStoring()) {
+                m_rollerbar.spin();
+            }
+        },
+        m_rollerbar));
   }
 
   /**
@@ -160,8 +180,9 @@ public class RobotContainer {
 
     ControlConstants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
-    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    ControlConstants.operatorA.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
     ControlConstants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
+    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::rollerbarDpadDown));
 
     ControlConstants.operatorY
         .onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)))
@@ -232,7 +253,7 @@ public class RobotContainer {
             new_setpoint = ArmConstants.maxWindPoint;
         }
 
-                // Set new arm setpoint
+        // Set new arm setpoint
         if (new_setpoint != m_arm.setpoint) {
             m_arm.setpoint = new_setpoint;
             m_arm.runManual();
@@ -249,6 +270,8 @@ public class RobotContainer {
     ));
 
     ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
+
+    // ControlConstants.operatorA.
 
     // reset LEDs when were not targeting
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));

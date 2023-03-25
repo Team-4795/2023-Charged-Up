@@ -34,7 +34,7 @@ public class LiftArm extends SubsystemBase {
   private TrapezoidProfile.State targetState;
 
   public LiftArm(){
-    leftArmMotor.restoreFactoryDefaults();
+    leftArmMotor.setIdleMode(IdleMode.kBrake);
     rightArmMotor.restoreFactoryDefaults();
     
     liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
@@ -151,7 +151,7 @@ public class LiftArm extends SubsystemBase {
     SmartDashboard.putNumber("Relative location", liftRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Absolute location", liftEncoder.getPosition());
     SmartDashboard.putNumber("Applied Speed", rightArmMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Desired Spee  ed", requestedSpeed);
+    SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
     SmartDashboard.putNumber("Arm setpoint", setpoint);
     SmartDashboard.putBoolean("At arm setpoint", this.atSetpoint());
     
