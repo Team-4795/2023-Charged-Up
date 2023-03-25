@@ -7,10 +7,15 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+
+import frc.robot.StateManager;
 //import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.StateManager.Gamepiece;
 
 public class LiftArm extends SubsystemBase {
   private final CANSparkMax leftArmMotor = new CANSparkMax(ArmConstants.kLeftArmMotorCANID, MotorType.kBrushless);
@@ -24,12 +29,16 @@ public class LiftArm extends SubsystemBase {
 
   public double setpoint;
 
+  private Timer motionTimer = new Timer();
+  private TrapezoidProfile profile;
+  private TrapezoidProfile.State targetState;
+
   public LiftArm(){
     leftArmMotor.restoreFactoryDefaults();
     rightArmMotor.restoreFactoryDefaults();
     
     liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    liftRelativeEncoder= leftArmMotor.getEncoder();
+    liftRelativeEncoder = leftArmMotor.getEncoder();
 
     m_PIDController = leftArmMotor.getPIDController();
     m_PIDController.setFeedbackDevice(liftEncoder);
@@ -80,19 +89,44 @@ public class LiftArm extends SubsystemBase {
     leftArmMotor.burnFlash();
     rightArmMotor.burnFlash();
 
-    this.setpoint = liftEncoder.getPosition();
-    SmartDashboard.putNumber("Arm setpoint", this.setpoint);
+    this.setTargetPosition(this.getPosition());
+
+    motionTimer.start();
+    motionTimer.reset();
+
+    this.updateMotionProfile();
   }
 
-  // Set speed of arm
-  public void move(double speed){
-    requestedSpeed = speed;
-    leftArmMotor.set(speed);
+  private void updateMotionProfile() {
+    TrapezoidProfile.State state = new TrapezoidProfile.State(liftEncoder.getPosition(), liftEncoder.getVelocity());
+    TrapezoidProfile.State goal = new TrapezoidProfile.State(setpoint, 0.0);
+    switch (StateManager.getGamepiece()) {
+      case Cone: profile = new TrapezoidProfile(ArmConstants.kConeMotionConstraint, goal, state); break;
+      default: profile = new TrapezoidProfile(ArmConstants.kCubeMotionConstraint, goal, state); break;
+    }
+    motionTimer.reset();
   }
 
   // Sets setpoint, where setpoint is 0 to 1
-  public void setPosition(double setpoint) {
-    this.setpoint = setpoint;
+  public void setTargetPosition(double newSetpoint) {
+    if (newSetpoint != this.setpoint) {
+      this.setpoint = newSetpoint;
+      updateMotionProfile();
+    }
+  }
+
+  public void runAutomatic() {
+    double elapsedTime = motionTimer.get();
+    if (profile.isFinished(elapsedTime)) {
+      targetState = new TrapezoidProfile.State(setpoint, 0.0);
+    } else {
+      targetState = profile.calculate(elapsedTime);
+    }
+
+    m_PIDController.setReference(targetState.position, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void runManual() {
     m_PIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
   }
 
@@ -106,15 +140,24 @@ public class LiftArm extends SubsystemBase {
     return Math.abs(this.getPosition() - setpoint) < ArmConstants.kPositionThreshold;
   }
 
+  public void resetPosition() {
+    this.setTargetPosition(this.getPosition());
+    this.updateMotionProfile();
+  }
+
   @Override
   public void periodic() {
     // Logging
     SmartDashboard.putNumber("Relative location", liftRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Absolute location", liftEncoder.getPosition());
     SmartDashboard.putNumber("Applied Speed", rightArmMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Desired Speeed", requestedSpeed);
+    SmartDashboard.putNumber("Desired Spee  ed", requestedSpeed);
     SmartDashboard.putNumber("Arm setpoint", setpoint);
     SmartDashboard.putBoolean("At arm setpoint", this.atSetpoint());
+    
+    if (targetState != null) {
+      SmartDashboard.putNumber("Trapezoidal setpoint", targetState.position);
+    }
     liftRelativeEncoder.setPosition(this.getPosition());
   }
 }

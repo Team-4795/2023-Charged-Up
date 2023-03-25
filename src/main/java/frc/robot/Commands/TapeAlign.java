@@ -72,15 +72,16 @@ public class TapeAlign extends CommandBase {
 
     if (vision.hasTargets == true) {
       double currentHeading = driveSubsystem.getvisionheading();
-      double rotation = rotationPID.calculate(currentHeading,0);
+      SmartDashboard.putNumber("Vision heading", currentHeading);
+      double rotation = rotationPID.calculate(currentHeading,180);
 
       x_speed = controller.calculate(vision.getTargetAngle(), 0);
       //y_speed = controller.calculate(vision.getTargetAngle(), 0);
 
-      driveSubsystem.drive(x_speed,ySpeed, rotation,true, true);
+      driveSubsystem.drive(-x_speed,ySpeed, rotation,true, true);
     } else {
       double currentHeading = driveSubsystem.getvisionheading();
-      double rotation = rotationPID.calculate(currentHeading,0);
+      double rotation = rotationPID.calculate(currentHeading,180);
       driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
     }
   }

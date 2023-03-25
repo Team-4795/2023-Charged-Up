@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -13,6 +14,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import frc.utils.Setpoints;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -37,9 +40,9 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 3 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 2.2; // radians per second
-    public static final double kMagnitudeSlewRate = 2.3; // percent per second (1 = 100%)
-    public static final double kRotationalSlewRate = 2.5; // percent per second (1 = 100%)
+    public static final double kDirectionSlewRate = 10.0; // radians per second
+    public static final double kMagnitudeSlewRate = 10.0; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 10.0; // percent per second (1 = 100%)
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(20.75);
@@ -136,7 +139,7 @@ public final class Constants {
     public static final double kArmManualSpeed = 0.01;
   }
 
-  public static final class ControlContants {
+  public static final class ControlConstants {
     public static final GenericHID driverController = new GenericHID(OIConstants.kDriverControllerPort);
     public static final GenericHID operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
@@ -194,9 +197,9 @@ public final class Constants {
 
     public static final double toZeroBound = 0.000001;
 
-    public static final double platformMaxAngle = 15;
+    public static final double platformMaxAngle = 12;
     //constant speed during command
-    public static final double balanceSpeed = 0.0684;
+    public static final double balanceSpeed = 0.07;
 
     public static final double driveAngleThreshold = 8; //angle at which checking angle duration starts, in degrees
     //constant drive up speed
@@ -204,7 +207,7 @@ public final class Constants {
     //useless for Asheville
     public static final double angularVelocityErrorThreshold = 0.15;
     //coeffiecient of the polynomial function to calculate balancing speed
-    public static final double polyCoeff = 1.5;
+    public static final double polyCoeff = 1.55;
     //duration of checking for the angle to start autobalance 
     public static final double checkDuration = 0.075;
     //override duration for drive up to avoid foul
@@ -240,29 +243,35 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    public static final TrapezoidProfile.Constraints kCubeMotionConstraint = new TrapezoidProfile.Constraints(2.4, 4.0);
+    public static final TrapezoidProfile.Constraints kConeMotionConstraint = new TrapezoidProfile.Constraints(1.0, 4.0);
     public static final int kLeftArmMotorCANID = 10;
     public static final int kRightArmMotorCANID = 11;
-    public static final double kP = 1.6;
+    public static final double kP = 3.5;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kFF = 0;
     public static final double kMinOutput = -0.75;
     public static final double kMaxOutput = 0.75;
-    public static final double kRampRate = 0.25;
+    public static final double kRampRate = 0.125;
     public static final double kConversionFactor = 1;
     public static final int kCurrentLimit = 60;
     public static final double kGearing = 72;
     public static final boolean kEnableForwardLimit = false;
     public static final boolean kEnableReverseLimit = false;
-    public static final double kForwardLimit = 0.95;
+    public static final double kForwardLimit = 0.92;
     public static final double kReverseLimit = 10;
     public static final double kLowWristLimit = 0.2;
     public static final double kHighWristLimit = 0.8;
     public static final double kOuttakeSensorChangeTime = 1.0;
     public static final double kIntakeSensorChangeTime = 3.0;
-    public static final double kLowSetpointLimit = 0.12;
-    public static final double kHighSetpointLimit = 0.97;
+    public static final double kLowSetpointLimit = 0.16;
+    public static final double kHighSetpointLimit = 0.94;
     public static final double kPositionThreshold = 0.025;
+
+    public static final double maxWindPoint = 0.18;
+    public static final double YeetpointEnd = 0.77;
+    public static final double armWindPoint = 0.412;
   }
 
   public static final class IntakeConstants{
@@ -282,65 +291,38 @@ public final class Constants {
     public static final double kCubeSlowIntakeSpeed = 0.3;
     public static final double kConeSlowIntakeSpeed = 0.6;
 
+    public static final double storingCurrentThreshold = 17;
+
+    public static final int currentAvgSize = 35;
+
+    public static final double kFlickTime = 0.18;
   }
 
   public static final class CubeSetpointConstants{
-    public static final double kLowPickupArm = 0.918;
-    public static final double kStowHighArm = 0.5;
-    public static final double kDoubleFeederArm = 0.62;
-    public static final double kLowScoreArm = 0.89;
-    public static final double kMidScoreArm = 0.69;
-    public static final double kHighScoreArm = .565;
-    public static final double kStowInFrameArm = 0.16;
-    public static final double kStowLowArm = 0.96;
-    
-    public static final boolean kLowPickupWrist = false;
-    public static final boolean kStowHighWrist = false;
-    public static final boolean kDoubleFeederWrist = true;
-    public static final boolean kLowScoreWrist = false;
-    public static final boolean kMidScoreWrist = true;
-    public static final boolean kHighScoreWrist = true;
-    public static final boolean kStowInFrameWrist = false;
-    public static final boolean kStowLowWrist = false;
-
-    public static final double kLowPickupOuttake = -0.3;
-    public static final double kStowHighOuttake = -0.3;
-    public static final double kDoubleFeederOuttake = -0.3;
-    public static final double kLowScoreOuttake = -0.3;
-    public static final double kMidScoreOuttake = -0.3;
-    public static final double kHighScoreOuttake = -0.5;
-    public static final double kStowInFrameOuttake = -0.3;
-    public static final double kStowLowOuttake = -0.3;
-
+    public static final Setpoints kLowPickup = new Setpoints(0.918, false, -0.3);
+    public static final Setpoints kStowHigh = new Setpoints(0.5, false, -0.3);
+    public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.3);
+    public static final Setpoints kLowScore = new Setpoints(0.89, false, -0.3);
+    public static final Setpoints kMidScore = new Setpoints(0.69, true, -0.3);
+    public static final Setpoints kHighScore = new Setpoints(0.565, true, -0.5);
+    public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.3);
+    public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.3);
+    public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, true, -1.0);
+    public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, false, -0.4);
+    public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, false, -0.3);
+    public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, false, -0.3);
+  
   }
 
-  public static final class ConeSetpointConstants{
-    public static final double kLowPickupArm = 0.94;
-    public static final double kStowHighArm = 0.5;
-    public static final double kDoubleFeederArm = 0.62;
-    public static final double kLowScoreArm = 0.87;
-    public static final double kMidScoreArm = 0.71;
-    public static final double kHighScoreArm = .64;
-    public static final double kStowInFrameArm = 0.16;
-    public static final double kStowLowArm = 0.96;
-    
-    public static final boolean kLowPickupWrist = false;
-    public static final boolean kStowHighWrist = false;
-    public static final boolean kDoubleFeederWrist = true;
-    public static final boolean kLowScoreWrist = false;
-    public static final boolean kMidScoreWrist = false;
-    public static final boolean kHighScoreWrist = true;
-    public static final boolean kStowInFrameWrist = false;
-    public static final boolean kStowLowWrist = false;
-
-    public static final double kLowPickupOuttake = -0.4;
-    public static final double kStowHighOuttake = -0.4;
-    public static final double kDoubleFeederOuttake = -0.4;
-    public static final double kLowScoreOuttake = -0.4;
-    public static final double kMidScoreOuttake = -0.4;
-    public static final double kHighScoreOuttake = -0.4;
-    public static final double kStowInFrameOuttake = -0.4;
-    public static final double kStowLowOuttake = -0.4;
+  public static final class ConeSetpointConstants {
+    public static final Setpoints kLowPickup = new Setpoints(0.94, false, -0.4);
+    public static final Setpoints kStowHigh = new Setpoints(0.5, false, -0.4);
+    public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.4);
+    public static final Setpoints kLowScore = new Setpoints(0.87, false, -0.4);
+    public static final Setpoints kMidScore = new Setpoints(0.71, false, -0.4);
+    public static final Setpoints kHighScore = new Setpoints(0.64, true, -0.4);
+    public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.4);
+    public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.4);
   }
   
   public static class VisionConstants {
@@ -349,7 +331,7 @@ public final class Constants {
     public static final double kTargetHeight = 0;
     public static final double kCameraPitchRadians = -5;
     public static final double kX_Pitch = 0;
-    public static final double kTargetAngle = 0;
+    public static final double kTargetAngle = 2.6;
 
     /**
      * Physical location of the camera on the robot, relative to the center of the robot.
@@ -357,6 +339,11 @@ public final class Constants {
     public static final Transform3d CAMERA_TO_ROBOT =
         new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
     public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+  }
+
+  public static class LandingGearConstants {
+    public static final int kForwardChannel = 8;
+    public static final int kBackwardChannel = 9;
   }
 
 }

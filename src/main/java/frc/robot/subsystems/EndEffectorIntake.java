@@ -1,12 +1,18 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
 //motor imports
 import com.revrobotics.CANSparkMax;
 //import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAnalogSensor.Mode;
 
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DataLogManager;
 //pneumatics imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -18,29 +24,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Robot;
 import frc.robot.StateManager;
 //Sensor imports
 import frc.robot.Sensors.HiLetGo;
 
 
 public class EndEffectorIntake extends SubsystemBase {
-    private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
     private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kIntakeCANID, MotorType.kBrushed);
-    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, IntakeConstants.kForwardChannel, IntakeConstants.kReverseChannel);
-    private final PneumaticHub m_ph = new PneumaticHub(IntakeConstants.kPHCANID);
     private final HiLetGo hiLetGo = new HiLetGo(IntakeConstants.kHiLetGoPort);
 
     public double requestedSpeed = IntakeConstants.kStartIntakeSpeed;
 
-    public boolean extendedTarget = false;
-    public boolean extended = false;
-
     private boolean storing = false;
+    private boolean currentBasedStoring = false;
     private Timer hasBeenStoring = new Timer();
 
     private double outtakeSpeed = 0.0;
 
     private boolean overrideStoring = false;
+
+    private double[] currentValues = new double[IntakeConstants.currentAvgSize];
+    private int oldestIndex = 0;
 
     public EndEffectorIntake(){
         intakeMotor.restoreFactoryDefaults();
@@ -51,40 +56,19 @@ public class EndEffectorIntake extends SubsystemBase {
 
         hasBeenStoring.start();
         hasBeenStoring.reset();
-
-        compressor.enableAnalog(IntakeConstants.kMinPressure, IntakeConstants.kMaxPressure);
     }
 
-    public void extend() {
-        extended = true;
-        solenoid.set(Value.kForward);
-    }
-
-    public void retract() {
-        extended = false;
-        solenoid.set(Value.kReverse);
-    }
-
-    public void stop() {
-        //solenoid.set(DoubleSolenoid.Value.kOff);
-
-    }
-
-    public void setExtendedTarget(boolean extend) {
-        this.extendedTarget = extend;
-    }
-
-    public void intakeFromGamepiece(StateManager.Gamepiece gamepiece, boolean isStowing) {
+    public void intakeFromGamepiece(boolean isStowing) {
         double speed = 0;
 
         if (isStoring()) {
-            switch (gamepiece) {
+            switch (StateManager.getGamepiece()) {
                 case Cube: speed = IntakeConstants.kCubeSlowIntakeSpeed; break;
                 case Cone: speed = IntakeConstants.kConeSlowIntakeSpeed; break;
                 default: break;
             }
         } else {
-            switch (gamepiece) {
+            switch (StateManager.getGamepiece()) {
                 case Cube: speed = IntakeConstants.kCubeIntakeSpeed; break;
                 case Cone: speed = IntakeConstants.kConeIntakeSpeed; break;
                 default: break;
@@ -117,42 +101,45 @@ public class EndEffectorIntake extends SubsystemBase {
         return storing ^ overrideStoring;
     }
 
-    public void overrideStoring() {
-        this.overrideStoring = !this.overrideStoring;
-    }
-
     public void setOverrideStoring(boolean override) {
         this.overrideStoring = override;
     }
 
     @Override
     public void periodic() {
-        if (storing == isHiLetGoing()) {
-            hasBeenStoring.reset();
-        }
+        if (Robot.isTeleOp()) {
+            if(intakeMotor.getOutputCurrent() > 2){
+                currentValues[oldestIndex] = intakeMotor.getOutputCurrent();
+                oldestIndex++;
+                oldestIndex = oldestIndex % currentValues.length;
+            }
 
-        double changeTime;
-        if (storing) {
-            changeTime = ArmConstants.kOuttakeSensorChangeTime;
-        } else {
-            changeTime = ArmConstants.kIntakeSensorChangeTime;
-        }
+            if (avgCurrent() > IntakeConstants.storingCurrentThreshold) {
+                storing = true;
+            } else {
+                storing = false;
+            }
+        }        
 
-        if (hasBeenStoring.hasElapsed(changeTime)) {
-            storing = !storing;
-            hasBeenStoring.reset();
-        }
-
-        SmartDashboard.putNumber("Pressure", m_ph.getPressure(0));
-        SmartDashboard.putBoolean("Wrist extended target", extendedTarget);
-        SmartDashboard.putBoolean("Wrist extended", extended);
+        SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Average Current", avgCurrent());
+        SmartDashboard.putBoolean("Override Storing", overrideStoring);
+        SmartDashboard.putBoolean("Storing?", this.isStoring());
+        SmartDashboard.putBoolean("Current Storing", storing);
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putNumber("Outtake speed", outtakeSpeed);
-        SmartDashboard.putBoolean("HiLetGoing?", isHiLetGoing());
     }
 
     public void intake(double speed) {
         requestedSpeed = speed;
          intakeMotor.set(speed);
+    }
+
+    private double avgCurrent(){
+        double sum = 0;
+        for(int i = 0; i < currentValues.length; i++){
+            sum += currentValues[i];
+        }
+        return (sum / currentValues.length);
     }
 }

@@ -2,38 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.7841690384235467,
-        "y": 4.362122228517961
+        "x": 1.8070073746985102,
+        "y": 1.0391443005108238
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.10879254237141,
-        "y": 4.499152246167741
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 6.534542983615882,
-        "y": 4.613343927542556
-      },
-      "prevControl": {
-        "x": 5.356915516700638,
-        "y": 5.398428905486054
-      },
-      "nextControl": {
-        "x": 6.9456330365652175,
-        "y": 4.339283892242999
+        "x": 1.921199056073326,
+        "y": 1.461653521597641
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -49,12 +24,37 @@
     },
     {
       "anchorPoint": {
-        "x": 5.095727798293203,
-        "y": 3.014660388295136
+        "x": 2.115324914410513,
+        "y": 1.9526777515093496
       },
       "prevControl": {
-        "x": 6.2833212845912865,
-        "y": 3.4714271137943995
+        "x": 1.5554157792775212,
+        "y": 1.9423090638217015
+      },
+      "nextControl": {
+        "x": 2.731959993834518,
+        "y": 1.9640969196468314
+      },
+      "holonomicAngle": 0.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 4.182194347294677,
+        "y": 1.9298394152343863
+      },
+      "prevControl": {
+        "x": 3.7368467899328963,
+        "y": 1.8955819108219423
       },
       "nextControl": null,
       "holonomicAngle": 0,

@@ -3,380 +3,280 @@ package frc.robot;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Constants.ArmConstants;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Commands.AutoBalanceOld;
-import frc.robot.Commands.DriveCommand;
-import frc.robot.Commands.DriveCommandOld;
-import frc.robot.Commands.PipelineSwitch;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Commands.TapeAlign;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.EndEffectorIntake;
-import frc.robot.subsystems.LiftArm;
-import frc.robot.subsystems.Vision;
+import frc.robot.autoPaths.*;
+import frc.robot.subsystems.*;
 
 public class AutoSelector {
 
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-  private final Timer timer = new Timer();
-  // All Path Planner paths
+  // Define command which scores gamepeieces at various setpoints
+  public Command score(String gamepeice, String setpoint, EndEffectorIntake m_intake, StateManager m_manager,
+      LiftArm m_arm, DriveSubsystem drivebase, Vision m_vision, Wrist wrist) {
 
-
-  // Cube 2 Game piece Auto part 1 (from first score to first intake)
-  PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Cube 2 Game Piece 1", new PathConstraints(1, 2));
-  // Cube 2 Game piece Auto part 2 (from intake to first second score)
-  PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Cube 2 Game Piece 2", new PathConstraints(1, 2));
-
-  // Auto Balence with 1 cone
-  PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance", new PathConstraints(3, 3));
-
-  // Path using vision from further back for cone.
-  PathPlannerTrajectory EarlyVision = PathPlanner.loadPath("Early Vision", new PathConstraints(1, 1));
-
-  PathPlannerTrajectory GrapBalance1 = PathPlanner.loadPath("Balance + grab 1", new PathConstraints(1.5, 1));
-  PathPlannerTrajectory GrapBalance2 = PathPlanner.loadPath("Balance + grab 2", new PathConstraints(3, 3));
-
-  // Define Auto Selector
-  public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
-      StateManager m_manager, Vision m_vision) {
-
-
-
-    // Add option of Vision based two game peice split into parts with commands Cube
-    chooser.addOption("CubeVisionTwoGamePieceWCommands", new SequentialCommandGroup(
-
-    new InstantCommand(() -> {
-      // Reset odometry for the first path you run during auto
-      drivebase.resetOdometry(CubeTwoGamePiece1.getInitialHolonomicPose());
-      drivebase.resetOdometry(PathPlannerTrajectory
-          .transformTrajectoryForAlliance(CubeTwoGamePiece1, DriverStation.getAlliance()).getInitialHolonomicPose()); 
-    }),
-
-        new InstantCommand(() -> {
-          // Put it in break mode
-          drivebase.setBreakMode();
-        }),
-        
-        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(m_manager::pickCube),
-        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-        new WaitUntilCommand(m_arm::atSetpoint),
-        new InstantCommand(m_intake::extend, m_intake),
-        new WaitCommand(0.5),
-        new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
-
-        new InstantCommand(() -> {
-          // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(CubeTwoGamePiece1);
-        }),
-        new ParallelCommandGroup(
-            new PPSwerveControllerCommand(
-                CubeTwoGamePiece1,
-                drivebase::getPose, // Pose supplier
-                DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-                AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will
-                                               // only
-                                               // use feedforwards.
-                AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-                AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving
-                                                      // them
-                                                      // 0 will only use feedforwards.
-                drivebase::setModuleStates, // Module states consumer
-                true, // Should the path be automatically mirrored depending on alliance color.
-                      // Optional, defaults to true
-                drivebase // Requires this drive subsystem
-            ),
-            new SequentialCommandGroup(
-                    new WaitCommand(1.5),
-                    new InstantCommand(m_intake::retract),
-                    new InstantCommand(m_manager::pickCube),
-                    new InstantCommand(() -> m_manager.dpadDown()),
-                    new WaitUntilCommand(m_arm::atSetpoint))),
-
-            new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()),
-                m_intake)
-                .withTimeout(1),
-
-        new InstantCommand(() -> {
-          // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(CubeTwoGamePiece2);
-        }),
-
-        new ParallelCommandGroup(
-          new PPSwerveControllerCommand(
-              CubeTwoGamePiece2,
-              drivebase::getPose, // Pose supplier
-              DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-              AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will
-                                             // only
-                                             // use feedforwards.
-              AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-              AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving
-                                                    // them
-                                                    // 0 will only use feedforwards.
-              drivebase::setModuleStates, // Module states consumer
-              true, // Should the path be automatically mirrored depending on alliance color.
-                    // Optional, defaults to true
-              drivebase // Requires this drive subsystem
-          ),
-          new SequentialCommandGroup(
+    if (gamepeice.equals("cube")) {
+      if (setpoint.equals("high")) {
+        return new SequentialCommandGroup(
+          new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            new InstantCommand(m_manager::pickCube),
+            new ParallelCommandGroup(
+                new SequentialCommandGroup(   
+                    new InstantCommand(() -> m_manager.dpadUp(), m_arm),
+                    new ParallelCommandGroup(
+                      new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint),
+                      new WaitCommand(0.1)
+                        .andThen(new InstantCommand(wrist::extend, wrist))
+                        .andThen(new WaitCommand(0.1))
+                      )
+                    )
+                )
+        );
+      } else if (setpoint.equals("mid")) {
+        return new SequentialCommandGroup(
             new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(m_manager::pickCube),
-        new InstantCommand(() -> m_manager.dpadDown(), m_arm),
-        new WaitUntilCommand(m_arm::atSetpoint),
-        new InstantCommand(m_intake::extend, m_intake)
-        )),
-        // Align
-        new InstantCommand(() -> {
-          m_vision.switchToTag();
-        }),
-        new TapeAlign(
-            drivebase,
-            m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
-        
-        // Run outake for 1 second to scorenew RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false))));
+            new InstantCommand(m_manager::pickCube),
+            new ParallelCommandGroup(
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
+                    new InstantCommand(wrist::retract, wrist),
+                    new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint))
+            )
+        );
+      } else if (setpoint.equals("low")) {
+          return new SequentialCommandGroup(
+            new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+            new InstantCommand(m_manager::pickCube),
+            new ParallelCommandGroup(
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> m_manager.dpadDown(), m_arm),
+                    new InstantCommand(wrist::retract, wrist),
+                    new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)
+                )
+            )
+        );
+    }
+    } else if (gamepeice.equals("cone")) {
 
-    // Srinivas idea
-    chooser.addOption("Grap community", new SequentialCommandGroup(
+      if (setpoint.equals("mid")) {
+        return new SequentialCommandGroup(
+          new InstantCommand(m_manager::pickCone),
+          new ParallelCommandGroup(
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> m_manager.dpadLeft(), m_arm),
+                  new InstantCommand(wrist::retract, wrist),
+                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
+             // meanwhile auto align
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> {
+                    m_vision.switchToTape();
+                  }),
+                  new TapeAlign(
+                      drivebase, m_vision,
+                      () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
+          new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+          new InstantCommand(wrist::retract, wrist)
+          //not needed with current sensing
+          //new InstantCommand(() -> m_intake.setOverrideStoring(false))
+          );
+      } else if (setpoint.equals("low")) {
+        return new SequentialCommandGroup(
+          // we don't need this anymore with current sensing
+          //new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+          new InstantCommand(m_manager::pickCone),
+          new ParallelCommandGroup(
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> m_manager.dpadDown(), m_arm),
+                  new InstantCommand(wrist::retract, wrist),
+                  new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint)),
+             // meanwhile auto align
+              new SequentialCommandGroup(
+                  new InstantCommand(() -> {
+                    m_vision.switchToTape();
+                  }),
+                  new TapeAlign(
+                      drivebase, m_vision,
+                      () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed))),
+          new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
+          new InstantCommand(wrist::retract, wrist)
+          //not needed with current sensing
+          //new InstantCommand(() -> m_intake.setOverrideStoring(false))
+          );
+      }
+    }
 
-    new InstantCommand(() -> {
-      drivebase.zeroHeading();
-      drivebase.resetOdometry(PathPlannerTrajectory
-          .transformTrajectoryForAlliance(GrapBalance1, DriverStation.getAlliance()).getInitialHolonomicPose()); 
-      drivebase.setBreakMode();
-    }),
-    new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-    new InstantCommand(m_manager::pickCube),
-    new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-    new WaitUntilCommand(m_arm::atSetpoint),
-    new InstantCommand(m_intake::extend, m_intake),
-    new WaitCommand(0.5),
-    new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-    new InstantCommand(m_intake::retract, m_intake),
-    new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+    return null;
 
-    new ParallelCommandGroup(
-        new InstantCommand(() -> {
-          // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(GrapBalance1);
-        }),
-        new ParallelCommandGroup(
-            new PPSwerveControllerCommand(
-                GrapBalance1,
-                drivebase::getPose, // Pose supplier
-                DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-                AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0
-                                               // will
-                                               // only
-                                               // use feedforwards.
-                AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-                AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot.
-                                                      // Leaving
-                                                      // them
-                                                      // 0 will only use feedforwards.
-                drivebase::setModuleStates, // Module states consumer
-                true, // Should the path be automatically mirrored depending on alliance color.
-                      // Optional, defaults to true
-                drivebase // Requires this drive subsystem
-            ),
+  }
 
-            new SequentialCommandGroup(
-                new WaitCommand(1.5),
-                new InstantCommand(m_intake::retract),
-                new InstantCommand(m_manager::pickCube),
-                new InstantCommand(() -> m_manager.dpadDown()),
-                new WaitUntilCommand(m_arm::atSetpoint))),
-        new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()),
-            m_intake)
-            .withTimeout(1)),
+  public Command scoreV2(String gamepiece, String setpoint, EndEffectorIntake m_intake, StateManager m_manager,
+  LiftArm m_arm, DriveSubsystem drivebase, Vision m_vision, Wrist wrist){
+    InstantCommand positionCommand = new InstantCommand();
+    InstantCommand coneOrCube = new InstantCommand();
 
-    new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-    new InstantCommand(() -> {
-      // Put the trajectory in glass
-      m_field.getObject("traj").setTrajectory(EarlyVision);
-    }),
+    switch(gamepiece){
+      case "cube":
+        coneOrCube = new InstantCommand(m_manager::pickCube);
+      case "cone":
+        coneOrCube = new InstantCommand(m_manager::pickCone);
+    }
+    
+    switch(setpoint){
+      case "high":
+        positionCommand = new InstantCommand(() -> m_manager.dpadUp(), m_arm);
+      case "mid":
+        positionCommand = new InstantCommand(() -> m_manager.dpadLeft(), m_arm);
+      case "low":
+        positionCommand = new InstantCommand(() -> m_manager.dpadDown(), m_arm);
+    }
 
-    new ParallelCommandGroup(
-        new PPSwerveControllerCommand(
-            EarlyVision,
-            drivebase::getPose, // Pose supplier
-            DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-            AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will
-                                           // only
-                                           // use feedforwards.
-            AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-            AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving
-                                                  // them
-                                                  // 0 will only use feedforwards.
-            drivebase::setModuleStates, // Module states consumer
-            true, // Should the path be automatically mirrored depending on alliance color.
-                  // Optional, defaults to true
-            drivebase // Requires this drive subsystem
-        ),
+    return new ParallelCommandGroup(
+      new TapeAlign(drivebase, m_vision, () -> AutoConstants.VisionXspeed, () -> AutoConstants.VisionYspeed).withTimeout(1),
+      new SequentialCommandGroup(new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+                                 new InstantCommand(wrist::extend),
+                                 coneOrCube),
+      new SequentialCommandGroup(positionCommand,
+                                 new WaitCommand(0.5),
+                                 new RunCommand(m_intake::outtake, m_intake).withTimeout(0.5),
+                                 new InstantCommand(() -> m_intake.setOverrideStoring(false))
+      )
+    );
+  }
+
+  public Command intake(String gamepeice, EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm, Wrist wrist) {
+    if (gamepeice.equals("cube")) {
+      return new SequentialCommandGroup(
+          new InstantCommand(wrist::retract),
+          new InstantCommand(m_manager::pickCube),
+          new InstantCommand(() -> m_manager.dpadDown()),
+          new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint),
+          new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
+              .withTimeout(1),
+          new InstantCommand(() -> m_intake.setOverrideStoring(true)));
+
+    } else if (gamepeice.equals("cone")) {
+      return new SequentialCommandGroup(
+          new InstantCommand(wrist::retract),
+          new InstantCommand(m_manager::pickCone),
+          new InstantCommand(() -> m_manager.dpadDown()),
+          new WaitUntilCommand(m_arm::atSetpoint),
+          new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
+              .withTimeout(1),
+          new InstantCommand(() -> m_intake.setOverrideStoring(true)));
+    }
+
+    return null;
+  }
+
+  public Command intakeV2(String gamepiece, EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm, Wrist wrist, double duration){
+    InstantCommand coneOrCubeCommand = new InstantCommand();
+    switch(gamepiece){
+      case "cube":
+        coneOrCubeCommand = new InstantCommand(m_manager::pickCube);
+      case "cone":
+        coneOrCubeCommand = new InstantCommand(m_manager::pickCone);
+    }
+
+    return new SequentialCommandGroup(
+      new InstantCommand(wrist::retract),
+      coneOrCubeCommand,
+      new InstantCommand(() -> m_manager.dpadDown()),
+      new WaitCommand(0.3),
+      new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
+          .withTimeout(duration)
+    );
+  }
+
+  public Command stow(EndEffectorIntake m_intake, StateManager m_manager, Wrist m_wrist, LiftArm m_arm) {
+    return 
         new SequentialCommandGroup(
             new InstantCommand(m_manager::pickCube),
             new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-            new WaitUntilCommand(m_arm::atSetpoint))),
+            new InstantCommand(m_wrist::retract, m_wrist),
+            new ParallelDeadlineGroup(
+              new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint),
+              new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)));
+  }
 
-
-            new TapeAlign(
-              drivebase,
-              m_vision, () -> AutoConstants.VisionMoveFastX, () -> AutoConstants.VisionMoveFastY).withTimeout(1.5)
-  
-    
-
-));
-       
-    chooser.setDefaultOption("Auto Balance", new SequentialCommandGroup(
-
-        new InstantCommand(() -> {
-          drivebase.zeroHeading();
-          drivebase.resetOdometry(PathPlannerTrajectory
-              .transformTrajectoryForAlliance(AutoBalance, DriverStation.getAlliance()).getInitialHolonomicPose()); 
-            drivebase.setBreakMode();
-        }),
-        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(m_manager::pickCube),
-        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-        new WaitUntilCommand(m_arm::atSetpoint),
-        new InstantCommand(m_intake::extend, m_intake),
-        new WaitCommand(0.5),
-        new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
-        new ParallelCommandGroup(
-            new PPSwerveControllerCommand(
-                AutoBalance,
-                drivebase::getPose, // Pose supplier
-                DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-                AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will
-                                               // only
-                                               // use feedforwards.
-                AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-                AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving
-                                                      // them
-                                                      // 0 will only use feedforwards.
-                drivebase::setModuleStates, // Module states consumer
-                true, // Should the path be automatically mirrored depending on alliance color.
-                      // Optional, defaults to true
-                drivebase // Requires this drive subsystem
-            ),
+  public Command outtake(EndEffectorIntake m_intake, StateManager m_manager, Wrist m_wrist, LiftArm m_arm, double time) {
+    return new SequentialCommandGroup(
+      new ConditionalCommand(
             new SequentialCommandGroup(
-                new InstantCommand(m_manager::pickCube),
-                new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-                new WaitUntilCommand(m_arm::atSetpoint))),
-
-        new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
-            AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)
-    ));
-
-    // Add option of Vision based two game peice split into parts with commands Cube
-    chooser.addOption("GrapBalance", new SequentialCommandGroup(
-        new InstantCommand(() -> {
-          drivebase.zeroHeading();
-          drivebase.resetOdometry(PathPlannerTrajectory
-              .transformTrajectoryForAlliance(GrapBalance1, DriverStation.getAlliance()).getInitialHolonomicPose()); 
-          drivebase.setBreakMode();
-        }),
-        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(m_manager::pickCube),
-        new InstantCommand(() -> m_manager.dpadUp(), m_arm),
-        new WaitUntilCommand(m_arm::atSetpoint),
-        new InstantCommand(m_intake::extend, m_intake),
-        new WaitCommand(0.5),
-        new RunCommand(m_intake::outtake, m_intake).withTimeout(1.0),
-        new InstantCommand(m_intake::retract, m_intake),
-        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
-
-        new ParallelCommandGroup(
-            new InstantCommand(() -> {
-              // Put the trajectory in glass
-              m_field.getObject("traj").setTrajectory(GrapBalance1);
+                new InstantCommand(m_wrist::retract, m_wrist),
+                new WaitCommand(IntakeConstants.kFlickTime),
+                new RunCommand(m_intake::outtake, m_intake).withTimeout(time)
+            ),
+            new RunCommand(m_intake::outtake, m_intake).withTimeout(time),
+            () -> {
+                switch (m_manager.getState()) {
+                    case BackwardsHighScore: switch (StateManager.getGamepiece()) {
+                        case Cube: return true;
+                        default: return false;
+                    }
+                    default: return false;
+                }
             }),
-            new ParallelCommandGroup(
-                new PPSwerveControllerCommand(
-                    GrapBalance1,
-                    drivebase::getPose, // Pose supplier
-                    DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-                    AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0
-                                                   // will
-                                                   // only
-                                                   // use feedforwards.
-                    AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-                    AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot.
-                                                          // Leaving
-                                                          // them
-                                                          // 0 will only use feedforwards.
-                    drivebase::setModuleStates, // Module states consumer
-                    true, // Should the path be automatically mirrored depending on alliance color.
-                          // Optional, defaults to true
-                    drivebase // Requires this drive subsystem
-                ),
+        new InstantCommand(() -> m_intake.setOverrideStoring(false))
+    );
+  }
 
-                new SequentialCommandGroup(
-                    new WaitCommand(1.5),
-                    new InstantCommand(m_intake::retract),
-                    new InstantCommand(m_manager::pickCube),
-                    new InstantCommand(() -> m_manager.dpadDown()),
-                    new WaitUntilCommand(m_arm::atSetpoint))),
-            new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.getGamepiece(), m_manager.isStowing()),
-                m_intake)
-                .withTimeout(1)),
+  public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
+      StateManager m_manager, Vision m_vision, Wrist wrist) {
+    
+    chooser.addOption("Free 2 Cube Balance", new BalanceCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
+      m_manager, m_vision, this, wrist));
+      
+    chooser.addOption("Cable Auto Balance", new CableAutoBalance(drivebase, m_intake, m_arm, m_field,
+      m_manager, m_vision, this, wrist));
+    
+    chooser.addOption("Cable 2 Cube", new CableCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
+      m_manager, m_vision, this, wrist));
 
-        new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-        new InstantCommand(() -> {
-          // Put the trajectory in glass
-          m_field.getObject("traj").setTrajectory(GrapBalance2);
-        }),
+    chooser.addOption("Center Score Balance", new CenterScoreBalance(drivebase, m_intake, m_arm, 
+      m_manager, m_vision, this, wrist));
 
-        new ParallelCommandGroup(
-            new PPSwerveControllerCommand(
-                GrapBalance2,
-                drivebase::getPose, // Pose supplier
-                DriveConstants.kDriveKinematics, // SwerveDriveKinematics
-                AutoConstants.AutoXcontroller, // X controller. Tune these values for your robot. Leaving them 0 will
-                                               // only
-                                               // use feedforwards.
-                AutoConstants.AutoYcontroller, // Y controller (usually the same values as X controller)
-                AutoConstants.AutoRotationcontroller, // Rotation controller. Tune these values for your robot. Leaving
-                                                      // them
-                                                      // 0 will only use feedforwards.
-                drivebase::setModuleStates, // Module states consumer
-                true, // Should the path be automatically mirrored depending on alliance color.
-                      // Optional, defaults to true
-                drivebase // Requires this drive subsystem
-            ),
-            new SequentialCommandGroup(
-                new InstantCommand(m_manager::pickCube),
-                new InstantCommand(() -> m_manager.dpadRight(), m_arm, m_intake),
-                new WaitUntilCommand(m_arm::atSetpoint))),
+    chooser.addOption("Free Auto Balance", new FreeAutoBalance(drivebase, m_intake, m_arm, m_field,
+      m_manager, m_vision, this, wrist));
 
-        new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
-            AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)
+    chooser.addOption("Free 2 Cube", new FreeCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this, wrist));
 
-    ));
+    chooser.addOption("Free Grab Balance", new FreeGrabBalance(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this, wrist));
+
+    chooser.addOption("Free Grab community", new FreeGrabCommunity(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this, wrist));
+
+    chooser.addOption("Triple Low Cube", new FreeLowTripleGamePiece(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this, wrist));
+
+    chooser.addOption("Shoooooot", new Shooooot(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this, wrist));
+
+    //chooser.addOption("Two Score One Pickup", new TwoScoreOnePickup(drivebase, m_intake, m_arm, m_field,
+      //  m_manager, m_vision, this));
+
+    chooser.addOption("High Cube", new SimpleHighCube(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this, wrist));
+
+    chooser.addOption("Mid Cone", new SimpleMidCone(drivebase, m_intake, m_arm, m_field,
+        m_manager, m_vision, this, wrist));
+
+    chooser.addOption("Cable 2 Balance", new CableBalanceCubeTwoGame(drivebase, m_intake, m_arm, m_field,
+    m_manager, m_vision, this, wrist));
+
+    chooser.addOption("Triple", new FreeCubeTripleGamePiece(drivebase, m_intake, m_arm, m_field, 
+    m_manager, m_vision, this, wrist));
+
+    
+    
 
     SmartDashboard.putData("Auto Selector", chooser);
 
