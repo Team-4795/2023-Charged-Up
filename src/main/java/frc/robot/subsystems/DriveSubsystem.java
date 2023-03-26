@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
