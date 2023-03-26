@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RollerbarConstants;
 
 public class Rollerbar extends SubsystemBase {
-  private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, RollerbarConstants.kForwardChannel, RollerbarConstants.kForwardChannel);
+  private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, RollerbarConstants.kForwardChannel, RollerbarConstants.kReverseChannel);
   private final CANSparkMax rollerMotor = new CANSparkMax(RollerbarConstants.kRollerbarCANID, MotorType.kBrushed);
 
   private boolean MovingToExtended = getExtension();
@@ -31,8 +31,8 @@ public class Rollerbar extends SubsystemBase {
     rollerMotor.setIdleMode(IdleMode.kBrake);
     rollerMotor.burnFlash();
 
-    extensionTimer.reset();
-    extensionTimer.start();
+    // extensionTimer.reset();
+    // extensionTimer.start();
   }  
 
   public boolean getTarget(){
@@ -50,9 +50,6 @@ public class Rollerbar extends SubsystemBase {
   }
 
   public boolean isExtended() {
-    if(extensionTimer.hasElapsed(1)){
-      extended = MovingToExtended;
-    }
     return extended;
   }
 
@@ -68,10 +65,13 @@ public class Rollerbar extends SubsystemBase {
     rollerMotor.set(0);
   }
 
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Target rollerbar extension", targetExtend);
     SmartDashboard.putBoolean("Rollerbar extension", extended);
+    SmartDashboard.putBoolean("movingToExtended", MovingToExtended);
+    SmartDashboard.putBoolean("solenoid extended", getExtension());
   }
 
   private boolean getExtension() {
@@ -81,15 +81,13 @@ public class Rollerbar extends SubsystemBase {
     }
   }
 
-  private void extend() {
-    extensionTimer.reset();
-    MovingToExtended = true;
+  public void extend() {
+    extended = true;
     solenoid.set(Value.kForward);
   }
 
-  private void retract() {
-    extensionTimer.reset();
-    MovingToExtended = false;
+  public void retract() {
+    extended = false;
     solenoid.set(Value.kReverse);
   }
 
@@ -99,6 +97,17 @@ public class Rollerbar extends SubsystemBase {
     } else {
       retract();
     }
-
+  
+  }
+  public void toggle()
+  {
+    if (extended)
+    {
+      retract();
+    }
+    else if (!extended)
+    {
+      extend();
+    }
   }
 }

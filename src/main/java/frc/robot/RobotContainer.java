@@ -154,6 +154,8 @@ public class RobotContainer {
                 m_manager.setSetpoints();
             }
 
+
+
             m_rollerbar.tryMove(m_arm.getPosition());
 
             if (!m_intake.isStoring() && m_rollerbar.isExtended()) {
@@ -186,8 +188,9 @@ public class RobotContainer {
     ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
     // ControlConstants.operatorA.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
     ControlConstants.operatorA
-        .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))
-        .whileFalse(new RunCommand(m_rollerbar::stop, m_rollerbar));
+    .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))
+    .whileFalse(new RunCommand(m_rollerbar::stop, m_rollerbar));
+    
     ControlConstants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
     ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::rollerbarDpadDown));
 
