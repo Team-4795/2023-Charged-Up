@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,16 +18,21 @@ import frc.robot.Constants.RollerbarConstants;
 
 public class Rollerbar extends SubsystemBase {
   private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, RollerbarConstants.kForwardChannel, RollerbarConstants.kForwardChannel);
-  private final CANSparkMax rollerMotor = new CANSparkMax(RollerbarConstants.kRollerbarCANID, MotorType.kBrushless);
+  private final CANSparkMax rollerMotor = new CANSparkMax(RollerbarConstants.kRollerbarCANID, MotorType.kBrushed);
 
   private boolean extended = getExtension();
   private boolean targetExtend = getExtension();
+
+  private Timer extensionTimer = new Timer();
 
   public Rollerbar() {
     rollerMotor.restoreFactoryDefaults();
     rollerMotor.setIdleMode(IdleMode.kBrake);
     rollerMotor.burnFlash();
-  }
+
+    extensionTimer.reset();
+    extensionTimer.start();
+  }  
 
   public boolean getTarget(){
     return targetExtend;
@@ -43,6 +49,9 @@ public class Rollerbar extends SubsystemBase {
   }
 
   public boolean isExtended() {
+    if(extensionTimer.hasElapsed(1)){
+      extended = targetExtend;
+    }
     return extended;
   }
 
@@ -72,12 +81,12 @@ public class Rollerbar extends SubsystemBase {
   }
 
   private void extend() {
-    extended = true;
+    extensionTimer.reset();
     solenoid.set(Value.kForward);
   }
 
   private void retract() {
-    extended = false;
+    extensionTimer.reset();
     solenoid.set(Value.kReverse);
   }
 
@@ -87,5 +96,6 @@ public class Rollerbar extends SubsystemBase {
     } else {
       retract();
     }
+
   }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.ResourceBundle.Control;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -154,7 +156,7 @@ public class RobotContainer {
 
             m_rollerbar.tryMove(m_arm.getPosition());
 
-            if (!m_intake.isStoring()) {
+            if (!m_intake.isStoring() && m_rollerbar.isExtended()) {
                 m_rollerbar.spin();
             } else {
                 m_rollerbar.stop();
@@ -182,7 +184,10 @@ public class RobotContainer {
 
     ControlConstants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
-    ControlConstants.operatorA.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    // ControlConstants.operatorA.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    ControlConstants.operatorA
+        .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))
+        .whileFalse(new RunCommand(m_rollerbar::stop, m_rollerbar));
     ControlConstants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
     ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::rollerbarDpadDown));
 

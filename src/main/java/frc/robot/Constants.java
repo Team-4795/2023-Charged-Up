@@ -276,12 +276,12 @@ public final class Constants {
   }
 
   public static final class RollerbarConstants {
-    public static final int kRollerbarCANID = 0;
+    public static final int kRollerbarCANID = 12;
     public static final int kForwardChannel = 3;
     public static final int kReverseChannel = 4;
 
-    public static final double kArmBoundary = 0.35;
-    public static final double kSpinSpeed = 0.5;
+    public static final double kArmBoundary = 0.25;
+    public static final double kSpinSpeed = -1.0;
   }
 
   public static final class IntakeConstants{
