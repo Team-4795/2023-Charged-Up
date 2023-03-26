@@ -41,7 +41,7 @@ public class VisionPoseEstimator {
             field = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
             //field = new AprilTagFieldLayout(Heho, 0, 8.013);
         } catch (IOException e) {
-            DriverStation.reportError("Apriltags be Stalin'", e.getStackTrace());
+            DriverStation.reportError("!!!Apriltags be Stalin'!!!", e.getStackTrace());
         }
         estimator = new PhotonPoseEstimator(field, PoseStrategy.MULTI_TAG_PNP, this.camera, VisionConstants.ROBOT_TO_CAMERA);
     }
