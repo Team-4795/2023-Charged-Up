@@ -39,7 +39,7 @@ public class VisionPoseEstimator {
         this.camera = new PhotonCamera(camera);
         try {
             field = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
-            //field = new AprilTagFieldLayout(Heho, 0, 8.013);
+            //field = new AprilTagFieldLayout(Heho, 8.2, 8.013);
         } catch (IOException e) {
             DriverStation.reportError("!!!Apriltags be Stalin'!!!", e.getStackTrace());
         }
