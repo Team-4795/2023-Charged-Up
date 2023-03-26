@@ -20,8 +20,9 @@ public class Rollerbar extends SubsystemBase {
   private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, RollerbarConstants.kForwardChannel, RollerbarConstants.kForwardChannel);
   private final CANSparkMax rollerMotor = new CANSparkMax(RollerbarConstants.kRollerbarCANID, MotorType.kBrushed);
 
-  private boolean extended = getExtension();
+  private boolean MovingToExtended = getExtension();
   private boolean targetExtend = getExtension();
+  private boolean extended = getExtension();
 
   private Timer extensionTimer = new Timer();
 
@@ -50,7 +51,7 @@ public class Rollerbar extends SubsystemBase {
 
   public boolean isExtended() {
     if(extensionTimer.hasElapsed(1)){
-      extended = targetExtend;
+      extended = MovingToExtended;
     }
     return extended;
   }
@@ -82,11 +83,13 @@ public class Rollerbar extends SubsystemBase {
 
   private void extend() {
     extensionTimer.reset();
+    MovingToExtended = true;
     solenoid.set(Value.kForward);
   }
 
   private void retract() {
     extensionTimer.reset();
+    MovingToExtended = false;
     solenoid.set(Value.kReverse);
   }
 
