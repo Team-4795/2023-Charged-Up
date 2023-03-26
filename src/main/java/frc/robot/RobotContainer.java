@@ -146,16 +146,18 @@ public class RobotContainer {
             // once it is high enough, automatically
             // move the rollerbar and move back to the 
             // true setpoint
-            if ((m_rollerbar.isExtended() != m_rollerbar.targetExtend) && (m_arm.setpoint < 0.25)) {
-                m_arm.setTargetPosition(RollerbarConstants.kBoundary + 0.02);
+            if ((m_rollerbar.isExtended() != m_rollerbar.getTarget()) && (m_arm.setpoint < RollerbarConstants.kArmBoundary)) {
+                m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.02);
             } else {
                 m_manager.setSetpoints();
             }
 
             m_rollerbar.tryMove(m_arm.getPosition());
 
-            if (m_intake.isStoring()) {
+            if (!m_intake.isStoring()) {
                 m_rollerbar.spin();
+            } else {
+                m_rollerbar.stop();
             }
         },
         m_rollerbar));

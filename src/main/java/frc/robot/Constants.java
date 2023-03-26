@@ -272,6 +272,7 @@ public final class Constants {
     public static final double maxWindPoint = 0.18;
     public static final double YeetpointEnd = 0.77;
     public static final double armWindPoint = 0.412;
+
   }
 
   public static final class RollerbarConstants {
@@ -279,6 +280,7 @@ public final class Constants {
     public static final int kForwardChannel = 3;
     public static final int kReverseChannel = 4;
 
+    public static final double kArmBoundary = 0.35;
     public static final double kSpinSpeed = 0.5;
   }
 

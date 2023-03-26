@@ -20,7 +20,7 @@ public class Rollerbar extends SubsystemBase {
   private final CANSparkMax rollerMotor = new CANSparkMax(RollerbarConstants.kRollerbarCANID, MotorType.kBrushless);
 
   private boolean extended = getExtension();
-  public boolean targetExtend = getExtension();
+  private boolean targetExtend = getExtension();
 
   public Rollerbar() {
     rollerMotor.restoreFactoryDefaults();
@@ -28,11 +28,45 @@ public class Rollerbar extends SubsystemBase {
     rollerMotor.burnFlash();
   }
 
+  public boolean getTarget(){
+    return targetExtend;
+  }
+
+  public void setTarget(boolean target){
+    targetExtend = target;
+  }
+
+  public void tryMove(double position) {
+    if (position > RollerbarConstants.kArmBoundary) {
+      move();
+    }
+  }
+
+  public boolean isExtended() {
+    return extended;
+  }
+
+  public void setExtendedTarget(boolean extend) {
+    targetExtend = extend;
+  }
+
+  public void spin() {
+    rollerMotor.set(RollerbarConstants.kSpinSpeed);
+  }
+
+  public void stop(){
+    rollerMotor.set(0);
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putBoolean("Target rollerbar extension", targetExtend);
+    SmartDashboard.putBoolean("Rollerbar extension", extended);
+  }
+
   private boolean getExtension() {
     switch (solenoid.get()) {
       case kForward: return true;
-      case kReverse: return false;
-      case kOff: return false;
       default: return false;
     }
   }
@@ -53,37 +87,5 @@ public class Rollerbar extends SubsystemBase {
     } else {
       retract();
     }
-  }
-
-  public void tryExtend() {
-    targetExtend = true;
-  }
-
-  public void tryRetract() {
-    targetExtend = false;
-  }
-
-  public void tryMove(double position) {
-    if (position > RollerbarConstants.kBoundary) {
-      move();
-    }
-  }
-
-  public boolean isExtended() {
-    return extended;
-  }
-
-  public void setExtendedTarget(boolean extend) {
-    targetExtend = extend;
-  }
-
-  public void spin() {
-    rollerMotor.set(RollerbarConstants.kSpinSpeed);
-  }
-
-  @Override
-  public void periodic() {
-    SmartDashboard.putBoolean("Target rollerbar extension", targetExtend);
-    SmartDashboard.putBoolean("Rollerbar extension", targetExtend);
   }
 }
