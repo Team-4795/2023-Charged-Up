@@ -282,6 +282,9 @@ public final class Constants {
 
     public static final double kArmBoundary = 0.25;
     public static final double kSpinSpeed = -0.80;
+
+    public static final double kExtendTime = 1.0;
+    public static final double kRetractTime = 1.0;
   }
 
   public static final class IntakeConstants{

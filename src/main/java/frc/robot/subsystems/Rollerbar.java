@@ -66,10 +66,18 @@ public class Rollerbar extends SubsystemBase {
     rollerMotor.set(0);
   }
 
+  private double getMoveTime() {
+    if (extended) {
+      return RollerbarConstants.kRetractTime;
+    } else {
+      return RollerbarConstants.kExtendTime;
+    }
+  }
+
   @Override
   public void periodic() {
     // Set `extended` on a delay to account for physical movement time
-    if (extensionTimer.hasElapsed(1)) {
+    if (extensionTimer.hasElapsed(getMoveTime())) {
       extended = movingToExtended;
     }
 
