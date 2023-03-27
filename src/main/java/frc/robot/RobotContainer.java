@@ -142,19 +142,17 @@ public class RobotContainer {
 
     m_rollerbar.setDefaultCommand(new RunCommand(
         () -> {
-            // If we want to extend/retract the rollerbar
-            // and if the current arm setpoint is too low
-            // then make the arm move high enough
-            // once it is high enough, automatically
-            // move the rollerbar and move back to the 
-            // true setpoint
-            if ((m_rollerbar.isExtended() != m_rollerbar.getTarget()) && (m_arm.setpoint < RollerbarConstants.kArmBoundary)) {
-                m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.02);
-            } else {
-                m_manager.setSetpoints();
+            // If we want to change the state of the rollerbar while the arm is too low,
+            // then set the target arm position to be just above the minimum height.
+            // Once it is above the boundary, the rollerbar should automatically move
+            // and the arm should move back down.
+            if (m_rollerbar.isExtended() != m_rollerbar.getTarget()) {
+                if (m_arm.setpoint < RollerbarConstants.kArmBoundary) {
+                    m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.02);
+                } else if (m_arm.getPosition() > RollerbarConstants.kArmBoundary) {
+                    m_manager.setSetpoints();
+                }
             }
-
-
 
             m_rollerbar.tryMove(m_arm.getPosition());
 

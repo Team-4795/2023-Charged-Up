@@ -20,7 +20,7 @@ public class Rollerbar extends SubsystemBase {
   private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, RollerbarConstants.kForwardChannel, RollerbarConstants.kReverseChannel);
   private final CANSparkMax rollerMotor = new CANSparkMax(RollerbarConstants.kRollerbarCANID, MotorType.kBrushed);
 
-  private boolean MovingToExtended = getExtension();
+  private boolean movingToExtended = getExtension();
   private boolean targetExtend = getExtension();
   private boolean extended = getExtension();
 
@@ -31,8 +31,8 @@ public class Rollerbar extends SubsystemBase {
     rollerMotor.setIdleMode(IdleMode.kBrake);
     rollerMotor.burnFlash();
 
-    // extensionTimer.reset();
-    // extensionTimer.start();
+    extensionTimer.reset();
+    extensionTimer.start();
   }  
 
   public boolean getTarget(){
@@ -70,7 +70,7 @@ public class Rollerbar extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("Target rollerbar extension", targetExtend);
     SmartDashboard.putBoolean("Rollerbar extension", extended);
-    SmartDashboard.putBoolean("movingToExtended", MovingToExtended);
+    SmartDashboard.putBoolean("movingToExtended", movingToExtended);
     SmartDashboard.putBoolean("solenoid extended", getExtension());
   }
 
