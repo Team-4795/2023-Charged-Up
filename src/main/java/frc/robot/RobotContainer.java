@@ -147,8 +147,8 @@ public class RobotContainer {
             // Once it is above the boundary, the rollerbar should automatically move
             // and the arm should move back down.
             if (m_rollerbar.isExtended() != m_rollerbar.getTarget()) {
-                if (m_arm.setpoint < RollerbarConstants.kArmBoundary) {
-                    m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.02);
+                if (m_arm.setpoint < RollerbarConstants.kArmBoundary ) {
+                    m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.05);
                 } else if (m_arm.getPosition() > RollerbarConstants.kArmBoundary) {
                     m_manager.setSetpoints();
                 }

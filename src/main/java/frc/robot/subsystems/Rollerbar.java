@@ -29,6 +29,7 @@ public class Rollerbar extends SubsystemBase {
   public Rollerbar() {
     rollerMotor.restoreFactoryDefaults();
     rollerMotor.setIdleMode(IdleMode.kBrake);
+    rollerMotor.setSmartCurrentLimit(30);
     rollerMotor.burnFlash();
 
     extensionTimer.reset();
@@ -65,9 +66,13 @@ public class Rollerbar extends SubsystemBase {
     rollerMotor.set(0);
   }
 
-
   @Override
   public void periodic() {
+    // Set `extended` on a delay to account for physical movement time
+    if (extensionTimer.hasElapsed(1)) {
+      extended = movingToExtended;
+    }
+
     SmartDashboard.putBoolean("Target rollerbar extension", targetExtend);
     SmartDashboard.putBoolean("Rollerbar extension", extended);
     SmartDashboard.putBoolean("movingToExtended", movingToExtended);
@@ -82,12 +87,12 @@ public class Rollerbar extends SubsystemBase {
   }
 
   public void extend() {
-    extended = true;
+    movingToExtended = true;
     solenoid.set(Value.kForward);
   }
 
   public void retract() {
-    extended = false;
+    movingToExtended = false;
     solenoid.set(Value.kReverse);
   }
 
@@ -96,18 +101,6 @@ public class Rollerbar extends SubsystemBase {
       extend();
     } else {
       retract();
-    }
-  
-  }
-  public void toggle()
-  {
-    if (extended)
-    {
-      retract();
-    }
-    else if (!extended)
-    {
-      extend();
     }
   }
 }
