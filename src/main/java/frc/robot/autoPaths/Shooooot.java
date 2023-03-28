@@ -36,7 +36,7 @@ public class Shooooot extends SequentialCommandGroup {
                 new PathConstraints(1, 2));
         PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Free Cube 2 Game Piece 2",
                 new PathConstraints(1, 2));
-        PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance Left", new PathConstraints(3, 3));
+        PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Free Auto Balance", new PathConstraints(3, 3));
         // Add option of Vision based two game peice split into parts with commands Cube
         addCommands(
                 new SequentialCommandGroup(

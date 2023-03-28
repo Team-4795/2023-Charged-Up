@@ -66,6 +66,10 @@ public class Rollerbar extends SubsystemBase {
     rollerMotor.set(0);
   }
 
+  public void reverse() {
+    rollerMotor.set(-0.8);
+  }
+
   private double getMoveTime() {
     if (extended) {
       return RollerbarConstants.kRetractTime;
@@ -116,6 +120,14 @@ public class Rollerbar extends SubsystemBase {
       extend();
     } else {
       retract();
+    }
+  }
+
+  public void toggle() {
+    if (movingToExtended) {
+      retract();
+    } else {
+      extend();
     }
   }
 }

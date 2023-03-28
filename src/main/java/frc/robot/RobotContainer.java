@@ -183,7 +183,8 @@ public class RobotContainer {
 
     ControlConstants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
-     ControlConstants.operatorA.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    ControlConstants.driverB.onTrue(new InstantCommand(m_rollerbar::reverse, m_rollerbar));
+    ControlConstants.driverA.onTrue(new InstantCommand(m_rollerbar::toggle));
     // ControlConstants.operatorA
     // .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))
     // .whileFalse(new RunCommand(m_rollerbar::stop, m_rollerbar));
