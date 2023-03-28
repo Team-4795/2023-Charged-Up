@@ -54,7 +54,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision, m_wrist); // huh? see above
+    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision, m_wrist, m_rollerbar); // huh? see above
 
     configureButtonBindings();
 
@@ -146,17 +146,16 @@ public class RobotContainer {
             // then set the target arm position to be just above the minimum height.
             // Once it is above the boundary, the rollerbar should automatically move
             // and the arm should move back down.
-            if (m_rollerbar.isExtended() != m_rollerbar.getTarget()) {
-                if (m_arm.setpoint < RollerbarConstants.kArmBoundary ) {
+                if (m_arm.setpoint < RollerbarConstants.kArmBoundary && m_rollerbar.isExtended() != m_rollerbar.getTarget() ) {
                     m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.05);
                 } else if (m_arm.getPosition() > RollerbarConstants.kArmBoundary) {
-                    m_manager.setSetpoints();
+                    m_manager.setArmSetpoint();
                 }
-            }
+            
 
             m_rollerbar.tryMove(m_arm.getPosition());
 
-            if (!m_intake.isStoring() && m_rollerbar.isExtended()) {
+            if (!m_intake.isStoring() && m_rollerbar.isExtended() && m_arm.atSetpoint()) {
                 m_rollerbar.spin();
             } else {
                 m_rollerbar.stop();
@@ -184,13 +183,13 @@ public class RobotContainer {
 
     ControlConstants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
-    // ControlConstants.operatorA.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
-    ControlConstants.operatorA
-    .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))
-    .whileFalse(new RunCommand(m_rollerbar::stop, m_rollerbar));
+     ControlConstants.operatorA.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    // ControlConstants.operatorA
+    // .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))
+    // .whileFalse(new RunCommand(m_rollerbar::stop, m_rollerbar));
     
     ControlConstants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
-    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::rollerbarDpadDown));
+    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown));
 
     ControlConstants.operatorY
         .onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)))
@@ -239,8 +238,8 @@ public class RobotContainer {
     //     m_intake, m_wrist));
 
     // Pneumatic override
+    
     ControlConstants.operatorX.onTrue(new InstantCommand(m_wrist::flip, m_wrist));
-
     // Vision align
     ControlConstants.driverDpadLeft.whileTrue(new TapeAlign(
         m_robotDrive,

@@ -95,13 +95,20 @@ public class Rollerbar extends SubsystemBase {
   }
 
   public void extend() {
+    if(!movingToExtended){
+      extensionTimer.reset();
+    }
     movingToExtended = true;
     solenoid.set(Value.kForward);
   }
 
   public void retract() {
+    if(movingToExtended){
+      extensionTimer.reset();
+    }
     movingToExtended = false;
     solenoid.set(Value.kReverse);
+      
   }
 
   private void move() {

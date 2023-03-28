@@ -89,28 +89,13 @@ public class StateManager {
                 state = State.MidScore;
             }
         } else {
-            // Switched to B for stow high
-            // state = State.StowHigh;
+            state = State.LowPickup;
         }
 
         setSetpoints();
     }
     
     public void dpadDown() {
-        if (intake.isStoring()) {
-            if (Math.cos(Math.toRadians(drive.getAngle())) < 0) {
-                state = State.BackwardsLowScore;
-            } else {
-                state = State.LowScore;
-            }
-        } else {
-            state = State.LowPickup;
-        }
-
-        setSetpoints();
-    }
-
-    public void rollerbarDpadDown() {
         if (intake.isStoring()) {
             if (Math.cos(Math.toRadians(drive.getAngle())) < 0) {
                 state = State.BackwardsLowScore;
@@ -174,6 +159,10 @@ public class StateManager {
         this.getRollerbarExtended().ifPresent(rollerbar::setExtendedTarget);
 
         SmartDashboard.putString("State", state.name());
+    }
+
+    public void setArmSetpoint(){
+        this.getArmSetpoint().ifPresent(arm::setTargetPosition);
     }
 }
 

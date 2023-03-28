@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Commands.RollerbarCommand;
 import frc.robot.Commands.TapeAlign;
 import frc.robot.autoPaths.*;
 import frc.robot.subsystems.*;
@@ -228,7 +229,7 @@ public class AutoSelector {
   }
 
   public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
-      StateManager m_manager, Vision m_vision, Wrist wrist) {
+      StateManager m_manager, Vision m_vision, Wrist wrist, Rollerbar rollerbar) {
     
     chooser.addOption("Free 2 Cube Balance", new BalanceCubeTwoGamePiece(drivebase, m_intake, m_arm, m_field,
       m_manager, m_vision, this, wrist));
@@ -274,6 +275,12 @@ public class AutoSelector {
 
     chooser.addOption("Triple", new FreeCubeTripleGamePiece(drivebase, m_intake, m_arm, m_field, 
     m_manager, m_vision, this, wrist));
+
+    chooser.addOption("Rollerbar Auto", new SequentialCommandGroup(
+      new RollerbarCommand(rollerbar, m_arm, m_manager, true),
+      new WaitCommand(3),
+      new RollerbarCommand(rollerbar, m_arm, m_manager, false)
+    ));
 
     
     
