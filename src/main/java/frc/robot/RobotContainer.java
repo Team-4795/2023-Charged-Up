@@ -253,7 +253,7 @@ public class RobotContainer {
     // reset LEDs when were not targeting
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
  
-    new Trigger(m_intake::isStoring).onTrue(new RunCommand(() -> setOperatorRumble(0.5)).withTimeout(0.5));
+    new Trigger(m_intake::isStoring).debounce(0.5).onTrue(new RunCommand(() -> setOperatorRumble(0.5)).withTimeout(0.5));
 
   }
 
