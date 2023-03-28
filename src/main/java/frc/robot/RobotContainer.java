@@ -105,7 +105,20 @@ public class RobotContainer {
         m_wrist)
     );
 
-    
+    m_led.setDefaultCommand(
+        new RunCommand(() -> {
+
+            if (m_intake.isStoring()) {
+                m_led.setTopRGB(0, 255, 0);
+            }
+            else {
+                m_led.setTopRGB(255, 0, 0);
+            }
+
+
+        }
+        , m_led)
+    ); 
 
 
     // Subtract up movement by down movement so they cancel out if both are pressed at once

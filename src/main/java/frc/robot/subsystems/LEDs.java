@@ -63,6 +63,32 @@ public class LEDs extends SubsystemBase {
         led.start();
         
     }
+    private void setBottomColor(int a0, int a1, int a2, boolean color_model) /* false: RGB; true: HSV */ {
+
+        for (int i = 0; i < (buffer.getLength()/2); i++) {
+            if (i < Math.round(buffer.getLength())) {
+                if (color_model) buffer.setHSV(i, a0, a1, a2);
+                else buffer.setRGB(i, a0, a1, a2);
+            } else buffer.setRGB(i, 0, 0, 0);
+        }
+
+        led.setData(buffer);
+        led.start();
+        
+    }
+    private void setTopColor(int a0, int a1, int a2, boolean color_model) /* false: RGB; true: HSV */ {
+
+        for (int i = (buffer.getLength()/2); i < buffer.getLength(); i++) {
+            if (i < Math.round(buffer.getLength())) {
+                if (color_model) buffer.setHSV(i, a0, a1, a2);
+                else buffer.setRGB(i, a0, a1, a2);
+            } else buffer.setRGB(i, 0, 0, 0);
+        }
+
+        led.setData(buffer);
+        led.start();
+        
+    }
     
     public void setRGB(int r, int g, int b, double portion) {
         setColor(r, g, b, false, portion);
@@ -96,6 +122,14 @@ public class LEDs extends SubsystemBase {
     
     public void setHSV(HSV hsv) {
         setColor(hsv.h, hsv.s, hsv.v, true, 1);
+    }
+
+    public void setBottomRGB(int r, int g, int b) {
+        setBottomColor(r, g, b, true);
+    }
+
+    public void setTopRGB(int r, int g, int b) {
+        setTopColor(r, g, b, true);
     }
 
     public void reset() {
