@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 /*
@@ -106,7 +107,6 @@ public class RobotContainer {
     );
 
     
-
 
     // Subtract up movement by down movement so they cancel out if both are pressed at once
     m_arm.setDefaultCommand(
@@ -252,6 +252,9 @@ public class RobotContainer {
 
     // reset LEDs when were not targeting
     // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
+ 
+    new Trigger(m_intake::isStoring).onTrue(new RunCommand(() -> setOperatorRumble(0.5)).withTimeout(0.5));
+
   }
 
   public void setDriverRumble(double rumble) {
