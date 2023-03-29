@@ -5,7 +5,6 @@ import frc.robot.subsystems.*;
 import frc.utils.Setpoints;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.CubeSetpointConstants;
 import frc.robot.Constants.ConeSetpointConstants;
 
@@ -35,6 +34,74 @@ public class StateManager {
         None,
     }
 
+    public enum State {
+        LowPickup,
+        StowHigh,
+        DoubleFeeder,
+        LowScore,
+        MidScore,
+        HighScore,
+        StowInFrame,
+        StowLow,
+        BackwardsMidScore,
+        BackwardsHighScore,
+        BackwardsLowScore,
+        BackwardsDoubleFeeder,
+        BackwardsLowPickup;
+    
+        private Optional<Setpoints> getCubeSetpoints() {
+            Setpoints result = null;
+    
+            switch (this) {
+                case LowPickup: result = CubeSetpointConstants.kLowPickup; break;
+                case StowHigh: result = CubeSetpointConstants.kStowHigh; break;
+                case DoubleFeeder: result = CubeSetpointConstants.kDoubleFeeder; break;
+                case LowScore: result = CubeSetpointConstants.kLowScore; break;
+                case MidScore: result = CubeSetpointConstants.kMidScore; break;
+                case HighScore: result = CubeSetpointConstants.kHighScore; break;
+                case StowInFrame: result = CubeSetpointConstants.kStowInFrame; break;
+                case StowLow: result = CubeSetpointConstants.kStowLow; break;
+                case BackwardsMidScore: result = CubeSetpointConstants.kBackwardsMidScore; break;
+                case BackwardsHighScore: result = CubeSetpointConstants.kBackwardsHighScore; break;
+                case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
+                case BackwardsDoubleFeeder: result = CubeSetpointConstants.kBackwardsDoubleFeeder; break;
+                case BackwardsLowPickup: result = CubeSetpointConstants.kBackwardsLowPickup; break;
+            }
+    
+            return Optional.ofNullable(result);
+        }
+    
+        private Optional<Setpoints> getConeSetpoints() {
+            Setpoints result = null;
+    
+            switch (this) {
+                case LowPickup: result = ConeSetpointConstants.kLowPickup; break;
+                case StowHigh: result = ConeSetpointConstants.kStowHigh; break;
+                case DoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
+                case LowScore: result = ConeSetpointConstants.kLowScore; break;
+                case MidScore: result = ConeSetpointConstants.kMidScore; break;
+                case HighScore: result = ConeSetpointConstants.kHighScore; break;
+                case StowInFrame: result = ConeSetpointConstants.kStowInFrame; break;
+                case StowLow: result = ConeSetpointConstants.kStowLow; break;
+                case BackwardsMidScore: result = ConeSetpointConstants.kMidScore; break;
+                case BackwardsHighScore: result = ConeSetpointConstants.kHighScore; break;
+                case BackwardsLowScore: result = ConeSetpointConstants.kLowScore; break;
+                case BackwardsDoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
+                case BackwardsLowPickup: result = ConeSetpointConstants.kLowPickup; break;
+            }
+    
+            return Optional.ofNullable(result);
+        }
+    
+        public Optional<Setpoints> getSetpoints() {
+            switch (StateManager.getGamepiece()) {
+                case Cube: return getCubeSetpoints();
+                case Cone: return getConeSetpoints();
+                default: return Optional.empty();
+            }
+        }
+    }
+
     public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds, DriveSubsystem drive, Wrist wrist, Rollerbar rollerbar) {
         this.state = State.StowInFrame;
 
@@ -62,6 +129,11 @@ public class StateManager {
         vision.switchToTape();
     }
     
+    public void setState(State state) {
+        this.state = state;
+
+        setSetpoints();
+    }
 
     public void dpadUp() {
         if (intake.isStoring()) {
@@ -163,73 +235,5 @@ public class StateManager {
 
     public void setArmSetpoint(){
         this.getArmSetpoint().ifPresent(arm::setTargetPosition);
-    }
-}
-
-enum State {
-    LowPickup,
-    StowHigh,
-    DoubleFeeder,
-    LowScore,
-    MidScore,
-    HighScore,
-    StowInFrame,
-    StowLow,
-    BackwardsMidScore,
-    BackwardsHighScore,
-    BackwardsLowScore,
-    BackwardsDoubleFeeder,
-    BackwardsLowPickup;
-
-    private Optional<Setpoints> getCubeSetpoints() {
-        Setpoints result = null;
-
-        switch (this) {
-            case LowPickup: result = CubeSetpointConstants.kLowPickup; break;
-            case StowHigh: result = CubeSetpointConstants.kStowHigh; break;
-            case DoubleFeeder: result = CubeSetpointConstants.kDoubleFeeder; break;
-            case LowScore: result = CubeSetpointConstants.kLowScore; break;
-            case MidScore: result = CubeSetpointConstants.kMidScore; break;
-            case HighScore: result = CubeSetpointConstants.kHighScore; break;
-            case StowInFrame: result = CubeSetpointConstants.kStowInFrame; break;
-            case StowLow: result = CubeSetpointConstants.kStowLow; break;
-            case BackwardsMidScore: result = CubeSetpointConstants.kBackwardsMidScore; break;
-            case BackwardsHighScore: result = CubeSetpointConstants.kBackwardsHighScore; break;
-            case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
-            case BackwardsDoubleFeeder: result = CubeSetpointConstants.kBackwardsDoubleFeeder; break;
-            case BackwardsLowPickup: result = CubeSetpointConstants.kBackwardsLowPickup; break;
-        }
-
-        return Optional.ofNullable(result);
-    }
-
-    private Optional<Setpoints> getConeSetpoints() {
-        Setpoints result = null;
-
-        switch (this) {
-            case LowPickup: result = ConeSetpointConstants.kLowPickup; break;
-            case StowHigh: result = ConeSetpointConstants.kStowHigh; break;
-            case DoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
-            case LowScore: result = ConeSetpointConstants.kLowScore; break;
-            case MidScore: result = ConeSetpointConstants.kMidScore; break;
-            case HighScore: result = ConeSetpointConstants.kHighScore; break;
-            case StowInFrame: result = ConeSetpointConstants.kStowInFrame; break;
-            case StowLow: result = ConeSetpointConstants.kStowLow; break;
-            case BackwardsMidScore: result = ConeSetpointConstants.kMidScore; break;
-            case BackwardsHighScore: result = ConeSetpointConstants.kHighScore; break;
-            case BackwardsLowScore: result = ConeSetpointConstants.kLowScore; break;
-            case BackwardsDoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
-            case BackwardsLowPickup: result = ConeSetpointConstants.kLowPickup; break;
-        }
-
-        return Optional.ofNullable(result);
-    }
-
-    public Optional<Setpoints> getSetpoints() {
-        switch (StateManager.getGamepiece()) {
-            case Cube: return getCubeSetpoints();
-            case Cone: return getConeSetpoints();
-            default: return Optional.empty();
-        }
     }
 }

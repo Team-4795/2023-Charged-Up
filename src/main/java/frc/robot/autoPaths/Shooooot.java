@@ -41,20 +41,19 @@ public class Shooooot extends SequentialCommandGroup {
         // Add option of Vision based two game peice split into parts with commands Cube
         addCommands(
                 new SequentialCommandGroup(
-                        drivebase.AutoStartUp(CubeTwoGamePiece1, false, m_intake),
-                        m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
-                        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+                        m_autoSelector.autoStartUp(CubeTwoGamePiece1, false),
+                        m_autoSelector.scoreV2("cube", "high", false),
+
+                        m_autoSelector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
 
                         new ParallelCommandGroup(
-                                drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
-                                m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist, m_rollerbar)),
-
-                        drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
-                        m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
+                                drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
+                                m_autoSelector.scoreV2("cube", "high", false)
+                        ),
 
                         new ParallelCommandGroup(
                                 drivebase.followTrajectoryCommand(AutoBalance),
-                                m_autoSelector.stow(m_intake, m_manager, wrist, m_arm)),
+                                m_autoSelector.stow()),
 
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(

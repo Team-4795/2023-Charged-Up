@@ -28,8 +28,7 @@ import frc.robot.subsystems.Wrist;
 
 public class Free25Cube extends SequentialCommandGroup {
 
-  public Free25Cube(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
-      StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist, Rollerbar m_rollerbar ) {
+  public Free25Cube(DriveSubsystem drivebase, AutoSelector m_autoSelector) {
 
     PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP1",
         new PathConstraints(4, 3));
@@ -43,18 +42,26 @@ public class Free25Cube extends SequentialCommandGroup {
     // Add option of Vision based two game peice split into parts with commands Cube
     addCommands(
         new SequentialCommandGroup(
-            drivebase.AutoStartUp(CubeTwoGamePiece1, false, m_intake),
+            m_autoSelector.autoStartUp(CubeTwoGamePiece1, false),
+<<<<<<< Updated upstream
             m_autoSelector.score("cube", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
             m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.2),
 
             new ParallelCommandGroup(
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
                 m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist, m_rollerbar)),
+=======
+            m_autoSelector.scoreV2("cube", "mid", false),
+            m_autoSelector.outtake(0.1),
+
+            m_autoSelector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
+>>>>>>> Stashed changes
             
             new ParallelCommandGroup(  
                 drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
-                m_autoSelector.score("cube", "low", m_intake, m_manager, m_arm, drivebase, m_vision, wrist)),
+                m_autoSelector.scoreV2("cube", "low", false)),
 
+<<<<<<< Updated upstream
             m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.2),
 
             new ParallelCommandGroup(
@@ -62,6 +69,10 @@ public class Free25Cube extends SequentialCommandGroup {
                 m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist, m_rollerbar)),
 
             new InstantCommand(wrist::retract, wrist)
+=======
+            m_autoSelector.outtake(0.1),
+            m_autoSelector.intakeTrajectory("cube", true, CubeThreeGamePiece1)
+>>>>>>> Stashed changes
         ));
   }
 }
