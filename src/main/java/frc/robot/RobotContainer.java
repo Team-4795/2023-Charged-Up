@@ -248,33 +248,7 @@ public class RobotContainer {
         () -> -ControlConstants.driverController.getRawAxis(ControlConstants.kAlignYSpeedAxis)
     ));
 
-    ControlConstants.driverX.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
-
-    ControlConstants.driverX.whileTrue(new SequentialCommandGroup(
-        new WaitCommand(0.4),
-        new RunCommand(() -> {
-        double change = OIConstants.kArmManualSpeed * (-0.75);
-        double new_setpoint = m_arm.setpoint + change;
-
-        if(new_setpoint <= ArmConstants.maxWindPoint){
-            new_setpoint = ArmConstants.maxWindPoint;
-        }
-
-        // Set new arm setpoint
-        if (new_setpoint != m_arm.setpoint) {
-            m_arm.setpoint = new_setpoint;
-            m_arm.runManual();
-        }           
-    }, m_arm)
-    ));
-    
-    ControlConstants.driverX.onFalse(new SequentialCommandGroup(
-                                            new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"),
-                                            new WaitCommand(0.3),
-                                            new InstantCommand(m_manager::pickCone),
-                                            new InstantCommand(m_manager::dpadRight),
-                                            new RunCommand(m_arm::runAutomatic).withTimeout(1)
-    ));
+    ControlConstants.driverX.onTrue(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
 
     ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
 
