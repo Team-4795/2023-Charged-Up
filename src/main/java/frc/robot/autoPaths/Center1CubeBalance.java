@@ -11,12 +11,13 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
+import frc.robot.subsystems.Rollerbar;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 
 public class Center1CubeBalance extends SequentialCommandGroup {
     public Center1CubeBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm,
-    StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist){
+    StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist, Rollerbar m_rollerbar){
         addCommands(
             new SequentialCommandGroup(
                 m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),

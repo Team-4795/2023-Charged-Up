@@ -151,16 +151,19 @@ public class AutoSelector {
     );
   }
 
-  public Command intake(String gamepeice, EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm, Wrist wrist) {
+  public Command intake(String gamepeice, EndEffectorIntake m_intake, StateManager m_manager, LiftArm m_arm, Wrist wrist, Rollerbar m_rollerbar) {
     if (gamepeice.equals("cube")) {
       return new SequentialCommandGroup(
           new InstantCommand(wrist::retract),
           new InstantCommand(m_manager::pickCube),
+          new InstantCommand(m_rollerbar::extend),
           new InstantCommand(() -> m_manager.dpadDown()),
           new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint),
           new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
               .withTimeout(1),
-          new InstantCommand(() -> m_intake.setOverrideStoring(true)));
+          new InstantCommand(() -> m_intake.setOverrideStoring(true)),
+          new InstantCommand(m_rollerbar::retract)
+          );
 
     } else if (gamepeice.equals("cone")) {
       return new SequentialCommandGroup(
@@ -232,24 +235,24 @@ public class AutoSelector {
       StateManager m_manager, Vision m_vision, Wrist wrist, Rollerbar rollerbar) {
     
     chooser.addOption("Free 2 Cube Balance", new Free2CubeBalance(drivebase, m_intake, m_arm, m_field,
-      m_manager, m_vision, this, wrist));
+      m_manager, m_vision, this, wrist, rollerbar));
     
     chooser.addOption("Cable 2 Cube", new Cable2Cube(drivebase, m_intake, m_arm, m_field,
-      m_manager, m_vision, this, wrist));
+      m_manager, m_vision, this, wrist, rollerbar));
 
     chooser.addOption("Center 1 Cube Balance", new Center1CubeBalance(drivebase, m_intake, m_arm, 
-      m_manager, m_vision, this, wrist));
+      m_manager, m_vision, this, wrist, rollerbar));
 
     chooser.addOption("Free 2 Cube", new Free2Cube(drivebase, m_intake, m_arm, m_field,
-        m_manager, m_vision, this, wrist));
+        m_manager, m_vision, this, wrist, rollerbar));
 
     chooser.addOption("Triple Low Cube", new Free3CubeLLL(drivebase, m_intake, m_arm, m_field,
-        m_manager, m_vision, this, wrist));
+        m_manager, m_vision, this, wrist, rollerbar));
 
     chooser.addOption("Shoooooot", new Shooooot(drivebase, m_intake, m_arm, m_field,
-        m_manager, m_vision, this, wrist));
+        m_manager, m_vision, this, wrist, rollerbar));
 
-    chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, m_intake, m_arm, m_field, m_manager, m_vision, this, wrist));
+    chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, m_intake, m_arm, m_field, m_manager, m_vision, this, wrist, rollerbar));
 
     chooser.addOption("High Cube", new SimpleHighCube(drivebase, m_intake, m_arm, m_field,
         m_manager, m_vision, this, wrist));
@@ -258,10 +261,10 @@ public class AutoSelector {
         m_manager, m_vision, this, wrist));
 
     chooser.addOption("Cable 2 Balance", new Cable2CubeBalance(drivebase, m_intake, m_arm, m_field,
-    m_manager, m_vision, this, wrist));
+    m_manager, m_vision, this, wrist, rollerbar));
 
     chooser.addOption("Triple Cube HML", new Free3CubeHML(drivebase, m_intake, m_arm, m_field, 
-    m_manager, m_vision, this, wrist));
+    m_manager, m_vision, this, wrist, rollerbar));
 
     chooser.addOption("Rollerbar Auto", new SequentialCommandGroup(
       new RollerbarCommand(rollerbar, m_arm, m_manager, true),

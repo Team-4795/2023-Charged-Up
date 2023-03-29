@@ -24,13 +24,14 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
+import frc.robot.subsystems.Rollerbar;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 
 public class Shooooot extends SequentialCommandGroup {
 
     public Shooooot(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
-            StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist) {
+            StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist, Rollerbar m_rollerbar) {
 
         PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP1",
                 new PathConstraints(1, 2));
@@ -46,7 +47,7 @@ public class Shooooot extends SequentialCommandGroup {
 
                         new ParallelCommandGroup(
                                 drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
-                                m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist)),
+                                m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist, m_rollerbar)),
 
                         drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
                         m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
