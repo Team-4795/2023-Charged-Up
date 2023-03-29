@@ -32,11 +32,11 @@ public class Shooooot extends SequentialCommandGroup {
     public Shooooot(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
             StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist) {
 
-        PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Free Cube 2 Game Piece 1",
+        PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP1",
                 new PathConstraints(1, 2));
-        PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Free Cube 2 Game Piece 2",
+        PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Score Free N2 GP1",
                 new PathConstraints(1, 2));
-        PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance Left", new PathConstraints(3, 3));
+        PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Free Auto Balance", new PathConstraints(3, 3));
         // Add option of Vision based two game peice split into parts with commands Cube
         addCommands(
                 new SequentialCommandGroup(

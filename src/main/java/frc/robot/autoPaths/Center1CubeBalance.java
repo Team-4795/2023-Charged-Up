@@ -14,8 +14,8 @@ import frc.robot.subsystems.LiftArm;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 
-public class CenterScoreBalance extends SequentialCommandGroup {
-    public CenterScoreBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm,
+public class Center1CubeBalance extends SequentialCommandGroup {
+    public Center1CubeBalance(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm,
     StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist){
         addCommands(
             new SequentialCommandGroup(
