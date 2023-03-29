@@ -20,7 +20,7 @@ import frc.robot.subsystems.*;
 public class AutoSelector {
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-  public Command scoreV2(String gamepiece, String setpoint, boolean backwards) {
+  public Command score(String gamepiece, String setpoint, boolean backwards) {
     switch(gamepiece){
       case "cube": manager.pickCube(); break;
       case "cone": manager.pickCone(); break;
@@ -50,6 +50,10 @@ public class AutoSelector {
     return new ChangeStateCommand(state, intake, true, arm, wrist, rollerbar, manager);
   }
 
+  public Command scoreTrajectory(String gamepiece, String setpoint, boolean backwards, PathPlannerTrajectory traj) {
+    return score(gamepiece, setpoint, backwards).alongWith(drivebase.followTrajectoryCommand(traj));
+  }
+
   public Command intakeTrajectory(String gamepiece, boolean backwards, PathPlannerTrajectory traj) {
     switch(gamepiece){
       case "cube": manager.pickCube(); break;
@@ -73,6 +77,10 @@ public class AutoSelector {
 
   public Command stow() {
     return new ChangeStateCommand(State.StowInFrame, intake, true, arm, wrist, rollerbar, manager);
+  }
+
+  public Command stowTrajectory(PathPlannerTrajectory traj) {
+    return stow().alongWith(drivebase.followTrajectoryCommand(traj));
   }
 
   public Command outtake(double time) {

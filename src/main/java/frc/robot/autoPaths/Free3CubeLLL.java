@@ -43,22 +43,15 @@ public class Free3CubeLLL extends SequentialCommandGroup {
     addCommands(
         new SequentialCommandGroup(
             m_autoSelector.autoStartUp(CubeTwoGamePiece1, false),
-            m_autoSelector.scoreV2("cube", "low", false),
+            m_autoSelector.score("cube", "low", false),
             m_autoSelector.outtake(0.1),
 
             m_autoSelector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
-            
-            new ParallelCommandGroup(  
-                drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
-                m_autoSelector.scoreV2("cube", "low", false)),
-
+            m_autoSelector.scoreTrajectory("cube", "low", false, CubeTwoGamePiece2),
             m_autoSelector.outtake(0.1),
+            
             m_autoSelector.intakeTrajectory("cube", true, CubeThreeGamePiece1),
-
-            new ParallelCommandGroup(  
-                drivebase.followTrajectoryCommand(CubeThreeGamePiece2),
-                m_autoSelector.scoreV2("cube", "low", false)),
-
+            m_autoSelector.scoreTrajectory("cube", "low", false, CubeThreeGamePiece2),
             m_autoSelector.outtake(0.5)
         ));
   }

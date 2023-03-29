@@ -34,7 +34,7 @@ public class SimpleHighCube extends SequentialCommandGroup {
     addCommands(
       new SequentialCommandGroup(
         m_autoSelector.autoStartUp(AutoBalance, false),
-        m_autoSelector.scoreV2("cube", "high", false),
+        m_autoSelector.score("cube", "high", false),
         m_autoSelector.outtake(0.2)
       )
     );

@@ -34,7 +34,7 @@ public class SimpleMidCone extends SequentialCommandGroup {
     addCommands(
       new SequentialCommandGroup(
         m_autoSelector.autoStartUp(AutoBalance, false),
-        m_autoSelector.scoreV2("cone", "mid", false),
+        m_autoSelector.score("cone", "mid", false),
         m_autoSelector.outtake(0.2)
       )
     );
