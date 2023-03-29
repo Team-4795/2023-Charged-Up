@@ -21,16 +21,10 @@ public class Cable3CubeLLL extends SequentialCommandGroup{
             selector.score("cube", "low", false),
             selector.outtake(0.2),
             selector.intakeTrajectory("cube", true, intakeGP4),
-            new ParallelDeadlineGroup(
-                drivebase.followTrajectoryCommand(scoreGP4),
-                selector.score("cube", "low", false)
-            ),
+            selector.scoreTrajectory("cube", "low", false, scoreGP4),
             selector.outtake(0.2),
             selector.intakeTrajectory("cube", true, intakeGP3),
-            new ParallelDeadlineGroup(
-                drivebase.followTrajectoryCommand(throwGP3),
-                selector.stow()
-            ),
+            selector.stowTrajectory(throwGP3),
             selector.yeeeeet("cube"),
             selector.stow()
         ));
