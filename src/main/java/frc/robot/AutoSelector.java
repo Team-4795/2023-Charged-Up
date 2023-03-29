@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.StateManager.Gamepiece;
 import frc.robot.StateManager.State;
 import frc.robot.Commands.AutoBalanceOld;
 import frc.robot.Commands.ChangeStateCommand;
@@ -24,27 +25,46 @@ public class AutoSelector {
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
   public Command score(String gamepiece, String setpoint, boolean backwards) {
-    switch(gamepiece){
-      case "cube": manager.pickCube(); break;
-      case "cone": manager.pickCone(); break;
-      default: throw new IllegalArgumentException("\"" + gamepiece + "\" is not a valid gamepiece.");
+    switch (gamepiece) {
+      case "cube":
+        manager.pickCube();
+        break;
+      case "cone":
+        manager.pickCone();
+        break;
+      default:
+        throw new IllegalArgumentException("\"" + gamepiece + "\" is not a valid gamepiece.");
     }
 
     State state;
 
     if (backwards) {
       switch (setpoint) {
-        case "low": state = State.BackwardsLowPickup; break;
-        case "mid": state = State.BackwardsMidScore; break;
-        case "high": state = State.BackwardsHighScore; break;
-        default: throw new IllegalArgumentException("\"" + setpoint + "\" is not a valid setpoint.");
+        case "low":
+          state = State.BackwardsLowPickup;
+          break;
+        case "mid":
+          state = State.BackwardsMidScore;
+          break;
+        case "high":
+          state = State.BackwardsHighScore;
+          break;
+        default:
+          throw new IllegalArgumentException("\"" + setpoint + "\" is not a valid setpoint.");
       }
     } else {
       switch (setpoint) {
-        case "low": state = State.LowPickup; break;
-        case "mid": state = State.MidScore; break;
-        case "high": state = State.HighScore; break;
-        default: throw new IllegalArgumentException("\"" + setpoint + "\" is not a valid setpoint.");
+        case "low":
+          state = State.LowPickup;
+          break;
+        case "mid":
+          state = State.MidScore;
+          break;
+        case "high":
+          state = State.HighScore;
+          break;
+        default:
+          throw new IllegalArgumentException("\"" + setpoint + "\" is not a valid setpoint.");
       }
     }
 
@@ -58,10 +78,15 @@ public class AutoSelector {
   }
 
   public Command intakeTrajectory(String gamepiece, boolean backwards, PathPlannerTrajectory traj) {
-    switch(gamepiece){
-      case "cube": manager.pickCube(); break;
-      case "cone": manager.pickCone(); break;
-      default: throw new IllegalArgumentException("\"" + gamepiece + "\" is not a valid gamepiece.");
+    switch (gamepiece) {
+      case "cube":
+        manager.pickCube();
+        break;
+      case "cone":
+        manager.pickCone();
+        break;
+      default:
+        throw new IllegalArgumentException("\"" + gamepiece + "\" is not a valid gamepiece.");
     }
 
     StateManager.State state;
@@ -73,9 +98,9 @@ public class AutoSelector {
     }
 
     return new ParallelDeadlineGroup(
-      drivebase.followTrajectoryCommand(traj),
-      new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
-    ).andThen(new InstantCommand(() -> intake.setOverrideStoring(true)));
+        drivebase.followTrajectoryCommand(traj),
+        new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager))
+        .andThen(new InstantCommand(() -> intake.setOverrideStoring(true)));
   }
 
   public Command stow() {
@@ -87,45 +112,41 @@ public class AutoSelector {
   }
 
   public Command outtake(double time) {
-    return new ConditionalCommand(
-      new SequentialCommandGroup(
-        new InstantCommand(wrist::retract, wrist),
-        new WaitCommand(IntakeConstants.kFlickTime),
-        new RunCommand(intake::outtake, intake).withTimeout(time)
-      ),
-      new RunCommand(intake::outtake, intake).withTimeout(time),
-      () -> {
-        switch (manager.getState()) {
-          case BackwardsHighScore: switch (StateManager.getGamepiece()) {
-            case Cube: return true;
-            default: return false;
-          }
-          default: return false;
-        }
-      }).andThen(new InstantCommand(() -> intake.setOverrideStoring(false))
-    );
+    SequentialCommandGroup outtake = new SequentialCommandGroup(new RunCommand(intake::outtake).withTimeout(time));
+    if (manager.getState() == State.MidScore && StateManager.getGamepiece() == Gamepiece.Cone) {
+      outtake = new SequentialCommandGroup(
+          new InstantCommand(wrist::extend, wrist),
+          new WaitCommand(0.2),
+          new RunCommand(intake::outtake, intake).withTimeout(time));
+    } else if (manager.getState() == State.BackwardsHighScore && StateManager.getGamepiece() == Gamepiece.Cube) {
+      outtake = new SequentialCommandGroup(
+          new InstantCommand(wrist::retract, wrist),
+          new WaitCommand(IntakeConstants.kFlickTime),
+          new RunCommand(intake::outtake, intake).withTimeout(time));
+    }
+    return outtake;
   }
 
   public Command autoStartUp(PathPlannerTrajectory traj, boolean flip) {
     return drivebase.AutoStartUp(traj, flip, intake);
   }
 
-  public Command autoBalance(boolean backward, boolean withDriveup){
+  public Command autoBalance(boolean backward, boolean withDriveup) {
     int direction = 1;
-    if(backward){
+    if (backward) {
       direction = -1;
     }
-    if(withDriveup){
+    if (withDriveup) {
       return new SequentialCommandGroup(
-        new DriveCommandOld(drivebase, direction * AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
-        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)
-      );
+          new DriveCommandOld(drivebase, direction * AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
+              AutoConstants.checkDuration),
+          new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold));
     } else {
       return new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold);
     }
   }
 
-  public Command yeeeeet(String gamepiece){
+  public Command yeeeeet(String gamepiece) {
     return new Yeeeeet(arm, wrist, intake, manager, gamepiece);
   }
 
@@ -148,11 +169,10 @@ public class AutoSelector {
     this.wrist = wrist;
     this.rollerbar = rollerbar;
 
-
     chooser.addOption("Free 2 Cube Balance", new Free2Cube(drivebase, this));
-      
+
     chooser.addOption("Cable 2 Cube Balance", new Cable2CubeBalance(drivebase, this));
-    
+
     chooser.addOption("Cable 2 Cube", new Cable2Cube(drivebase, this));
 
     chooser.addOption("Center Cube Balance", new Center1CubeBalance(drivebase, this));
@@ -167,15 +187,16 @@ public class AutoSelector {
 
     chooser.addOption("Cable 3 Hybrid MMH", new Cable3HyrbidMMH(drivebase, this));
 
-    // chooser.addOption("Free Grab Balance", new FreeGrabBalance(drivebase, intake, arm, field,
-    //     manager, vision, this, wrist));
+    // chooser.addOption("Free Grab Balance", new FreeGrabBalance(drivebase, intake,
+    // arm, field,
+    // manager, vision, this, wrist));
 
     chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, this));
 
     chooser.addOption("Triple Low Cube", new Free3CubeLLL(drivebase, this));
 
     // chooser.addOption("Shoooooot", new Shooooot(drivebase, intake, arm, field,
-    //     manager, vision, this, wrist));
+    // manager, vision, this, wrist));
 
     chooser.addOption("Cable 2 Balance", new Cable2CubeBalance(drivebase, this));
 
