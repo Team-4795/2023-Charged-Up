@@ -11,9 +11,12 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.StateManager.State;
+import frc.robot.Commands.AutoBalanceOld;
 import frc.robot.Commands.ChangeStateCommand;
+import frc.robot.Commands.DriveCommandOld;
 import frc.robot.Commands.RollerbarCommand;
 import frc.robot.Commands.TapeAlign;
+import frc.robot.Commands.Yeeeeet;
 import frc.robot.autoPaths.*;
 import frc.robot.subsystems.*;
 
@@ -107,6 +110,25 @@ public class AutoSelector {
     return drivebase.AutoStartUp(traj, flip, intake);
   }
 
+  public Command autoBalance(boolean backward, boolean withDriveup){
+    int direction = 1;
+    if(backward){
+      direction = -1;
+    }
+    if(withDriveup){
+      return new SequentialCommandGroup(
+        new DriveCommandOld(drivebase, direction * AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold, AutoConstants.checkDuration),
+        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)
+      );
+    } else {
+      return new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold);
+    }
+  }
+
+  public Command yeeeeet(String gamepiece){
+    return new Yeeeeet(arm, wrist, intake, manager, gamepiece);
+  }
+
   DriveSubsystem drivebase;
   EndEffectorIntake intake;
   LiftArm arm;
@@ -135,9 +157,13 @@ public class AutoSelector {
 
     chooser.addOption("Center Cube Balance", new Center1CubeBalance(drivebase, this));
 
+    chooser.addOption("Center 1.5 Balance", new Center15CubeBalance(drivebase, this));
+
     chooser.addOption("Free 2 Cube Balance", new Free2CubeBalance(drivebase, this));
 
     chooser.addOption("Free 2 Cube", new Free2Cube(drivebase, this));
+
+    chooser.addOption("Cable 3 Cube LLL", new Cable3CubeLLL(drivebase, this));
 
     // chooser.addOption("Free Grab Balance", new FreeGrabBalance(drivebase, intake, arm, field,
     //     manager, vision, this, wrist));
