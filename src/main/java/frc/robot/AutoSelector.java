@@ -165,6 +165,8 @@ public class AutoSelector {
 
     chooser.addOption("Cable 3 Cube LLL", new Cable3CubeLLL(drivebase, this));
 
+    chooser.addOption("Cable 3 Hybrid MMH", new Cable3HyrbidMMH(drivebase, this));
+
     // chooser.addOption("Free Grab Balance", new FreeGrabBalance(drivebase, intake, arm, field,
     //     manager, vision, this, wrist));
 
