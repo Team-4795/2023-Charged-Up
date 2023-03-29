@@ -43,7 +43,7 @@ public class Free3CubeLLL extends SequentialCommandGroup {
     // Add option of Vision based two game peice split into parts with commands Cube
     addCommands(
         new SequentialCommandGroup(
-            drivebase.AutoStartUp(CubeTwoGamePiece1, true, m_intake),
+            drivebase.AutoStartUp(CubeTwoGamePiece1, false, m_intake),
             m_autoSelector.score("cube", "low", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
             m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.2),
 

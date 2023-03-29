@@ -156,13 +156,13 @@ public class AutoSelector {
       return new SequentialCommandGroup(
           new InstantCommand(wrist::retract),
           new InstantCommand(m_manager::pickCube),
-          new InstantCommand(m_rollerbar::extend),
+          new RollerbarCommand(m_rollerbar, m_arm, m_manager, true),
           new InstantCommand(() -> m_manager.dpadDown()),
           new RunCommand(m_arm::runAutomatic, m_arm).until(m_arm::atSetpoint),
           new RunCommand(() -> m_intake.intakeFromGamepiece(m_manager.isStowing()), m_intake)
               .withTimeout(1),
           new InstantCommand(() -> m_intake.setOverrideStoring(true)),
-          new InstantCommand(m_rollerbar::retract)
+          new RollerbarCommand(m_rollerbar, m_arm, m_manager, false)
           );
 
     } else if (gamepeice.equals("cone")) {

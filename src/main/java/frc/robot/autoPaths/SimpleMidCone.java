@@ -34,7 +34,7 @@ public SimpleMidCone(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftA
 
   addCommands(
    new SequentialCommandGroup(
-    drivebase.AutoStartUp(AutoBalance, true, m_intake),
+    drivebase.AutoStartUp(AutoBalance, false, m_intake),
     m_autoSelector.score("cone", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
     m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01)
     ));

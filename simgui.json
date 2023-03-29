@@ -81,12 +81,17 @@
         },
         ".recording": {
           "open": true
-        },
-        "open": true
+        }
       },
       "SmartDashboard": {
+        "Auto Selector": {
+          "open": true
+        },
         "open": true
       }
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
