@@ -78,11 +78,11 @@ public class TapeAlign extends CommandBase {
       x_speed = controller.calculate(vision.getTargetAngle(), 0);
       //y_speed = controller.calculate(vision.getTargetAngle(), 0);
 
-      driveSubsystem.drive(-x_speed,ySpeed, rotation,true, true);
+      driveSubsystem.drive(-x_speed,ySpeed,-rotation,true, true);
     } else {
       double currentHeading = driveSubsystem.getvisionheading();
       double rotation = rotationPID.calculate(currentHeading,180);
-      driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
+      driveSubsystem.drive(xSpeed,ySpeed,-rotation,true,true);
     }
   }
   @Override

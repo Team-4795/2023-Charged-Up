@@ -148,9 +148,9 @@ public class RobotContainer {
             // Otherwise, if the rollerbar is where we want it to be, move back to the correct setpoint.
             if (m_rollerbar.isExtended() != m_rollerbar.getTarget()) {
                 if (!m_rollerbar.safeToMove(m_arm.setpoint)) {
-                    m_arm.setTargetPosition(RollerbarConstants.kArmBoundary);
+                    m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.025);
                 }
-            } else {
+            } else if (m_arm.setpoint != m_manager.getArmSetpoint().get()) {
                 m_manager.setArmSetpoint();
             }
             

@@ -282,7 +282,7 @@ public final class Constants {
 
     public static final double kArmBoundary = 0.23;
     public static final double kDoubleExtensionBoundary = 0.45;
-    public static final double kSpinSpeed = -1;
+    public static final double kSpinSpeed = -0.8;
 
     public static final double kExtendTime = .3;
     public static final double kRetractTime = .5;
@@ -318,7 +318,7 @@ public final class Constants {
     public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.5, false);
     public static final Setpoints kLowScore = new Setpoints(0.89, false, -0.5, false);
     public static final Setpoints kMidScore = new Setpoints(0.69, true, -0.5, false);
-    public static final Setpoints kHighScore = new Setpoints(0.565, true, -0.7, false);
+    public static final Setpoints kHighScore = new Setpoints(0.565, true, -0.85, false);
     public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.5, false);
     public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.5, false);
     public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, true, -1.0, false);
@@ -333,7 +333,7 @@ public final class Constants {
     public static final Setpoints kStowHigh = new Setpoints(0.5, false, -0.4, false);
     public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.4, false);
     public static final Setpoints kLowScore = new Setpoints(0.87, false, -0.4, false);
-    public static final Setpoints kMidScore = new Setpoints(0.71, false, -0.4, false);
+    public static final Setpoints kMidScore = new Setpoints(0.72, false, -0.4, false);
     public static final Setpoints kHighScore = new Setpoints(0.64, true, -0.4, false);
     public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.4, false);
     public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.4, false);
