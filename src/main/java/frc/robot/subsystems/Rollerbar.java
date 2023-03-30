@@ -44,8 +44,12 @@ public class Rollerbar extends SubsystemBase {
     targetExtend = target;
   }
 
+  public boolean safeToMove(double position) {
+    return position > RollerbarConstants.kArmBoundary && position < RollerbarConstants.kDoubleExtensionBoundary;
+  }
+
   public void tryMove(double position) {
-    if (position > RollerbarConstants.kArmBoundary) {
+    if (safeToMove(position)) {
       move();
     }
   }
