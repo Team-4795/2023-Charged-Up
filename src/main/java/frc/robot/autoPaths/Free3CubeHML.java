@@ -17,27 +17,27 @@ public class Free3CubeHML extends SequentialCommandGroup {
   public Free3CubeHML(DriveSubsystem drivebase, AutoSelector m_autoSelector) {
 
     PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP1",
-        new PathConstraints(3.5, 3));
+        new PathConstraints(4, 3));
     PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Score Free N2 GP1",
-        new PathConstraints(3.5, 3));
+        new PathConstraints(4, 3));
     PathPlannerTrajectory CubeThreeGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP2",
-        new PathConstraints(2, 3));   
+        new PathConstraints(4, 3));   
         PathPlannerTrajectory CubeThreeGamePiece2 = PathPlanner.loadPath("Score Free N2 GP2",
-        new PathConstraints(2, 3));   
+        new PathConstraints(4, 3));   
 
     addCommands(
         new SequentialCommandGroup(
             m_autoSelector.autoStartUp(CubeTwoGamePiece1, false),
             m_autoSelector.score("cube", "high", false),
-            m_autoSelector.outtake(0.1),
+            m_autoSelector.outtake(0.25),
 
             m_autoSelector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
             m_autoSelector.scoreTrajectory("cube", "mid", false, CubeTwoGamePiece2),
-            m_autoSelector.outtake(0.1),
+            m_autoSelector.outtake(0.4),
             
             m_autoSelector.intakeTrajectory("cube", true, CubeThreeGamePiece1),
             m_autoSelector.scoreTrajectory("cube", "low", false, CubeThreeGamePiece2),
-            m_autoSelector.outtake(0.2)
+            m_autoSelector.outtake(0.5)
         ));
   }
 }

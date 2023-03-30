@@ -24,6 +24,8 @@ public class Rollerbar extends SubsystemBase {
   private boolean targetExtend = getExtension();
   private boolean extended = getExtension();
 
+  private double requestedSpeed = 0;
+
   private Timer extensionTimer = new Timer();
 
   public Rollerbar() {
@@ -59,10 +61,12 @@ public class Rollerbar extends SubsystemBase {
   }
 
   public void spin() {
+    requestedSpeed = RollerbarConstants.kSpinSpeed;
     rollerMotor.set(RollerbarConstants.kSpinSpeed);
   }
 
   public void stop(){
+    requestedSpeed = 0;
     rollerMotor.set(0);
   }
 
@@ -86,9 +90,11 @@ public class Rollerbar extends SubsystemBase {
     }
 
     SmartDashboard.putBoolean("Target rollerbar extension", targetExtend);
-    SmartDashboard.putBoolean("Rollerbar extension", extended);
+    SmartDashboard.putBoolean("Rollerbar extension", isExtended());
     SmartDashboard.putBoolean("movingToExtended", movingToExtended);
     SmartDashboard.putBoolean("solenoid extended", getExtension());
+    SmartDashboard.putNumber("rollerbar motor speed", rollerMotor.get());
+    SmartDashboard.putNumber("Requested rollerbar speed", requestedSpeed);
   }
 
   private boolean getExtension() {

@@ -43,8 +43,6 @@ public class Cable2CubeBalance extends SequentialCommandGroup {
 
             m_autoSelector.stowTrajectory(AutoBalance),
 
-            new DriveCommandOld(drivebase, AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
-                AutoConstants.checkDuration).withTimeout(AutoConstants.overrideDuration),
-            new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold)));
+            m_autoSelector.autoBalance(true, true)));
   }
 }

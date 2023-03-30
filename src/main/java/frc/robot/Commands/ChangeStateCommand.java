@@ -17,6 +17,7 @@ public class ChangeStateCommand extends CommandBase {
   Wrist wrist;
   Rollerbar rollerbar;
   StateManager manager;
+  StateManager.State state;
 
   boolean end;
 
@@ -26,10 +27,10 @@ public class ChangeStateCommand extends CommandBase {
     this.wrist = wrist;
     this.rollerbar = rollerbar;
     this.manager = manager;
-
+    this.state = state;
     this.end = end;
 
-    manager.setState(state);
+    addRequirements(intake, arm, wrist, rollerbar);
   }
 
   private void intakeDefault() {
@@ -60,18 +61,23 @@ public class ChangeStateCommand extends CommandBase {
 
   private void rollerbarDefault() {
     if (arm.setpoint < RollerbarConstants.kArmBoundary && rollerbar.isExtended() != rollerbar.getTarget() ) {
-      arm.setTargetPosition(RollerbarConstants.kArmBoundary);
+      arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.025);
     } else if (arm.getPosition() > RollerbarConstants.kArmBoundary) {
       manager.setArmSetpoint();
     }
 
     rollerbar.tryMove(arm.getPosition());
 
-    if (!intake.isStoring() && rollerbar.isExtended() && arm.atSetpoint()) {
+    if (rollerbar.isExtended()) {
       rollerbar.spin();
     } else {
       rollerbar.stop();
     }
+  }
+
+  @Override
+  public void initialize(){
+    manager.setState(state);
   }
 
   @Override

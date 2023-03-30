@@ -147,10 +147,11 @@ public class RobotContainer {
             // Once it is above the boundary, the rollerbar should automatically move
             // and the arm should move back down.
             if (m_arm.setpoint < RollerbarConstants.kArmBoundary && m_rollerbar.isExtended() != m_rollerbar.getTarget() ) {
-                m_arm.setTargetPosition(RollerbarConstants.kArmBoundary);
+                m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.025);
             } else if (m_arm.getPosition() > RollerbarConstants.kArmBoundary) {
                 m_manager.setArmSetpoint();
             }
+            
 
             m_rollerbar.tryMove(m_arm.getPosition());
 
@@ -159,6 +160,7 @@ public class RobotContainer {
             } else {
                 m_rollerbar.stop();
             }
+
         },
         m_rollerbar));
   }
@@ -182,7 +184,7 @@ public class RobotContainer {
 
     ControlConstants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
-    ControlConstants.driverB.onTrue(new InstantCommand(m_rollerbar::reverse, m_rollerbar));
+    ControlConstants.driverB.whileTrue(new RunCommand(m_rollerbar::reverse, m_rollerbar));
     ControlConstants.driverA.onTrue(new InstantCommand(m_rollerbar::toggle));
     // ControlConstants.operatorA
     // .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))

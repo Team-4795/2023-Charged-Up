@@ -112,7 +112,7 @@ public class AutoSelector {
   }
 
   public Command outtake(double time) {
-    SequentialCommandGroup outtake = new SequentialCommandGroup(new RunCommand(intake::outtake).withTimeout(time));
+    SequentialCommandGroup outtake = new SequentialCommandGroup(new RunCommand(intake::outtake, intake).withTimeout(time));
     if (manager.getState() == State.MidScore && StateManager.getGamepiece() == Gamepiece.Cone) {
       outtake = new SequentialCommandGroup(
           new InstantCommand(wrist::extend, wrist),

@@ -280,11 +280,11 @@ public final class Constants {
     public static final int kForwardChannel = 11;
     public static final int kReverseChannel = 12;
 
-    public static final double kArmBoundary = 0.3;
+    public static final double kArmBoundary = 0.23;
     public static final double kSpinSpeed = -1;
 
-    public static final double kExtendTime = .5;
-    public static final double kRetractTime = .75;
+    public static final double kExtendTime = .3;
+    public static final double kRetractTime = .5;
   }
 
   public static final class IntakeConstants{
@@ -358,5 +358,4 @@ public final class Constants {
     public static final int kForwardChannel = 8;
     public static final int kBackwardChannel = 9;
   }
-
 }
