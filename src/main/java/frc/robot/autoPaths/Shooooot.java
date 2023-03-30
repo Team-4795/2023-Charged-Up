@@ -24,57 +24,60 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.LiftArm;
+import frc.robot.subsystems.Rollerbar;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 
 public class Shooooot extends SequentialCommandGroup {
 
     public Shooooot(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
-            StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist) {
+            StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist,
+            Rollerbar m_rollerbar) {
 
-        PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Free Cube 2 Game Piece 1",
+        PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP1",
                 new PathConstraints(1, 2));
-        PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Free Cube 2 Game Piece 2",
+        PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Score Free N2 GP1",
                 new PathConstraints(1, 2));
-        PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance Left", new PathConstraints(3, 3));
+        PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Free Auto Balance",
+                new PathConstraints(3, 3));
         // Add option of Vision based two game peice split into parts with commands Cube
         addCommands(
                 new SequentialCommandGroup(
-                        drivebase.AutoStartUp(CubeTwoGamePiece1, true, m_intake),
-                        m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
-                        new InstantCommand(() -> m_intake.setOverrideStoring(false)),
+                        m_autoSelector.autoStartUp(CubeTwoGamePiece1, false),
+                        m_autoSelector.score("cube", "high", false),
 
-                        new ParallelCommandGroup(
-                                drivebase.followTrajectoryCommand(CubeTwoGamePiece1),
-                                m_autoSelector.intake("cube", m_intake, m_manager, m_arm, wrist)),
-
-                        drivebase.followTrajectoryCommand(CubeTwoGamePiece2),
-                        m_autoSelector.score("cube", "high", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
-
-                        new ParallelCommandGroup(
-                                drivebase.followTrajectoryCommand(AutoBalance),
-                                m_autoSelector.stow(m_intake, m_manager, wrist, m_arm)),
+                        m_autoSelector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
+                        m_autoSelector.scoreTrajectory("cube", "high", false, CubeTwoGamePiece2),
+                        m_autoSelector.stowTrajectory(AutoBalance),
 
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
-                                        new DriveCommandOld(drivebase, -AutoConstants.driveBalanceSpeed,
+                                        new DriveCommandOld(drivebase,
+                                                -AutoConstants.driveBalanceSpeed,
                                                 AutoConstants.driveAngleThreshold,
                                                 AutoConstants.checkDuration)
                                                 .withTimeout(AutoConstants.overrideDuration),
-                                        new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold),
-                                        new InstantCommand(m_vision::switchToTag)
-                                       
+                                        new AutoBalanceOld(drivebase,
+                                                AutoConstants.angularVelocityErrorThreshold),
+                                        new InstantCommand(
+                                                m_vision::switchToTag)
+
                                 ),
                                 new SequentialCommandGroup(
                                         new SequentialCommandGroup(
-                                                new InstantCommand(() -> m_arm.setTargetPosition(.325), m_arm),
-                                                new InstantCommand(wrist::retract, wrist),
-                                                new RunCommand(m_arm::runAutomatic, m_arm).withTimeout(1.5),
-                                                new RunCommand(() -> m_intake.intake(-1), m_intake).withTimeout(.3)
-                                        )
-                                )
-                        )
-                )
-        );
+                                                new InstantCommand(
+                                                        () -> m_arm.setTargetPosition(
+                                                                .325),
+                                                        m_arm),
+                                                new InstantCommand(
+                                                        wrist::retract,
+                                                        wrist),
+                                                new RunCommand(m_arm::runAutomatic,
+                                                        m_arm)
+                                                        .withTimeout(1.5),
+                                                new RunCommand(() -> m_intake
+                                                        .intake(-1),
+                                                        m_intake)
+                                                        .withTimeout(.3))))));
     }
 }
