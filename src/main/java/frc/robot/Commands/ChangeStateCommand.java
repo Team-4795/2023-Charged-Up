@@ -60,9 +60,11 @@ public class ChangeStateCommand extends CommandBase {
   }
 
   private void rollerbarDefault() {
-    if (arm.setpoint < RollerbarConstants.kArmBoundary && rollerbar.isExtended() != rollerbar.getTarget() ) {
-      arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.025);
-    } else if (arm.getPosition() > RollerbarConstants.kArmBoundary) {
+    if (rollerbar.isExtended() != rollerbar.getTarget()) {
+      if (!rollerbar.safeToMove(arm.setpoint)) {
+          arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.025);
+      }
+    } else {
       manager.setArmSetpoint();
     }
 

@@ -24,7 +24,7 @@ public class Cable2CubeBalance extends SequentialCommandGroup {
     PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Score Cable N2 GP4",
         new PathConstraints(3.5, 3.5));
 
-    PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Balance Cable Community", 
+    PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Balance Cable N2", 
          new PathConstraints(3.5, 3.5));
 
     PathPlannerTrajectory AutoDriveUp = PathPlanner.loadPath("TEST Cable Balance Driveup", 

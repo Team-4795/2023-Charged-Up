@@ -23,7 +23,7 @@ public class Free2CubeBalance extends SequentialCommandGroup {
         new PathConstraints(4, 3));
     PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Score Free N2 GP1",
         new PathConstraints(4, 3));
-    PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Balance Free Community", new PathConstraints(3, 3));
+    PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Balance Free N2", new PathConstraints(3, 3));
     // Add option of Vision based two game peice split into parts with commands Cube
     addCommands(
         new SequentialCommandGroup(
