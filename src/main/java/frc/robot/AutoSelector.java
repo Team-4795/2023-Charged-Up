@@ -195,6 +195,8 @@ public class AutoSelector {
 
     chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, this));
 
+    chooser.addOption("Free 2.5 Cube Balance", new Free25CubeBalance(this));
+
     chooser.addOption("Free 3 Cube LLL", new Free3CubeLLL(drivebase, this));
 
     chooser.addOption("Free 3 Cube HML", new Free3CubeHML(drivebase, this));
