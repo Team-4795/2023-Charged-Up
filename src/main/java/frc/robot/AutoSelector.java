@@ -169,11 +169,17 @@ public class AutoSelector {
     this.wrist = wrist;
     this.rollerbar = rollerbar;
 
-    chooser.addOption("Free 2 Cube Balance", new Free2Cube(drivebase, this));
-
     chooser.addOption("Cable 2 Cube Balance", new Cable2CubeBalance(drivebase, this));
 
     chooser.addOption("Cable 2 Cube", new Cable2Cube(drivebase, this));
+
+    chooser.addOption("Cable 2.5 Cube", new Cable25Cube(drivebase, this));
+
+    chooser.addOption("Cable 2.5 Cube Balance", new Cable25CubeBalance(this));
+
+    chooser.addOption("Cable 3 Cube LLL", new Cable3CubeLLL(drivebase, this));
+
+    chooser.addOption("Cable 3 Hybrid MMH", new Cable3HyrbidMMH(drivebase, this));
 
     chooser.addOption("Center Cube Balance", new Center1CubeBalance(drivebase, this));
 
@@ -183,28 +189,22 @@ public class AutoSelector {
 
     chooser.addOption("Free 2 Cube", new Free2Cube(drivebase, this));
 
-    chooser.addOption("Cable 3 Cube LLL", new Cable3CubeLLL(drivebase, this));
-
-    chooser.addOption("Cable 3 Hybrid MMH", new Cable3HyrbidMMH(drivebase, this));
-
     // chooser.addOption("Free Grab Balance", new FreeGrabBalance(drivebase, intake,
     // arm, field,
     // manager, vision, this, wrist));
 
     chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, this));
 
-    chooser.addOption("Triple Low Cube", new Free3CubeLLL(drivebase, this));
+    chooser.addOption("Free 3 Cube LLL", new Free3CubeLLL(drivebase, this));
+
+    chooser.addOption("Free 3 Cube HML", new Free3CubeHML(drivebase, this));
 
     // chooser.addOption("Shoooooot", new Shooooot(drivebase, intake, arm, field,
     // manager, vision, this, wrist));
 
-    chooser.addOption("Cable 2 Balance", new Cable2CubeBalance(drivebase, this));
-
     chooser.addOption("High Cube", new SimpleHighCube(drivebase, this));
 
     chooser.addOption("Mid Cone", new SimpleMidCone(drivebase, this));
-
-    chooser.addOption("Triple Cube HML", new Free3CubeHML(drivebase, this));
 
     SmartDashboard.putData("Auto Selector", chooser);
   }

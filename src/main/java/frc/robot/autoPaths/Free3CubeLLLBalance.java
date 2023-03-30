@@ -19,7 +19,7 @@ public class Free3CubeLLLBalance extends SequentialCommandGroup {
             new PathConstraints(4, 3));   
         PathPlannerTrajectory CubeThreeGamePiece2 = PathPlanner.loadPath("Score Free N3 GP2",
             new PathConstraints(4, 3));   
-        PathPlannerTrajectory balanceCommunity = PathPlanner.loadPath("Balance Free Community N3", 
+        PathPlannerTrajectory balanceCommunity = PathPlanner.loadPath("Balance Free N3", 
             new PathConstraints(4, 3));
 
     
