@@ -169,6 +169,8 @@ public class AutoSelector {
     this.wrist = wrist;
     this.rollerbar = rollerbar;
 
+    chooser.addOption("Test", new AutoTest(this));
+
     chooser.addOption("Cable 2 Cube Balance", new Cable2CubeBalance(drivebase, this));
 
     chooser.addOption("Cable 2 Cube", new Cable2Cube(drivebase, this));
