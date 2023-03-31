@@ -1,7 +1,5 @@
 package frc.robot;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -15,8 +13,6 @@ import frc.robot.StateManager.State;
 import frc.robot.Commands.AutoBalanceOld;
 import frc.robot.Commands.ChangeStateCommand;
 import frc.robot.Commands.DriveCommandOld;
-import frc.robot.Commands.RollerbarCommand;
-import frc.robot.Commands.TapeAlign;
 import frc.robot.Commands.Yeeeeet;
 import frc.robot.autoPaths.*;
 import frc.robot.subsystems.*;
@@ -25,13 +21,13 @@ public class AutoSelector {
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
   public Command score(String gamepiece, String setpoint, boolean backwards) {
+    Command setGamepiece;
+
     switch (gamepiece) {
       case "cube":
-        manager.pickCube();
-        break;
+        setGamepiece = new InstantCommand(manager::pickCube); break;
       case "cone":
-        manager.pickCone();
-        break;
+        setGamepiece = new InstantCommand(manager::pickCone); break;
       default:
         throw new IllegalArgumentException("\"" + gamepiece + "\" is not a valid gamepiece.");
     }
@@ -68,9 +64,11 @@ public class AutoSelector {
       }
     }
 
-    intake.setOverrideStoring(true);
+    Command setOverride = new InstantCommand(() -> intake.setOverrideStoring(true));
 
-    return new ChangeStateCommand(state, intake, true, arm, wrist, rollerbar, manager);
+    return setGamepiece
+      .andThen(setOverride)
+      .andThen(new ChangeStateCommand(state, intake, true, arm, wrist, rollerbar, manager));
   }
 
   public Command scoreTrajectory(String gamepiece, String setpoint, boolean backwards, PathPlannerTrajectory traj) {
@@ -78,13 +76,13 @@ public class AutoSelector {
   }
 
   public Command intakeTrajectory(String gamepiece, boolean backwards, PathPlannerTrajectory traj) {
+    Command setGamepiece;
+
     switch (gamepiece) {
       case "cube":
-        manager.pickCube();
-        break;
+        setGamepiece = new InstantCommand(manager::pickCube); break;
       case "cone":
-        manager.pickCone();
-        break;
+        setGamepiece = new InstantCommand(manager::pickCone); break;
       default:
         throw new IllegalArgumentException("\"" + gamepiece + "\" is not a valid gamepiece.");
     }
@@ -97,10 +95,13 @@ public class AutoSelector {
       state = State.LowPickup;
     }
 
-    return new ParallelDeadlineGroup(
-        drivebase.followTrajectoryCommand(traj),
-        new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager))
-        .andThen(new InstantCommand(() -> intake.setOverrideStoring(true)));
+    return setGamepiece
+      .andThen(
+        new ParallelDeadlineGroup(
+          drivebase.followTrajectoryCommand(traj),
+          new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
+        ).andThen(new InstantCommand(() -> intake.setOverrideStoring(true)))
+      );
   }
 
   public Command stow() {
