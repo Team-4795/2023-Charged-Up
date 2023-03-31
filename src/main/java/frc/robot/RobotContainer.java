@@ -149,11 +149,12 @@ public class RobotContainer {
             if (m_rollerbar.isExtended() != m_rollerbar.getTarget()) {
                 if (!m_rollerbar.safeToMove(m_arm.setpoint)) {
                     m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.025);
+                    m_arm.isTemporary = true;
                 }
-            } else if (m_arm.setpoint != m_manager.getArmSetpoint().get()) {
-                m_manager.setArmSetpoint();
+            } else if (m_arm.isTemporary) {
+                m_manager.setSetpoints();
+                m_arm.isTemporary = false;
             }
-            
 
             m_rollerbar.tryMove(m_arm.getPosition());
 
