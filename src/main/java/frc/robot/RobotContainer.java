@@ -253,17 +253,14 @@ public class RobotContainer {
     ));
 
     ControlConstants.driverX.onTrue(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
-
     ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
-
-    // ControlConstants.operatorA.
-
-    // reset LEDs when were not targeting
-    // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
  
-    new Trigger(m_intake::isStoring).debounce(0.1).onTrue(new RunCommand(() -> setOperatorRumble(0.5)).withTimeout(0.5).andThen(new InstantCommand(() -> setOperatorRumble(0))));
-
-
+    new Trigger(m_intake::isStoring)
+        .debounce(0.5)
+        .onTrue(new RunCommand(() -> setRumble(0.25))
+            .withTimeout(0.5)
+            .andThen(new InstantCommand(() -> setRumble(0)))
+        );
   }
 
   public void setDriverRumble(double rumble) {
@@ -276,6 +273,11 @@ public class RobotContainer {
     ControlConstants.operatorController.setRumble(RumbleType.kRightRumble, rumble);
   }
 
+  public void setRumble(double rumble) {
+    setDriverRumble(rumble);
+    setOperatorRumble(rumble);
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -285,10 +287,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     
     return autoSelector.getSelected();
-  }
-
-  public void setNotStoring() {
-    m_intake.setOverrideStoring(false);
   }
 
   public void resetArm() {

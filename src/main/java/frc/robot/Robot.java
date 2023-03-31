@@ -119,19 +119,16 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
     isTeleOp = true;
     if (getSeconds() <= 30 && getSeconds() >= 28) {
       m_rumble=0.5;
-      m_robotContainer.setDriverRumble(0.25);
-      m_robotContainer.setOperatorRumble(0.25);
+      m_robotContainer.setRumble(0.25);
     } else if (getSeconds() <= 15 && getSeconds() >=13) {
       m_rumble=0.5;
-      m_robotContainer.setDriverRumble(0.25);
-      m_robotContainer.setOperatorRumble(0.25);
+      m_robotContainer.setRumble(0.25);
     } else { 
-      m_robotContainer.setOperatorRumble(0); m_rumble=0; 
-      m_robotContainer.setDriverRumble(0); m_rumble=0; 
+      m_rumble=0;
+      m_robotContainer.setRumble(0);
     }
 
     SmartDashboard.putNumber("time", getSeconds());
