@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.Map;
+
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -113,19 +115,27 @@ public class AutoSelector {
   }
 
   public Command outtake(double time) {
-    SequentialCommandGroup outtake = new SequentialCommandGroup(new RunCommand(intake::outtake, intake).withTimeout(time));
-    if (manager.getState() == State.MidScore && StateManager.getGamepiece() == Gamepiece.Cone) {
-      outtake = new SequentialCommandGroup(
-          new InstantCommand(wrist::extend, wrist),
-          new WaitCommand(0.2),
-          new RunCommand(intake::outtake, intake).withTimeout(time));
-    } else if (manager.getState() == State.BackwardsHighScore && StateManager.getGamepiece() == Gamepiece.Cube) {
-      outtake = new SequentialCommandGroup(
-          new InstantCommand(wrist::retract, wrist),
-          new WaitCommand(IntakeConstants.kFlickTime),
-          new RunCommand(intake::outtake, intake).withTimeout(time));
-    }
-    return outtake;
+    return new SelectCommand(Map.ofEntries(
+      Map.entry(1, new RunCommand(intake::outtake, intake).withTimeout(time)),
+      Map.entry(2, new SequentialCommandGroup(
+        new InstantCommand(wrist::extend, wrist),
+        new WaitCommand(0.2),
+        new RunCommand(intake::outtake, intake).withTimeout(time))
+      ),
+      Map.entry(3, new SequentialCommandGroup(
+        new InstantCommand(wrist::retract, wrist),
+        new WaitCommand(IntakeConstants.kFlickTime),
+        new RunCommand(intake::outtake, intake).withTimeout(time))
+      )
+    ), () -> {
+      if (manager.getState() == State.MidScore && StateManager.getGamepiece() == Gamepiece.Cone) {
+        return 3;
+      } else if (manager.getState() == State.BackwardsHighScore && StateManager.getGamepiece() == Gamepiece.Cube) {
+        return 2;
+      } else {
+        return 1;
+      }
+    });
   }
 
   public Command autoStartUp(PathPlannerTrajectory traj, boolean flip) {
