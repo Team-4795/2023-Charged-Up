@@ -96,6 +96,6 @@ public class ChangeStateCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     // If `end` is true, end automatically when the arm is at its setpoint
-    return arm.atSetpoint() && end;
+    return !arm.isTemporary && arm.atSetpoint() && end;
   }
 }

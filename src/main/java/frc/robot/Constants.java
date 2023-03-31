@@ -184,7 +184,7 @@ public final class Constants {
 
     public static final PIDController AutoXcontroller = new PIDController(2, 0, 0);
     public static final PIDController AutoYcontroller = new PIDController(4, 0, 0);
-    public static final PIDController AutoRotationcontroller = new PIDController(.04, 0, 0);
+    public static final PIDController AutoRotationcontroller = new PIDController(3.0, 0, 0);
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;

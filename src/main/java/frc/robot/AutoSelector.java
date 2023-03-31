@@ -100,7 +100,7 @@ public class AutoSelector {
     return setGamepiece
       .andThen(
         new ParallelDeadlineGroup(
-          drivebase.followTrajectoryCommand(traj),
+          drivebase.followTrajectoryCommand(traj).andThen(new WaitCommand(0.3)),
           new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
         ).andThen(new InstantCommand(() -> intake.setOverrideStoring(true)))
       );
@@ -129,9 +129,9 @@ public class AutoSelector {
       )
     ), () -> {
       if (manager.getState() == State.MidScore && StateManager.getGamepiece() == Gamepiece.Cone) {
-        return 3;
-      } else if (manager.getState() == State.BackwardsHighScore && StateManager.getGamepiece() == Gamepiece.Cube) {
         return 2;
+      } else if (manager.getState() == State.BackwardsHighScore && StateManager.getGamepiece() == Gamepiece.Cube) {
+        return 3;
       } else {
         return 1;
       }
@@ -180,29 +180,31 @@ public class AutoSelector {
     this.wrist = wrist;
     this.rollerbar = rollerbar;
 
-    chooser.addOption("Test", new AutoTest(this));
+    // chooser.addOption("Test", new AutoTest(this));
 
-    chooser.addOption("Cable 2 Cube Balance", new Cable2CubeBalance(drivebase, this));
+    // chooser.addOption("Cable 2 Cube Balance", new Cable2CubeBalance(drivebase, this));
 
-    chooser.addOption("Cable 2.5 Cube", new Cable25Cube(drivebase, this));
+    // chooser.addOption("Cable 2.5 Cube", new Cable25Cube(drivebase, this));
 
-    chooser.addOption("Cable 2.5 Cube Balance", new Cable25CubeBalance(this));
+    // chooser.addOption("Cable 2.5 Cube Balance", new Cable25CubeBalance(this));
 
-    chooser.addOption("Cable 3 Cube LLL", new Cable3CubeLLL(drivebase, this));
+    // chooser.addOption("Cable 3 Cube LLL", new Cable3CubeLLL(drivebase, this));
 
-    chooser.addOption("Center Cube Balance", new Center1CubeBalance(drivebase, this));
+    // chooser.addOption("Center Cube Balance", new Center1CubeBalance(drivebase, this));
 
-    chooser.addOption("Center 1.5 Balance", new Center15CubeBalance(drivebase, this));
+    // chooser.addOption("Center 1.5 Balance", new Center15CubeBalance(drivebase, this));
 
-    chooser.addOption("Free 2 Cube Balance", new Free2CubeBalance(drivebase, this));
+    // chooser.addOption("Free 2 Cube Balance", new Free2CubeBalance(drivebase, this));
 
-    chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, this));
+    // chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, this));
 
-    chooser.addOption("Free 2.5 Cube Balance", new Free25CubeBalance(this));
+    // chooser.addOption("Free 2.5 Cube Balance", new Free25CubeBalance(this));
 
     chooser.addOption("Free 3 Cube LLL", new Free3CubeLLL(drivebase, this));
 
     chooser.addOption("Free 3 Cube HML", new Free3CubeHML(drivebase, this));
+
+    chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
 
     chooser.addOption("High Cube", new SimpleHighCube(drivebase, this));
 

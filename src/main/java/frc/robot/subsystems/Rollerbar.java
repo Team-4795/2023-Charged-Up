@@ -75,7 +75,7 @@ public class Rollerbar extends SubsystemBase {
   }
 
   public void reverse() {
-    rollerMotor.set(-0.8);
+    rollerMotor.set(0.8);
   }
 
   private double getMoveTime() {
