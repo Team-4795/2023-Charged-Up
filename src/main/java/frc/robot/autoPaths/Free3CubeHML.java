@@ -22,7 +22,7 @@ public class Free3CubeHML extends SequentialCommandGroup {
         new PathConstraints(4, 3));
     PathPlannerTrajectory CubeThreeGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP2",
         new PathConstraints(4, 3));   
-        PathPlannerTrajectory CubeThreeGamePiece2 = PathPlanner.loadPath("Score Free N2 GP2",
+        PathPlannerTrajectory CubeThreeGamePiece2 = PathPlanner.loadPath("Score Free N3 GP2",
         new PathConstraints(4, 3));   
 
     addCommands(

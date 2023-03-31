@@ -28,29 +28,27 @@ import frc.robot.subsystems.Wrist;
 
 public class Free25Cube extends SequentialCommandGroup {
 
-  public Free25Cube(DriveSubsystem drivebase, AutoSelector m_autoSelector) {
+    public Free25Cube(DriveSubsystem drivebase, AutoSelector m_autoSelector) {
 
-    PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP1",
-        new PathConstraints(4, 3));
-    PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Score Free N1 GP1",
-        new PathConstraints(4, 3));
-    PathPlannerTrajectory CubeThreeGamePiece1 = PathPlanner.loadPath("Intake Free N1 GP2",
-        new PathConstraints(4, 3));   
-        PathPlannerTrajectory CubeThreeGamePiece2 = PathPlanner.loadPath("Score Free N3 GP2",
-        new PathConstraints(4, 3));   
+        PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP1",
+                new PathConstraints(4, 3));
+        PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Score Free N2 GP1",
+                new PathConstraints(4, 3));
+        PathPlannerTrajectory CubeThreeGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP2",
+                new PathConstraints(4, 3));
 
-    // Add option of Vision based two game peice split into parts with commands Cube
-    addCommands(
-        new SequentialCommandGroup(
-            m_autoSelector.autoStartUp(CubeTwoGamePiece1, false),
-            m_autoSelector.score("cube", "mid", false),
-            m_autoSelector.outtake(0.1),
+        // Add option of Vision based two game peice split into parts with commands Cube
+        addCommands(
+                new SequentialCommandGroup(
+                        m_autoSelector.autoStartUp(CubeTwoGamePiece1, false),
+                        m_autoSelector.score("cube", "high", false),
+                        m_autoSelector.outtake(0.3),
 
-            m_autoSelector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
-            m_autoSelector.scoreTrajectory("cube", "low", false, CubeTwoGamePiece2),
+                        m_autoSelector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
+                        m_autoSelector.scoreTrajectory("cube", "mid", false, CubeTwoGamePiece2),
 
-            m_autoSelector.outtake(0.1),
-            m_autoSelector.intakeTrajectory("cube", true, CubeThreeGamePiece1)
-        ));
-  }
+                        m_autoSelector.outtake(0.3),
+                        m_autoSelector.intakeTrajectory("cube", true, CubeThreeGamePiece1),
+                        m_autoSelector.stow()));
+    }
 }

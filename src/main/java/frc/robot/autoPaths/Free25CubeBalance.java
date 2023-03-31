@@ -11,9 +11,9 @@ public class Free25CubeBalance extends SequentialCommandGroup{
     public Free25CubeBalance(AutoSelector selector){
         PathPlannerTrajectory CubeTwoGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP1",
         new PathConstraints(4, 3));
-        PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Score Free N1 GP1",
+        PathPlannerTrajectory CubeTwoGamePiece2 = PathPlanner.loadPath("Score Free N2 GP1",
         new PathConstraints(4, 3));
-        PathPlannerTrajectory CubeThreeGamePiece1 = PathPlanner.loadPath("Intake Free N1 GP2",
+        PathPlannerTrajectory CubeThreeGamePiece1 = PathPlanner.loadPath("Intake Free N2 GP2",
         new PathConstraints(4, 3));   
         PathPlannerTrajectory balance = PathPlanner.loadPath("Balance Open GP2",
         new PathConstraints(4, 3));   
@@ -22,11 +22,11 @@ public class Free25CubeBalance extends SequentialCommandGroup{
     addCommands(
         new SequentialCommandGroup(
             selector.autoStartUp(CubeTwoGamePiece1, false),
-            selector.score("cube", "mid", false),
+            selector.score("cube", "high", false),
             selector.outtake(0.3),
 
             selector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
-            selector.scoreTrajectory("cube", "low", false, CubeTwoGamePiece2),
+            selector.scoreTrajectory("cube", "mid", false, CubeTwoGamePiece2),
 
             selector.outtake(0.3),
             selector.intakeTrajectory("cube", true, CubeThreeGamePiece1),
