@@ -73,7 +73,7 @@ public class ChangeStateCommand extends CommandBase {
 
     rollerbar.tryMove(arm.getPosition());
 
-    if (!intake.isStoring() && rollerbar.isExtended() && arm.atSetpoint()) {
+    if (rollerbar.isExtended()) {
       rollerbar.spin();
     } else {
       rollerbar.stop();
