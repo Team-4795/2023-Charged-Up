@@ -29,11 +29,11 @@ public class Free2CubeBalance extends SequentialCommandGroup {
         new SequentialCommandGroup(
             m_autoSelector.autoStartUp(CubeTwoGamePiece1, false),
             m_autoSelector.score("cube", "high", false),
-            m_autoSelector.outtake(0.1),
+            m_autoSelector.outtake(0.2),
 
             m_autoSelector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
             m_autoSelector.scoreTrajectory("cube", "mid", false, CubeTwoGamePiece2),
-            m_autoSelector.outtake(0.1),
+            m_autoSelector.outtake(0.2),
 
             m_autoSelector.stowTrajectory(AutoBalance),
 

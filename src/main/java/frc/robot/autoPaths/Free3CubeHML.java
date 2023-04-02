@@ -29,15 +29,15 @@ public class Free3CubeHML extends SequentialCommandGroup {
         new SequentialCommandGroup(
             m_autoSelector.autoStartUp(CubeTwoGamePiece1, false),
             m_autoSelector.score("cube", "high", false),
-            m_autoSelector.outtake(0.25),
+            m_autoSelector.outtake(0.2),
 
             m_autoSelector.intakeTrajectory("cube", true, CubeTwoGamePiece1),
             m_autoSelector.scoreTrajectory("cube", "mid", false, CubeTwoGamePiece2),
-            m_autoSelector.outtake(0.4),
+            m_autoSelector.outtake(0.3),
             
             m_autoSelector.intakeTrajectory("cube", true, CubeThreeGamePiece1),
             m_autoSelector.scoreTrajectory("cube", "low", false, CubeThreeGamePiece2),
-            m_autoSelector.outtake(0.5)
+            m_autoSelector.outtake(0.4)
         ));
   }
 }

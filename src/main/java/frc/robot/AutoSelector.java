@@ -194,21 +194,21 @@ public class AutoSelector {
 
     // chooser.addOption("Center 1.5 Balance", new Center15CubeBalance(drivebase, this));
 
-    // chooser.addOption("Free 2 Cube Balance", new Free2CubeBalance(drivebase, this));
+    chooser.addOption("Free 2 Cube Balance", new Free2CubeBalance(drivebase, this));
 
     // chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, this));
 
     // chooser.addOption("Free 2.5 Cube Balance", new Free25CubeBalance(this));
 
-    chooser.addOption("Free 3 Cube LLL", new Free3CubeLLL(drivebase, this));
+    //chooser.addOption("Free 3 Cube LLL", new Free3CubeLLL(drivebase, this));
 
     chooser.addOption("Free 3 Cube HML", new Free3CubeHML(drivebase, this));
 
     chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
 
-    chooser.addOption("High Cube", new SimpleHighCube(drivebase, this));
+    //chooser.addOption("High Cube", new SimpleHighCube(drivebase, this));
 
-    chooser.addOption("Mid Cone", new SimpleMidCone(drivebase, this));
+    //chooser.addOption("Mid Cone", new SimpleMidCone(drivebase, this));
 
     SmartDashboard.putData("Auto Selector", chooser);
   }
