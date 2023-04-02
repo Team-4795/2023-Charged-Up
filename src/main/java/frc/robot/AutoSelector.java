@@ -74,7 +74,12 @@ public class AutoSelector {
   }
 
   public Command scoreTrajectory(String gamepiece, String setpoint, boolean backwards, PathPlannerTrajectory traj) {
-    return score(gamepiece, setpoint, backwards).alongWith(drivebase.followTrajectoryCommand(traj));
+    return drivebase.followTrajectoryCommand(traj).alongWith(
+      new SequentialCommandGroup(
+        new RunCommand(rollerbar::reverse, rollerbar).withTimeout(0.5),
+        score(gamepiece, setpoint, backwards)
+      )
+    );
   }
 
   public Command intakeTrajectory(String gamepiece, boolean backwards, PathPlannerTrajectory traj) {
