@@ -97,7 +97,7 @@ public class AutoSelector {
     StateManager.State state;
 
     if (backwards) {
-      state = State.BackwardsLowPickup;
+      state = State.BackwardsLowPickupAuto;
     } else {
       state = State.LowPickup;
     }

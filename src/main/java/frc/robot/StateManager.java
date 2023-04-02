@@ -47,7 +47,8 @@ public class StateManager {
         BackwardsHighScore,
         BackwardsLowScore,
         BackwardsDoubleFeeder,
-        BackwardsLowPickup;
+        BackwardsLowPickup,
+        BackwardsLowPickupAuto;
     
         private Optional<Setpoints> getCubeSetpoints() {
             Setpoints result = null;
@@ -66,6 +67,7 @@ public class StateManager {
                 case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
                 case BackwardsDoubleFeeder: result = CubeSetpointConstants.kBackwardsDoubleFeeder; break;
                 case BackwardsLowPickup: result = CubeSetpointConstants.kBackwardsLowPickup; break;
+                case BackwardsLowPickupAuto: result = CubeSetpointConstants.kBackwardLowPickupAuto; break;
             }
     
             return Optional.ofNullable(result);
