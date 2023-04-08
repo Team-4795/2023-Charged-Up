@@ -194,7 +194,7 @@ public class RobotContainer {
     // .whileFalse(new RunCommand(m_rollerbar::stop, m_rollerbar));
     
     ControlConstants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
-    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown));
+    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
 
     ControlConstants.operatorY
         .onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)))
@@ -277,6 +277,10 @@ public class RobotContainer {
   public void setRumble(double rumble) {
     setDriverRumble(rumble);
     setOperatorRumble(rumble);
+  }
+
+  public void cancelOverride(){
+    m_intake.setOverrideStoring(false);
   }
 
 

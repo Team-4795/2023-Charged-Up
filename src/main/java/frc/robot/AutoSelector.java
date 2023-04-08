@@ -100,7 +100,7 @@ public class AutoSelector {
     return setGamepiece
       .andThen(
         new ParallelDeadlineGroup(
-          drivebase.followTrajectoryCommand(traj).andThen(new WaitCommand(0.3)),
+          drivebase.followTrajectoryCommand(traj).andThen(new WaitCommand(0.2)),
           new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
         ).andThen(new InstantCommand(() -> intake.setOverrideStoring(true)))
       );
@@ -135,7 +135,7 @@ public class AutoSelector {
       } else {
         return 1;
       }
-    });
+    }).andThen(new InstantCommand(() -> intake.setOverrideStoring(false)));
   }
 
   public Command autoStartUp(PathPlannerTrajectory traj, boolean flip) {
@@ -184,7 +184,9 @@ public class AutoSelector {
 
     chooser.addOption("Cable 2 Cube Balance", new Cable2CubeBalance(drivebase, this));
 
-    chooser.addOption("Cable 2.5 Cube", new Cable25Cube(drivebase, this));
+    chooser.addOption("RED Cable 2.5 Cube", new Cable25Cube(drivebase, this));
+
+    chooser.addOption("BLUE Cable 2.5 Cube", new Cable25CubeBlue(drivebase, this));
 
     // chooser.addOption("Cable 2.5 Cube Balance", new Cable25CubeBalance(this));
 
@@ -194,17 +196,19 @@ public class AutoSelector {
 
     // chooser.addOption("Center 1.5 Balance", new Center15CubeBalance(drivebase, this));
 
-    // chooser.addOption("Free 2 Cube Balance", new Free2CubeBalance(drivebase, this));
+    chooser.addOption("Free 2 Cube Balance", new Free2CubeBalance(drivebase, this));
 
     // chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, this));
 
     // chooser.addOption("Free 2.5 Cube Balance", new Free25CubeBalance(this));
 
-    chooser.addOption("Free 3 Cube LLL", new Free3CubeLLL(drivebase, this));
+    //chooser.addOption("Free 3 Cube LLL", new Free3CubeLLL(drivebase, this));
 
-    chooser.addOption("Free 3 Cube HML", new Free3CubeHML(drivebase, this));
+    //chooser.addOption("Free 3 Cube HML", new Free3CubeHML(drivebase, this));
 
-    chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
+    chooser.addOption("BLUE Free 3 Hybrid MHM", new Free3HybridMHM(this));
+
+    chooser.addOption("RED Free 3 Hybrid MHM", new Free3HybridMHMRed(this));
 
     chooser.addOption("High Cube", new SimpleHighCube(drivebase, this));
 

@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoSelector;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class Cable25Cube extends SequentialCommandGroup {
-    public Cable25Cube(DriveSubsystem drivebase, AutoSelector selector) {
-        PathPlannerTrajectory intakeGP4 = PathPlanner.loadPath("Intake Cable N2 GP4 Red",
+public class Cable25CubeBlue extends SequentialCommandGroup {
+    public Cable25CubeBlue(DriveSubsystem drivebase, AutoSelector selector) {
+        PathPlannerTrajectory intakeGP4 = PathPlanner.loadPath("Intake Cable N2 GP4 Blue",
                 new PathConstraints(4, 3));
         PathPlannerTrajectory scoreMid = PathPlanner.loadPath("Score Cable N2 GP4",
                 new PathConstraints(4, 3));
-        PathPlannerTrajectory intakeGP3 = PathPlanner.loadPath("Intake Cable N2 GP3 Red",
+        PathPlannerTrajectory intakeGP3 = PathPlanner.loadPath("Intake Cable N2 GP3 Blue",
                 new PathConstraints(4, 3));
         addCommands(new SequentialCommandGroup(
                 selector.autoStartUp(intakeGP4, false),

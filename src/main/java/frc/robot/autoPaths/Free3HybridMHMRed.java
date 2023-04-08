@@ -7,11 +7,11 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoSelector;
 
-public class Free3HybridMHM extends SequentialCommandGroup{
-    public Free3HybridMHM(AutoSelector selector){
-        PathPlannerTrajectory intakeGP1 = PathPlanner.loadPath("Intake Free N1 GP1 Blue", new PathConstraints(4, 3.5));
+public class Free3HybridMHMRed extends SequentialCommandGroup{
+    public Free3HybridMHMRed(AutoSelector selector){
+        PathPlannerTrajectory intakeGP1 = PathPlanner.loadPath("Intake Free N1 GP1 Red", new PathConstraints(4, 3.5));
         PathPlannerTrajectory scoreGP1 = PathPlanner.loadPath("Score Free N2 GP1", new PathConstraints(4, 3.5));
-        PathPlannerTrajectory intakeGP2 = PathPlanner.loadPath("Intake Free N2 GP2 Blue", new PathConstraints(4, 3.5));
+        PathPlannerTrajectory intakeGP2 = PathPlanner.loadPath("Intake Free N2 GP2 Red", new PathConstraints(4, 3.5));
         PathPlannerTrajectory scoreGP2 = PathPlanner.loadPath("Score Free N2 GP2", new PathConstraints(4, 3.5));
         addCommands(new SequentialCommandGroup(
             selector.autoStartUp(intakeGP1, false),
@@ -27,3 +27,4 @@ public class Free3HybridMHM extends SequentialCommandGroup{
         ));
     }
 }
+

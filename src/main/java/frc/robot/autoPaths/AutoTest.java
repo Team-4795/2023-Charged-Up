@@ -10,14 +10,16 @@ import frc.robot.AutoSelector;
 
 public class AutoTest extends SequentialCommandGroup{
     public AutoTest(AutoSelector selector){
-        PathPlannerTrajectory test = PathPlanner.loadPath("Testing Path", new PathConstraints(1, 0.75
+        PathPlannerTrajectory test = PathPlanner.loadPath("Testing Path", new PathConstraints(4, 3.5
         ));
-        PathPlannerTrajectory test2 = PathPlanner.loadPath("Testing Path 2", new PathConstraints(1, 0.75));
+        PathPlannerTrajectory test2 = PathPlanner.loadPath("Testing Path 2", new PathConstraints(4, 3.5));
+        PathPlannerTrajectory test3 = PathPlanner.loadPath("Testing Path 3", new PathConstraints(4, 3.5));
+        PathPlannerTrajectory test4 = PathPlanner.loadPath("Testing Path 4", new PathConstraints(4, 3.5));
+        PathPlannerTrajectory test5 = PathPlanner.loadPath("Testing Path 5", new PathConstraints(4, 3.5));
         addCommands(new SequentialCommandGroup(
-            selector.autoStartUp(test, false),
-            selector.intakeTrajectory("cube", true, test),
-            selector.scoreTrajectory("cube", "low", false, test2),
-            selector.outtake(0.5)
+            selector.autoStartUp(test3, false),
+            selector.intakeTrajectory("cube", true, test3),
+            selector.stow()
         ));
     }
 }
