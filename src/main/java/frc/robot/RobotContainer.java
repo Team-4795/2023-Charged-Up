@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 /*
@@ -36,6 +37,7 @@ public class RobotContainer {
   private final Vision m_Vision = new Vision();
   private final LEDs m_led = new LEDs();
   private final LandingGear m_landing = new LandingGear();
+  private final Rollerbar m_rollerbar = new Rollerbar();
 
 
   // The driver's controller
@@ -43,7 +45,7 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive, m_wrist);
+  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive, m_wrist, m_rollerbar);
 
   AutoSelector autoSelector;
   /**
@@ -51,7 +53,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision, m_wrist); // huh? see above
+    autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision, m_wrist, m_rollerbar); // huh? see above
 
     configureButtonBindings();
 
@@ -105,6 +107,7 @@ public class RobotContainer {
         m_wrist)
     );
 
+<<<<<<< HEAD
     m_led.setDefaultCommand(
         new RunCommand(() -> {
 
@@ -121,6 +124,8 @@ public class RobotContainer {
     ); 
 
 
+=======
+>>>>>>> ECU
     // Subtract up movement by down movement so they cancel out if both are pressed at once
     m_arm.setDefaultCommand(
         new RunCommand(
@@ -152,6 +157,32 @@ public class RobotContainer {
             m_arm
         )
     );
+
+    m_rollerbar.setDefaultCommand(new RunCommand(
+        () -> {
+            // If the rollerbar isnt where we want it to be, and if its not safe to move rollerbar, then
+            // set the arm target position to be just above the minimum height to extend/retract it.
+            // Otherwise, if the rollerbar is where we want it to be, move back to the correct setpoint.
+            if (m_rollerbar.isExtended() != m_rollerbar.getTarget()) {
+                if (!m_rollerbar.safeToMove(m_arm.setpoint)) {
+                    m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.025);
+                    m_arm.isTemporary = true;
+                }
+            } else if (m_arm.isTemporary) {
+                m_manager.setSetpoints();
+                m_arm.isTemporary = false;
+            }
+
+            m_rollerbar.tryMove(m_arm.getPosition());
+
+            if (!m_intake.isStoring() && m_rollerbar.isExtended() && m_arm.atSetpoint()) {
+                m_rollerbar.spin();
+            } else {
+                m_rollerbar.stop();
+            }
+
+        },
+        m_rollerbar));
   }
 
   /**
@@ -173,8 +204,14 @@ public class RobotContainer {
 
     ControlConstants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
-    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
+    ControlConstants.operatorA.whileTrue(new RunCommand(m_rollerbar::reverse, m_rollerbar));
+    ControlConstants.driverA.onTrue(new InstantCommand(m_rollerbar::toggle));
+    // ControlConstants.operatorA
+    // .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))
+    // .whileFalse(new RunCommand(m_rollerbar::stop, m_rollerbar));
+    
     ControlConstants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
+    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
 
     ControlConstants.operatorY
         .onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)))
@@ -223,8 +260,8 @@ public class RobotContainer {
     //     m_intake, m_wrist));
 
     // Pneumatic override
+    
     ControlConstants.operatorX.onTrue(new InstantCommand(m_wrist::flip, m_wrist));
-
     // Vision align
     ControlConstants.driverDpadLeft.whileTrue(new TapeAlign(
         m_robotDrive,
@@ -233,38 +270,15 @@ public class RobotContainer {
         () -> -ControlConstants.driverController.getRawAxis(ControlConstants.kAlignYSpeedAxis)
     ));
 
-    ControlConstants.driverX.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
-
-    ControlConstants.driverX.whileTrue(new SequentialCommandGroup(
-        new WaitCommand(0.4),
-        new RunCommand(() -> {
-        double change = OIConstants.kArmManualSpeed * (-0.75);
-        double new_setpoint = m_arm.setpoint + change;
-
-        if(new_setpoint <= ArmConstants.maxWindPoint){
-            new_setpoint = ArmConstants.maxWindPoint;
-        }
-
-                // Set new arm setpoint
-        if (new_setpoint != m_arm.setpoint) {
-            m_arm.setpoint = new_setpoint;
-            m_arm.runManual();
-        }           
-    }, m_arm)
-    ));
-    
-    ControlConstants.driverX.onFalse(new SequentialCommandGroup(
-                                            new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"),
-                                            new WaitCommand(0.3),
-                                            new InstantCommand(m_manager::pickCone),
-                                            new InstantCommand(m_manager::dpadRight),
-                                            new RunCommand(m_arm::runAutomatic).withTimeout(1)
-    ));
-
+    ControlConstants.driverX.onTrue(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
     ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
-
-    // reset LEDs when were not targeting
-    // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
+ 
+    new Trigger(m_intake::isStoring)
+        .debounce(0.5)
+        .onTrue(new RunCommand(() -> setRumble(0.25))
+            .withTimeout(0.5)
+            .andThen(new InstantCommand(() -> setRumble(0)))
+        );
   }
 
   public void setDriverRumble(double rumble) {
@@ -277,6 +291,15 @@ public class RobotContainer {
     ControlConstants.operatorController.setRumble(RumbleType.kRightRumble, rumble);
   }
 
+  public void setRumble(double rumble) {
+    setDriverRumble(rumble);
+    setOperatorRumble(rumble);
+  }
+
+  public void cancelOverride(){
+    m_intake.setOverrideStoring(false);
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -286,10 +309,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     
     return autoSelector.getSelected();
-  }
-
-  public void setNotStoring() {
-    m_intake.setOverrideStoring(false);
   }
 
   public void resetArm() {

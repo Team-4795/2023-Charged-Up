@@ -16,6 +16,7 @@ public class Wrist extends SubsystemBase{
 
     public boolean extendedTarget = false;
     public boolean extended = false;
+    int x = 0;
 
     public Wrist(){
         compressor.enableAnalog(IntakeConstants.kMinPressure, IntakeConstants.kMaxPressure);
@@ -32,7 +33,9 @@ public class Wrist extends SubsystemBase{
     }
 
     public void flip() {
+        x++;
         setExtendedTarget(!this.extendedTarget);
+        SmartDashboard.putNumber("flip", x);
     }
 
     public void setExtendedTarget(boolean extend) {

@@ -27,16 +27,16 @@ import frc.robot.subsystems.Wrist;
 
 public class SimpleMidCone extends SequentialCommandGroup {
 
-public SimpleMidCone(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d m_field,
-      StateManager m_manager, Vision m_vision, AutoSelector m_autoSelector, Wrist wrist) {
+  public SimpleMidCone(DriveSubsystem drivebase, AutoSelector m_autoSelector) {
 
-  PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Auto Balance Left", new PathConstraints(3, 3));
+    PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Free Auto Balance", new PathConstraints(3, 3));
 
-  addCommands(
-   new SequentialCommandGroup(
-    drivebase.AutoStartUp(AutoBalance, true, m_intake),
-    m_autoSelector.score("cone", "mid", m_intake, m_manager, m_arm, drivebase, m_vision, wrist),
-    m_autoSelector.outtake(m_intake, m_manager, wrist, m_arm, 0.01)
-    ));
-      }
-    }
+    addCommands(
+      new SequentialCommandGroup(
+        m_autoSelector.autoStartUp(AutoBalance, false),
+        m_autoSelector.score("cone", "mid", false),
+        m_autoSelector.outtake(0.2)
+      )
+    );
+  }
+}
