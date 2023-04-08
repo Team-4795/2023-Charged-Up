@@ -107,25 +107,25 @@ public class RobotContainer {
         m_wrist)
     );
 
-<<<<<<< HEAD
     m_led.setDefaultCommand(
         new RunCommand(() -> {
 
             if (m_intake.isStoring()) {
                 m_led.setTopRGB(0, 255, 0);
-            }
-            else {
+            } else {
                 m_led.setTopRGB(255, 0, 0);
             }
 
-
+            if (StateManager.getGamepiece() == Gamepiece.Cube) {
+                m_led.setBottomRGB(127, 0, 255);
+            } else {
+                m_led.setBottomRGB(255, 255, 0);
+            }
         }
         , m_led)
     ); 
 
 
-=======
->>>>>>> ECU
     // Subtract up movement by down movement so they cancel out if both are pressed at once
     m_arm.setDefaultCommand(
         new RunCommand(
@@ -275,11 +275,22 @@ public class RobotContainer {
  
     new Trigger(m_intake::isStoring)
         .debounce(0.5)
-        .onTrue(new RunCommand(() -> setRumble(0.25))
-            .withTimeout(0.5)
-            .andThen(new InstantCommand(() -> setRumble(0)))
+        .onTrue(new ParallelCommandGroup(
+            new RunCommand(() -> setRumble(0.25))
+                .withTimeout(0.5)
+                .andThen(new InstantCommand(() -> setRumble(0))),
+            new LEDCommand(m_led, () -> -0.5).withTimeout(1.0)
+        ));
+    
+    // reset LEDs when were not targeting
+    // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
+  
+    new Trigger(() -> Math.abs(MathUtil.applyDeadband(ControlConstants.operatorController.getRawAxis(5), 0.1)) > 0)
+        .whileTrue(new LEDCommand(
+            m_led, 
+            () -> MathUtil.applyDeadband(ControlConstants.operatorController.getRawAxis(5), 0.1))
         );
-  }
+}
 
   public void setDriverRumble(double rumble) {
     ControlConstants.driverController.setRumble(RumbleType.kLeftRumble, rumble);

@@ -29,7 +29,6 @@ public class LEDs extends SubsystemBase {
         }
     }
 
-    private Timer timer;
     //set the led port(pwm)
     private AddressableLED led;
     private AddressableLEDBuffer buffer;
@@ -38,15 +37,17 @@ public class LEDs extends SubsystemBase {
     public LEDs() {
         led = new AddressableLED(2);
         buffer = new AddressableLEDBuffer(LED_LENGTH);
-        timer = new Timer();
         
         led.setLength(buffer.getLength());
-        timer.start();
         this.init();
     }
 
     private void init() {
         this.setRGB(255, 255, 255);
+    }
+
+    public int getLength() {
+        return buffer.getLength();
     }
 
     private void setColor(int a0, int a1, int a2, boolean color_model, double portion) /* false: RGB; true: HSV */ {
@@ -115,6 +116,15 @@ public class LEDs extends SubsystemBase {
     public void setHSV(int h, int s, int v) {
         setColor(h, s, v, true, 1);
     }
+
+    public void setHSVIndex(int index, int h, int s, int v) {
+        buffer.setHSV(index, h, s, v);
+    }
+
+    public void setOutput() {
+        led.setData(buffer);
+        led.start();
+    }
     
     public void setHSV(HSV hsv, double portion) {
         setColor(hsv.h, hsv.s, hsv.v, true, portion);
@@ -125,11 +135,11 @@ public class LEDs extends SubsystemBase {
     }
 
     public void setBottomRGB(int r, int g, int b) {
-        setBottomColor(r, g, b, true);
+        setBottomColor(r, g, b, false);
     }
 
     public void setTopRGB(int r, int g, int b) {
-        setTopColor(r, g, b, true);
+        setTopColor(r, g, b, false);
     }
 
     public void reset() {

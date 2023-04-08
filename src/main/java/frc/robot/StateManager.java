@@ -119,14 +119,12 @@ public class StateManager {
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
         SmartDashboard.putString("Gamepiece", "Cube");
-        leds.setBottomRGB(127, 0, 255);
         vision.switchToTag();
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
         SmartDashboard.putString("Gamepiece", "Cone");
-        leds.setBottomRGB(255, 255, 0);
 
         vision.switchToTape();
     }
