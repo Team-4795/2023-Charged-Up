@@ -74,7 +74,12 @@ public class AutoSelector {
   }
 
   public Command scoreTrajectory(String gamepiece, String setpoint, boolean backwards, PathPlannerTrajectory traj) {
-    return score(gamepiece, setpoint, backwards).alongWith(drivebase.followTrajectoryCommand(traj));
+    return drivebase.followTrajectoryCommand(traj).alongWith(
+      new SequentialCommandGroup(
+        new RunCommand(rollerbar::reverse, rollerbar).withTimeout(0.5),
+        score(gamepiece, setpoint, backwards)
+      )
+    );
   }
 
   public Command intakeTrajectory(String gamepiece, boolean backwards, PathPlannerTrajectory traj) {
@@ -92,7 +97,7 @@ public class AutoSelector {
     StateManager.State state;
 
     if (backwards) {
-      state = State.BackwardsLowPickup;
+      state = State.BackwardsLowPickupAuto;
     } else {
       state = State.LowPickup;
     }
@@ -210,9 +215,9 @@ public class AutoSelector {
 
     chooser.addOption("RED Free 3 Hybrid MHM", new Free3HybridMHMRed(this));
 
-    chooser.addOption("High Cube", new SimpleHighCube(drivebase, this));
+    //chooser.addOption("High Cube", new SimpleHighCube(drivebase, this));
 
-    chooser.addOption("Mid Cone", new SimpleMidCone(drivebase, this));
+    //chooser.addOption("Mid Cone", new SimpleMidCone(drivebase, this));
 
     SmartDashboard.putData("Auto Selector", chooser);
   }
