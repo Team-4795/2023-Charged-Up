@@ -130,8 +130,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumberArray("Swerve states", getModuleStates());
     SmartDashboard.putNumberArray("Odometry",
         new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees() });
-    SmartDashboard.putNumberArray("Vision Pose Estimate", new double[] {
-      visionPose.getX(), visionPose.getY(), visionPose.getRotation().getDegrees() });
+    //SmartDashboard.putNumberArray("Vision Pose Estimate", new double[] {
+     // visionPose.getX(), visionPose.getY(), visionPose.getRotation().getDegrees() });
   }
 
   /**
