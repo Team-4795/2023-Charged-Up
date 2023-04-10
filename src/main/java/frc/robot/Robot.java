@@ -27,11 +27,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private long teleopStart;
+  private static long teleopStart;
   private double m_rumble=0;
   private static boolean isTeleOp=true;
 
-  private double getSeconds() {
+  public static double getSeconds() {
     return 135.0 - (System.currentTimeMillis() - teleopStart) / 1000.0;  // change for testing
   }
   

@@ -111,15 +111,15 @@ public class RobotContainer {
         new RunCommand(() -> {
 
             if (m_intake.isStoring()) {
-                m_led.setTopRGB(0, 255, 0);
+                m_led.setBottomRGB(0, 255, 0);
             } else {
-                m_led.setTopRGB(255, 0, 0);
+                m_led.setBottomRGB(255, 0, 0);
             }
 
             if (StateManager.getGamepiece() == Gamepiece.Cube) {
-                m_led.setBottomRGB(127, 0, 255);
+                m_led.setTopRGB(127, 0, 255);
             } else {
-                m_led.setBottomRGB(255, 255, 0);
+                m_led.setTopRGB(255, 255, 0);
             }
         }
         , m_led)
@@ -274,7 +274,6 @@ public class RobotContainer {
     ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
  
     new Trigger(m_intake::isStoring)
-        .debounce(0.5)
         .onTrue(new ParallelCommandGroup(
             new RunCommand(() -> setRumble(0.25))
                 .withTimeout(0.5)
@@ -287,8 +286,9 @@ public class RobotContainer {
   
     new Trigger(() -> Math.abs(MathUtil.applyDeadband(ControlConstants.operatorController.getRawAxis(5), 0.1)) > 0)
         .whileTrue(new LEDCommand(
-            m_led, 
-            () -> MathUtil.applyDeadband(ControlConstants.operatorController.getRawAxis(5), 0.1))
+                m_led, 
+                () -> MathUtil.applyDeadband(ControlConstants.operatorController.getRawAxis(5), 0.1)
+            ).unless(() -> Robot.getSeconds() > 15)
         );
 }
 
