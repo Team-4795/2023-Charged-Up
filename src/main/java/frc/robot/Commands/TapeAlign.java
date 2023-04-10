@@ -79,10 +79,15 @@ public class TapeAlign extends CommandBase {
 
       driveSubsystem.drive(-x_speed,ySpeed, rotation,true, true);
     } else {
-      // double rotation = .5;
-      // driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
+      double rotation = 0.3;
+      if(driveSubsystem.getvisionheading() > 0){
+        rotation = -0.3;
+      }
+
+      driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
     }
   }
+
   @Override
   public void end(boolean interrupted) {  }
   // Returns true when the command should end.

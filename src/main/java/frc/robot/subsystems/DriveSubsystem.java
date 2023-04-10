@@ -328,12 +328,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getvisionheading() {
-    double angle = (getAngle() - 180) % 360;
-    if (angle < 0) {
-      angle += 360.0;
+    double angle = (getAngle()) % 360;
+    if (angle > 180) {
+      angle -= 360;
+    } else if (angle < -180) {
+      angle += 360;
     }
 
-    angle += 180;
+    //angle = ((angle - 180) % 360) + 180;
 
     return -angle;
   }
