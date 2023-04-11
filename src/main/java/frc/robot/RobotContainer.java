@@ -278,7 +278,7 @@ public class RobotContainer {
             new RunCommand(() -> setRumble(0.25))
                 .withTimeout(0.5)
                 .andThen(new InstantCommand(() -> setRumble(0))),
-            new LEDCommand(m_led, () -> -0.5).withTimeout(1.0)
+            new LEDCommand(m_led, () -> -1.0).withTimeout(1.0)
         ));
     
     // reset LEDs when were not targeting
