@@ -32,7 +32,7 @@ public class LEDCommand extends CommandBase {
   @Override
   public void execute() {
     // Hue is 0-180
-    this.hue += speed.get() / 10.0;
+    this.hue += speed.get() / 20.0;
 
     for (int i=0; i<LEDs.getLength(); i++) {
       double offset = (double)i / (double)LEDs.getLength();
