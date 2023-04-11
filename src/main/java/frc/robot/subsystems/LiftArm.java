@@ -33,6 +33,9 @@ public class LiftArm extends SubsystemBase {
   private TrapezoidProfile profile;
   private TrapezoidProfile.State targetState;
 
+  // Set when the arm is moving to avoid rollerbar or double extension
+  public boolean isTemporary = false;
+
   public LiftArm(){
     leftArmMotor.setIdleMode(IdleMode.kBrake);
     rightArmMotor.restoreFactoryDefaults();

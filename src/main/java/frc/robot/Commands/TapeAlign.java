@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.Constants.TapeAlignConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.RotationConstants;
 
 
@@ -72,19 +73,22 @@ public class TapeAlign extends CommandBase {
 
     if (vision.hasTargets == true) {
       double currentHeading = driveSubsystem.getvisionheading();
-      SmartDashboard.putNumber("Vision heading", currentHeading);
-      double rotation = rotationPID.calculate(currentHeading,180);
+      double rotation = rotationPID.calculate(currentHeading,0);
 
-      x_speed = controller.calculate(vision.getTargetAngle(), 0);
+      x_speed = controller.calculate(vision.getTargetAngle(), TapeAlignConstants.kXOffset);
       //y_speed = controller.calculate(vision.getTargetAngle(), 0);
 
-      driveSubsystem.drive(-x_speed,ySpeed, rotation,true, true);
+      driveSubsystem.drive(-x_speed,ySpeed,-rotation,true, true);
     } else {
-      double currentHeading = driveSubsystem.getvisionheading();
-      double rotation = rotationPID.calculate(currentHeading,180);
+      double rotation = RotationConstants.kNoTargetSpeed;
+      if(driveSubsystem.getvisionheading() > 0){
+        rotation = -RotationConstants.kNoTargetSpeed;
+      }
+
       driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
     }
   }
+
   @Override
   public void end(boolean interrupted) {  }
   // Returns true when the command should end.

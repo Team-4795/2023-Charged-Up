@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.EndEffectorIntake;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -51,6 +52,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
   }
 
   /**
@@ -110,7 +112,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    // m_robotContainer.setNotStoring();
+    //m_robotContainer.setNotStoring();
     m_robotContainer.resetArm();
   }
 
@@ -119,11 +121,14 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     isTeleOp = true;
     if (getSeconds() <= 30 && getSeconds() >= 28) {
-      m_robotContainer.setDriverRumble(1); m_rumble=1;
-    } else if (getSeconds() <=15 && getSeconds() >=13) {
-      m_robotContainer.setDriverRumble(0.5); m_rumble=0.5;
-    } else {
-      m_robotContainer.setDriverRumble(0); m_rumble=0;
+      m_rumble=0.5;
+      m_robotContainer.setRumble(0.25);
+    } else if (getSeconds() <= 15 && getSeconds() >=13) {
+      m_rumble=0.5;
+      m_robotContainer.setRumble(0.25);
+    } else { 
+      m_rumble=0;
+      m_robotContainer.setRumble(0);
     }
 
     SmartDashboard.putNumber("time", getSeconds());
@@ -134,6 +139,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.cancelOverride();
   }
 
   /** This function is called periodically during test mode. */

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 /*
@@ -142,16 +143,18 @@ public class RobotContainer {
 
     m_rollerbar.setDefaultCommand(new RunCommand(
         () -> {
-            // If we want to change the state of the rollerbar while the arm is too low,
-            // then set the target arm position to be just above the minimum height.
-            // Once it is above the boundary, the rollerbar should automatically move
-            // and the arm should move back down.
-                if (m_arm.setpoint < RollerbarConstants.kArmBoundary && m_rollerbar.isExtended() != m_rollerbar.getTarget() ) {
-                    m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.05);
-                } else if (m_arm.getPosition() > RollerbarConstants.kArmBoundary) {
-                    m_manager.setArmSetpoint();
+            // If the rollerbar isnt where we want it to be, and if its not safe to move rollerbar, then
+            // set the arm target position to be just above the minimum height to extend/retract it.
+            // Otherwise, if the rollerbar is where we want it to be, move back to the correct setpoint.
+            if (m_rollerbar.isExtended() != m_rollerbar.getTarget()) {
+                if (!m_rollerbar.safeToMove(m_arm.setpoint)) {
+                    m_arm.setTargetPosition(RollerbarConstants.kArmBoundary + 0.025);
+                    m_arm.isTemporary = true;
                 }
-            
+            } else if (m_arm.isTemporary) {
+                m_manager.setSetpoints();
+                m_arm.isTemporary = false;
+            }
 
             m_rollerbar.tryMove(m_arm.getPosition());
 
@@ -160,6 +163,7 @@ public class RobotContainer {
             } else {
                 m_rollerbar.stop();
             }
+
         },
         m_rollerbar));
   }
@@ -183,14 +187,14 @@ public class RobotContainer {
 
     ControlConstants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
-    ControlConstants.driverB.onTrue(new InstantCommand(m_rollerbar::reverse, m_rollerbar));
+    ControlConstants.operatorA.whileTrue(new RunCommand(m_rollerbar::reverse, m_rollerbar));
     ControlConstants.driverA.onTrue(new InstantCommand(m_rollerbar::toggle));
     // ControlConstants.operatorA
     // .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))
     // .whileFalse(new RunCommand(m_rollerbar::stop, m_rollerbar));
     
     ControlConstants.operatorDpadRight.onTrue(new InstantCommand(m_manager::dpadRight, m_arm));
-    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown));
+    ControlConstants.operatorDpadDown.onTrue(new InstantCommand(m_manager::dpadDown, m_arm));
 
     ControlConstants.operatorY
         .onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)))
@@ -249,40 +253,15 @@ public class RobotContainer {
         () -> -ControlConstants.driverController.getRawAxis(ControlConstants.kAlignYSpeedAxis)
     ));
 
-    ControlConstants.driverX.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
-
-    ControlConstants.driverX.whileTrue(new SequentialCommandGroup(
-        new WaitCommand(0.4),
-        new RunCommand(() -> {
-        double change = OIConstants.kArmManualSpeed * (-0.75);
-        double new_setpoint = m_arm.setpoint + change;
-
-        if(new_setpoint <= ArmConstants.maxWindPoint){
-            new_setpoint = ArmConstants.maxWindPoint;
-        }
-
-        // Set new arm setpoint
-        if (new_setpoint != m_arm.setpoint) {
-            m_arm.setpoint = new_setpoint;
-            m_arm.runManual();
-        }           
-    }, m_arm)
-    ));
-    
-    ControlConstants.driverX.onFalse(new SequentialCommandGroup(
-                                            new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"),
-                                            new WaitCommand(0.3),
-                                            new InstantCommand(m_manager::pickCone),
-                                            new InstantCommand(m_manager::dpadRight),
-                                            new RunCommand(m_arm::runAutomatic).withTimeout(1)
-    ));
-
+    ControlConstants.driverX.onTrue(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
     ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
-
-    // ControlConstants.operatorA.
-
-    // reset LEDs when were not targeting
-    // new Trigger(m_intake::isStoring).onTrue(new InstantCommand(m_led::reset, m_led));
+ 
+    new Trigger(m_intake::isStoring)
+        .debounce(0.5)
+        .onTrue(new RunCommand(() -> setRumble(0.25))
+            .withTimeout(0.5)
+            .andThen(new InstantCommand(() -> setRumble(0)))
+        );
   }
 
   public void setDriverRumble(double rumble) {
@@ -295,6 +274,15 @@ public class RobotContainer {
     ControlConstants.operatorController.setRumble(RumbleType.kRightRumble, rumble);
   }
 
+  public void setRumble(double rumble) {
+    setDriverRumble(rumble);
+    setOperatorRumble(rumble);
+  }
+
+  public void cancelOverride(){
+    m_intake.setOverrideStoring(false);
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -304,10 +292,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     
     return autoSelector.getSelected();
-  }
-
-  public void setNotStoring() {
-    m_intake.setOverrideStoring(false);
   }
 
   public void resetArm() {

@@ -30,8 +30,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.utils.RotationMatrix;
 import frc.utils.SwerveUtils;
+import frc.utils.VisionPoseEstimator;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create field2d
@@ -86,10 +88,11 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+  VisionPoseEstimator poseEstimator = new VisionPoseEstimator(VisionConstants.kSnakeEyesCamera);
+  Pose2d visionPose = new Pose2d();
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     SmartDashboard.putData(m_field);
-    rotation = new RotationMatrix();
   }
 
   @Override
@@ -108,29 +111,27 @@ public class DriveSubsystem extends SubsystemBase {
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
-
         });
 
     m_field.setRobotPose(m_odometry.getPoseMeters());
-    SmartDashboard.putNumber("x", getPose().getX());
-    SmartDashboard.putNumber("y", getPose().getY());
+    poseEstimator.estimateRobotPose(this.getPose());
+    visionPose = poseEstimator.getPoseEstimate();
+    
+    
     SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
     SmartDashboard.putData("pose", m_field);
 
     SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
-    SmartDashboard.putNumber("Elevation velocity", getElevationVelocity());
-    SmartDashboard.putNumber("Angle of Elevation (w/ Matrix)", getElevationAngleV2());
-    SmartDashboard.putNumber("Elevation velocity (w/ Matrix)", getElevationVelocityV2());
     SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putNumber("backwards", Math.cos(Math.toRadians(this.getAngle())));
-
+    SmartDashboard.putNumber("Vision heading", getvisionheading());
     SmartDashboard.putNumberArray("Swerve states", getModuleStates());
     SmartDashboard.putNumberArray("Odometry",
         new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees() });
-
-    m_field.setRobotPose(m_odometry.getPoseMeters());
+    //SmartDashboard.putNumberArray("Vision Pose Estimate", new double[] {
+     // visionPose.getX(), visionPose.getY(), visionPose.getRotation().getDegrees() });
   }
 
   /**
@@ -327,12 +328,16 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getvisionheading() {
-    double angle = getAngle() % 360;
-    if (angle < 0) {
-      angle += 360.0;
+    double angle = (getAngle()) % 360;
+    if (angle > 180) {
+      angle -= 360;
+    } else if (angle < -180) {
+      angle += 360;
     }
 
-    return (angle - 180);
+    //angle = ((angle - 180) % 360) + 180;
+
+    return -angle;
   }
 
   public double[] getModuleStates() {
