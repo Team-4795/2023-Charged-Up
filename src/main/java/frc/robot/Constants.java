@@ -169,6 +169,7 @@ public final class Constants {
     public static final JoystickButton operatorY = new JoystickButton(operatorController, 4);
     public static final JoystickButton operatorBumperLeft = new JoystickButton(operatorController, 5);
     public static final JoystickButton operatorBumperRight = new JoystickButton(operatorController, 6);
+    public static final JoystickButton operatorJoystickRight = new JoystickButton(operatorController, 10);
 
     public static final POVButton operatorDpadUp = new POVButton(operatorController, 0);
     public static final POVButton operatorDpadLeft = new POVButton(operatorController, 270);
@@ -325,7 +326,7 @@ public final class Constants {
     public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, false, -0.6, false);
     public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, false, -0.5, false);
     public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, false, -0.5, false);
-    public static final Setpoints kBackwardsLowPickup = new Setpoints(0.189, false, 0.0, true);
+    public static final Setpoints kBackwardsLowPickup = new Setpoints(0.18, false, 0.0, true);
     public static final Setpoints kBackwardLowPickupAuto = new Setpoints(0.191, false, 0, true);
   }
 
