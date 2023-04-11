@@ -195,6 +195,9 @@ public final class Constants {
     public static final double VisionMoveFastX = 0;
     public static final double VisionMoveFastY = .3;
     
+    public static final double kIntakeDelay = 0.5;
+    public static final double kIntakeWaitTime = 0.2;
+    public static final double kOuttakeDelay = 0.25;
 
     public static final double toZeroBound = 0.000001;
 
@@ -283,7 +286,7 @@ public final class Constants {
 
     public static final double kArmBoundary = 0.23;
     public static final double kDoubleExtensionBoundary = 0.45;
-    public static final double kSpinSpeed = -0.8;
+    public static final double kSpinSpeed = -1;
 
     public static final double kExtendTime = .3;
     public static final double kRetractTime = .5;
@@ -306,7 +309,7 @@ public final class Constants {
     public static final double kCubeSlowIntakeSpeed = 0.3;
     public static final double kConeSlowIntakeSpeed = 0.6;
 
-    public static final double storingCurrentThreshold = 15;
+    public static final double storingCurrentThreshold = 14;
 
     public static final int currentAvgSize = 35;
 

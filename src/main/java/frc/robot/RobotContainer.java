@@ -274,6 +274,7 @@ public class RobotContainer {
     ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
  
     new Trigger(m_intake::isStoring)
+        .debounce(0.1)
         .onTrue(new ParallelCommandGroup(
             new RunCommand(() -> setRumble(0.25))
                 .withTimeout(0.5)

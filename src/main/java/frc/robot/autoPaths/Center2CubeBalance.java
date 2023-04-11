@@ -20,6 +20,7 @@ public class Center2CubeBalance extends SequentialCommandGroup{
             selector.autoBalance(true, true).withTimeout(3),
             //add an align?
             selector.outtake(0.5),
+            selector.stow(),
             selector.autoBalance(true, false)
         ));
     }

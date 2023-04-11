@@ -76,7 +76,7 @@ public class AutoSelector {
   public Command scoreTrajectory(String gamepiece, String setpoint, boolean backwards, PathPlannerTrajectory traj) {
     return drivebase.followTrajectoryCommand(traj).alongWith(
       new SequentialCommandGroup(
-        new RunCommand(rollerbar::reverse, rollerbar).withTimeout(0.5),
+        new WaitCommand(AutoConstants.kIntakeDelay),
         score(gamepiece, setpoint, backwards)
       )
     );
@@ -105,9 +105,9 @@ public class AutoSelector {
     return setGamepiece
       .andThen(
         new ParallelDeadlineGroup(
-          drivebase.followTrajectoryCommand(traj).andThen(new WaitCommand(0.2)),
+          drivebase.followTrajectoryCommand(traj).andThen(new WaitCommand(AutoConstants.kIntakeWaitTime)),
           new SequentialCommandGroup(
-            new RunCommand(intake::outtake, intake).withTimeout(0.5),
+            new RunCommand(intake::outtake, intake).withTimeout(AutoConstants.kOuttakeDelay),
             new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
           )
         ).andThen(new InstantCommand(() -> intake.setOverrideStoring(true)))
@@ -196,7 +196,7 @@ public class AutoSelector {
 
     chooser.addOption("Cable 2 Cube", new Cable2Cube(this));
 
-    chooser.addOption("Cable 3 Hybrid MHL", new Cable3HybridMHL(this));
+    chooser.addOption("Cable 25", new Cable25HybridMHL(this));
 
     SmartDashboard.putData("Auto Selector", chooser);
   }
