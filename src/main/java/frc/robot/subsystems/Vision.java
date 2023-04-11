@@ -36,7 +36,6 @@ public class Vision extends SubsystemBase {
   private double targetAngle = VisionConstants.kTargetAngle;
   private double range;
   double forwardSpeed;
-  double x_pitch = VisionConstants.kX_Pitch;
 
   public Vision(){
   }
@@ -90,7 +89,7 @@ public class Vision extends SubsystemBase {
 
     if (result.hasTargets()) {
       hasTargets = true;
-      targetAngle = result.getBestTarget().getPitch(); // pitch or yaw?
+      targetAngle = result.getBestTarget().getPitch();
       range = PhotonUtils.calculateDistanceToTargetMeters(
           CameraHeight,
           TargetHeight,

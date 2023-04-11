@@ -231,6 +231,7 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kMinimumAngle = -180;
     public static final double kMaximumAngle = 180;
+    public static final double kNoTargetSpeed = 0.3;
   }
 
   public static final class TapeAlignConstants {
@@ -238,8 +239,7 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kAngularThreshold = 2;
-    public static final double kRotationSetpoint = 0;
-    public static final double kTranslationSetpoint = 0;
+    public static final double kXOffset = -4;
   }
 
   public static final class ArmConstants {
@@ -345,7 +345,6 @@ public final class Constants {
     public static final double kCameraHeight = 21;
     public static final double kTargetHeight = 0;
     public static final double kCameraPitchRadians = 0;
-    public static final double kX_Pitch = 9;
     public static final double kTargetAngle = 2.6;
 
     /**

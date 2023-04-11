@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.Constants.TapeAlignConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.RotationConstants;
 
 
@@ -74,14 +75,14 @@ public class TapeAlign extends CommandBase {
       double currentHeading = driveSubsystem.getvisionheading();
       double rotation = rotationPID.calculate(currentHeading,0);
 
-      x_speed = controller.calculate(vision.getTargetAngle(), -4);
+      x_speed = controller.calculate(vision.getTargetAngle(), TapeAlignConstants.kXOffset);
       //y_speed = controller.calculate(vision.getTargetAngle(), 0);
 
       driveSubsystem.drive(-x_speed,ySpeed,-rotation,true, true);
     } else {
-      double rotation = 0.3;
+      double rotation = RotationConstants.kNoTargetSpeed;
       if(driveSubsystem.getvisionheading() > 0){
-        rotation = -0.3;
+        rotation = -RotationConstants.kNoTargetSpeed;
       }
 
       driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
