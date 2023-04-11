@@ -106,7 +106,10 @@ public class AutoSelector {
       .andThen(
         new ParallelDeadlineGroup(
           drivebase.followTrajectoryCommand(traj).andThen(new WaitCommand(0.2)),
-          new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
+          new SequentialCommandGroup(
+            new RunCommand(intake::outtake, intake).withTimeout(0.5),
+            new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
+          )
         ).andThen(new InstantCommand(() -> intake.setOverrideStoring(true)))
       );
   }
