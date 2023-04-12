@@ -10,16 +10,15 @@ import frc.robot.AutoSelector;
 
 public class Center1CubeBalanceMobility extends SequentialCommandGroup {
     PathPlannerTrajectory mobility = PathPlanner.loadPath("Mobility Center", new PathConstraints(4, 3));
+
     public Center1CubeBalanceMobility(AutoSelector m_autoSelector) {
         addCommands(
-            new SequentialCommandGroup(
-                m_autoSelector.autoStartUp(mobility, false),
-                m_autoSelector.score("cube", "high", false),
-                m_autoSelector.outtake(0.2),
-                m_autoSelector.stowTrajectory(mobility),
-                new WaitCommand(2),
-                m_autoSelector.autoBalance(true, true)
-            )
-        );
+                new SequentialCommandGroup(
+                        m_autoSelector.autoStartUp(mobility, false),
+                        m_autoSelector.score("cube", "high", false),
+                        m_autoSelector.outtake(0.2),
+                        m_autoSelector.stowTrajectory(mobility),
+                        new WaitCommand(1),
+                        m_autoSelector.autoBalance(false, true)));
     }
 }
