@@ -127,7 +127,7 @@ public class AutoSelector {
       Map.entry(1, new RunCommand(intake::outtake, intake).withTimeout(time)),
       Map.entry(2, new SequentialCommandGroup(
         new InstantCommand(wrist::extend, wrist),
-        new WaitCommand(0.2),
+        new WaitCommand(0.3),
         new RunCommand(intake::outtake, intake).withTimeout(time))
       ),
       Map.entry(3, new SequentialCommandGroup(
@@ -188,11 +188,13 @@ public class AutoSelector {
     this.wrist = wrist;
     this.rollerbar = rollerbar;
 
-    chooser.setDefaultOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
+    chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
 
-    chooser.addOption("Center 2 + Balance", new Center2CubeBalance(this));
+    chooser.setDefaultOption("Center 2 + Balance", new Center2CubeBalance(this));
 
     chooser.addOption("Center 1 + Balance", new Center1CubeBalance(this));
+
+    chooser.addOption("Center 1 + Mobility + Balance", new Center1CubeBalanceMobility(this));
 
     chooser.addOption("Cable 2 Cube", new Cable2Cube(this));
 

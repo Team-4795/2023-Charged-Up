@@ -11,8 +11,8 @@ import frc.robot.AutoSelector;
 
 public class Center2CubeBalance extends SequentialCommandGroup {
     public Center2CubeBalance(AutoSelector selector) {
-        PathPlannerTrajectory intakeCenter = PathPlanner.loadPath("Intake Center N2 GP3", new PathConstraints(4, 3));
-        PathPlannerTrajectory balanceCenter = PathPlanner.loadPath("Balance Open GP3", new PathConstraints(4, 3));
+        PathPlannerTrajectory intakeCenter = PathPlanner.loadPath("Intake Center N2 GP3", new PathConstraints(1.5, 2.5));
+        PathPlannerTrajectory balanceCenter = PathPlanner.loadPath("Balance Open GP3", new PathConstraints(1.5, 2.5));
         addCommands(new SequentialCommandGroup(
                 selector.autoStartUp(intakeCenter, false),
                 selector.score("cube", "high", false),

@@ -65,8 +65,7 @@ public class LEDs extends SubsystemBase {
         
     }
     private void setBottomColor(int a0, int a1, int a2, boolean color_model) /* false: RGB; true: HSV */ {
-
-        for (int i = 0; i < (buffer.getLength()/2); i++) {
+        for (int i = 0; i < (buffer.getLength()/3); i++) {
             if (i < Math.round(buffer.getLength())) {
                 if (color_model) buffer.setHSV(i, a0, a1, a2);
                 else buffer.setRGB(i, a0, a1, a2);
@@ -78,8 +77,7 @@ public class LEDs extends SubsystemBase {
         
     }
     private void setTopColor(int a0, int a1, int a2, boolean color_model) /* false: RGB; true: HSV */ {
-
-        for (int i = (buffer.getLength()/2); i < buffer.getLength(); i++) {
+        for (int i = (buffer.getLength()/3); i < buffer.getLength(); i++) {
             if (i < Math.round(buffer.getLength())) {
                 if (color_model) buffer.setHSV(i, a0, a1, a2);
                 else buffer.setRGB(i, a0, a1, a2);

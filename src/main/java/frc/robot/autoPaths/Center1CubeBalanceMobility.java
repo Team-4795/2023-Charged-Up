@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoSelector;
 
 public class Center1CubeBalanceMobility extends SequentialCommandGroup {
-    PathPlannerTrajectory mobility = PathPlanner.loadPath("Mobility Center", new PathConstraints(4, 3));
+    PathPlannerTrajectory mobility = PathPlanner.loadPath("Mobility Center", new PathConstraints(1.5, 3));
 
     public Center1CubeBalanceMobility(AutoSelector m_autoSelector) {
         addCommands(
@@ -18,7 +18,7 @@ public class Center1CubeBalanceMobility extends SequentialCommandGroup {
                         m_autoSelector.score("cube", "high", false),
                         m_autoSelector.outtake(0.2),
                         m_autoSelector.stowTrajectory(mobility),
-                        new WaitCommand(1),
+                        new WaitCommand(0.4),
                         m_autoSelector.autoBalance(false, true)));
     }
 }

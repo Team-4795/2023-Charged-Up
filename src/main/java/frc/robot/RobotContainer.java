@@ -205,6 +205,7 @@ public class RobotContainer {
     ControlConstants.operatorDpadUp.onTrue(new InstantCommand(m_manager::dpadUp, m_arm));
     ControlConstants.operatorDpadLeft.onTrue(new InstantCommand(m_manager::dpadLeft, m_arm));
     ControlConstants.operatorA.whileTrue(new RunCommand(m_rollerbar::reverse, m_rollerbar));
+    ControlConstants.operatorB.onTrue(new RunCommand(m_rollerbar::spin, m_rollerbar));
     ControlConstants.driverA.onTrue(new InstantCommand(m_rollerbar::toggle));
     // ControlConstants.operatorA
     // .whileTrue(new RunCommand(m_rollerbar::spin, m_rollerbar))
@@ -216,8 +217,6 @@ public class RobotContainer {
     ControlConstants.operatorY
         .onTrue(new InstantCommand(() -> m_intake.setOverrideStoring(true)))
         .onFalse(new InstantCommand(() -> m_intake.setOverrideStoring(false)));
-
-    ControlConstants.operatorB.onTrue(new InstantCommand(m_manager::stowHigh, m_arm));
 
     // Set x
     ControlConstants.driverBumperLeft.whileTrue(new RunCommand(
