@@ -256,8 +256,8 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kFF = 0;
-    public static final double kMinOutput = -0.75;
-    public static final double kMaxOutput = 0.75;
+    public static final double kMinOutput = -0.9;
+    public static final double kMaxOutput = 0.9;
     public static final double kRampRate = 0.125;
     public static final double kConversionFactor = 1;
     public static final int kCurrentLimit = 60;
@@ -310,7 +310,7 @@ public final class Constants {
     public static final double kCubeSlowIntakeSpeed = 0.5;
     public static final double kConeSlowIntakeSpeed = 0.6;
 
-    public static final double storingCurrentThreshold = 14;
+    public static final double storingCurrentThreshold = 14.7;
 
     public static final int currentAvgSize = 35;
 

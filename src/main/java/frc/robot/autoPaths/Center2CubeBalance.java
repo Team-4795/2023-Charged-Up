@@ -20,14 +20,14 @@ public class Center2CubeBalance extends SequentialCommandGroup {
                 selector.autoStartUp(intakeCenter, false),
                 selector.score("cube", "high", false),
                 selector.outtake(0.2),
-                selector.intakeTrajectory("cube", true, intakeCenter),
-                selector.stowTrajectory(balanceCenter),
+                selector.stow(),
+                selector.intakeTrajectory("cube", true, intakeCenter, 2),
+                selector.scoreTrajectory("cube", "high", false, balanceCenter),
                 new ParallelCommandGroup(
-                        selector.autoBalance(false, true),
+                        selector.autoBalance(false, false),
                         new SequentialCommandGroup(
-                                new WaitUntilCommand(() -> drivebase.getElevationAngle() < AutoConstants.zeroAngleThreshold),
-                                selector.score("cube", "high", false),
-                                selector.outtake(0.3),
-                                selector.stow()))));
+                                new WaitCommand(3),
+                                selector.outtake(0.3)
+                                ))));
     }
 }

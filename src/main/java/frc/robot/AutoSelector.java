@@ -114,6 +114,39 @@ public class AutoSelector {
       );
   }
 
+  public Command intakeTrajectory(String gamepiece, boolean backwards, PathPlannerTrajectory traj, double time) {
+    Command setGamepiece;
+
+    switch (gamepiece) {
+      case "cube":
+        setGamepiece = new InstantCommand(manager::pickCube); break;
+      case "cone":
+        setGamepiece = new InstantCommand(manager::pickCone); break;
+      default:
+        throw new IllegalArgumentException("\"" + gamepiece + "\" is not a valid gamepiece.");
+    }
+
+    StateManager.State state;
+
+    if (backwards) {
+      state = State.BackwardsLowPickupAuto;
+    } else {
+      state = State.LowPickup;
+    }
+
+    return setGamepiece
+      .andThen(
+        new ParallelDeadlineGroup(
+          drivebase.followTrajectoryCommand(traj).andThen(new WaitCommand(AutoConstants.kIntakeWaitTime)),
+          new SequentialCommandGroup(
+            new WaitCommand(time),
+            new RunCommand(intake::outtake, intake).withTimeout(AutoConstants.kOuttakeDelay),
+            new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
+          )
+        ).andThen(new InstantCommand(() -> intake.setOverrideStoring(true)))
+      );
+  }
+
   public Command stow() {
     return new ChangeStateCommand(State.StowInFrame, intake, true, arm, wrist, rollerbar, manager);
   }
@@ -147,7 +180,7 @@ public class AutoSelector {
   }
 
   public Command autoStartUp(PathPlannerTrajectory traj, boolean flip) {
-    return drivebase.AutoStartUp(traj, flip, intake);
+    return new InstantCommand(intake::resetStoring).andThen(drivebase.AutoStartUp(traj, flip, intake));
   }
 
   public Command autoBalance(boolean backward, boolean withDriveup) {

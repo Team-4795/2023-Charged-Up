@@ -92,6 +92,10 @@ public class EndEffectorIntake extends SubsystemBase {
         intakeMotor.set(outtakeSpeed);
     }
 
+    public void resetStoring() {
+        storing = false;
+    }
+
     private boolean isHiLetGoing(){
         return hiLetGo.isBroken();
     }
