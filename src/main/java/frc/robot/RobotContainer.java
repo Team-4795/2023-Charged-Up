@@ -110,7 +110,7 @@ public class RobotContainer {
     m_led.setDefaultCommand(
         new RunCommand(() -> {
 
-            if (m_intake.isStoring()) {
+            if (EndEffectorIntake.isStoring()) {
                 m_led.setBottomRGB(0, 255, 0);
             } else {
                 m_led.setBottomRGB(255, 0, 0);
@@ -175,7 +175,7 @@ public class RobotContainer {
 
             m_rollerbar.tryMove(m_arm.getPosition());
 
-            if (!m_intake.isStoring() && m_rollerbar.isExtended() && m_arm.atSetpoint()) {
+            if (!EndEffectorIntake.isStoring() && m_rollerbar.isExtended() && m_arm.atSetpoint()) {
                 m_rollerbar.spin();
             } else {
                 m_rollerbar.stop();
@@ -272,7 +272,7 @@ public class RobotContainer {
     ControlConstants.driverX.onTrue(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
     ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
  
-    new Trigger(m_intake::isStoring)
+    new Trigger(EndEffectorIntake::isStoring)
         .debounce(0.1)
         .onTrue(new ParallelCommandGroup(
             new RunCommand(() -> setRumble(0.25))

@@ -103,10 +103,15 @@ public class LiftArm extends SubsystemBase {
   private void updateMotionProfile() {
     TrapezoidProfile.State state = new TrapezoidProfile.State(liftEncoder.getPosition(), liftEncoder.getVelocity());
     TrapezoidProfile.State goal = new TrapezoidProfile.State(setpoint, 0.0);
-    switch (StateManager.getGamepiece()) {
-      case Cone: profile = new TrapezoidProfile(ArmConstants.kConeMotionConstraint, goal, state); break;
-      default: profile = new TrapezoidProfile(ArmConstants.kCubeMotionConstraint, goal, state); break;
+
+    if (!EndEffectorIntake.isStoring()) {
+      profile = new TrapezoidProfile(ArmConstants.kNotStoringConstraint, goal, state);
+    } else if (StateManager.getGamepiece() == StateManager.Gamepiece.Cone) {
+      profile = new TrapezoidProfile(ArmConstants.kConeMotionConstraint, goal, state);
+    } else {
+      profile = new TrapezoidProfile(ArmConstants.kCubeMotionConstraint, goal, state);
     }
+    
     motionTimer.reset();
   }
 

@@ -27,22 +27,20 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Robot;
 import frc.robot.StateManager;
 //Sensor imports
-import frc.robot.Sensors.HiLetGo;
 
 
 public class EndEffectorIntake extends SubsystemBase {
     private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kIntakeCANID, MotorType.kBrushed);
-    private final HiLetGo hiLetGo = new HiLetGo(IntakeConstants.kHiLetGoPort);
 
     public double requestedSpeed = IntakeConstants.kStartIntakeSpeed;
 
-    private boolean storing = false;
+    private static boolean storing = false;
     private boolean currentBasedStoring = false;
     private Timer hasBeenStoring = new Timer();
 
     private double outtakeSpeed = 0.0;
 
-    private boolean overrideStoring = false;
+    private static boolean overrideStoring = false;
 
     private double[] currentValues = new double[IntakeConstants.currentAvgSize];
     private int oldestIndex = 0;
@@ -96,17 +94,13 @@ public class EndEffectorIntake extends SubsystemBase {
         storing = false;
     }
 
-    private boolean isHiLetGoing(){
-        return hiLetGo.isBroken();
-    }
-
-    public boolean isStoring() {
+    public static boolean isStoring() {
         // Flip `storing` if overrideStoring is true, otherwise stay the same
         return storing ^ overrideStoring;
     }
 
     public void setOverrideStoring(boolean override) {
-        this.overrideStoring = override;
+        overrideStoring = override;
     }
 
     @Override
@@ -128,7 +122,7 @@ public class EndEffectorIntake extends SubsystemBase {
         SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
         SmartDashboard.putNumber("Average Current", avgCurrent());
         SmartDashboard.putBoolean("Override Storing", overrideStoring);
-        SmartDashboard.putBoolean("Storing?", this.isStoring());
+        SmartDashboard.putBoolean("Storing?", isStoring());
         SmartDashboard.putBoolean("Current Storing", storing);
         SmartDashboard.putNumber("Requested intake speed", requestedSpeed);
         SmartDashboard.putNumber("Outtake speed", outtakeSpeed);
