@@ -123,6 +123,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putData("pose", m_field);
 
     SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
+    SmartDashboard.putNumber("Roll", m_gyro.getRoll());
     SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putNumber("backwards", Math.cos(Math.toRadians(this.getAngle())));
@@ -306,7 +307,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset);
-  }
+  } 
 
   // angle between xy-plane and the forward vector of the drivebase - potentially
   // doesn't work
@@ -320,7 +321,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getElevationAngleV2() {
-    return rotation.findElevationAngle(m_gyro.getPitch(), m_gyro.getRoll(), getHeading().getDegrees());
+    return m_gyro.getRawAccelZ();
   }
 
   public double getElevationVelocityV2() {

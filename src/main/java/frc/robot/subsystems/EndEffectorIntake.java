@@ -61,9 +61,9 @@ public class EndEffectorIntake extends SubsystemBase {
             }
         }
 
-        if (!isStoring() && isStowing) {
-            speed = 0;
-        }
+        // if (!isStoring() && isStowing) {
+        //     speed = 0;
+        // }
 
         requestedSpeed = speed;
         intakeMotor.set(speed);
@@ -108,6 +108,7 @@ public class EndEffectorIntake extends SubsystemBase {
         }       
         
         SmartDashboard.putNumber("Resistance", intakeMotor.getOutputCurrent() / intakeMotor.getAnalog(Mode.kAbsolute).getVoltage());
+        //SmartDashboard.putNumber("Intake Temp", intakeMotor.getMotorTemperature());
         SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
         SmartDashboard.putNumber("Average Current", avgCurrent());
         SmartDashboard.putNumber("Current Threshold", IntakeConstants.storingCurrentThreshold);

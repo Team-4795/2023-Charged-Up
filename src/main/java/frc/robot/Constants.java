@@ -201,11 +201,12 @@ public final class Constants {
 
     public static final double toZeroBound = 0.000001;
 
-    public static final double platformMaxAngle = 12;
+    public static final double platformMaxAngle = 10;
+    
     //constant speed during command
     public static final double balanceSpeed = 0.07;
 
-    public static final double driveAngleThreshold = 8; //angle at which checking angle duration starts, in degrees
+    public static final double driveAngleThreshold = 12; //angle at which checking angle duration starts, in degrees
     //constant drive up speed
     public static final double driveBalanceSpeed = 0.4;
     //useless for Asheville

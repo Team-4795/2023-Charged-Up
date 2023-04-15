@@ -195,7 +195,7 @@ public class AutoSelector {
 
     chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
 
-    chooser.setDefaultOption("Center 2 + Balance", new Center2CubeBalance(drivebase, this));
+    chooser.setDefaultOption("Center 2 + Balance", new Center2CubeBalance(drivebase, this, intake));
 
     chooser.addOption("Center 1 + Balance", new Center1CubeBalance(this));
 
