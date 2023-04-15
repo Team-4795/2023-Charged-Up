@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
-
 //motor imports
 import com.revrobotics.CANSparkMax;
 //import com.revrobotics.CANSparkMaxLowLevel;
@@ -9,20 +7,10 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAnalogSensor.Mode;
 
-import edu.wpi.first.util.datalog.BooleanLogEntry;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DataLogManager;
-//pneumatics imports
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //robot imports
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Robot;
 import frc.robot.StateManager;
@@ -117,10 +105,12 @@ public class EndEffectorIntake extends SubsystemBase {
             } else {
                 storing = false;
             }
-        }        
-
+        }       
+        
+        SmartDashboard.putNumber("Resistance", intakeMotor.getOutputCurrent() / intakeMotor.getAnalog(Mode.kAbsolute).getVoltage());
         SmartDashboard.putNumber("Current", intakeMotor.getOutputCurrent());
         SmartDashboard.putNumber("Average Current", avgCurrent());
+        SmartDashboard.putNumber("Current Threshold", IntakeConstants.storingCurrentThreshold);
         SmartDashboard.putBoolean("Override Storing", overrideStoring);
         SmartDashboard.putBoolean("Storing?", isStoring());
         SmartDashboard.putBoolean("Current Storing", storing);
