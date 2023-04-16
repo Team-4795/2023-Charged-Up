@@ -203,7 +203,7 @@ public class AutoSelector {
 
     chooser.addOption("Cable 2 Cube", new Cable2Cube(this));
 
-    chooser.addOption("Cable 25", new Cable25HybridMHL(this));
+    chooser.addOption("Cable 25", new Cable25HybridMHL(this, intake));
 
     SmartDashboard.putData("Auto Selector", chooser);
   }
