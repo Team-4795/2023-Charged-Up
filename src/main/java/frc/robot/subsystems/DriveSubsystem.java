@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -62,8 +64,8 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-
-  AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  WPI_Pigeon2 pigeon = new WPI_Pigeon2(0);
+  
 
   private RotationMatrix rotation;
   private double balanceSpeed = 0.0;
@@ -77,10 +79,10 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
-  // Odometry class for tracking robot pose
+  // Odometry class for tracking robot pose 
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
+      Rotation2d.fromDegrees(-pigeon.getYaw() + Constants.DriveConstants.kChassisAngularOffset),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -98,13 +100,9 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    // SmartDashboard.putNumber("AngleYaw", m_gyro.getYaw());
-    // SmartDashboard.putNumber("Angle", m_gyro.getAngle());
-    // SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
-    // SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
 
     m_odometry.update(
-        Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
+        Rotation2d.fromDegrees(-pigeon.getYaw() + Constants.DriveConstants.kChassisAngularOffset),
 
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
@@ -119,7 +117,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     
     SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
+    SmartDashboard.putNumber("gyro angle", pigeon.getYaw());
     SmartDashboard.putData("pose", m_field);
 
     SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
@@ -158,7 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
+        Rotation2d.fromDegrees(-pigeon.getYaw() + Constants.DriveConstants.kChassisAngularOffset),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -237,7 +235,7 @@ public class DriveSubsystem extends SubsystemBase {
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset))
+                Rotation2d.fromDegrees(-pigeon.getAngle() + Constants.DriveConstants.kChassisAngularOffset))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -290,14 +288,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    m_gyro.reset();
-    m_gyro.setAngleAdjustment(0);
+    pigeon.reset();
+    pigeon.setYaw(0);
   }
 
   public void zeroReverseHeading() {
-    m_gyro.reset();
-    m_gyro.setAngleAdjustment(180);
-  }
+    pigeon.reset();
+    pigeon.setYaw(180);  }
 
   /**
    * Returns the heading of the robot.
@@ -305,27 +302,22 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public Rotation2d getHeading() {
-    return Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset);
+    return Rotation2d.fromDegrees(-pigeon.getYaw() + Constants.DriveConstants.kChassisAngularOffset);
   }
 
   // angle between xy-plane and the forward vector of the drivebase - potentially
   // doesn't work
   public double getElevationAngle() {
-    return Rotation2d.fromDegrees(m_gyro.getPitch()).getDegrees();
+    return Rotation2d.fromDegrees(pigeon.getPitch()).getDegrees();
   }
 
   public double getElevationVelocity() {
-    return rotation.findElevationVelocity(m_gyro.getPitch(), m_gyro.getRoll(), getHeading().getDegrees(),
-        m_gyro.getRawGyroX(), m_gyro.getRawGyroY(), m_gyro.getRawGyroZ());
+    //doesn't work
+    return rotation.findElevationVelocity(pigeon.getPitch(), pigeon.getRoll(), getHeading().getDegrees(),
+        0, 0, 0);
   }
 
-  public double getElevationAngleV2() {
-    return rotation.findElevationAngle(m_gyro.getPitch(), m_gyro.getRoll(), getHeading().getDegrees());
-  }
 
-  public double getElevationVelocityV2() {
-    return 0.0; // in the process of remaking
-  }
 
   public double getvisionheading() {
     double angle = (getAngle()) % 360;
@@ -366,7 +358,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return pigeon.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
   public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
@@ -409,6 +401,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getAngle() {
-    return m_gyro.getAngle();
+    return pigeon.getYaw();
   }
 }

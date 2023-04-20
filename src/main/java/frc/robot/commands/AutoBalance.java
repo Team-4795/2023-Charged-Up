@@ -28,14 +28,14 @@ public class AutoBalance extends CommandBase{
 
     @Override
     public void initialize(){
-        elevationAngle = drive.getElevationAngleV2();
-        elevationVelocity = drive.getElevationVelocityV2();
+        elevationAngle = drive.getElevationAngle();
+        elevationVelocity = drive.getElevationVelocity();
     }
 
     @Override
     public void execute(){
-        elevationAngle = drive.getElevationAngleV2();
-        elevationVelocity = drive.getElevationVelocityV2();
+        elevationAngle = drive.getElevationAngle();
+        elevationVelocity = drive.getElevationVelocity();
         output = updateDrive();
         drive.setBalanceSpeed(output);
         drive.drive(output, 0.0, 0.0, false, true);
