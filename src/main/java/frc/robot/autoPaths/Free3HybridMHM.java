@@ -4,12 +4,14 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoSelector;
+import frc.robot.subsystems.EndEffectorIntake;
 
 public class Free3HybridMHM extends SequentialCommandGroup {
-    public Free3HybridMHM(AutoSelector selector) {
+    public Free3HybridMHM(AutoSelector selector, EndEffectorIntake intake) {
         PathPlannerTrajectory intakeGP1 = PathPlanner.loadPath("Intake Free N1 GP1", new PathConstraints(3.5, 3.5));
         PathPlannerTrajectory scoreGP1 = PathPlanner.loadPath("Score Free N2 GP1", new PathConstraints(3.0, 3.5));
         PathPlannerTrajectory intakeGP2 = PathPlanner.loadPath("Intake Free N2 GP2", new PathConstraints(3.5, 3.5));
@@ -25,6 +27,6 @@ public class Free3HybridMHM extends SequentialCommandGroup {
                 selector.intakeTrajectory("cube", true, intakeGP2),
                 selector.scoreTrajectory("cube", "mid", false, scoreGP2),
                 selector.outtake(0.3),
-                selector.stow()));
+                selector.intakeTrajectory("cube", true, intakeGP2)));
     }
 }

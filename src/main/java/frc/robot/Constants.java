@@ -212,7 +212,7 @@ public final class Constants {
     //useless for Asheville
     public static final double angularVelocityErrorThreshold = 0.15;
     //coeffiecient of the polynomial function to calculate balancing speed
-    public static final double polyCoeff = 1.545;
+    public static final double polyCoeff = 1.2;
     //duration of checking for the angle to start autobalance 
     public static final double checkDuration = 0.075;
     //override duration for drive up to avoid foul
@@ -323,7 +323,7 @@ public final class Constants {
     public static final Setpoints kLowPickup = new Setpoints(0.928, false, -0.5, false);
     public static final Setpoints kStowHigh = new Setpoints(0.5, false, -0.5, false);
     public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.5, false);
-    public static final Setpoints kLowScore = new Setpoints(0.89, false, -0.5, false);
+    public static final Setpoints kLowScore = new Setpoints(0.89, false, -0.3, false);
     public static final Setpoints kMidScore = new Setpoints(0.69, true, -0.5, false);
     public static final Setpoints kHighScore = new Setpoints(0.565, true, -0.75, false);
     public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.5, false);
