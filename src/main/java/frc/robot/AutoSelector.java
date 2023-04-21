@@ -193,7 +193,7 @@ public class AutoSelector {
     this.wrist = wrist;
     this.rollerbar = rollerbar;
 
-    chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM(this, intake));
+    chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
 
     chooser.setDefaultOption("Center 2 + Balance", new Center2CubeBalance(drivebase, this, intake));
 

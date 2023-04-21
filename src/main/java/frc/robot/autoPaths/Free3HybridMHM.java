@@ -11,7 +11,7 @@ import frc.robot.AutoSelector;
 import frc.robot.subsystems.EndEffectorIntake;
 
 public class Free3HybridMHM extends SequentialCommandGroup {
-    public Free3HybridMHM(AutoSelector selector, EndEffectorIntake intake) {
+    public Free3HybridMHM(AutoSelector selector) {
         PathPlannerTrajectory intakeGP1 = PathPlanner.loadPath("Intake Free N1 GP1", new PathConstraints(3.5, 3.5));
         PathPlannerTrajectory scoreGP1 = PathPlanner.loadPath("Score Free N2 GP1", new PathConstraints(3.0, 3.5));
         PathPlannerTrajectory intakeGP2 = PathPlanner.loadPath("Intake Free N2 GP2", new PathConstraints(3.5, 3.5));

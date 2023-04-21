@@ -71,6 +71,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private RotationMatrix rotation;
   private double balanceSpeed = 0.0;
+  public int oscillations = 0;
+  
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -285,6 +287,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void setBalanceSpeed(double value) {
     balanceSpeed = value;
+  }
+
+  public void setOscillations(int oscillations){
+    this.oscillations = oscillations;
   }
 
   // pick up these changes please

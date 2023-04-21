@@ -22,10 +22,10 @@ public class Center2CubeBalance extends SequentialCommandGroup {
                 selector.outtake(0.2),
                 selector.stow(),
                 selector.intakeTrajectory("cube", true, intakeCenter, 2),
-                selector.scoreTrajectory("cube", "high", false, balanceCenter),
                 new ParallelCommandGroup(
-                        selector.autoBalance(false, false),
+                        selector.autoBalance(false, true),
                         new SequentialCommandGroup(
+                                selector.score("cube", "high", false),
                                 new WaitCommand(3),
                                 new InstantCommand(() -> intake.setOuttakeSpeed(-1)),
                                 selector.outtake(0.3)

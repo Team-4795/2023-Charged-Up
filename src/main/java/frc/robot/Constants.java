@@ -223,6 +223,8 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     public static final double zeroAngleThreshold = 0.15;
+    public static final double deadbandValue = 0.195;
+    public static final double oscillationTime = 0.06;
 
 
   }

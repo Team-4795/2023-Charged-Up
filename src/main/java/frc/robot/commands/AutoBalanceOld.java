@@ -1,6 +1,7 @@
 package frc.robot.Commands;
 
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -12,11 +13,20 @@ public class AutoBalanceOld extends CommandBase{
     double errorThreshold;
     double output;
 
+    int previousSign = 0;
+    int currentSign = 0;
+
+    int signCheck = 0;
+    boolean checkingOscillation = false;
+    int oscillations = 1;
+
+    Timer oscillationTimer = new Timer();
 
     public AutoBalanceOld(DriveSubsystem drive, double errorThreshold){
         this.errorThreshold = errorThreshold;
         this.drive = drive;
         output = 0;
+        oscillationTimer.reset();
         addRequirements(drive);
     }
 
@@ -29,22 +39,26 @@ public class AutoBalanceOld extends CommandBase{
 
     @Override
     public void execute(){
-        elevationAngle = drive.getElevationAngle();
+        elevationAngle = deadband(drive.getElevationAngle());
         if(elevationAngle < -AutoConstants.platformMaxAngle){
             elevationAngle = -AutoConstants.platformMaxAngle;
         } else if(elevationAngle > AutoConstants.platformMaxAngle){
             elevationAngle = AutoConstants.platformMaxAngle;
         }
         output = updateDrive();
+        countOscillations();
         //not sure if Field relative is correct, but whatever
         drive.drive(output, 0, 0, false, true);
         drive.setBalanceSpeed(output);
+        drive.setOscillations(oscillations);
     }
 
 
     private double updateDrive() {
         //assuming we drive straight in the x direction for now
-        return -signOf(elevationAngle)*(Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
+        return -signOf(elevationAngle)*(
+            Math.pow(AutoConstants.polyCoeff/oscillations * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)
+            ) * AutoConstants.balanceSpeed;
     }
 
 
@@ -62,6 +76,7 @@ public class AutoBalanceOld extends CommandBase{
     @Override
     public void end(boolean interrupted){
         drive.setBalanceSpeed(0);
+        
     }
 
 
@@ -70,6 +85,31 @@ public class AutoBalanceOld extends CommandBase{
         return false;
     }
 
+    private double deadband(double value){
+        if(-AutoConstants.deadbandValue < value && value < AutoConstants.deadbandValue){
+            return 0.0;
+        }
+        return value;
+    }
+
+    private void countOscillations(){
+        previousSign = currentSign;
+        currentSign = signOf(elevationAngle);
+        if(previousSign != currentSign && !checkingOscillation){
+            signCheck = currentSign;
+            oscillationTimer.start();
+            checkingOscillation = true;
+        }
+        if(oscillationTimer.hasElapsed(AutoConstants.oscillationTime)){
+            if(currentSign == signCheck){
+                oscillations++;
+            }
+            oscillationTimer.stop();
+            oscillationTimer.reset();
+            checkingOscillation = false;
+        }
+        
+    }
 
 }
 
