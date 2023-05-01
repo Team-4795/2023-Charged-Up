@@ -12,13 +12,16 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.StateManager.Gamepiece;
 import frc.robot.StateManager.State;
-import frc.robot.Commands.AutoBalanceOld;
+import frc.robot.Commands.AutoBalance;
 import frc.robot.Commands.ChangeStateCommand;
-import frc.robot.Commands.DriveCommandOld;
+import frc.robot.Commands.DriveCommand;
 import frc.robot.autoPaths.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.EndEffectorIntake;
+import frc.robot.subsystems.rollerbar.Rollerbar;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class AutoSelector {
@@ -164,11 +167,11 @@ public class AutoSelector {
     }
     if (withDriveup) {
       return new SequentialCommandGroup(
-          new DriveCommandOld(drivebase, direction * AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
+          new DriveCommand(drivebase, direction * AutoConstants.driveBalanceSpeed, AutoConstants.driveAngleThreshold,
               AutoConstants.checkDuration),
-          new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold));
+          new AutoBalance(drivebase, AutoConstants.angularVelocityErrorThreshold));
     } else {
-      return new AutoBalanceOld(drivebase, AutoConstants.angularVelocityErrorThreshold);
+      return new AutoBalance(drivebase, AutoConstants.angularVelocityErrorThreshold);
     }
   }
 

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoSelector;
-import frc.robot.subsystems.EndEffectorIntake;
+import frc.robot.subsystems.intake.EndEffectorIntake;
 
 public class Free3HybridMHM extends SequentialCommandGroup {
     public Free3HybridMHM(AutoSelector selector) {

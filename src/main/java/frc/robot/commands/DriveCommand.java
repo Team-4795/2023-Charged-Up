@@ -1,9 +1,10 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drive.Drive;
 
-//Do not use within first checkDuration * 1000 millis of the day
+//Only drives straight in the X-direction, assumes platform in front of robot
 public class DriveCommand extends CommandBase{
     Drive drive;
     double speed;
@@ -12,14 +13,16 @@ public class DriveCommand extends CommandBase{
     double duration;
     double time;
     boolean check;
+
     double elevationAngle;
 
     public DriveCommand(Drive drive, double speed, double angleThreshold, double checkDuration){
         this.drive = drive;
         this.angleThreshold = angleThreshold;
-        this.duration = 1000 * checkDuration;
         this.speed = speed;
-        check = false;
+        this.duration = checkDuration;
+        this.time = 0;
+        this.check = false;
         addRequirements(drive);
     }
 
@@ -30,11 +33,12 @@ public class DriveCommand extends CommandBase{
 
     @Override
     public void execute(){
-        drive.drive(0, speed, 0, true, true);
+        drive.drive(speed, 0, 0, false, true);
+        drive.setBalanceSpeed(0.4);
         elevationAngle = drive.getElevationAngle();
         if(Math.abs(elevationAngle) > angleThreshold){
             if(!check){
-                time = System.currentTimeMillis();
+                time = Timer.getFPGATimestamp() + 100;
                 check = true;
             }
         } else {
@@ -45,6 +49,6 @@ public class DriveCommand extends CommandBase{
 
     @Override
     public boolean isFinished(){
-        return (((System.currentTimeMillis() - time) > duration) && check);
+        return (((Timer.getFPGATimestamp() + 100 - time) > duration) && check);
     }
 }

@@ -4,6 +4,9 @@ import java.util.Optional;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.EndEffectorIntake;
+import frc.robot.subsystems.rollerbar.Rollerbar;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.utils.Setpoints;
 

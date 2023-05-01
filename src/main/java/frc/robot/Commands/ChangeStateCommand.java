@@ -9,6 +9,8 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.RollerbarConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.intake.EndEffectorIntake;
+import frc.robot.subsystems.rollerbar.Rollerbar;
 import frc.robot.subsystems.wrist.Wrist;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 

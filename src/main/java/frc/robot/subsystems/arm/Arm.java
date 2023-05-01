@@ -29,8 +29,8 @@ import frc.robot.StateManager;
 //import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.StateManager.Gamepiece;
-import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.arm.ArmIO.ArmIOInputs;
+import frc.robot.subsystems.intake.EndEffectorIntake;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class Arm extends SubsystemBase {

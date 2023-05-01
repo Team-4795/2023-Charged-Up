@@ -5,7 +5,6 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Vision;
 import frc.robot.StateManager;
 // import frc.robot.commands.Align;
 // import frc.robot.commands.TapeAlign;
@@ -16,6 +15,7 @@ import frc.robot.StateManager;
 // import frc.robot.Constants.VisionConstants;
 // import edu.wpi.first.wpilibj2.command.CommandBase;
 // import edu.wpi.first.vision.VisionPipeline;
+import frc.robot.subsystems.vision.Vision;
 
 
 public class PipelineSwitch extends CommandBase {

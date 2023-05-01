@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.intake;
 
 //motor imports
 import com.revrobotics.CANSparkMax;

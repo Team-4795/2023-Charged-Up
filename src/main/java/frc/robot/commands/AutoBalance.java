@@ -4,24 +4,28 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.Constants.AutoConstants;
+import edu.wpi.first.wpilibj.Timer;
 
-/*
- * May need to interpolate elevation velocity between x and y axis
- */
 public class AutoBalance extends CommandBase{
     Drive drive;
-    double errorThreshold;
-    
     double elevationAngle;
-    double elevationVelocity;
-    
+    double errorThreshold;
     double output;
 
-    public AutoBalance(Drive drive, double errorThreshold){
-        this.drive = drive;
-        this.errorThreshold = errorThreshold;
-        output = 0;
+    int previousSign = 0;
+    int currentSign = 0;
 
+    int signCheck = 0;
+    boolean checkingOscillation = false;
+    int oscillations = 1;
+
+    Timer oscillationTimer = new Timer();
+
+    public AutoBalance(Drive drive, double errorThreshold){
+        this.errorThreshold = errorThreshold;
+        this.drive = drive;
+        output = 0;
+        oscillationTimer.reset();
         addRequirements(drive);
     }
 
@@ -29,27 +33,33 @@ public class AutoBalance extends CommandBase{
     @Override
     public void initialize(){
         elevationAngle = drive.getElevationAngle();
-        elevationVelocity = drive.getElevationVelocityV2();
     }
+
 
     @Override
     public void execute(){
-        elevationAngle = drive.getElevationAngle();
-        elevationVelocity = drive.getElevationVelocityV2();
+        elevationAngle = deadband(drive.getElevationAngle());
+        if(elevationAngle < -AutoConstants.platformMaxAngle){
+            elevationAngle = -AutoConstants.platformMaxAngle;
+        } else if(elevationAngle > AutoConstants.platformMaxAngle){
+            elevationAngle = AutoConstants.platformMaxAngle;
+        }
         output = updateDrive();
+        countOscillations();
+        //not sure if Field relative is correct, but whatever
+        drive.drive(output, 0, 0, false, true);
         drive.setBalanceSpeed(output);
-
-        drive.drive(output, 0.0, 0.0, false, true);
+        // drive.setOscillations(oscillations);
     }
+
 
     private double updateDrive() {
-        //check angle --> direction relation just in case, should be right tho
-        double speed = (Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
-        if(elevationAngle > 0){
-            speed *= -1;
-        }
-        return speed;
+        //assuming we drive straight in the x direction for now
+        return -signOf(elevationAngle)*(
+            Math.pow(AutoConstants.polyCoeff/oscillations * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)
+            ) * AutoConstants.balanceSpeed;
     }
+
 
     private int signOf(double num){
         if(num < 0){
@@ -61,14 +71,43 @@ public class AutoBalance extends CommandBase{
         }
     }
 
+
     @Override
     public void end(boolean interrupted){
         drive.setBalanceSpeed(0);
+        
     }
+
 
     @Override
     public boolean isFinished(){
-        return (Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
+        return false;
+    }
+
+    private double deadband(double value){
+        if(-AutoConstants.deadbandValue < value && value < AutoConstants.deadbandValue){
+            return 0.0;
+        }
+        return value;
+    }
+
+    private void countOscillations(){
+        previousSign = currentSign;
+        currentSign = signOf(elevationAngle);
+        if(previousSign != currentSign && !checkingOscillation){
+            signCheck = currentSign;
+            oscillationTimer.start();
+            checkingOscillation = true;
+        }
+        if(oscillationTimer.hasElapsed(AutoConstants.oscillationTime)){
+            if(currentSign == signCheck){
+                oscillations++;
+            }
+            oscillationTimer.stop();
+            oscillationTimer.reset();
+            checkingOscillation = false;
+        }
+        
     }
 
 }

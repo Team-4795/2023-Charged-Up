@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoSelector;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.subsystems.EndEffectorIntake;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.EndEffectorIntake;
 
 public class Center2CubeBalance extends SequentialCommandGroup {
     public Center2CubeBalance(Drive drivebase, AutoSelector selector, EndEffectorIntake intake) {
