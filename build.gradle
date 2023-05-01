@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2023.4.2"
+    id "com.peterabeles.gversion" version "1.10"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -35,6 +36,16 @@ deploy {
             }
         }
     }
+}
+
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+    srcDir = "src/main/java/"
+    classPackage = "frc.robot"
+    className = "BuildConstants"
+    dateFormat = "yyyy-MM-dd HH:mm:ss z"
+    timeZone = "America/New_York"
+    indent = " "
 }
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava

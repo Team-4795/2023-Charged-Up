@@ -55,6 +55,23 @@ public class Robot extends LoggedRobot {
       DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
     }
 
+    logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        logger.recordMetadata("GitDirty", "All changes committed");
+        break;
+      case 1:
+        logger.recordMetadata("GitDirty", "Uncomitted changes");
+        break;
+      default:
+        logger.recordMetadata("GitDirty", "Unknown");
+        break;
+    }
+
     PathPlannerServer.startServer(5811); // 4795 = port number 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
