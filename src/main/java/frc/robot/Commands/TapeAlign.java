@@ -13,15 +13,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.Constants.TapeAlignConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.RotationConstants;
 
 
 public class TapeAlign extends CommandBase {
-  private final DriveSubsystem driveSubsystem;
+  private final Drive driveSubsystem;
   private final Vision vision;
   private boolean isAligned;
   private PIDController rotationPID;
@@ -35,7 +35,7 @@ public class TapeAlign extends CommandBase {
   PIDController controller = new PIDController(TapeAlignConstants.kP, TapeAlignConstants.kI, TapeAlignConstants.kD);
 
   public TapeAlign(
-    DriveSubsystem driveSubsystem, 
+    Drive driveSubsystem, 
     Vision vision,
     Supplier<Double> i, 
     Supplier<Double> j) {

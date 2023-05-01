@@ -68,8 +68,11 @@
       "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/SmartDashboard/ArmMechanism": "Mechanism2d",
       "/SmartDashboard/Auto Selector": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Measured Arm Mechanism": "Mechanism2d",
+      "/SmartDashboard/Setpoint Arm Mechanism": "Mechanism2d",
       "/SmartDashboard/pose": "Field2d"
     }
   },
@@ -84,6 +87,15 @@
         }
       },
       "SmartDashboard": {
+        "Arm": {
+          "open": true
+        },
+        "ArmMechanism": {
+          "Arm": {
+            "open": true
+          },
+          "open": true
+        },
         "Auto Selector": {
           "open": true
         },

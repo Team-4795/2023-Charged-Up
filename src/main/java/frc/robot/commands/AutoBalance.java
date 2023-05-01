@@ -2,14 +2,14 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.Constants.AutoConstants;
 
 /*
  * May need to interpolate elevation velocity between x and y axis
  */
 public class AutoBalance extends CommandBase{
-    DriveSubsystem drive;
+    Drive drive;
     double errorThreshold;
     
     double elevationAngle;
@@ -17,7 +17,7 @@ public class AutoBalance extends CommandBase{
     
     double output;
 
-    public AutoBalance(DriveSubsystem drive, double errorThreshold){
+    public AutoBalance(Drive drive, double errorThreshold){
         this.drive = drive;
         this.errorThreshold = errorThreshold;
         output = 0;
@@ -28,13 +28,13 @@ public class AutoBalance extends CommandBase{
 
     @Override
     public void initialize(){
-        elevationAngle = drive.getElevationAngleV2();
+        elevationAngle = drive.getElevationAngle();
         elevationVelocity = drive.getElevationVelocityV2();
     }
 
     @Override
     public void execute(){
-        elevationAngle = drive.getElevationAngleV2();
+        elevationAngle = drive.getElevationAngle();
         elevationVelocity = drive.getElevationVelocityV2();
         output = updateDrive();
         drive.setBalanceSpeed(output);

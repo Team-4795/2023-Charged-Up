@@ -11,6 +11,15 @@ import frc.robot.Commands.*;
 import frc.robot.Constants.*;
 import frc.robot.StateManager.Gamepiece;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.arm.ArmIOSparkMax;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOSim;
+import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOSparkMax;
+import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.arm.ArmIOSim;
+import frc.robot.subsystems.arm.Arm;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,10 +39,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems
-  public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public Drive m_robotDrive;
   private final EndEffectorIntake m_intake = new EndEffectorIntake();
   private final Wrist m_wrist = new Wrist();
-  private final LiftArm m_arm = new LiftArm();
+  private Arm m_arm;
   private final Vision m_Vision = new Vision();
   private final LEDs m_led = new LEDs();
   private final LandingGear m_landing = new LandingGear();
@@ -45,13 +54,38 @@ public class RobotContainer {
   GenericHID m_operatorController = new GenericHID(OIConstants.kOperatorControllerPort);
 
   // State manager
-  StateManager m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive, m_wrist, m_rollerbar);
+  StateManager m_manager;
 
   AutoSelector autoSelector;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    switch (Constants.getRobot()) {
+        case Comp: 
+            m_arm = new Arm(new ArmIOSparkMax()); 
+            m_robotDrive = new Drive(
+                new GyroIOSim(),
+                new ModuleIOSparkMax(0),
+                new ModuleIOSparkMax(1),
+                new ModuleIOSparkMax(2),
+                new ModuleIOSparkMax(3)
+            );
+            break;
+        case Sim: 
+            m_arm = new Arm(new ArmIOSim());
+            m_robotDrive = new Drive(
+                new GyroIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim()
+            );
+            break;
+    }
+
+    m_manager = new StateManager(m_Vision, m_arm, m_intake, m_led, m_robotDrive, m_wrist, m_rollerbar);
+
     // Configure the button bindings
     autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision, m_wrist, m_rollerbar); // huh? see above
 
@@ -63,8 +97,8 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(ControlConstants.driverController.getRawAxis(ControlConstants.kDriveXSpeedAxis), OIConstants.kDriveDeadband),
-                MathUtil.applyDeadband(-ControlConstants.driverController.getRawAxis(ControlConstants.kDriveYSpeedAxis), OIConstants.kDriveDeadband),
+                MathUtil.applyDeadband(-ControlConstants.driverController.getRawAxis(ControlConstants.kDriveXSpeedAxis), OIConstants.kDriveDeadband),
+                MathUtil.applyDeadband(ControlConstants.driverController.getRawAxis(ControlConstants.kDriveYSpeedAxis), OIConstants.kDriveDeadband),
                 MathUtil.applyDeadband(-ControlConstants.driverController.getRawAxis(ControlConstants.kDriveRotationAxis), OIConstants.kDriveDeadband),
                 true,true),
             m_robotDrive));
@@ -88,17 +122,17 @@ public class RobotContainer {
 
     m_wrist.setDefaultCommand(
         new RunCommand(() -> {
-            m_wrist.extended = m_wrist.extendedTarget;
+            boolean target = m_wrist.extendedTarget;
 
             if (m_arm.getPosition() < ArmConstants.kLowWristLimit) {
-                m_wrist.extended = false;
+                target = false;
             }
 
             if (m_arm.getPosition() > ArmConstants.kHighWristLimit) {
-                m_wrist.extended = false;
+                target = false;
             }
 
-            if (m_wrist.extended) {
+            if (target) {
                 m_wrist.extend();
             } else {
                 m_wrist.retract();
@@ -146,13 +180,7 @@ public class RobotContainer {
                     new_setpoint = ArmConstants.kHighSetpointLimit;
                 }
 
-                // Set new arm setpoint
-                if (new_setpoint != m_arm.setpoint) {
-                    m_arm.setpoint = new_setpoint;
-                    m_arm.runManual();
-                } else {
-                    m_arm.runAutomatic();
-                }
+                m_arm.setTargetPosition(new_setpoint);
             },
             m_arm
         )
@@ -269,7 +297,6 @@ public class RobotContainer {
         () -> -ControlConstants.driverController.getRawAxis(ControlConstants.kAlignYSpeedAxis)
     ));
 
-    ControlConstants.driverX.onTrue(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
     ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
  
     new Trigger(EndEffectorIntake::isStoring)

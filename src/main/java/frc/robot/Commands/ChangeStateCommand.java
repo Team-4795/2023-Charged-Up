@@ -8,12 +8,13 @@ import frc.robot.StateManager;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.RollerbarConstants;
 import frc.robot.subsystems.*;
-
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.wrist.Wrist;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ChangeStateCommand extends CommandBase {
   EndEffectorIntake intake;
-  LiftArm arm;
+  Arm arm;
   Wrist wrist;
   Rollerbar rollerbar;
   StateManager manager;
@@ -21,7 +22,7 @@ public class ChangeStateCommand extends CommandBase {
 
   boolean end;
 
-  public ChangeStateCommand(StateManager.State state, EndEffectorIntake intake, boolean end, LiftArm arm, Wrist wrist,
+  public ChangeStateCommand(StateManager.State state, EndEffectorIntake intake, boolean end, Arm arm, Wrist wrist,
       Rollerbar rollerbar, StateManager manager) {
     this.intake = intake;
     this.arm = arm;
@@ -56,10 +57,6 @@ public class ChangeStateCommand extends CommandBase {
     }
   }
 
-  private void armDefault() {
-    arm.runAutomatic();
-  }
-
   private void rollerbarDefault() {
     if (rollerbar.isExtended() != rollerbar.getTarget()) {
       if (!rollerbar.safeToMove(arm.setpoint)) {
@@ -89,7 +86,6 @@ public class ChangeStateCommand extends CommandBase {
   public void execute() {
     intakeDefault();
     wristDefault();
-    armDefault();
     rollerbarDefault();
   }
 

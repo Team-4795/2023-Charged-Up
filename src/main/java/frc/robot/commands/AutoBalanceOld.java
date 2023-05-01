@@ -4,11 +4,11 @@ package frc.robot.Commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.Drive;
 
 
 public class AutoBalanceOld extends CommandBase{
-    DriveSubsystem drive;
+    Drive drive;
     double elevationAngle;
     double errorThreshold;
     double output;
@@ -22,7 +22,7 @@ public class AutoBalanceOld extends CommandBase{
 
     Timer oscillationTimer = new Timer();
 
-    public AutoBalanceOld(DriveSubsystem drive, double errorThreshold){
+    public AutoBalanceOld(Drive drive, double errorThreshold){
         this.errorThreshold = errorThreshold;
         this.drive = drive;
         output = 0;
@@ -50,7 +50,7 @@ public class AutoBalanceOld extends CommandBase{
         //not sure if Field relative is correct, but whatever
         drive.drive(output, 0, 0, false, true);
         drive.setBalanceSpeed(output);
-        drive.setOscillations(oscillations);
+        // drive.setOscillations(oscillations);
     }
 
 

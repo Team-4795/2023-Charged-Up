@@ -1,11 +1,11 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.Drive;
 
 //Do not use within first checkDuration * 1000 millis of the day
 public class DriveCommand extends CommandBase{
-    DriveSubsystem drive;
+    Drive drive;
     double speed;
     double angleThreshold;
 
@@ -14,7 +14,7 @@ public class DriveCommand extends CommandBase{
     boolean check;
     double elevationAngle;
 
-    public DriveCommand(DriveSubsystem drive, double speed, double angleThreshold, double checkDuration){
+    public DriveCommand(Drive drive, double speed, double angleThreshold, double checkDuration){
         this.drive = drive;
         this.angleThreshold = angleThreshold;
         this.duration = 1000 * checkDuration;
@@ -25,13 +25,13 @@ public class DriveCommand extends CommandBase{
 
     @Override
     public void initialize(){
-        elevationAngle = drive.getElevationAngleV2();
+        elevationAngle = drive.getElevationAngle();
     }
 
     @Override
     public void execute(){
         drive.drive(0, speed, 0, true, true);
-        elevationAngle = drive.getElevationAngleV2();
+        elevationAngle = drive.getElevationAngle();
         if(Math.abs(elevationAngle) > angleThreshold){
             if(!check){
                 time = System.currentTimeMillis();

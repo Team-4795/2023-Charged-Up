@@ -15,9 +15,11 @@ import frc.robot.StateManager.State;
 import frc.robot.Commands.AutoBalanceOld;
 import frc.robot.Commands.ChangeStateCommand;
 import frc.robot.Commands.DriveCommandOld;
-import frc.robot.Commands.Yeeeeet;
 import frc.robot.autoPaths.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.wrist.Wrist;
 
 public class AutoSelector {
   private final SendableChooser<Command> chooser = new SendableChooser<>();
@@ -170,19 +172,15 @@ public class AutoSelector {
     }
   }
 
-  public Command yeeeeet(String gamepiece) {
-    return new Yeeeeet(arm, wrist, intake, manager, gamepiece);
-  }
-
-  DriveSubsystem drivebase;
+  Drive drivebase;
   EndEffectorIntake intake;
-  LiftArm arm;
+  Arm arm;
   StateManager manager;
   Wrist wrist;
   Vision vision;
   Rollerbar rollerbar;
 
-  public AutoSelector(DriveSubsystem drivebase, EndEffectorIntake m_intake, LiftArm m_arm, Field2d field,
+  public AutoSelector(Drive drivebase, EndEffectorIntake m_intake, Arm m_arm, Field2d field,
       StateManager m_manager, Vision m_vision, Wrist wrist, Rollerbar rollerbar) {
 
     this.drivebase = drivebase;
@@ -193,9 +191,9 @@ public class AutoSelector {
     this.wrist = wrist;
     this.rollerbar = rollerbar;
 
-    chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
+    chooser.setDefaultOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
 
-    chooser.setDefaultOption("Center 2 + Balance", new Center2CubeBalance(drivebase, this, intake));
+    chooser.addOption("Center 2 + Balance", new Center2CubeBalance(drivebase, this, intake));
 
     chooser.addOption("Center 1 + Balance", new Center1CubeBalance(this));
 

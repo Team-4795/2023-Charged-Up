@@ -2,6 +2,9 @@ package frc.robot;
 import java.util.Optional;
 
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.wrist.Wrist;
 import frc.utils.Setpoints;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -10,10 +13,10 @@ import frc.robot.Constants.ConeSetpointConstants;
 
 public class StateManager {
     private Vision vision;
-    private LiftArm arm;
+    private Arm arm;
     private EndEffectorIntake intake;
     private LEDs leds;
-    private DriveSubsystem drive;
+    private Drive drive;
     private Wrist wrist;
     private Rollerbar rollerbar;
 
@@ -105,7 +108,7 @@ public class StateManager {
         }
     }
 
-    public StateManager(Vision vision, LiftArm arm, EndEffectorIntake intake, LEDs leds, DriveSubsystem drive, Wrist wrist, Rollerbar rollerbar) {
+    public StateManager(Vision vision, Arm arm, EndEffectorIntake intake, LEDs leds, Drive drive, Wrist wrist, Rollerbar rollerbar) {
         this.state = State.StowInFrame;
 
         this.vision = vision;

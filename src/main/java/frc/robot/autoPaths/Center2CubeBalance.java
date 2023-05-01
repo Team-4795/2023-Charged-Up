@@ -9,11 +9,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.AutoSelector;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.EndEffectorIntake;
+import frc.robot.subsystems.drive.Drive;
 
 public class Center2CubeBalance extends SequentialCommandGroup {
-    public Center2CubeBalance(DriveSubsystem drivebase, AutoSelector selector, EndEffectorIntake intake) {
+    public Center2CubeBalance(Drive drivebase, AutoSelector selector, EndEffectorIntake intake) {
         PathPlannerTrajectory intakeCenter = PathPlanner.loadPath("Intake Center N2 GP3", new PathConstraints(1.5, 2.5));
         PathPlannerTrajectory balanceCenter = PathPlanner.loadPath("Balance Open GP3", new PathConstraints(1.5, 2.5));
         addCommands(new SequentialCommandGroup(

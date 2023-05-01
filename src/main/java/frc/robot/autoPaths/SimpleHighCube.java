@@ -10,13 +10,13 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoSelector;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.Drive;
 
 
 
 public class SimpleHighCube extends SequentialCommandGroup {
 
-  public SimpleHighCube(DriveSubsystem drivebase, AutoSelector m_autoSelector) {
+  public SimpleHighCube(Drive drivebase, AutoSelector m_autoSelector) {
 
     PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Free Auto Balance", new PathConstraints(3, 3));
 

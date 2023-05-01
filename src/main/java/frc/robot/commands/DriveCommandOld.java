@@ -2,11 +2,11 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.Drive;
 
 //Only drives straight in the X-direction, assumes platform in front of robot
 public class DriveCommandOld extends CommandBase{
-    DriveSubsystem drive;
+    Drive drive;
     double speed;
     double angleThreshold;
 
@@ -16,7 +16,7 @@ public class DriveCommandOld extends CommandBase{
 
     double elevationAngle;
 
-    public DriveCommandOld(DriveSubsystem drive, double speed, double angleThreshold, double checkDuration){
+    public DriveCommandOld(Drive drive, double speed, double angleThreshold, double checkDuration){
         this.drive = drive;
         this.angleThreshold = angleThreshold;
         this.speed = speed;
