@@ -18,7 +18,7 @@ public class Center1CubeBalanceMobility extends SequentialCommandGroup {
                         m_autoSelector.score("cube", "high", false),
                         m_autoSelector.outtake(0.2),
                         m_autoSelector.stowTrajectory(mobility),
-                        new WaitCommand(0.4),
+                        new WaitCommand(1),
                         m_autoSelector.autoBalance(false, true)));
     }
 }

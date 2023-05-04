@@ -169,4 +169,10 @@ public class MAXSwerveModule {
     m_drivingSparkMax.setIdleMode(IdleMode.kBrake);
     m_turningSparkMax.setIdleMode(IdleMode.kBrake);
   }
+
+  public void setCoastMode()
+  {
+    m_drivingSparkMax.setIdleMode(IdleMode.kCoast);
+    m_turningSparkMax.setIdleMode(IdleMode.kCoast);
+  }
 }

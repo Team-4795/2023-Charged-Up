@@ -421,4 +421,11 @@ public class DriveSubsystem extends SubsystemBase {
   public double getAngle() {
     return m_gyro.getAngle();
   }
+
+public void setCoastMode() {
+    m_frontLeft.setCoastMode();
+    m_frontRight.setCoastMode();
+    m_rearLeft.setCoastMode();
+    m_rearRight.setCoastMode();
+}
 }

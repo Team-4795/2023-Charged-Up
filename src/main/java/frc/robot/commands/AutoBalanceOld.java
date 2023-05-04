@@ -46,11 +46,11 @@ public class AutoBalanceOld extends CommandBase{
             elevationAngle = AutoConstants.platformMaxAngle;
         }
         output = updateDrive();
-        countOscillations();
+        //countOscillations();
         //not sure if Field relative is correct, but whatever
         drive.drive(output, 0, 0, false, true);
         drive.setBalanceSpeed(output);
-        drive.setOscillations(oscillations);
+        //drive.setOscillations(oscillations);
     }
 
 
@@ -87,6 +87,7 @@ public class AutoBalanceOld extends CommandBase{
 
     private double deadband(double value){
         if(-AutoConstants.deadbandValue < value && value < AutoConstants.deadbandValue){
+            drive.setBreakMode();
             return 0.0;
         }
         return value;
