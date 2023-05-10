@@ -92,7 +92,7 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0762;
+    public static final double kWheelDiameterMeters = 0.0737;  //2.90 inches
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
     public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
@@ -169,6 +169,7 @@ public final class Constants {
     public static final JoystickButton operatorY = new JoystickButton(operatorController, 4);
     public static final JoystickButton operatorBumperLeft = new JoystickButton(operatorController, 5);
     public static final JoystickButton operatorBumperRight = new JoystickButton(operatorController, 6);
+    public static final JoystickButton operatorJoystickRight = new JoystickButton(operatorController, 10);
 
     public static final POVButton operatorDpadUp = new POVButton(operatorController, 0);
     public static final POVButton operatorDpadLeft = new POVButton(operatorController, 270);
@@ -194,20 +195,24 @@ public final class Constants {
     public static final double VisionMoveFastX = 0;
     public static final double VisionMoveFastY = .3;
     
+    public static final double kIntakeDelay = 0.25;
+    public static final double kIntakeWaitTime = 0.2;
+    public static final double kOuttakeDelay = 0.25;
 
     public static final double toZeroBound = 0.000001;
 
-    public static final double platformMaxAngle = 12;
+    public static final double platformMaxAngle = 10;
+    
     //constant speed during command
     public static final double balanceSpeed = 0.07;
 
-    public static final double driveAngleThreshold = 8; //angle at which checking angle duration starts, in degrees
+    public static final double driveAngleThreshold = 12; //angle at which checking angle duration starts, in degrees
     //constant drive up speed
     public static final double driveBalanceSpeed = 0.4;
     //useless for Asheville
     public static final double angularVelocityErrorThreshold = 0.15;
     //coeffiecient of the polynomial function to calculate balancing speed
-    public static final double polyCoeff = 1.52;
+    public static final double polyCoeff = 1.3;
     //duration of checking for the angle to start autobalance 
     public static final double checkDuration = 0.075;
     //override duration for drive up to avoid foul
@@ -217,6 +222,9 @@ public final class Constants {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    public static final double zeroAngleThreshold = 0.15;
+    public static final double deadbandValue = 11;
+    public static final double oscillationTime = 0.06;
 
 
   }
@@ -245,14 +253,15 @@ public final class Constants {
   public static final class ArmConstants {
     public static final TrapezoidProfile.Constraints kCubeMotionConstraint = new TrapezoidProfile.Constraints(3.0, 4.0);
     public static final TrapezoidProfile.Constraints kConeMotionConstraint = new TrapezoidProfile.Constraints(1.0, 4.0);
+    public static final TrapezoidProfile.Constraints kNotStoringConstraint = new TrapezoidProfile.Constraints(3.0, 4.0);
     public static final int kLeftArmMotorCANID = 10;
     public static final int kRightArmMotorCANID = 11;
     public static final double kP = 3.5;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kFF = 0;
-    public static final double kMinOutput = -0.75;
-    public static final double kMaxOutput = 0.75;
+    public static final double kMinOutput = -0.9;
+    public static final double kMaxOutput = 0.9;
     public static final double kRampRate = 0.125;
     public static final double kConversionFactor = 1;
     public static final int kCurrentLimit = 60;
@@ -282,7 +291,7 @@ public final class Constants {
 
     public static final double kArmBoundary = 0.23;
     public static final double kDoubleExtensionBoundary = 0.45;
-    public static final double kSpinSpeed = -0.8;
+    public static final double kSpinSpeed = -1;
 
     public static final double kExtendTime = .3;
     public static final double kRetractTime = .5;
@@ -302,10 +311,10 @@ public final class Constants {
     public static final double kCubeIntakeSpeed = 0.8;
     public static final double kConeIntakeSpeed = 1.0;
     
-    public static final double kCubeSlowIntakeSpeed = 0.3;
+    public static final double kCubeSlowIntakeSpeed = 0.5;
     public static final double kConeSlowIntakeSpeed = 0.6;
 
-    public static final double storingCurrentThreshold = 15;
+    public static final double storingCurrentThreshold = 16.5;
 
     public static final int currentAvgSize = 35;
 
@@ -316,17 +325,17 @@ public final class Constants {
     public static final Setpoints kLowPickup = new Setpoints(0.928, false, -0.5, false);
     public static final Setpoints kStowHigh = new Setpoints(0.5, false, -0.5, false);
     public static final Setpoints kDoubleFeeder = new Setpoints(0.62, true, -0.5, false);
-    public static final Setpoints kLowScore = new Setpoints(0.89, false, -0.5, false);
+    public static final Setpoints kLowScore = new Setpoints(0.89, false, -0.3, false);
     public static final Setpoints kMidScore = new Setpoints(0.69, true, -0.5, false);
-    public static final Setpoints kHighScore = new Setpoints(0.565, true, -0.85, false);
+    public static final Setpoints kHighScore = new Setpoints(0.565, true, -0.75, false);
     public static final Setpoints kStowInFrame = new Setpoints(0.16, false, -0.5, false);
     public static final Setpoints kStowLow = new Setpoints(0.96, false, -0.5, false);
     public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, true, -1.0, false);
     public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, false, -0.6, false);
     public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, false, -0.5, false);
     public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, false, -0.5, false);
-    public static final Setpoints kBackwardsLowPickup = new Setpoints(0.189, false, 0.0, true);
-    public static final Setpoints kBackwardLowPickupAuto = new Setpoints(0.191, false, 0, true);
+    public static final Setpoints kBackwardsLowPickup = new Setpoints(0.18, false, 0.0, true);
+    public static final Setpoints kBackwardLowPickupAuto = new Setpoints(0.1835, false, 0, true);
   }
 
   public static final class ConeSetpointConstants {

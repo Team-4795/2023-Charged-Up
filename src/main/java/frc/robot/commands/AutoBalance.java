@@ -38,6 +38,7 @@ public class AutoBalance extends CommandBase{
         elevationVelocity = drive.getElevationVelocityV2();
         output = updateDrive();
         drive.setBalanceSpeed(output);
+
         drive.drive(output, 0.0, 0.0, false, true);
     }
 

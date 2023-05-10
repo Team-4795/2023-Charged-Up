@@ -90,6 +90,7 @@ public class StateManager {
                 case BackwardsLowScore: result = ConeSetpointConstants.kLowScore; break;
                 case BackwardsDoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
                 case BackwardsLowPickup: result = ConeSetpointConstants.kLowPickup; break;
+                case BackwardsLowPickupAuto: result = ConeSetpointConstants.kLowPickup; break;
             }
     
             return Optional.ofNullable(result);
@@ -119,14 +120,12 @@ public class StateManager {
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
         SmartDashboard.putString("Gamepiece", "Cube");
-        leds.setRGB(127, 0, 255);
         vision.switchToTag();
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
         SmartDashboard.putString("Gamepiece", "Cone");
-        leds.setRGB(255, 255, 0);
 
         vision.switchToTape();
     }
@@ -138,7 +137,7 @@ public class StateManager {
     }
 
     public void dpadUp() {
-        if (intake.isStoring()) {
+        if (EndEffectorIntake.isStoring()) {
             if (Math.cos(Math.toRadians(drive.getAngle())) < 0) {
                 state = State.BackwardsHighScore;
             } else {
@@ -156,7 +155,7 @@ public class StateManager {
     }
 
     public void dpadLeft() {
-        if (intake.isStoring()) {
+        if (EndEffectorIntake.isStoring()) {
             if (Math.cos(Math.toRadians(drive.getAngle())) < 0) {
                 state = State.BackwardsMidScore;
             } else {
@@ -170,7 +169,7 @@ public class StateManager {
     }
     
     public void dpadDown() {
-        if (intake.isStoring()) {
+        if (EndEffectorIntake.isStoring()) {
             if (Math.cos(Math.toRadians(drive.getAngle())) < 0) {
                 state = State.BackwardsLowScore;
             } else {

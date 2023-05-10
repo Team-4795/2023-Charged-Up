@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -64,9 +66,13 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
 
   AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  WPI_Pigeon2 pigeon = new WPI_Pigeon2(20);
+
 
   private RotationMatrix rotation;
   private double balanceSpeed = 0.0;
+  public int oscillations = 0;
+  
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -98,11 +104,6 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    // SmartDashboard.putNumber("AngleYaw", m_gyro.getYaw());
-    // SmartDashboard.putNumber("Angle", m_gyro.getAngle());
-    // SmartDashboard.putBoolean("isconnected", m_gyro.isConnected());
-    // SmartDashboard.putBoolean("iscalibrating", m_gyro.isCalibrating());
-
     m_odometry.update(
         Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
 
@@ -122,12 +123,17 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
     SmartDashboard.putData("pose", m_field);
 
-    SmartDashboard.putNumber("Angle of Elevation", getElevationAngle());
+    SmartDashboard.putNumber("Pigeon Angle of Elevation", getElevationAngle());
+    SmartDashboard.putNumber("NavX Angle of Elevation", m_gyro.getPitch());
+    SmartDashboard.putNumber("Roll", pigeon.getRoll());
     SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putNumber("backwards", Math.cos(Math.toRadians(this.getAngle())));
     SmartDashboard.putNumber("Vision heading", getvisionheading());
     SmartDashboard.putNumberArray("Swerve states", getModuleStates());
+    SmartDashboard.putNumber("magnetometer X", m_gyro.getRawMagX());
+    SmartDashboard.putNumber("magnetometer Y", m_gyro.getRawMagY());
+    SmartDashboard.putNumber("magnetometer Z", m_gyro.getRawMagZ());
     SmartDashboard.putNumberArray("Odometry",
         new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees() });
     //SmartDashboard.putNumberArray("Vision Pose Estimate", new double[] {
@@ -283,6 +289,10 @@ public class DriveSubsystem extends SubsystemBase {
     balanceSpeed = value;
   }
 
+  public void setOscillations(int oscillations){
+    this.oscillations = oscillations;
+  }
+
   // pick up these changes please
   public double getBalanceSpeed() {
     return balanceSpeed;
@@ -306,12 +316,12 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset);
-  }
+  } 
 
   // angle between xy-plane and the forward vector of the drivebase - potentially
   // doesn't work
   public double getElevationAngle() {
-    return Rotation2d.fromDegrees(m_gyro.getPitch()).getDegrees();
+    return pigeon.getPitch();
   }
 
   public double getElevationVelocity() {
@@ -320,7 +330,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getElevationAngleV2() {
-    return rotation.findElevationAngle(m_gyro.getPitch(), m_gyro.getRoll(), getHeading().getDegrees());
+    return m_gyro.getRawAccelZ();
   }
 
   public double getElevationVelocityV2() {
@@ -411,4 +421,11 @@ public class DriveSubsystem extends SubsystemBase {
   public double getAngle() {
     return m_gyro.getAngle();
   }
+
+public void setCoastMode() {
+    m_frontLeft.setCoastMode();
+    m_frontRight.setCoastMode();
+    m_rearLeft.setCoastMode();
+    m_rearRight.setCoastMode();
+}
 }

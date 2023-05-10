@@ -85,7 +85,7 @@ public class TapeAlign extends CommandBase {
         rotation = -RotationConstants.kNoTargetSpeed;
       }
 
-      driveSubsystem.drive(xSpeed,ySpeed,rotation,true,true);
+      driveSubsystem.drive(-xSpeed,ySpeed,-rotation,true,true);
     }
   }
 

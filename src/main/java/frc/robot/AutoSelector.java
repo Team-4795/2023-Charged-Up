@@ -76,13 +76,17 @@ public class AutoSelector {
   public Command scoreTrajectory(String gamepiece, String setpoint, boolean backwards, PathPlannerTrajectory traj) {
     return drivebase.followTrajectoryCommand(traj).alongWith(
       new SequentialCommandGroup(
-        new RunCommand(rollerbar::reverse, rollerbar).withTimeout(0.5),
+        new WaitCommand(AutoConstants.kIntakeDelay),
         score(gamepiece, setpoint, backwards)
       )
     );
   }
 
   public Command intakeTrajectory(String gamepiece, boolean backwards, PathPlannerTrajectory traj) {
+    return intakeTrajectory(gamepiece, backwards, traj, 0.0);
+  }
+
+  public Command intakeTrajectory(String gamepiece, boolean backwards, PathPlannerTrajectory traj, double time) {
     Command setGamepiece;
 
     switch (gamepiece) {
@@ -105,8 +109,12 @@ public class AutoSelector {
     return setGamepiece
       .andThen(
         new ParallelDeadlineGroup(
-          drivebase.followTrajectoryCommand(traj).andThen(new WaitCommand(0.2)),
-          new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
+          drivebase.followTrajectoryCommand(traj).andThen(new WaitCommand(AutoConstants.kIntakeWaitTime)),
+          new SequentialCommandGroup(
+            new RunCommand(intake::outtake, intake).withTimeout(AutoConstants.kOuttakeDelay), // Run outtake while moving backwards
+            new WaitCommand(time),
+            new ChangeStateCommand(state, intake, false, arm, wrist, rollerbar, manager)
+          )
         ).andThen(new InstantCommand(() -> intake.setOverrideStoring(true)))
       );
   }
@@ -124,7 +132,7 @@ public class AutoSelector {
       Map.entry(1, new RunCommand(intake::outtake, intake).withTimeout(time)),
       Map.entry(2, new SequentialCommandGroup(
         new InstantCommand(wrist::extend, wrist),
-        new WaitCommand(0.2),
+        new WaitCommand(0.3),
         new RunCommand(intake::outtake, intake).withTimeout(time))
       ),
       Map.entry(3, new SequentialCommandGroup(
@@ -144,7 +152,7 @@ public class AutoSelector {
   }
 
   public Command autoStartUp(PathPlannerTrajectory traj, boolean flip) {
-    return drivebase.AutoStartUp(traj, flip, intake);
+    return new InstantCommand(intake::resetStoring).andThen(drivebase.AutoStartUp(traj, flip, intake));
   }
 
   public Command autoBalance(boolean backward, boolean withDriveup) {
@@ -185,39 +193,17 @@ public class AutoSelector {
     this.wrist = wrist;
     this.rollerbar = rollerbar;
 
-    //chooser.addOption("Test", new AutoTest(this));
+    chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM(this));
 
-    chooser.addOption("Cable 2 Cube Balance", new Cable2CubeBalance(drivebase, this));
+    chooser.setDefaultOption("Center 2 + Balance", new Center2CubeBalance(drivebase, this, intake));
 
-    chooser.addOption("RED Cable 2.5 Cube", new Cable25Cube(drivebase, this));
+    chooser.addOption("Center 1 + Balance", new Center1CubeBalance(this));
 
-    chooser.addOption("BLUE Cable 2.5 Cube", new Cable25CubeBlue(drivebase, this));
+    chooser.addOption("Center 1 + Mobility + Balance", new Center1CubeBalanceMobility(this));
 
-    // chooser.addOption("Cable 2.5 Cube Balance", new Cable25CubeBalance(this));
+    chooser.addOption("Cable 2 Cube", new Cable2Cube(this));
 
-    // chooser.addOption("Cable 3 Cube LLL", new Cable3CubeLLL(drivebase, this));
-
-    // chooser.addOption("Center Cube Balance", new Center1CubeBalance(drivebase, this));
-
-    // chooser.addOption("Center 1.5 Balance", new Center15CubeBalance(drivebase, this));
-
-    chooser.addOption("Free 2 Cube Balance", new Free2CubeBalance(drivebase, this));
-
-    // chooser.addOption("Free 2.5 Cube", new Free25Cube(drivebase, this));
-
-    // chooser.addOption("Free 2.5 Cube Balance", new Free25CubeBalance(this));
-
-    //chooser.addOption("Free 3 Cube LLL", new Free3CubeLLL(drivebase, this));
-
-    //chooser.addOption("Free 3 Cube HML", new Free3CubeHML(drivebase, this));
-
-    chooser.addOption("BLUE Free 3 Hybrid MHM", new Free3HybridMHM(this));
-
-    chooser.addOption("RED Free 3 Hybrid MHM", new Free3HybridMHMRed(this));
-
-    //chooser.addOption("High Cube", new SimpleHighCube(drivebase, this));
-
-    //chooser.addOption("Mid Cone", new SimpleMidCone(drivebase, this));
+    chooser.addOption("Cable 25", new Cable25HybridMHL(this, intake));
 
     SmartDashboard.putData("Auto Selector", chooser);
   }
