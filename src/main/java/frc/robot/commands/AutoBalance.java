@@ -1,13 +1,12 @@
-package frc.robot.Commands;
+package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.Constants.AutoConstants;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.subsystems.drive.Drive;
 
-public class AutoBalance extends CommandBase{
-    Drive drive;
+public class AutoBalance extends CommandBase {
+    Drive drive = Drive.getInstance();
     double elevationAngle;
     double errorThreshold;
     double output;
@@ -21,93 +20,88 @@ public class AutoBalance extends CommandBase{
 
     Timer oscillationTimer = new Timer();
 
-    public AutoBalance(Drive drive, double errorThreshold){
+    public AutoBalance(double errorThreshold) {
         this.errorThreshold = errorThreshold;
-        this.drive = drive;
         output = 0;
         oscillationTimer.reset();
         addRequirements(drive);
     }
 
-
     @Override
-    public void initialize(){
+    public void initialize() {
         elevationAngle = drive.getElevationAngle();
     }
 
-
     @Override
-    public void execute(){
+    public void execute() {
         elevationAngle = deadband(drive.getElevationAngle());
-        if(elevationAngle < -AutoConstants.platformMaxAngle){
+        if (elevationAngle < -AutoConstants.platformMaxAngle) {
             elevationAngle = -AutoConstants.platformMaxAngle;
-        } else if(elevationAngle > AutoConstants.platformMaxAngle){
+        } else if (elevationAngle > AutoConstants.platformMaxAngle) {
             elevationAngle = AutoConstants.platformMaxAngle;
         }
         output = updateDrive();
         countOscillations();
-        //not sure if Field relative is correct, but whatever
-        drive.drive(output, 0, 0, false, true);
-        drive.setBalanceSpeed(output);
+        // not sure if Field relative is correct, but whatever
+        // drive.drive(output, 0, 0, false, true);
+        // drive.setBalanceSpeed(output);
         // drive.setOscillations(oscillations);
     }
 
-
     private double updateDrive() {
-        //assuming we drive straight in the x direction for now
-        return -signOf(elevationAngle)*(
-            Math.pow(AutoConstants.polyCoeff/oscillations * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)
-            ) * AutoConstants.balanceSpeed;
+        // assuming we drive straight in the x direction for now
+        return -signOf(elevationAngle)
+                * (Math.pow(
+                        AutoConstants.polyCoeff
+                                / oscillations
+                                * (Math.abs(elevationAngle) / AutoConstants.platformMaxAngle),
+                        2))
+                * AutoConstants.balanceSpeed;
     }
 
-
-    private int signOf(double num){
-        if(num < 0){
+    private int signOf(double num) {
+        if (num < 0) {
             return -1;
-        } else if (num > 0){
+        } else if (num > 0) {
             return 1;
         } else {
             return 0;
         }
     }
 
-
     @Override
-    public void end(boolean interrupted){
-        drive.setBalanceSpeed(0);
-        
+    public void end(boolean interrupted) {
+        // drive.setBalanceSpeed(0);
+
     }
 
-
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return false;
     }
 
-    private double deadband(double value){
-        if(-AutoConstants.deadbandValue < value && value < AutoConstants.deadbandValue){
+    private double deadband(double value) {
+        if (-AutoConstants.deadbandValue < value && value < AutoConstants.deadbandValue) {
             return 0.0;
         }
         return value;
     }
 
-    private void countOscillations(){
+    private void countOscillations() {
         previousSign = currentSign;
         currentSign = signOf(elevationAngle);
-        if(previousSign != currentSign && !checkingOscillation){
+        if (previousSign != currentSign && !checkingOscillation) {
             signCheck = currentSign;
             oscillationTimer.start();
             checkingOscillation = true;
         }
-        if(oscillationTimer.hasElapsed(AutoConstants.oscillationTime)){
-            if(currentSign == signCheck){
+        if (oscillationTimer.hasElapsed(AutoConstants.oscillationTime)) {
+            if (currentSign == signCheck) {
                 oscillations++;
             }
             oscillationTimer.stop();
             oscillationTimer.reset();
             checkingOscillation = false;
         }
-        
     }
-
 }

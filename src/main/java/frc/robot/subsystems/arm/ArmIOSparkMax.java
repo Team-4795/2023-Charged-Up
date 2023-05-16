@@ -2,54 +2,48 @@ package frc.robot.subsystems.arm;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-
 import frc.robot.Constants.ArmConstants;
 
 public class ArmIOSparkMax implements ArmIO {
-  private final CANSparkMax leftArmMotor = new CANSparkMax(ArmConstants.kLeftArmMotorCANID, MotorType.kBrushless);
-  private final CANSparkMax rightArmMotor = new CANSparkMax(ArmConstants.kRightArmMotorCANID, MotorType.kBrushless);
+    private final CANSparkMax leftArmMotor = new CANSparkMax(ArmConstants.kLeftArmMotorCANID, MotorType.kBrushless);
+    private final CANSparkMax rightArmMotor = new CANSparkMax(ArmConstants.kRightArmMotorCANID, MotorType.kBrushless);
 
-  private final AbsoluteEncoder liftEncoder;
-  private final RelativeEncoder liftRelativeEncoder;
+    private final AbsoluteEncoder liftEncoder;
 
-  public ArmIOSparkMax() {
-    rightArmMotor.restoreFactoryDefaults();
-    
-    liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    liftRelativeEncoder = leftArmMotor.getEncoder();
+    public ArmIOSparkMax() {
+        rightArmMotor.restoreFactoryDefaults();
 
-    leftArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
-    rightArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
-    leftArmMotor.setClosedLoopRampRate(ArmConstants.kRampRate);
-    rightArmMotor.setClosedLoopRampRate(ArmConstants.kRampRate);
+        liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
-    leftArmMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
-    rightArmMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
+        leftArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
+        rightArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
+        leftArmMotor.setClosedLoopRampRate(ArmConstants.kRampRate);
+        rightArmMotor.setClosedLoopRampRate(ArmConstants.kRampRate);
 
-    liftRelativeEncoder.setPosition(liftEncoder.getPosition() * ArmConstants.kGearing);
+        leftArmMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
+        rightArmMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
 
-    leftArmMotor.setIdleMode(IdleMode.kBrake);
-    rightArmMotor.setIdleMode(IdleMode.kBrake);
-    
-    // Set right motor to follow left, inverted
-    rightArmMotor.follow(leftArmMotor, true);
+        leftArmMotor.setIdleMode(IdleMode.kBrake);
+        rightArmMotor.setIdleMode(IdleMode.kBrake);
 
-    leftArmMotor.setInverted(true);
+        rightArmMotor.follow(leftArmMotor, true);
 
-    leftArmMotor.burnFlash();
-    rightArmMotor.burnFlash();
-  }
+        leftArmMotor.setInverted(true);
 
-  public void updateInputs(ArmIOInputs inputs) {
-    inputs.armAngleRev = liftEncoder.getPosition();
-    inputs.armAngleRev = liftEncoder.getVelocity();
-  }
+        leftArmMotor.burnFlash();
+        rightArmMotor.burnFlash();
+    }
 
-  public void setArmVoltage(double volts) {
-    leftArmMotor.setVoltage(volts);
-  }
+    public void updateInputs(ArmIOInputs inputs) {
+        inputs.angleRev = liftEncoder.getPosition();
+        inputs.angleRev = liftEncoder.getVelocity();
+        inputs.appliedVolts = leftArmMotor.getAppliedOutput() * leftArmMotor.getBusVoltage();
+    }
+
+    public void setArmVoltage(double volts) {
+        leftArmMotor.setVoltage(volts);
+    }
 }

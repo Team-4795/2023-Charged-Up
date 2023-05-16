@@ -4,14 +4,17 @@
 
 package frc.robot.subsystems.arm;
 
+import org.littletonrobotics.junction.AutoLog;
+
 public interface ArmIO {
-  public static class ArmIOInputs {
-    public double armAngleRev = 0.0;
-    public double armAngleRevPerSec = 0.0;
-    public double armAppliedVolts = 0.0;
-  }
+    @AutoLog
+    public static class ArmIOInputs {
+        public double angleRev = 0.0;
+        public double angleRevPerSec = 0.0;
+        public double appliedVolts = 0.0;
+    }
 
-  public default void updateInputs(ArmIOInputs inputs) {}
+    public default void updateInputs(ArmIOInputs inputs) {}
 
-  public default void setArmVoltage(double volts) {}
+    public default void setArmVoltage(double volts) {}
 }

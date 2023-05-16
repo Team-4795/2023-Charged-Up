@@ -1,23 +1,37 @@
 package frc.robot.subsystems;
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LandingGearConstants;
 
-public class LandingGear extends SubsystemBase{
-    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, LandingGearConstants.kForwardChannel, LandingGearConstants.kBackwardChannel);
-    //placeholders, change later
+public class LandingGear extends SubsystemBase {
+    private static LandingGear mInstance;
+
+    public static LandingGear getInstance() {
+        if (mInstance == null) {
+            mInstance = new LandingGear();
+        }
+
+        return mInstance;
+    }
+
+    private final DoubleSolenoid solenoid = new DoubleSolenoid(
+            PneumaticsModuleType.REVPH, LandingGearConstants.kForwardChannel, LandingGearConstants.kBackwardChannel);
+    // placeholders, change later
     private boolean extended;
     private boolean targetExtended;
 
-    public LandingGear(){
+    public LandingGear() {
         extended = false;
         targetExtended = false;
+
+        setDefaultCommand(run(() -> {
+            if (getExtended() != getTargetExtended()) {
+                updateExtended();
+            }
+        }));
     }
 
     private void land() {
@@ -30,20 +44,20 @@ public class LandingGear extends SubsystemBase{
         extended = false;
     }
 
-    public void setTargetExtended(boolean target){
+    public void setTargetExtended(boolean target) {
         targetExtended = target;
     }
 
-    public boolean getExtended(){
+    public boolean getExtended() {
         return extended;
     }
 
-    public boolean getTargetExtended(){
+    public boolean getTargetExtended() {
         return targetExtended;
     }
 
-    public void updateExtended(){
-        if(targetExtended){
+    public void updateExtended() {
+        if (targetExtended) {
             this.land();
         } else {
             this.retract();

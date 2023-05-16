@@ -1,156 +1,107 @@
 package frc.robot;
-import java.util.Optional;
 
-import frc.robot.subsystems.*;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.intake.EndEffectorIntake;
-import frc.robot.subsystems.rollerbar.Rollerbar;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.wrist.Wrist;
-import frc.utils.Setpoints;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.CubeSetpointConstants;
 import frc.robot.Constants.ConeSetpointConstants;
+import frc.robot.Constants.CubeSetpointConstants;
+import frc.robot.subsystems.arm.*;
+import frc.robot.subsystems.drive.*;
+import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.rollerbar.*;
+import frc.robot.subsystems.vision.*;
+import frc.robot.subsystems.wrist.*;
+import frc.utils.Setpoints;
+import org.littletonrobotics.junction.Logger;
 
-public class StateManager {
-    private Vision vision;
-    private Arm arm;
-    private EndEffectorIntake intake;
-    private LEDs leds;
-    private Drive drive;
-    private Wrist wrist;
-    private Rollerbar rollerbar;
+public class StateManager extends VirtualSubsystem {
+    private static StateManager mInstance;
+
+    public static StateManager getInstance() {
+        if (mInstance == null) {
+            mInstance = new StateManager();
+        }
+
+        return mInstance;
+    }
 
     // What state were in
     private State state;
 
     // Either what were picking or what were storing
-    private static Gamepiece gamepiece = Gamepiece.None;
-
-    public enum LED {
-        Cone,
-        Cube,
-    }
+    private Gamepiece gamepiece = Gamepiece.Cube;
 
     public enum Gamepiece {
         Cube,
         Cone,
-        None,
     }
 
     public enum State {
-        LowPickup,
-        StowHigh,
-        DoubleFeeder,
-        LowScore,
-        MidScore,
-        HighScore,
-        StowInFrame,
-        StowLow,
-        BackwardsMidScore,
-        BackwardsHighScore,
-        BackwardsLowScore,
-        BackwardsDoubleFeeder,
-        BackwardsLowPickup,
-        BackwardsLowPickupAuto;
-    
-        private Optional<Setpoints> getCubeSetpoints() {
-            Setpoints result = null;
-    
-            switch (this) {
-                case LowPickup: result = CubeSetpointConstants.kLowPickup; break;
-                case StowHigh: result = CubeSetpointConstants.kStowHigh; break;
-                case DoubleFeeder: result = CubeSetpointConstants.kDoubleFeeder; break;
-                case LowScore: result = CubeSetpointConstants.kLowScore; break;
-                case MidScore: result = CubeSetpointConstants.kMidScore; break;
-                case HighScore: result = CubeSetpointConstants.kHighScore; break;
-                case StowInFrame: result = CubeSetpointConstants.kStowInFrame; break;
-                case StowLow: result = CubeSetpointConstants.kStowLow; break;
-                case BackwardsMidScore: result = CubeSetpointConstants.kBackwardsMidScore; break;
-                case BackwardsHighScore: result = CubeSetpointConstants.kBackwardsHighScore; break;
-                case BackwardsLowScore: result = CubeSetpointConstants.kBackwardsLowScore; break;
-                case BackwardsDoubleFeeder: result = CubeSetpointConstants.kBackwardsDoubleFeeder; break;
-                case BackwardsLowPickup: result = CubeSetpointConstants.kBackwardsLowPickup; break;
-                case BackwardsLowPickupAuto: result = CubeSetpointConstants.kBackwardLowPickupAuto; break;
-            }
-    
-            return Optional.ofNullable(result);
-        }
-    
-        private Optional<Setpoints> getConeSetpoints() {
-            Setpoints result = null;
-    
-            switch (this) {
-                case LowPickup: result = ConeSetpointConstants.kLowPickup; break;
-                case StowHigh: result = ConeSetpointConstants.kStowHigh; break;
-                case DoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
-                case LowScore: result = ConeSetpointConstants.kLowScore; break;
-                case MidScore: result = ConeSetpointConstants.kMidScore; break;
-                case HighScore: result = ConeSetpointConstants.kHighScore; break;
-                case StowInFrame: result = ConeSetpointConstants.kStowInFrame; break;
-                case StowLow: result = ConeSetpointConstants.kStowLow; break;
-                case BackwardsMidScore: result = ConeSetpointConstants.kMidScore; break;
-                case BackwardsHighScore: result = ConeSetpointConstants.kHighScore; break;
-                case BackwardsLowScore: result = ConeSetpointConstants.kLowScore; break;
-                case BackwardsDoubleFeeder: result = ConeSetpointConstants.kDoubleFeeder; break;
-                case BackwardsLowPickup: result = ConeSetpointConstants.kLowPickup; break;
-                case BackwardsLowPickupAuto: result = ConeSetpointConstants.kLowPickup; break;
-            }
-    
-            return Optional.ofNullable(result);
-        }
-    
-        public Optional<Setpoints> getSetpoints() {
-            switch (StateManager.getGamepiece()) {
-                case Cube: return getCubeSetpoints();
-                case Cone: return getConeSetpoints();
-                default: return Optional.empty();
-            }
+        LowPickup(CubeSetpointConstants.kLowPickup, ConeSetpointConstants.kLowPickup),
+        StowHigh(CubeSetpointConstants.kStowHigh, ConeSetpointConstants.kStowHigh),
+        DoubleFeeder(CubeSetpointConstants.kDoubleFeeder, ConeSetpointConstants.kDoubleFeeder),
+        LowScore(CubeSetpointConstants.kLowScore, ConeSetpointConstants.kLowScore),
+        MidScore(CubeSetpointConstants.kMidScore, ConeSetpointConstants.kMidScore),
+        HighScore(CubeSetpointConstants.kHighScore, ConeSetpointConstants.kHighScore),
+        StowInFrame(CubeSetpointConstants.kStowInFrame, ConeSetpointConstants.kStowInFrame),
+        StowLow(CubeSetpointConstants.kStowLow, ConeSetpointConstants.kStowLow),
+        BackwardsMidScore(CubeSetpointConstants.kBackwardsMidScore, ConeSetpointConstants.kMidScore),
+        BackwardsHighScore(CubeSetpointConstants.kBackwardsHighScore, ConeSetpointConstants.kHighScore),
+        BackwardsLowScore(CubeSetpointConstants.kBackwardsLowScore, ConeSetpointConstants.kLowScore),
+        BackwardsDoubleFeeder(CubeSetpointConstants.kBackwardsDoubleFeeder, ConeSetpointConstants.kDoubleFeeder),
+        BackwardsLowPickup(CubeSetpointConstants.kBackwardsLowPickup, ConeSetpointConstants.kLowPickup),
+        BackwardsLowPickupAuto(
+                CubeSetpointConstants.kBackwardLowPickupAuto, CubeSetpointConstants.kBackwardLowPickupAuto);
+
+        Setpoints cubeSetpoint;
+        Setpoints coneSetpoint;
+
+        State(Setpoints cubeSetpoint, Setpoints coneSetpoint) {
+            this.cubeSetpoint = cubeSetpoint;
+            this.coneSetpoint = coneSetpoint;
         }
     }
 
-    public StateManager(Vision vision, Arm arm, EndEffectorIntake intake, LEDs leds, Drive drive, Wrist wrist, Rollerbar rollerbar) {
-        this.state = State.StowInFrame;
+    public Setpoints getSetpoints() {
+        switch (getGamepiece()) {
+            case Cube:
+                return state.cubeSetpoint;
+            case Cone:
+                return state.coneSetpoint;
+            default:
+                throw new AssertionError("Invalid gamepiece");
+        }
+    }
 
-        this.vision = vision;
-        this.arm = arm;
-        this.intake = intake;
-        this.leds = leds;
-        this.drive = drive;
-        this.wrist = wrist;
-        this.rollerbar = rollerbar;
+    public StateManager() {
+        this.state = State.StowInFrame;
     }
 
     public void pickCube() {
         gamepiece = Gamepiece.Cube;
-        SmartDashboard.putString("Gamepiece", "Cube");
-        vision.switchToTag();
+        Vision.getInstance().switchToTag();
     }
 
     public void pickCone() {
         gamepiece = Gamepiece.Cone;
-        SmartDashboard.putString("Gamepiece", "Cone");
-
-        vision.switchToTape();
+        Vision.getInstance().switchToTape();
     }
-    
+
     public void setState(State state) {
         this.state = state;
-
         setSetpoints();
     }
 
+    private boolean isBackwards() {
+        return Math.cos(Math.toRadians(Drive.getInstance().getAngle())) < 0;
+    }
+
     public void dpadUp() {
-        if (EndEffectorIntake.isStoring()) {
-            if (Math.cos(Math.toRadians(drive.getAngle())) < 0) {
+        if (Intake.isStoring()) {
+            if (isBackwards()) {
                 state = State.BackwardsHighScore;
             } else {
                 state = State.HighScore;
             }
         } else {
-            if (Math.cos(Math.toRadians(drive.getAngle())) < 0) {
+            if (isBackwards()) {
                 state = State.DoubleFeeder;
             } else {
                 state = State.BackwardsDoubleFeeder;
@@ -161,8 +112,8 @@ public class StateManager {
     }
 
     public void dpadLeft() {
-        if (EndEffectorIntake.isStoring()) {
-            if (Math.cos(Math.toRadians(drive.getAngle())) < 0) {
+        if (Intake.isStoring()) {
+            if (isBackwards()) {
                 state = State.BackwardsMidScore;
             } else {
                 state = State.MidScore;
@@ -173,10 +124,10 @@ public class StateManager {
 
         setSetpoints();
     }
-    
+
     public void dpadDown() {
-        if (EndEffectorIntake.isStoring()) {
-            if (Math.cos(Math.toRadians(drive.getAngle())) < 0) {
+        if (Intake.isStoring()) {
+            if (isBackwards()) {
                 state = State.BackwardsLowScore;
             } else {
                 state = State.LowScore;
@@ -190,30 +141,28 @@ public class StateManager {
 
     public void dpadRight() {
         state = State.StowInFrame;
-
         setSetpoints();
     }
 
     public void stowHigh() {
         state = State.StowHigh;
-
         setSetpoints();
     }
 
-    public Optional<Double> getArmSetpoint() {
-        return this.state.getSetpoints().map(setpoints -> setpoints.arm);
+    public Double getArmSetpoint() {
+        return getSetpoints().arm;
     }
 
-    public Optional<Double> getOuttakeSetpoint() {
-        return this.state.getSetpoints().map(setpoints -> setpoints.outtake);
+    public Double getOuttakeSetpoint() {
+        return getSetpoints().outtake;
     }
 
-    public Optional<Boolean> getWristExtended() {
-        return this.state.getSetpoints().map(setpoints -> setpoints.wrist);
+    public Boolean getWristExtended() {
+        return getSetpoints().wrist;
     }
 
-    public Optional<Boolean> getRollerbarExtended() {
-        return this.state.getSetpoints().map(setpoints -> setpoints.rollerbar);
+    public Boolean getRollerbarExtended() {
+        return getSetpoints().rollerbar;
     }
 
     public State getState() {
@@ -222,25 +171,26 @@ public class StateManager {
 
     public boolean isStowing() {
         switch (this.state) {
-            case StowInFrame: return true;
-            default: return false;
+            case StowInFrame:
+                return true;
+            default:
+                return false;
         }
     }
 
-    public static Gamepiece getGamepiece() {
+    public Gamepiece getGamepiece() {
         return gamepiece;
     }
 
     public void setSetpoints() {
-        this.getArmSetpoint().ifPresent(arm::setTargetPosition);
-        this.getOuttakeSetpoint().ifPresent(intake::setOuttakeSpeed);
-        this.getWristExtended().ifPresent(wrist::setExtendedTarget);
-        this.getRollerbarExtended().ifPresent(rollerbar::setExtendedTarget);
-
-        SmartDashboard.putString("State", state.name());
+        Arm.getInstance().setTargetPosition(getArmSetpoint());
+        Intake.getInstance().setOuttakeSpeed(getOuttakeSetpoint());
+        Wrist.getInstance().setExtendedTarget(getWristExtended());
+        Rollerbar.getInstance().setExtendedTarget(getRollerbarExtended());
     }
 
-    public void setArmSetpoint(){
-        this.getArmSetpoint().ifPresent(arm::setTargetPosition);
+    public void periodic() {
+        Logger.getInstance().recordOutput("StateManager/Gamepiece", gamepiece.toString());
+        Logger.getInstance().recordOutput("StateManager/State", state.toString());
     }
 }

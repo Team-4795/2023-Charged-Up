@@ -1,16 +1,5 @@
 package frc.utils;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -21,6 +10,15 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.VisionConstants;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class VisionPoseEstimator {
     private PhotonCamera camera;
@@ -31,22 +29,32 @@ public class VisionPoseEstimator {
 
     public static List<AprilTag> Heho = new ArrayList<>();
 
-    public VisionPoseEstimator(String camera){
-        Heho.add(new AprilTag(6, new Pose3d(new Translation3d(1.02743, 4.424426, 0.462788), new Rotation3d(new Quaternion(1, 0, 0, 0)))));
-        Heho.add(new AprilTag(7, new Pose3d(new Translation3d(1.02743, 2.748026, 0.462788), new Rotation3d(new Quaternion(1, 0, 0, 0)))));
-        Heho.add(new AprilTag(8, new Pose3d(new Translation3d(1.02743, 1.071626, 0.462788), new Rotation3d(new Quaternion(1, 0, 0, 0)))));
+    public VisionPoseEstimator(String camera) {
+        Heho.add(new AprilTag(
+                6,
+                new Pose3d(
+                        new Translation3d(1.02743, 4.424426, 0.462788), new Rotation3d(new Quaternion(1, 0, 0, 0)))));
+        Heho.add(new AprilTag(
+                7,
+                new Pose3d(
+                        new Translation3d(1.02743, 2.748026, 0.462788), new Rotation3d(new Quaternion(1, 0, 0, 0)))));
+        Heho.add(new AprilTag(
+                8,
+                new Pose3d(
+                        new Translation3d(1.02743, 1.071626, 0.462788), new Rotation3d(new Quaternion(1, 0, 0, 0)))));
 
         this.camera = new PhotonCamera(camera);
         try {
             field = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
-            //field = new AprilTagFieldLayout(Heho, 8.2, 8.013);
+            // field = new AprilTagFieldLayout(Heho, 8.2, 8.013);
         } catch (IOException e) {
             DriverStation.reportError("!!!Apriltags be Stalin'!!!", e.getStackTrace());
         }
-        estimator = new PhotonPoseEstimator(field, PoseStrategy.MULTI_TAG_PNP, this.camera, VisionConstants.ROBOT_TO_CAMERA);
+        estimator = new PhotonPoseEstimator(
+                field, PoseStrategy.MULTI_TAG_PNP, this.camera, VisionConstants.ROBOT_TO_CAMERA);
     }
 
-    public void estimateRobotPose(Pose2d reference){
+    public void estimateRobotPose(Pose2d reference) {
         estimator.setReferencePose(reference);
         result = estimator.update();
         result.ifPresent(new Consumer<EstimatedRobotPose>() {
@@ -57,8 +65,7 @@ public class VisionPoseEstimator {
         });
     }
 
-    public Pose2d getPoseEstimate(){
+    public Pose2d getPoseEstimate() {
         return estimate;
     }
-    
 }

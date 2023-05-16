@@ -1,7 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import java.util.function.Supplier;
-
 public class GyroIOSim implements GyroIO {
     private double heading = 0.0;
     private double dtheta = 0.0;

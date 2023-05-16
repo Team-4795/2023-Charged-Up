@@ -8,20 +8,20 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.AutoSelector;
-import frc.robot.subsystems.drive.Drive;
+import frc.robot.StateManager.Gamepiece;
+import frc.robot.commands.AutoCommands;
+import frc.robot.commands.AutoCommands.Height;
 
-public class SimpleMidCone extends SequentialCommandGroup {
+public class SimpleMidCone extends AutoPath {
+    public Command load(AutoCommands autoCommands) {
+        PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Free Auto Balance", new PathConstraints(3, 3));
 
-  public SimpleMidCone(Drive drivebase, AutoSelector m_autoSelector) {
-
-    PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Free Auto Balance", new PathConstraints(3, 3));
-
-    addCommands(
-        new SequentialCommandGroup(
-            m_autoSelector.autoStartUp(AutoBalance, false),
-            m_autoSelector.score("cone", "mid", false),
-            m_autoSelector.outtake(0.2)));
-  }
+        return Commands.sequence(
+                autoCommands.autoStartUp(AutoBalance, false),
+                autoCommands.score(Gamepiece.Cone, Height.Mid, false),
+                autoCommands.outtake(0.2));
+    }
 }
