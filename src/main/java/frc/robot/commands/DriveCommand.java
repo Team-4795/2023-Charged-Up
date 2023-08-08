@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drive.Drive;
@@ -32,8 +33,7 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        // drive.drive(speed, 0, 0, false, true);
-        // drive.setBalanceSpeed(0.4);
+        drive.runVelocity(new ChassisSpeeds(speed, 0, 0));
         elevationAngle = drive.getElevationAngle();
         if (Math.abs(elevationAngle) > angleThreshold) {
             if (!check) {

@@ -23,7 +23,7 @@ public class Center2CubeBalance extends AutoPath {
                 autoCommands.stow(),
                 autoCommands.intakeTrajectory(Gamepiece.Cube, true, intakeCenter, 2),
                 Commands.parallel(
-                        autoCommands.autoBalance(false, true),
+                        autoCommands.autoBalance(true, true),
                         Commands.sequence(
                                 autoCommands.score(Gamepiece.Cube, Height.High, false),
                                 Commands.waitSeconds(3),

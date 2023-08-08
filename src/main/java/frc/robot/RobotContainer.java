@@ -62,8 +62,7 @@ public class RobotContainer {
         OIConstants.driverController.a().onTrue(Commands.runOnce(rollerbar::toggle));
 
         // Landing gear toggle
-        OIConstants.driverController
-                .y()
+        OIConstants.driverController.y()
                 .onTrue(Commands.runOnce(() -> landingGear.setTargetExtended(!landingGear.getTargetExtended())));
 
         // Outtake

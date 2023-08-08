@@ -127,7 +127,7 @@ public class AutoCommands {
 
         return Commands.sequence(
                 setGamepiece,
-                Commands.parallel(
+                Commands.deadline(
                                 drivebase
                                         .followTrajectoryCommand(traj)
                                         .andThen(Commands.waitSeconds(AutoConstants.kIntakeWaitTime)),
