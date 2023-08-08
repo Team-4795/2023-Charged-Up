@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
@@ -98,6 +99,14 @@ public class Robot extends LoggedRobot {
         m_robotContainer = new RobotContainer();
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
+
+
+
+        //Limelight port forwarding
+        for(int port = 5000; port <= 5805; port++){
+            PortForwarder.add(port, "limelight.local", port);
+        }
+
     }
 
     /**

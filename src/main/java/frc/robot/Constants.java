@@ -329,6 +329,8 @@ public final class Constants {
         public static final double kCameraPitchRadians = 0;
         public static final double kTargetAngle = 2.6;
 
+        public static final double nTableDefault = 0.0;
+
         /** Physical location of the camera on the robot, relative to the center of the robot. */
         public static final Transform3d CAMERA_TO_ROBOT =
                 new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
