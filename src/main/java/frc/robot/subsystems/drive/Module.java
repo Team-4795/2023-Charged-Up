@@ -15,8 +15,8 @@ public class Module {
 
     private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
 
-    private final PIDController driveFeedback = new PIDController(0.0, 0.0, 0.0, 0.02);
-    private final PIDController turnFeedback = new PIDController(0.0, 0.0, 0.0, 0.02);
+    private final PIDController driveFeedback = new PIDController(0.1, 0.0, 0.0, 0.02);
+    private final PIDController turnFeedback = new PIDController(1.0, 0.0, 0.0, 0.02);
 
     public SwerveModuleState setpoints = new SwerveModuleState(0.0, new Rotation2d());
 
@@ -26,29 +26,7 @@ public class Module {
         this.index = index;
         this.io = io;
 
-        // switch (index) {
-        //   case 0:
-        //     chassisAngularOffset = DriveConstants.kFrontLeftChassisAngularOffset;
-        //     break;
-        //   case 1:
-        //     chassisAngularOffset = DriveConstants.kFrontRightChassisAngularOffset;
-        //     break;
-        //   case 2:
-        //     chassisAngularOffset = DriveConstants.kBackLeftChassisAngularOffset;
-        //     break;
-        //   case 3:
-        //     chassisAngularOffset = DriveConstants.kBackRightChassisAngularOffset;
-        //     break;
-        //   default:
-        //     throw new RuntimeException("Invalid module index for Module");
-        // }
-
-        driveFeedback.setPID(0.9, 0.0, 0.0);
-
-        // driveFeedforward = new SimpleMotorFeedforward(ModuleConstants.kDrivingFF, 0.0);
-
         turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
-        turnFeedback.setPID(23, 0.0, 0.0);
     }
 
     /** Updates inputs and checks tunable numbers. */
@@ -94,7 +72,7 @@ public class Module {
 
     /** Returns the current turn angle of the module. */
     public Rotation2d getAngle() {
-        return new Rotation2d(MathUtil.angleModulus(inputs.turnAbsolutePositionRad));
+        return new Rotation2d(MathUtil.angleModulus(inputs.turnPositionRad));
     }
 
     /** Returns the current drive position of the module in meters. */

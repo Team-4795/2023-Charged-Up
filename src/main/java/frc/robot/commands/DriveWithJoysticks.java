@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.Drive;
 import java.util.function.Supplier;
 
@@ -78,9 +79,9 @@ public class DriveWithJoysticks extends CommandBase {
 
         // Convert to meters per second
         ChassisSpeeds speeds = new ChassisSpeeds(
-                linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                rightY * drive.getMaxAngularSpeedRadPerSec());
+                linearVelocity.getX() * DriveConstants.kMaxSpeedMetersPerSecond,
+                linearVelocity.getY() * DriveConstants.kMaxSpeedMetersPerSecond,
+                rightY * DriveConstants.kMaxAngularSpeed);
 
         // Convert from field relative
         if (!robotRelativeOverride.get()) {

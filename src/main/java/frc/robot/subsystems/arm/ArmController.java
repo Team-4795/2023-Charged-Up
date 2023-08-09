@@ -33,17 +33,17 @@ public final class ArmController {
             // think our model is, in radians and radians/sec
             VecBuilder.fill(0.01), // How accurate we think our encoder position
             // data is. In this case we very highly trust our encoder position reading.
-            Constants.loopPeriodSecs);
+            Constants.DT);
 
     private final LinearQuadraticRegulator<N2, N1, N1> lqr =
         new LinearQuadraticRegulator<>(
             armPlant,
             VecBuilder.fill(0.01, 2.0), // Position, Velocity weight (Lower is more penalized)
             VecBuilder.fill(12.0), // Voltage weight
-            Constants.loopPeriodSecs);
+            Constants.DT);
 
     private final LinearSystemLoop<N2, N1, N1> loop =
-        new LinearSystemLoop<>(armPlant, lqr, observer, 12.0, Constants.loopPeriodSecs);
+        new LinearSystemLoop<>(armPlant, lqr, observer, 12.0, Constants.DT);
 
     public ArmController(double measurement) {
         // Note: All inputs must be converted from revolutions to radians
@@ -67,11 +67,11 @@ public final class ArmController {
         goal *= PI2;
 
         TrapezoidProfile prof = new TrapezoidProfile(constraints, new TrapezoidProfile.State(goal, 0), lastState);
-        lastState = prof.calculate(Constants.loopPeriodSecs);
+        lastState = prof.calculate(Constants.DT);
 
         loop.setNextR(lastState.position, lastState.velocity);
         loop.correct(VecBuilder.fill(measurement));
-        loop.predict(Constants.loopPeriodSecs);
+        loop.predict(Constants.DT);
 
         return loop.getU(0);
     }

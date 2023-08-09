@@ -9,7 +9,6 @@ public interface ModuleIO {
         public double driveVelocityRadPerSec = 0.0;
         public double driveAppliedVolts = 0.0;
 
-        public double turnAbsolutePositionRad = 0.0;
         public double turnPositionRad = 0.0;
         public double turnVelocityRadPerSec = 0.0;
         public double turnAppliedVolts = 0.0;

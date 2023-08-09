@@ -11,8 +11,10 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -23,26 +25,29 @@ public class ModuleIOSparkMax implements ModuleIO {
     private final RelativeEncoder driveEncoder;
     private final AbsoluteEncoder turnEncoder;
 
-    private final double driveAfterEncoderReduction = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
-    private final double turnAfterEncoderReduction = 150.0 / 7.0;
+    private final double chassisAngularOffset;
 
     public ModuleIOSparkMax(int index) {
         switch (index) {
             case 0:
                 driveSparkMax = new CANSparkMax(DriveConstants.kFrontLeftDrivingCanId, MotorType.kBrushless);
                 turnSparkMax = new CANSparkMax(DriveConstants.kFrontLeftTurningCanId, MotorType.kBrushless);
+                chassisAngularOffset = DriveConstants.kFrontLeftChassisAngularOffset;
                 break;
             case 1:
                 driveSparkMax = new CANSparkMax(DriveConstants.kFrontRightDrivingCanId, MotorType.kBrushless);
                 turnSparkMax = new CANSparkMax(DriveConstants.kFrontRightTurningCanId, MotorType.kBrushless);
+                chassisAngularOffset = DriveConstants.kFrontRightChassisAngularOffset;
                 break;
             case 2:
                 driveSparkMax = new CANSparkMax(DriveConstants.kRearLeftDrivingCanId, MotorType.kBrushless);
                 turnSparkMax = new CANSparkMax(DriveConstants.kRearLeftTurningCanId, MotorType.kBrushless);
+                chassisAngularOffset = DriveConstants.kBackLeftChassisAngularOffset;
                 break;
             case 3:
                 driveSparkMax = new CANSparkMax(DriveConstants.kRearRightDrivingCanId, MotorType.kBrushless);
                 turnSparkMax = new CANSparkMax(DriveConstants.kRearRightTurningCanId, MotorType.kBrushless);
+                chassisAngularOffset = DriveConstants.kBackRightChassisAngularOffset;
                 break;
             default:
                 throw new RuntimeException("Invalid module index for ModuleIOSparkMax");
@@ -54,49 +59,36 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveEncoder = driveSparkMax.getEncoder();
         turnEncoder = turnSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
 
+        driveSparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10);
+
         turnEncoder.setInverted(ModuleConstants.kTurningEncoderInverted);
 
         driveSparkMax.setSmartCurrentLimit(ModuleConstants.kDrivingMotorCurrentLimit);
         turnSparkMax.setSmartCurrentLimit(ModuleConstants.kTurningMotorCurrentLimit);
 
+        driveEncoder.setPositionConversionFactor(ModuleConstants.kDrivingEncoderPositionFactor);
+        driveEncoder.setVelocityConversionFactor(ModuleConstants.kDrivingEncoderVelocityFactor);
+
+        turnEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
+        turnEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
+
         driveSparkMax.enableVoltageCompensation(12.0);
         turnSparkMax.enableVoltageCompensation(12.0);
 
         driveEncoder.setPosition(0.0);
+
+        driveSparkMax.burnFlash();
+        turnSparkMax.burnFlash();
     }
 
     public void updateInputs(ModuleIOInputs inputs) {
-        // inputs.drivePositionRad =
-        //     cleanSparkMaxValue(
-        //         inputs.drivePositionRad,
-        //         Units.rotationsToRadians(driveEncoder.getPosition()) / driveAfterEncoderReduction);
-        // inputs.driveVelocityRadPerSec =
-        //     cleanSparkMaxValue(
-        //         inputs.driveVelocityRadPerSec,
-        //         Units.rotationsPerMinuteToRadiansPerSecond(driveEncoder.getVelocity())
-        //             / driveAfterEncoderReduction);
-        // inputs.driveAppliedVolts = driveSparkMax.getAppliedOutput() * driveSparkMax.getBusVoltage();
+        inputs.drivePositionRad = driveEncoder.getPosition();
+        inputs.driveVelocityRadPerSec = driveEncoder.getVelocity();
+        inputs.driveAppliedVolts = driveSparkMax.getAppliedOutput() * driveSparkMax.getBusVoltage();
 
-        // inputs.turnAbsolutePositionRad =
-        //     MathUtil.angleModulus(
-        //         new Rotation2d(
-        //                 turnAbsoluteEncoder.getVoltage()
-        //                     / RobotController.getVoltage5V()
-        //                     * 2.0
-        //                     * Math.PI)
-        //             .minus(absoluteEncoderOffset)
-        //             .getRadians());
-        // inputs.turnPositionRad =
-        //     cleanSparkMaxValue(
-        //         inputs.turnPositionRad,
-        //         Units.rotationsToRadians(turnRelativeEncoder.getPosition())
-        //             / turnAfterEncoderReduction);
-        // inputs.turnVelocityRadPerSec =
-        //     cleanSparkMaxValue(
-        //         inputs.turnVelocityRadPerSec,
-        //         Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
-        //             / turnAfterEncoderReduction);
-        // inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
+        inputs.turnPositionRad = turnEncoder.getPosition() - chassisAngularOffset;
+        inputs.turnVelocityRadPerSec = turnEncoder.getVelocity();
+        inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
     }
 
     public void setDriveVoltage(double volts) {

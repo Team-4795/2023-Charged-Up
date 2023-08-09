@@ -16,7 +16,7 @@ public class ArmIOSim implements ArmIO {
     }
 
     public void updateInputs(ArmIOInputs inputs) {
-        armSim.update(Constants.loopPeriodSecs);
+        armSim.update(Constants.DT);
 
         inputs.angleRev = armSim.getAngleRads() / (2 * Math.PI);
         inputs.angleRevPerSec = armSim.getVelocityRadPerSec() / (2 * Math.PI);

@@ -176,7 +176,7 @@ public class AutoCommands {
     }
 
     public Command autoStartUp(PathPlannerTrajectory traj, boolean flip) {
-        return Commands.sequence(Commands.runOnce(intake::resetStoring), drivebase.AutoStartUp(traj, flip, intake));
+        return Commands.sequence(Commands.runOnce(intake::resetStoring), drivebase.AutoStartUp(traj, flip));
     }
 
     public Command autoBalance(boolean backward, boolean withDriveup) {

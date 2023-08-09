@@ -14,6 +14,7 @@ import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollerbar.Rollerbar;
 import frc.robot.subsystems.wrist.Wrist;
@@ -36,11 +37,20 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         Arm arm = Arm.getInstance();
+        Drive drive = Drive.getInstance();
         Rollerbar rollerbar = Rollerbar.getInstance();
         Intake intake = Intake.getInstance();
         Wrist wrist = Wrist.getInstance();
         LandingGear landingGear = LandingGear.getInstance();
         StateManager manager = StateManager.getInstance();
+
+        drive.setDefaultCommand(
+            new DriveWithJoysticks(
+                drive,
+                () -> -OIConstants.driverController.getLeftY(),
+                () -> -OIConstants.driverController.getLeftX(),
+                () -> -OIConstants.driverController.getRightX(),
+                () -> false));
 
         OIConstants.operatorController.a().whileTrue(Commands.run(rollerbar::reverse, rollerbar));
         OIConstants.operatorController.b().onTrue(Commands.run(rollerbar::spin, rollerbar));

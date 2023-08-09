@@ -15,7 +15,6 @@ public class ModuleIOSim implements ModuleIO {
     private FlywheelSim driveSim = new FlywheelSim(DCMotor.getNEO(1), 4.71, 0.025);
     private FlywheelSim turnSim = new FlywheelSim(DCMotor.getNeo550(1), 46.47, 0.002);
 
-    private double turnRelativePositionRad = 0.0;
     private double turnAbsolutePositionRad = Math.random() * 2.0 * Math.PI;
     private double driveAppliedVolts = 0.0;
     private double turnAppliedVolts = 0.0;
@@ -29,7 +28,6 @@ public class ModuleIOSim implements ModuleIO {
         turnSim.update(0.02);
 
         double angleDiffRad = turnSim.getAngularVelocityRadPerSec() * 0.02;
-        turnRelativePositionRad += angleDiffRad;
         turnAbsolutePositionRad += angleDiffRad;
         while (turnAbsolutePositionRad < 0) {
             turnAbsolutePositionRad += 2.0 * Math.PI;
@@ -42,8 +40,7 @@ public class ModuleIOSim implements ModuleIO {
         inputs.driveVelocityRadPerSec = driveSim.getAngularVelocityRadPerSec();
         inputs.driveAppliedVolts = driveAppliedVolts;
 
-        inputs.turnAbsolutePositionRad = turnAbsolutePositionRad;
-        inputs.turnPositionRad = turnRelativePositionRad;
+        inputs.turnPositionRad = turnAbsolutePositionRad;
         inputs.turnVelocityRadPerSec = turnSim.getAngularVelocityRadPerSec();
         inputs.turnAppliedVolts = turnAppliedVolts;
     }
