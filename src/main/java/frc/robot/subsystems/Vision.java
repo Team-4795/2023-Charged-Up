@@ -1,115 +1,63 @@
 package frc.robot.subsystems;
 
-import java.io.IOException;
-import java.lang.StackWalker.Option;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import javax.management.RuntimeErrorException;
-
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.common.hardware.VisionLEDMode;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import frc.robot.Constants.VisionConstants;
-
 public class Vision extends SubsystemBase {
-  private final PhotonCamera camera = new PhotonCamera(VisionConstants.kSnakeEyesCamera);
-  final double CameraHeight = VisionConstants.kCameraHeight;
-  final double TargetHeight = VisionConstants.kTargetHeight;
-  final double cameraPitchRadians = VisionConstants.kCameraPitchRadians;
-  public boolean hasTargets = false;
-  public boolean isTargeting = true;
 
-  private double targetAngle = VisionConstants.kTargetAngle;
-  private double range;
-  double forwardSpeed;
+  private NetworkTable camera;
+
+  //because camera is mounted sideways, camX = ty and camY = tx;
+  private double camX;
+  private double camY; 
+  private double camArea;
+  private boolean hasTargets;
 
   public Vision(){
+    camera = NetworkTableInstance.getDefault().getTable("limelight");
   }
 
   public boolean hasTargets() {
     return hasTargets;
   }
 
-  public double getTargetAngle() {
-    return targetAngle;
+  public double getAngleY() {
+    return camY;
   }
 
-  public void enableLED() {
-    camera.setLED(VisionLEDMode.kOn);
+  public double getAngleX() {
+    return -camX;
   }
 
-  public void disableLED() {
-    camera.setLED(VisionLEDMode.kOff);
-  }
-
-  public void setLEDBrightness() {
-    // set led brightness here
+  public double getArea() {
+    return camArea;
   }
 
   public void pipelineIndex(int index) {
-    camera.setPipelineIndex(index);
+    camera.getEntry("pipeline").setNumber(index);
   }
 
   public void switchToTag() {
     pipelineIndex(0);
-    disableLED();
   }
 
   public void switchToTape() {
     pipelineIndex(1);
-    enableLED();
-  }
-
-  public void targetingLED() {
-    if (isTargeting == false) {
-      disableLED();
-    } else {
-      enableLED();
-    }
   }
 
   @Override
   public void periodic() {
-    var result = camera.getLatestResult();
-    camera.setDriverMode(false);
+    camX = camera.getEntry("ty").getDouble(0.0);
+    camY = camera.getEntry("tx").getDouble(0.0);
+    camArea = camera.getEntry("ta").getDouble(0.0);
+    hasTargets = (camera.getEntry("tv").getDouble(0.0) == 1);
 
-    if (result.hasTargets()) {
-      hasTargets = true;
-      targetAngle = result.getBestTarget().getPitch();
-      range = PhotonUtils.calculateDistanceToTargetMeters(
-          CameraHeight,
-          TargetHeight,
-          cameraPitchRadians,
-          Units.degreesToRadians(result.getBestTarget().getPitch()));
-    } else {
-      hasTargets = false;
-      range = -2;
-      // targetAngle = -1;
-    }
-
-    SmartDashboard.putBoolean("Has target", hasTargets);
-    SmartDashboard.putNumber("Distance between target", range);
-  }
-
-  @Override
-  public void initSendable(SendableBuilder builder) {
-    builder.setSmartDashboardType("Vision");
-    builder.addBooleanProperty("Has target", () -> hasTargets, null);
-    builder.addDoubleProperty("Goal angle", () -> targetAngle, null);
+    SmartDashboard.putBoolean("Vision Target?", hasTargets);
+    SmartDashboard.putNumber("Target Area", camArea);
+    SmartDashboard.putNumber("Displacement Angle X", camX);
+    SmartDashboard.putNumber("Displacement Angle Y", camY);
   }
 
 }
