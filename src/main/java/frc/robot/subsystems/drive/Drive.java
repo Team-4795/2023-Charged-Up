@@ -203,6 +203,17 @@ public class Drive extends SubsystemBase {
   public double getAngle() {
     return Math.toDegrees(gyroInputs.yawPositionRad);
   }
+
+  public double getVisionHeading(){
+    double angle = (getAngle() % 360);
+    if(angle > 180){
+      angle -= 360;
+    } else if(angle < -180){
+      angle += 360;
+    }
+
+    return -angle;
+  }
   
   /**
   * Runs the drive at the desired velocity.
