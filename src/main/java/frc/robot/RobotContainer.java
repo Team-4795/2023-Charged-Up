@@ -74,7 +74,8 @@ public class RobotContainer {
         // Landing gear toggle
         OIConstants.driverController.y()
                 .onTrue(Commands.runOnce(() -> landingGear.setTargetExtended(!landingGear.getTargetExtended())));
-
+        
+        OIConstants.driverController.rightBumper().onTrue(Commands.runOnce(() -> drive.zeroHeading()));
         // Outtake
         OIConstants.driverController
                 .povRight()
