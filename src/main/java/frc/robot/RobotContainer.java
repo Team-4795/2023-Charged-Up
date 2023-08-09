@@ -55,6 +55,8 @@ public class RobotContainer {
     // Configure the button bindings
     autoSelector = new AutoSelector(m_robotDrive, m_intake, m_arm,  m_robotDrive.m_field, m_manager, m_Vision, m_wrist, m_rollerbar); // huh? see above
 
+    m_Vision.pipelineIndex(1);
+
     configureButtonBindings();
 
     // Configure default commands
@@ -270,7 +272,8 @@ public class RobotContainer {
     ));
 
     ControlConstants.driverX.onTrue(new Yeeeeet(m_arm, m_wrist, m_intake, m_manager, "cube"));
-    ControlConstants.driverY.onTrue(new InstantCommand(() -> m_landing.setTargetExtended(!m_landing.getTargetExtended())));
+    ControlConstants.driverY.onTrue(new InstantCommand(() -> m_Vision.pipelineIndex(1)))
+                            .whileFalse(new InstantCommand(() -> m_Vision.pipelineIndex(0)));
  
     new Trigger(EndEffectorIntake::isStoring)
         .debounce(0.1)
