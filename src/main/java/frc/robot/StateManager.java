@@ -7,7 +7,7 @@ import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.rollerbar.*;
 import frc.robot.subsystems.vision.*;
-import frc.robot.subsystems.wrist.*;
+import frc.robot.subsystems.motorizedWrist.*;
 import frc.utils.Setpoints;
 import org.littletonrobotics.junction.Logger;
 

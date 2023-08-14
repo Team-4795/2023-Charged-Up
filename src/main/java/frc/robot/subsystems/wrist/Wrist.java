@@ -10,7 +10,7 @@ import frc.robot.subsystems.arm.Arm;
 import org.littletonrobotics.junction.Logger;
 
 public class Wrist extends SubsystemBase {
-    private final WristIO io;
+    // private final WristIO io;
     private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
 
     private static Wrist mInstance;
@@ -19,10 +19,10 @@ public class Wrist extends SubsystemBase {
         if (mInstance == null) {
             switch (Constants.getRobot()) {
                 case Comp:
-                    mInstance = new Wrist(new WristIOReal());
+                    // mInstance = new Wrist(new WristIOReal());
                     break;
                 case Sim:
-                    mInstance = new Wrist(new WristIO() {});
+                    // mInstance = new Wrist(new WristIO() {});
                     break;
             }
         }
@@ -39,8 +39,8 @@ public class Wrist extends SubsystemBase {
     public final double angleChangeDeg = 98.205;
     public final double extensionTime = 0.15;
 
-    public Wrist(WristIO io) {
-        this.io = io;
+    public Wrist() {
+        // this.io = io;
 
         extensionTimer = new Timer();
         extensionTimer.start();
@@ -52,7 +52,7 @@ public class Wrist extends SubsystemBase {
             extensionTimer.reset();
         }
         extended = true;
-        io.set(Value.kForward);
+        // io.set(Value.kForward);
     }
 
     private void retract() {
@@ -61,7 +61,7 @@ public class Wrist extends SubsystemBase {
             extensionTimer.reset();
         }
         extended = false;
-        io.set(Value.kReverse);
+        // io.set(Value.kReverse);
     }
 
     public void flip() {
@@ -104,7 +104,7 @@ public class Wrist extends SubsystemBase {
 
     @Override
     public void periodic() {
-        io.updateInputs(inputs);
+        // io.updateInputs(inputs);
         Logger.getInstance().processInputs("Wrist", inputs);
 
         constrain(Arm.getInstance().getPosition());

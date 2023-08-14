@@ -11,7 +11,7 @@ import frc.robot.Constants.RollerbarConstants;
 import frc.robot.StateManager;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollerbar.Rollerbar;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.motorizedWrist.Wrist;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
