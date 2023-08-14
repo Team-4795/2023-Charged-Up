@@ -152,13 +152,13 @@ public class AutoCommands {
                 Map.entry(
                         2,
                         Commands.sequence(
-                                Commands.runOnce(() -> wrist.setExtendedTarget(true)),
+                                Commands.runOnce(wrist::extend),
                                 Commands.waitSeconds(0.3),
                                 Commands.run(intake::outtake, intake).withTimeout(time))),
                 Map.entry(
                         3,
                         Commands.sequence(
-                                Commands.runOnce(() -> wrist.setExtendedTarget(false)),
+                                Commands.runOnce(wrist::retract),
                                 Commands.waitSeconds(IntakeConstants.kFlickTime),
                                 Commands.run(intake::outtake, intake).withTimeout(time))));
 

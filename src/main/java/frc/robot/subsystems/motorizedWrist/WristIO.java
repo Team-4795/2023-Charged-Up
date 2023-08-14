@@ -7,7 +7,7 @@ public interface WristIO {
     @AutoLog
     public static class WristIOInputs {
         public double motorVolts = 0;
-        public double angle = 0;
+        public double angle = 0; //in revolutions
         public double angularVelocity = 0;
     }
 

@@ -11,7 +11,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Wrist extends SubsystemBase {
     // private final WristIO io;
-    private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
+    // private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
 
     private static Wrist mInstance;
 
@@ -105,7 +105,7 @@ public class Wrist extends SubsystemBase {
     @Override
     public void periodic() {
         // io.updateInputs(inputs);
-        Logger.getInstance().processInputs("Wrist", inputs);
+        // Logger.getInstance().processInputs("Wrist", inputs);
 
         constrain(Arm.getInstance().getPosition());
 

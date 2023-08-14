@@ -1,11 +1,21 @@
 package frc.robot.subsystems.motorizedWrist;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.WristConstants;
 
 public class Wrist extends SubsystemBase{
-    WristIO io;
-    WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
+    private WristIO io;
+    private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
+
+    private ProfiledPIDController wristController = new ProfiledPIDController(
+        WristConstants.kP, WristConstants.kI, WristConstants.kD, WristConstants.constraints, WristConstants.kDt
+    );
+    
+    private double goal;
 
     public static Wrist instance;
 
@@ -23,29 +33,43 @@ public class Wrist extends SubsystemBase{
         return instance;
     } 
 
-    public void setExtendedTarget(boolean extended){
+    private Wrist(WristIO io){
+        this.io = io;
+        io.updateInputs(inputs);
+        goal = inputs.angle;
 
+        setDefaultCommand(run(() -> {
+            double change = MathUtil.applyDeadband(OIConstants.operatorController.getLeftY(), 0.05);
+            change = WristConstants.manualSpeed * Math.pow(change, 3);
+            goal += change;
+
+        }));
     }
 
-    public void flip(){
-
+    public void setTarget(double position){
+        goal = position;
     }
 
-    public double getEstimatedAngleDeg(){
-        return 0;
+    public void retract(){
+        goal = WristConstants.retractedSetpoint;
+    }
+
+    public void extend(){
+        goal = WristConstants.extendedSetpoint;
+    }
+
+    public double getAngleDeg(){
+        return inputs.angle * 360;
     }
 
     public double getSetpointDeg(){
-        return 0;
-    }
-
-
-    private Wrist(WristIO io){
-        this.io = io;
+        return goal * 360;
     }
 
     @Override
     public void periodic() {
-        io.updateInputs(wristInputs);
+        io.updateInputs(inputs);
+
+        io.set(wristController.calculate(inputs.angle, goal));
     }
 }

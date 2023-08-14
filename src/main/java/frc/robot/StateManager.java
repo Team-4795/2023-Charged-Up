@@ -157,7 +157,7 @@ public class StateManager extends VirtualSubsystem {
         return getSetpoints().outtake;
     }
 
-    public Boolean getWristExtended() {
+    public Double getWristSetpoint() {
         return getSetpoints().wrist;
     }
 
@@ -185,7 +185,7 @@ public class StateManager extends VirtualSubsystem {
     public void setSetpoints() {
         Arm.getInstance().setTargetPosition(getArmSetpoint());
         Intake.getInstance().setOuttakeSpeed(getOuttakeSetpoint());
-        Wrist.getInstance().setExtendedTarget(getWristExtended());
+        Wrist.getInstance().setTarget(getWristSetpoint());
         Rollerbar.getInstance().setExtendedTarget(getRollerbarExtended());
     }
 

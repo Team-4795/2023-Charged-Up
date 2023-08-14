@@ -54,7 +54,6 @@ public class RobotContainer {
 
         OIConstants.operatorController.a().whileTrue(Commands.run(rollerbar::reverse, rollerbar));
         OIConstants.operatorController.b().onTrue(Commands.run(rollerbar::spin, rollerbar));
-        OIConstants.operatorController.x().onTrue(Commands.runOnce(wrist::flip));
         OIConstants.operatorController
                 .y()
                 .onTrue(Commands.runOnce(() -> intake.setOverrideStoring(true)))
@@ -81,7 +80,7 @@ public class RobotContainer {
                 .povRight()
                 .whileTrue(Commands.either(
                         Commands.sequence(
-                                Commands.runOnce(() -> wrist.setExtendedTarget(false), wrist),
+                                Commands.runOnce(wrist::retract, wrist),
                                 new WaitCommand(IntakeConstants.kFlickTime),
                                 Commands.run(intake::outtake, intake)),
                         Commands.run(intake::outtake, intake),

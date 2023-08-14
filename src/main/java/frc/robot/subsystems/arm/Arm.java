@@ -118,7 +118,7 @@ public class Arm extends SubsystemBase {
             isTemporary = false;
         }
 
-        armVisualizerMeasured.update(getAngleDeg(), Wrist.getInstance().getEstimatedAngleDeg());
+        armVisualizerMeasured.update(getAngleDeg(), Wrist.getInstance().getAngleDeg());
         armVisualizerSetpoint.update(getSetpointDeg(), Wrist.getInstance().getSetpointDeg());
 
         Logger.getInstance().recordOutput("Arm setpoint", setpoint);
