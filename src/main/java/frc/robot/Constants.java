@@ -27,7 +27,8 @@ public final class Constants {
 
     public static enum RobotType {
         Comp,
-        Sim
+        Sim,
+        Replay
     }
 
     public static final RobotType robot = RobotType.Sim;
