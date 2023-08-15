@@ -31,7 +31,7 @@ public final class Constants {
         Replay
     }
 
-    public static final RobotType robot = RobotType.Sim;
+    public static final RobotType robot = RobotType.Comp;
 
     public static RobotType getRobot() {
         return robot;
@@ -193,18 +193,18 @@ public final class Constants {
 
     public static final class ArmConstants {
         public static final TrapezoidProfile.Constraints kCubeMotionConstraint =
-                new TrapezoidProfile.Constraints(1.0, 4.0);
+                new TrapezoidProfile.Constraints(0.25, 1.5);
         public static final TrapezoidProfile.Constraints kConeMotionConstraint =
-                new TrapezoidProfile.Constraints(1.0, 2.5);
+                new TrapezoidProfile.Constraints(0.25, 1.5);
         public static final TrapezoidProfile.Constraints kNotStoringConstraint =
-                new TrapezoidProfile.Constraints(1.0, 4.0);
+                new TrapezoidProfile.Constraints(0.25, 1.5);
         public static final int kLeftArmMotorCANID = 10;
         public static final int kRightArmMotorCANID = 11;
         public static final double kP = 3.5;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kFF = 0;
-        public static final double kArmMOI = 1.6;
+        public static final double kArmMOI = 1.57;
         public static final double kMinOutput = -0.9;
         public static final double kMaxOutput = 0.9;
         public static final double kRampRate = 0.125;
