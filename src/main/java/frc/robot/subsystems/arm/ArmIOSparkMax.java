@@ -14,13 +14,15 @@ public class ArmIOSparkMax implements ArmIO {
     private final CANSparkMax rightArmMotor = new CANSparkMax(ArmConstants.kRightArmMotorCANID, MotorType.kBrushless);
 
     private final AbsoluteEncoder liftEncoder;
-    private final RelativeEncoder backupEncoder;
+    private final AbsoluteEncoder backupEncoder;
+
+
 
     public ArmIOSparkMax() {
         rightArmMotor.restoreFactoryDefaults();
 
         liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        backupEncoder = leftArmMotor.getEncoder();
+        backupEncoder = rightArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
         leftArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
         rightArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
@@ -38,17 +40,16 @@ public class ArmIOSparkMax implements ArmIO {
         leftArmMotor.setInverted(true);
         leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
         leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
+        rightArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
+        rightArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
         leftArmMotor.burnFlash();
         rightArmMotor.burnFlash();
     }
 
     public void updateInputs(ArmIOInputs inputs) {
-        if(liftEncoder.getPosition() < 0.05){
-            inputs.angleRev = backupEncoder.getPosition();
-        } else {
-            inputs.angleRev = liftEncoder.getPosition();
-        }
-        inputs.angleRevPerSec = liftEncoder.getVelocity ();
+        inputs.angleRev = liftEncoder.getPosition();
+        inputs.backupAngle = backupEncoder.getPosition();
+        inputs.angleRevPerSec = liftEncoder.getVelocity();
         inputs.appliedVolts = leftArmMotor.getAppliedOutput() * leftArmMotor.getBusVoltage();
     }
 

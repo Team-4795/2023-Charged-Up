@@ -10,6 +10,7 @@ public interface ArmIO {
     @AutoLog
     public static class ArmIOInputs {
         public double angleRev = 0.0;
+        public double backupAngle = 0.0;
         public double angleRevPerSec = 0.0;
         public double appliedVolts = 0.0;
     }
