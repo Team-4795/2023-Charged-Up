@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
@@ -13,11 +14,13 @@ public class ArmIOSparkMax implements ArmIO {
     private final CANSparkMax rightArmMotor = new CANSparkMax(ArmConstants.kRightArmMotorCANID, MotorType.kBrushless);
 
     private final AbsoluteEncoder liftEncoder;
+    private final RelativeEncoder backupEncoder;
 
     public ArmIOSparkMax() {
         rightArmMotor.restoreFactoryDefaults();
 
         liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        backupEncoder = leftArmMotor.getEncoder();
 
         leftArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
         rightArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
@@ -40,7 +43,11 @@ public class ArmIOSparkMax implements ArmIO {
     }
 
     public void updateInputs(ArmIOInputs inputs) {
-        inputs.angleRev = liftEncoder.getPosition();
+        if(liftEncoder.getPosition() < 0.05){
+            inputs.angleRev = backupEncoder.getPosition();
+        } else {
+            inputs.angleRev = liftEncoder.getPosition();
+        }
         inputs.angleRevPerSec = liftEncoder.getVelocity ();
         inputs.appliedVolts = leftArmMotor.getAppliedOutput() * leftArmMotor.getBusVoltage();
     }
