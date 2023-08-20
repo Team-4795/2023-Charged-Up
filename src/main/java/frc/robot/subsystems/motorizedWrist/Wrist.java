@@ -1,7 +1,10 @@
 package frc.robot.subsystems.motorizedWrist;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.OIConstants;
@@ -28,6 +31,9 @@ public class Wrist extends SubsystemBase{
                 case Sim:
                     instance = new Wrist(new WristIOSim()); 
                     break;
+                default:
+                    instance = new Wrist(new WristIO() {});
+                    break;
             }
         }
         return instance;
@@ -42,7 +48,7 @@ public class Wrist extends SubsystemBase{
             double change = MathUtil.applyDeadband(OIConstants.operatorController.getLeftY(), 0.05);
             change = WristConstants.manualSpeed * Math.pow(change, 3);
             goal += change;
-
+            goal = MathUtil.clamp(goal, -0.2, 0.2);
         }));
     }
 
@@ -69,7 +75,8 @@ public class Wrist extends SubsystemBase{
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-
+        SmartDashboard.putNumber("Wrist goal", goal);
+        Logger.getInstance().processInputs("Wrist", inputs);
         io.set(wristController.calculate(inputs.angle, goal));
     }
 }

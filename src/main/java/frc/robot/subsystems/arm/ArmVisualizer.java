@@ -34,7 +34,7 @@ public class ArmVisualizer {
 
     public void update(double armAngle, double wristAngle) {
         arm.setAngle(armAngle);
-        wrist.setAngle(wristAngle - 51);
+        wrist.setAngle(wristAngle);
         Logger.getInstance().recordOutput("ArmMechanism2d/" + name, mechanism);
 
         var armPose = new Pose3d(-0.246, 0, 0.767, new Rotation3d(0, -Math.toRadians(armAngle), 0));
