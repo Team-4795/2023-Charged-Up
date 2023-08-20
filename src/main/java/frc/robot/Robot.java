@@ -17,9 +17,13 @@ import frc.robot.subsystems.arm.Arm;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -49,7 +53,27 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         Logger logger = Logger.getInstance();
-        logger.addDataReceiver(new NT4Publisher());
+        switch (Constants.getRobot()) {
+            case Comp:
+              logger.addDataReceiver(new WPILOGWriter("/media/sda2"));
+              logger.addDataReceiver(new NT4Publisher());
+              // LoggedPowerDistribution.getInstance(50, ModuleType.kRev);
+              break;
+      
+            // Running a physics simulator, log to local folder
+            case Sim:
+              // logger.addDataReceiver(new WPILOGWriter(""));
+              logger.addDataReceiver(new NT4Publisher());
+              break;
+      
+            // Replaying a log, set up replay source
+            case Replay:
+              setUseTiming(false); // Run as fast as possible
+              String logPath = LogFileUtil.findReplayLog();
+              logger.setReplaySource(new WPILOGReader(logPath));
+              logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+              break;
+        }
         logger.start();
 
         if (Constants.getRobot() == RobotType.Sim) {

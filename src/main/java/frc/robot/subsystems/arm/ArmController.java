@@ -29,16 +29,16 @@ public final class ArmController {
             Nat.N2(),
             Nat.N1(),
             armPlant,
-            VecBuilder.fill(0.2, 0.2), // How accurate we
+            VecBuilder.fill(0.5, 0.7), // How accurate we
             // think our model is, in radians and radians/sec
-            VecBuilder.fill(0.01), // How accurate we think our encoder position
+            VecBuilder.fill(0.05), // How accurate we think our encoder position
             // data is. In this case we very highly trust our encoder position reading.
             Constants.DT);
 
     private final LinearQuadraticRegulator<N2, N1, N1> lqr =
         new LinearQuadraticRegulator<>(
             armPlant,
-            VecBuilder.fill(0.01, 2.0), // Position, Velocity weight (Lower is more penalized)
+            VecBuilder.fill(0.05, 1), // Position, Velocity weight (Lower is more penalized)
             VecBuilder.fill(12.0), // Voltage weight
             Constants.DT);
 
