@@ -19,6 +19,7 @@ public class ArmIOSparkMax implements ArmIO {
 
 
     public ArmIOSparkMax() {
+
         rightArmMotor.restoreFactoryDefaults();
 
         liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
@@ -38,10 +39,6 @@ public class ArmIOSparkMax implements ArmIO {
         rightArmMotor.follow(leftArmMotor, true);
 
         leftArmMotor.setInverted(true);
-        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 30);
-        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 30);
-        rightArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 30);
-        rightArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 30);
         leftArmMotor.burnFlash();
         rightArmMotor.burnFlash();
     }
