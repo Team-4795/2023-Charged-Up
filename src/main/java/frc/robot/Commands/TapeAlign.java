@@ -54,7 +54,7 @@ public class TapeAlign extends CommandBase {
 
       x_speed = controller.calculate(vision.getAngleX(), TapeAlignConstants.kXOffset);
 
-      driveSubsystem.drive(x_speed, ySpeed, -rotation,true, true);
+      driveSubsystem.drive(x_speed, ySpeed, rotation,true, true);
     } else {
       double rotation = RotationConstants.kNoTargetSpeed;
       if(driveSubsystem.getvisionheading() > 0){
