@@ -7,8 +7,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.WristConstants;
+import frc.robot.subsystems.arm.Arm;
 
 public class Wrist extends SubsystemBase{
     private WristIO io;
@@ -77,6 +79,14 @@ public class Wrist extends SubsystemBase{
         io.updateInputs(inputs);
         SmartDashboard.putNumber("Wrist goal", goal);
         Logger.getInstance().processInputs("Wrist", inputs);
+
+        double armPosition = Arm.getInstance().getPosition();
+        if(armPosition < ArmConstants.kLowWristLimit){
+            this.extend();
+        } else if(armPosition > ArmConstants.kHighWristLimit){
+            this.retract();
+        }
+
         io.set(wristController.calculate(inputs.angle, goal));
     }
 }
