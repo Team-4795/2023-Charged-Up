@@ -194,11 +194,11 @@ public final class Constants {
 
     public static final class ArmConstants {
         public static final TrapezoidProfile.Constraints kCubeMotionConstraint =
-                new TrapezoidProfile.Constraints(0.25, 1.5);
+                new TrapezoidProfile.Constraints(0.5, 1.5);
         public static final TrapezoidProfile.Constraints kConeMotionConstraint =
-                new TrapezoidProfile.Constraints(0.25, 1.5);
+                new TrapezoidProfile.Constraints(0.5, 1.5);
         public static final TrapezoidProfile.Constraints kNotStoringConstraint =
-                new TrapezoidProfile.Constraints(0.25, 1.5);
+                new TrapezoidProfile.Constraints(0.5, 1.5);
         public static final int kLeftArmMotorCANID = 10;
         public static final int kRightArmMotorCANID = 11;
         public static final double kP = 3.5;
@@ -245,11 +245,11 @@ public final class Constants {
     public static final class WristConstants {
         public static final int CANID = 0; //***NEEDS UPDATING***
         
-        public static final double kP = 0.1;
+        public static final double kP = 4;
         public static final double kI = 0.0;
-        public static final double kD = 0.0;
+        public static final double kD = 5.2;
         public static final double kDt = 0.02;
-        public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(0.25, 1);
+        public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(1, 4);
 
         public static final double retractedSetpoint = -0.15;
         public static final double extendedSetpoint = 0.15;
@@ -295,7 +295,7 @@ public final class Constants {
         public static final Setpoints kLowScore = new Setpoints(0.89, -0.2, -0.3, false);
         public static final Setpoints kMidScore = new Setpoints(0.69, 0.1, -0.5, false);
         public static final Setpoints kHighScore = new Setpoints(0.565, 0.15, -0.75, false);
-        public static final Setpoints kStowInFrame = new Setpoints(0.16, -0.15, -0.5, false);
+        public static final Setpoints kStowInFrame = new Setpoints(0.16, 0.15, -0.5, false);
         public static final Setpoints kStowLow = new Setpoints(0.96, -0.2, -0.5, false);
         public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, -0.1, -1.0, false);
         public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, 0, -0.6, false);
