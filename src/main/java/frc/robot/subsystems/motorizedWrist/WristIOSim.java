@@ -11,7 +11,7 @@ public class WristIOSim implements WristIO{
     private double appliedVolts;
 
     WristIOSim(){
-        wristSim = new SingleJointedArmSim(DCMotor.getNeo550(1), WristConstants.gearing, WristConstants.MOI, WristConstants.length, WristConstants.minAngleRad, WristConstants.maxAngleRad, false);
+        wristSim = new SingleJointedArmSim(DCMotor.getNEO(1), WristConstants.gearing, WristConstants.MOI, WristConstants.length, WristConstants.minAngleRad, WristConstants.maxAngleRad, false);
     }
 
     @Override

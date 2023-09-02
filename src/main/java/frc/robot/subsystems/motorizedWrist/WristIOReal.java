@@ -25,7 +25,7 @@ public class WristIOReal implements WristIO {
 
     @Override
     public void updateInputs(WristIOInputs inputs) {
-        inputs.angle = encoder.getPosition();
+        inputs.angle = (encoder.getPosition() / 2);
         inputs.angularVelocity = encoder.getVelocity();
         inputs.motorVolts = wristMotor.getAppliedOutput() * wristMotor.getBusVoltage();
     }

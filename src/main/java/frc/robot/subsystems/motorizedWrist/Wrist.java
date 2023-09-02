@@ -21,6 +21,7 @@ public class Wrist extends SubsystemBase{
     );
     
     private double goal;
+    private double backupGoal;
 
     public static Wrist instance;
 
@@ -77,16 +78,20 @@ public class Wrist extends SubsystemBase{
     @Override
     public void periodic() {
         io.updateInputs(inputs);
+        SmartDashboard.putNumber("Backup Wrist goal", backupGoal);
         SmartDashboard.putNumber("Wrist goal", goal);
         Logger.getInstance().processInputs("Wrist", inputs);
 
         double armPosition = Arm.getInstance().getPosition();
-        if(armPosition < ArmConstants.kLowWristLimit){
-            this.extend();
-        } else if(armPosition > ArmConstants.kHighWristLimit){
-            this.retract();
+        if(armPosition < ArmConstants.kLowWristLimit && goal < 0){
+            backupGoal = WristConstants.extendedSetpoint;
+            io.set(wristController.calculate(inputs.angle, backupGoal));
+        } else if(armPosition > ArmConstants.kHighWristLimit && goal > 0){
+            backupGoal = WristConstants.retractedSetpoint;
+            io.set(wristController.calculate(inputs.angle, backupGoal));
+        } else {
+            io.set(wristController.calculate(inputs.angle, goal));
         }
 
-        io.set(wristController.calculate(inputs.angle, goal));
     }
 }
