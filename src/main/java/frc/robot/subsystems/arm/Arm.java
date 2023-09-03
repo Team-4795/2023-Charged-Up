@@ -8,6 +8,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RollerbarConstants;
+import frc.robot.Constants.WristConstants;
 import frc.robot.StateManager;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollerbar.Rollerbar;
@@ -110,7 +111,8 @@ public class Arm extends SubsystemBase {
         /* Double extension constraint */
         if (Rollerbar.getInstance().shouldMove()) {
             if (!Rollerbar.getInstance().safeToMove(setpoint)) {
-                setTargetPosition(RollerbarConstants.kArmBoundary + 0.025);
+                setTargetPosition(RollerbarConstants.kArmBoundary + 0.005);
+                Wrist.getInstance().setTarget(WristConstants.rollerbarSetpoint);
                 isTemporary = true;
             }
         } else if (isTemporary) {

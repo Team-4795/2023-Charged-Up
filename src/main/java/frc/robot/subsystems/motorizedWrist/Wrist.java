@@ -11,6 +11,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.rollerbar.Rollerbar;
 
 public class Wrist extends SubsystemBase{
     private WristIO io;
@@ -92,6 +93,5 @@ public class Wrist extends SubsystemBase{
         } else {
             io.set(wristController.calculate(inputs.angle, goal));
         }
-
     }
 }
