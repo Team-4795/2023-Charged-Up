@@ -24,7 +24,7 @@ public class Wrist extends SubsystemBase{
     private double goal;
     private double backupGoal;
 
-    public static Wrist instance;
+    private static Wrist instance;
 
     public static Wrist getInstance(){
         if(instance == null){
@@ -74,6 +74,10 @@ public class Wrist extends SubsystemBase{
 
     public double getSetpointDeg(){
         return goal * 360;
+    }
+
+    public double getGoal(){
+        return goal;
     }
 
     @Override

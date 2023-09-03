@@ -86,6 +86,10 @@ public class Rollerbar extends SubsystemBase {
         return extended;
     }
 
+    public boolean getTargetExtended(){
+        return targetExtend;
+    }
+
     public void setExtendedTarget(boolean extend) {
         targetExtend = extend;
     }
