@@ -14,16 +14,14 @@ public class ArmIOSparkMax implements ArmIO {
     private final CANSparkMax rightArmMotor = new CANSparkMax(ArmConstants.kRightArmMotorCANID, MotorType.kBrushless);
 
     private final AbsoluteEncoder liftEncoder;
-    private final AbsoluteEncoder backupEncoder;
-
-
+    private final RelativeEncoder relativeEncoder;
 
     public ArmIOSparkMax() {
 
         rightArmMotor.restoreFactoryDefaults();
 
         liftEncoder = leftArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        backupEncoder = rightArmMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        relativeEncoder = leftArmMotor.getEncoder();
 
         leftArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
         rightArmMotor.setOpenLoopRampRate(ArmConstants.kRampRate);
@@ -48,9 +46,14 @@ public class ArmIOSparkMax implements ArmIO {
     }
 
     public void updateInputs(ArmIOInputs inputs) {
-        inputs.angleRev = liftEncoder.getPosition();
-        inputs.backupAngle = backupEncoder.getPosition();
+        double newAngle = liftEncoder.getPosition();
+        if (newAngle > 0.01) {
+            inputs.angleRev = newAngle;
+        }
+
+        inputs.backupAngle = relativeEncoder.getPosition();
         inputs.angleRevPerSec = liftEncoder.getVelocity();
+        inputs.currentOutput = leftArmMotor.getOutputCurrent();
         inputs.appliedVolts = leftArmMotor.getAppliedOutput() * leftArmMotor.getBusVoltage();
     }
 
