@@ -24,6 +24,7 @@ import java.util.HashMap;
  */
 public final class Constants {
     public static final double DT = 0.02;
+    public static final boolean USE_LQR = false;
 
     public static enum RobotType {
         Comp,

@@ -13,6 +13,7 @@ public interface ArmIO {
         public double backupAngle = 0.0;
         public double angleRevPerSec = 0.0;
         public double appliedVolts = 0.0;
+        public double currentOutput = 0.0;
     }
 
     public default void updateInputs(ArmIOInputs inputs) {}

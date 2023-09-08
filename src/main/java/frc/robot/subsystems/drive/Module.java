@@ -16,7 +16,7 @@ public class Module {
     private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
 
     private final PIDController driveFeedback = new PIDController(0.1, 0.0, 0.0, 0.02);
-    private final PIDController turnFeedback = new PIDController(1.0, 0.0, 0.0, 0.02);
+    private final PIDController turnFeedback = new PIDController(4.0, 0.0, 0.0, 0.02);
 
     public SwerveModuleState setpoints = new SwerveModuleState(0.0, new Rotation2d());
 
