@@ -3,6 +3,7 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
@@ -18,6 +19,12 @@ import frc.robot.Constants.ArmConstants;
 
 public final class ArmController {
     private final double PI2 = 2 * Math.PI;
+
+    private ProfiledPIDController normalController = new ProfiledPIDController(
+        40.0,
+        0.0, 
+        0.0,
+        ArmConstants.kCubeMotionConstraint);
 
     private TrapezoidProfile.State lastState;
 
@@ -58,21 +65,27 @@ public final class ArmController {
 
     public double calculate(double measurement, double goal, Constraints constraints) {
         SmartDashboard.putNumber("Trapezoidal pos", lastState.position / PI2);
-        SmartDashboard.putNumber("Arm estimate pos", observer.getXhat(0) / PI2);
-        SmartDashboard.putNumber("Arm estimate vel", observer.getXhat(1) / PI2);
 
-        // Map values to radians
-        constraints = new Constraints(constraints.maxVelocity * PI2, constraints.maxAcceleration * PI2);
-        measurement *= PI2;
-        goal *= PI2;
+        if (Constants.USE_LQR) {
+            SmartDashboard.putNumber("Arm estimate pos", observer.getXhat(0) / PI2);
+            SmartDashboard.putNumber("Arm estimate vel", observer.getXhat(1) / PI2);
 
-        TrapezoidProfile prof = new TrapezoidProfile(constraints, new TrapezoidProfile.State(goal, 0), lastState);
-        lastState = prof.calculate(Constants.DT);
+            // Map values to radians
+            constraints = new Constraints(constraints.maxVelocity * PI2, constraints.maxAcceleration * PI2);
+            measurement *= PI2;
+            goal *= PI2;
 
-        loop.setNextR(lastState.position, lastState.velocity);
-        loop.correct(VecBuilder.fill(measurement));
-        loop.predict(Constants.DT);
+            TrapezoidProfile prof = new TrapezoidProfile(constraints, new TrapezoidProfile.State(goal, 0), lastState);
+            lastState = prof.calculate(Constants.DT);
 
-        return loop.getU(0);
+            loop.setNextR(lastState.position, lastState.velocity);
+            loop.correct(VecBuilder.fill(measurement));
+            loop.predict(Constants.DT);
+
+            return loop.getU(0);
+        } else {
+            TrapezoidProfile.State goalState = new TrapezoidProfile.State(goal, 0);
+            return normalController.calculate(measurement, goalState, constraints);
+        }
     }
 }
