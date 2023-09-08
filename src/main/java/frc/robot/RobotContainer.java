@@ -17,7 +17,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollerbar.Rollerbar;
-import frc.robot.subsystems.motorizedWrist.Wrist;
+import frc.robot.subsystems.wrist.Wrist;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -47,13 +47,14 @@ public class RobotContainer {
         drive.setDefaultCommand(
             new DriveWithJoysticks(
                 drive,
-                () -> -OIConstants.driverController.getLeftY(),
+                () -> -OIConstants.driverController.getLeftY( ),
                 () -> -OIConstants.driverController.getLeftX(),
                 () -> -OIConstants.driverController.getRightX(),
                 () -> false));
 
         OIConstants.operatorController.a().whileTrue(Commands.run(rollerbar::reverse, rollerbar));
         OIConstants.operatorController.b().onTrue(Commands.run(rollerbar::spin, rollerbar));
+        OIConstants.operatorController.x().onTrue(Commands.runOnce(wrist::flip));
         OIConstants.operatorController
                 .y()
                 .onTrue(Commands.runOnce(() -> intake.setOverrideStoring(true)))
@@ -80,7 +81,7 @@ public class RobotContainer {
                 .povRight()
                 .whileTrue(Commands.either(
                         Commands.sequence(
-                                Commands.runOnce(wrist::retract, wrist),
+                                Commands.runOnce(() -> wrist.setExtendedTarget(false), wrist),
                                 new WaitCommand(IntakeConstants.kFlickTime),
                                 Commands.run(intake::outtake, intake)),
                         Commands.run(intake::outtake, intake),

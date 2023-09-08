@@ -252,6 +252,11 @@ public final class Constants {
         public static final double kDt = 0.02;
         public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(1, 4);
 
+        public static final double kS = 0;
+        public static final double kg = 0;
+        public static final double kV = 0;
+        public static final doubel ka = 0;
+
         public static final double retractedSetpoint = -0.15;
         public static final double extendedSetpoint = 0.15;
         public static final double rollerbarSetpoint = 0.06;
