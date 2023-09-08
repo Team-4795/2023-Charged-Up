@@ -204,7 +204,7 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kFF = 0;
-        public static final double kArmMOI = 1.57;
+        public static final double kArmMOI = 1.9;
         public static final double kMinOutput = -0.9;
         public static final double kMaxOutput = 0.9;
         public static final double kRampRate = 0.125;
