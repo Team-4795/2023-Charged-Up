@@ -3,11 +3,12 @@ package frc.robot.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.drive.Drive;
 
 // Only drives straight in the X-direction, assumes platform in front of robot
 public class DriveCommand extends CommandBase {
-    Drive drive = Drive.getInstance();
+    Swerve drive = Swerve.getInstance();
     double speed;
     double angleThreshold;
 

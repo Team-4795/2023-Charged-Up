@@ -10,6 +10,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.StateManager;
 import frc.robot.StateManager.Gamepiece;
 import frc.robot.StateManager.State;
+import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
@@ -21,7 +22,7 @@ import java.util.Map;
 public class AutoCommands {
     private HashMap<String, PathPlannerTrajectory> paths = new HashMap<>();
 
-    private Drive drivebase = Drive.getInstance();
+    private Swerve drivebase = Swerve.getInstance();
     private Arm arm = Arm.getInstance();
     private Rollerbar rollerbar = Rollerbar.getInstance();
     private Intake intake = Intake.getInstance();

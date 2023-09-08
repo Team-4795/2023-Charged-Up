@@ -10,12 +10,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RotationConstants;
 import frc.robot.Constants.TapeAlignConstants;
+import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.Vision;
 import java.util.function.Supplier;
 
 public class TapeAlign extends CommandBase {
-    private Drive drive = Drive.getInstance();
+    private Swerve drive = Swerve.getInstance();
     private Vision vision = Vision.getInstance();
     private PIDController rotationPID;
 

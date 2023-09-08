@@ -3,10 +3,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.drive.Drive;
 
 public class AutoBalance extends CommandBase {
-    Drive drive = Drive.getInstance();
+    Swerve drive = Swerve.getInstance();
     double elevationAngle;
     double errorThreshold;
     double output;

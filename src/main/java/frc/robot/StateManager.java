@@ -2,6 +2,7 @@ package frc.robot;
 
 import frc.robot.Constants.ConeSetpointConstants;
 import frc.robot.Constants.CubeSetpointConstants;
+import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.arm.*;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.*;
@@ -90,7 +91,7 @@ public class StateManager extends VirtualSubsystem {
     }
 
     private boolean isBackwards() {
-        return Math.cos(Math.toRadians(Drive.getInstance().getAngle())) < 0;
+        return Math.cos(Math.toRadians(Swerve.getInstance().getAngle())) < 0;
     }
 
     public void dpadUp() {

@@ -8,8 +8,6 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OIConstants;
@@ -25,9 +23,9 @@ public class Wrist extends SubsystemBase {
     private double goal;
     private double backupGoal;
 
-    private Wrist instance;
+    private static Wrist instance;
 
-    public Wrist getInstance(){
+    public static Wrist getInstance(){
         if(instance == null){
             instance = new Wrist();
         }
