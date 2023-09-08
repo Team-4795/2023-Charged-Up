@@ -18,7 +18,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollerbar.Rollerbar;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.WristV2.Wrist;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a

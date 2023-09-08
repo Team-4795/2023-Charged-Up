@@ -8,6 +8,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OIConstants;
@@ -56,6 +57,16 @@ public class Wrist extends SubsystemBase {
         goal = WristConstants.retractedSetpoint;
     }
 
+    public void flip() {
+        double dist1 = Math.abs(goal - WristConstants.retractedSetpoint);
+        double dist2 = Math.abs(goal - WristConstants.extendedSetpoint);
+        if (dist1 < dist2) {
+            goal = WristConstants.extendedSetpoint;
+        } else {
+            goal = WristConstants.retractedSetpoint;
+        }
+    }
+
     public void extend(){
         goal = WristConstants.extendedSetpoint;
     }
@@ -68,7 +79,7 @@ public class Wrist extends SubsystemBase {
     public void periodic(){
         double armPosition = Arm.getInstance().getPosition();
         double position = this.getPosition();
-        
+        double goal = this.goal + .20;
         if(armPosition < ArmConstants.kLowWristLimit && goal < 0){
             backupGoal = WristConstants.extendedSetpoint;
             double motorSpeed = feedforward.calculate(backupGoal, 0) + controller.calculate(position, backupGoal);
@@ -81,5 +92,17 @@ public class Wrist extends SubsystemBase {
             double motorSpeed = feedforward.calculate(goal, 0) + controller.calculate(position, goal);
             wristMotor.set(motorSpeed);
         }
+
+        SmartDashboard.putNumber("Wrist Current", wristMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Wrist Goal", goal);
+        SmartDashboard.putNumber("Wrist Position", position);
+    }
+
+    public double getGoal() {
+        return goal;
+    }
+
+    public Object setExtendedTarget(boolean b) {
+        return null;
     }
 }

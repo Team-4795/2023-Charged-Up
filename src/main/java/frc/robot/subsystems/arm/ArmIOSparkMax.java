@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ArmConstants;
 
 public class ArmIOSparkMax implements ArmIO {
@@ -49,6 +51,8 @@ public class ArmIOSparkMax implements ArmIO {
         if (newAngle > 0.01) {
             inputs.angleRev = newAngle;
         }
+
+        SmartDashboard.putNumber("Arm absolute encoder", liftEncoder.getPosition());
 
         inputs.backupAngle = relativeEncoder.getPosition();
         inputs.angleRevPerSec = liftEncoder.getVelocity();

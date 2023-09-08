@@ -32,7 +32,7 @@ public final class Constants {
         Replay
     }
 
-    public static final RobotType robot = RobotType.Sim;
+    public static final RobotType robot = RobotType.Comp;
 
     public static RobotType getRobot() {
         return robot;
@@ -268,17 +268,17 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-        public static final int CANID = 0; //***NEEDS UPDATING***
+        public static final int CANID = 13; //***NEEDS UPDATING***
         
-        public static final double kP = 4;
+        public static final double kP = 3;
         public static final double kI = 0.0;
-        public static final double kD = 5.2;
+        public static final double kD = 0;
         public static final double kDt = 0.02;
         public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(1, 4);
 
-        public static final double kS = 0;
+        public static final double kS = 0.2;
         public static final double kg = 0;
-        public static final double kV = 0;
+        public static final double kV = 0.15;
         public static final double ka = 0;
 
         public static final double retractedSetpoint = -0.15;

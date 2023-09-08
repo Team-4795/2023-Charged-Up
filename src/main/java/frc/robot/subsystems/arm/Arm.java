@@ -12,7 +12,7 @@ import frc.robot.Constants.WristConstants;
 import frc.robot.StateManager;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollerbar.Rollerbar;
-import frc.robot.subsystems.motorizedWrist.Wrist;
+import frc.robot.subsystems.WristV2.Wrist;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
@@ -122,8 +122,8 @@ public class Arm extends SubsystemBase {
             isTemporary = false;
         }
 
-        armVisualizerMeasured.update(getAngleDeg(), Wrist.getInstance().getAngleDeg());
-        armVisualizerSetpoint.update(getSetpointDeg(), Wrist.getInstance().getSetpointDeg());
+        // armVisualizerMeasured.update(getAngleDeg(), Wrist.getInstance().getAngleDeg());
+        // armVisualizerSetpoint.update(getSetpointDeg(), Wrist.getInstance().getSetpointDeg());
 
         Logger.getInstance().recordOutput("Arm setpoint", setpoint);
 
