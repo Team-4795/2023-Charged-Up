@@ -13,6 +13,7 @@ public class Vision extends SubsystemBase {
   private double camX;
   private double camY; 
   private double camArea;
+  private double[] botpose;
   private boolean hasTargets;
 
   private static Vision mInstance;
@@ -62,11 +63,13 @@ public class Vision extends SubsystemBase {
     camY = camera.getEntry("tx").getDouble(0.0);
     camArea = camera.getEntry("ta").getDouble(0.0);
     hasTargets = (camera.getEntry("tv").getDouble(0.0) == 1);
+    botpose = camera.getEntry("botpose").getDoubleArray(new double[6]);
 
     SmartDashboard.putBoolean("Vision Target?", hasTargets);
     SmartDashboard.putNumber("Target Area", camArea);
     SmartDashboard.putNumber("Displacement Angle X", camX);
     SmartDashboard.putNumber("Displacement Angle Y", camY);
+    SmartDashboard.putNumberArray("Botpose", botpose);
   }
 
 }
