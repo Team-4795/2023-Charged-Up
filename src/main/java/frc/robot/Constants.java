@@ -281,17 +281,17 @@ public final class Constants {
         public static final double kV = 0.15;
         public static final double ka = 0;
 
-        public static final double retractedSetpoint = -0.15;
-        public static final double extendedSetpoint = 0.15;
-        public static final double rollerbarSetpoint = 0.06;
+        public static final double retractedSetpoint = 0.05;
+        public static final double extendedSetpoint = 0.35;
+        public static final double rollerbarSetpoint = 0.26;
         public static final double manualSpeed = 0.01;
         
 
-        public static final double maxAngleRad = 0.2 * 2 * Math.PI;
+        public static final double maxAngleRad = 0.4 * 2 * Math.PI;
         public static final double MOI = 0.0245;
         public static final double gearing = 2;
         public static final double length = 0.286;
-        public static final double minAngleRad = -0.2 * 2 * Math.PI;
+        public static final double minAngleRad = 0.0 * 2 * Math.PI;
 
 
     }
@@ -321,31 +321,31 @@ public final class Constants {
     }
 
     public static final class CubeSetpointConstants {
-        public static final Setpoints kLowPickup = new Setpoints(0.928, -0.15, -0.5, false);
-        public static final Setpoints kStowHigh = new Setpoints(0.5, 0, -0.5, false);
-        public static final Setpoints kDoubleFeeder = new Setpoints(0.62, 0.15, -0.5, false);
-        public static final Setpoints kLowScore = new Setpoints(0.89, -0.2, -0.3, false);
-        public static final Setpoints kMidScore = new Setpoints(0.69, 0.1, -0.5, false);
-        public static final Setpoints kHighScore = new Setpoints(0.565, 0.15, -0.75, false);
-        public static final Setpoints kStowInFrame = new Setpoints(0.16, -0.15, -0.5, false);
-        public static final Setpoints kStowLow = new Setpoints(0.96, -0.2, -0.5, false);
-        public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, -0.1, -1.0, false);
-        public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, 0, -0.6, false);
-        public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, -0.12, -0.5, false);
-        public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, -0.12, -0.5, false);
-        public static final Setpoints kBackwardsLowPickup = new Setpoints(0.18, -0.08, 0.0, true);
-        public static final Setpoints kBackwardLowPickupAuto = new Setpoints(0.1835, -0.15, 0, true);
+        public static final Setpoints kLowPickup = new Setpoints(0.928, 0.05, -0.5, false);
+        public static final Setpoints kStowHigh = new Setpoints(0.5, 0.2, -0.5, false);
+        public static final Setpoints kDoubleFeeder = new Setpoints(0.62, 0.35, -0.5, false);
+        public static final Setpoints kLowScore = new Setpoints(0.89, 0, -0.3, false);
+        public static final Setpoints kMidScore = new Setpoints(0.69, 0.3, -0.5, false);
+        public static final Setpoints kHighScore = new Setpoints(0.565, 0.35, -0.75, false);
+        public static final Setpoints kStowInFrame = new Setpoints(0.16, 0.05, -0.5, false);
+        public static final Setpoints kStowLow = new Setpoints(0.96, 0.0, -0.5, false);
+        public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, 0.1, -1.0, false);
+        public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, 0.2, -0.6, false);
+        public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, 0.08, -0.5, false);
+        public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, 0.08, -0.5, false);
+        public static final Setpoints kBackwardsLowPickup = new Setpoints(0.18, 0.12, 0.0, true);
+        public static final Setpoints kBackwardLowPickupAuto = new Setpoints(0.1835, 0.12, 0, true);
     }
 
     public static final class ConeSetpointConstants {
-        public static final Setpoints kLowPickup = new Setpoints(0.94, -0.15, -0.4, false);
-        public static final Setpoints kStowHigh = new Setpoints(0.5, 0, -0.4, false);
-        public static final Setpoints kDoubleFeeder = new Setpoints(0.62, 0.15, -0.4, false);
-        public static final Setpoints kLowScore = new Setpoints(0.87, -0.17, -0.4, false);
-        public static final Setpoints kMidScore = new Setpoints(0.72, -0.15, -0.4, false);
-        public static final Setpoints kHighScore = new Setpoints(0.64, 0, -0.4, false);
-        public static final Setpoints kStowInFrame = new Setpoints(0.16, -0.15, -0.4, false);
-        public static final Setpoints kStowLow = new Setpoints(0.96, -0.2, -0.4, false);
+        public static final Setpoints kLowPickup = new Setpoints(0.94, 0.05, -0.4, false);
+        public static final Setpoints kStowHigh = new Setpoints(0.5, 0.2, -0.4, false);
+        public static final Setpoints kDoubleFeeder = new Setpoints(0.62, 0.35, -0.4, false);
+        public static final Setpoints kLowScore = new Setpoints(0.87, 0.03, -0.4, false);
+        public static final Setpoints kMidScore = new Setpoints(0.72, 0.05, -0.4, false);
+        public static final Setpoints kHighScore = new Setpoints(0.64, 0.2, -0.4, false);
+        public static final Setpoints kStowInFrame = new Setpoints(0.16, 0.05, -0.4, false);
+        public static final Setpoints kStowLow = new Setpoints(0.96, 0.0, -0.4, false);
     }
 
     public static class VisionConstants {

@@ -41,7 +41,7 @@ public class Wrist extends SubsystemBase {
             double change = MathUtil.applyDeadband(OIConstants.operatorController.getLeftY(), 0.05);
             change = WristConstants.manualSpeed * Math.pow(change, 3);
             goal += change;
-            goal = MathUtil.clamp(goal, -0.2, 0.2);
+            goal = MathUtil.clamp(goal, 0.0, 0.4);
         }));
     }
 
@@ -79,7 +79,6 @@ public class Wrist extends SubsystemBase {
     public void periodic(){
         double armPosition = Arm.getInstance().getPosition();
         double position = this.getPosition();
-        double goal = this.goal + .20;
         if(armPosition < ArmConstants.kLowWristLimit && goal < 0){
             backupGoal = WristConstants.extendedSetpoint;
             double motorSpeed = feedforward.calculate(backupGoal, 0) + controller.calculate(position, backupGoal);
