@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.StateManager.State;
 import frc.robot.StateManager;
 import org.littletonrobotics.junction.Logger;
 
@@ -78,6 +79,9 @@ public class Intake extends SubsystemBase {
                     break;
                 default:
                     break;
+            }
+            if(StateManager.getInstance().getState() == State.StowInFrame){
+                speed = 0;
             }
         }
 

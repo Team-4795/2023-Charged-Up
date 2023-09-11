@@ -9,6 +9,7 @@ public interface RollerbarIO {
     public static class RollerbarIOInputs {
         public double appliedOutput = 0.0;
         public double currentAmps = 0.0;
+        public double pressure = 0.0;
     }
 
     public default void updateInputs(RollerbarIOInputs inputs) {}

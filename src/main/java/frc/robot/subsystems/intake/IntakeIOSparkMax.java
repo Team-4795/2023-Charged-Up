@@ -23,6 +23,7 @@ public class IntakeIOSparkMax implements IntakeIO {
     }
 
     public void setOutput(double output) {
-        intakeMotor.setVoltage(output * 12);
+        // intakeMotor.setVoltage(output * 12);
+        intakeMotor.set(output);
     }
 }

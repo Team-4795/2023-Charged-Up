@@ -15,23 +15,23 @@ import frc.robot.Constants.RollerbarConstants;
 public class RollerbarIOReal implements RollerbarIO {
     private final DoubleSolenoid solenoid = new DoubleSolenoid(
             PneumaticsModuleType.REVPH, RollerbarConstants.kForwardChannel, RollerbarConstants.kReverseChannel);
-
     private final PneumaticHub m_ph = new PneumaticHub(IntakeConstants.kPHCANID);
-    private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
+    private final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
         
     private final CANSparkMax rollerMotor = new CANSparkMax(RollerbarConstants.kRollerbarCANID, MotorType.kBrushed);
 
     public RollerbarIOReal() {
+        compressor.enableAnalog(IntakeConstants.kMinPressure, IntakeConstants.kMaxPressure);
         rollerMotor.restoreFactoryDefaults();
         rollerMotor.setIdleMode(IdleMode.kBrake);
         rollerMotor.setSmartCurrentLimit(30);
         rollerMotor.burnFlash();
-        compressor.enableAnalog(IntakeConstants.kMinPressure, IntakeConstants.kMaxPressure);
     }
 
     public void updateInputs(RollerbarIOInputs inputs) {
         inputs.appliedOutput = rollerMotor.getAppliedOutput();
         inputs.currentAmps = rollerMotor.getOutputCurrent();
+        inputs.pressure = m_ph.getPressure(0);
     }
 
     public void setExtension(Value value) {
