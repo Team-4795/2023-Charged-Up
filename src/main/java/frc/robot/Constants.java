@@ -282,8 +282,8 @@ public final class Constants {
         public static final double kV = 0.48;
         public static final double ka = 0;
 
-        public static final double retractedSetpoint = 0.05;
-        public static final double extendedSetpoint = 0.35;
+        public static final double retractedSetpoint = 0.13;
+        public static final double extendedSetpoint = 0.36;
         public static final double rollerbarSetpoint = 0.26;
         public static final double manualSpeed = 0.01;
 

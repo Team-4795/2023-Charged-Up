@@ -1,5 +1,7 @@
 package frc.robot.subsystems.WristV2;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -10,6 +12,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.util.CircularBuffer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -19,6 +24,7 @@ import frc.robot.subsystems.arm.Arm;
 
 public class Wrist extends SubsystemBase {
     private CANSparkMax wristMotor = new CANSparkMax(WristConstants.CANID, MotorType.kBrushless);
+    // private DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
     private AbsoluteEncoder encoder;
 
     private ArmFeedforward feedforward = new ArmFeedforward(WristConstants.kS, WristConstants.kg, WristConstants.kV,
@@ -61,6 +67,8 @@ public class Wrist extends SubsystemBase {
                 }
             }
         }));
+        // solenoid.set(Value.kOff);
+
     }
 
     public void setGoal(double goal) {
@@ -111,9 +119,9 @@ public class Wrist extends SubsystemBase {
             if(wristCurrent < 40){
                 wristCurrentBuffer.addLast(wristCurrent);
             }
-            if(goal > 0){
+            if(goal > 0.2){
                 motorSpeed = 0.8;
-            } else if (goal < 0){
+            } else {
                 motorSpeed = -0.8;
             }
             if(this.avgCurrent() > WristConstants.stallCurrentThreshold){
@@ -134,12 +142,13 @@ public class Wrist extends SubsystemBase {
                 wristMotor.set(motorSpeed);
             }
         }
-        SmartDashboard.putNumber("Wrist Speed", motorSpeed);
-        SmartDashboard.putNumber("Wrist Current", wristCurrent);
-        SmartDashboard.putNumber("Wrist Average Current", avgCurrent());
-        SmartDashboard.putBoolean("Wrist Binary Control?", binaryControl);
-        SmartDashboard.putNumber("Wrist Goal", goal);
-        SmartDashboard.putNumber("Wrist Position", position);
+        Logger.getInstance().recordOutput("Wrist/Speed", motorSpeed);
+        Logger.getInstance().recordOutput("Wrist/Current", wristCurrent);
+        Logger.getInstance().recordOutput("Wrist/Average Current", avgCurrent());
+        Logger.getInstance().recordOutput("Wrist/Binary Control?", binaryControl);
+        Logger.getInstance().recordOutput("Wrist/Current", wristCurrent);
+        Logger.getInstance().recordOutput("Wrist/Goal", goal);
+        Logger.getInstance().recordOutput("Wrist/Position", position);
     }
 
     public double getGoal() {
