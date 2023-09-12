@@ -118,7 +118,7 @@ public class Intake extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Intake", inputs);
 
-        if (inputs.currentAmps > 2) {
+        if (inputs.currentAmps > 2 && inputs.currentAmps < 30) {
             currentValues.addLast(inputs.currentAmps);
         }
 

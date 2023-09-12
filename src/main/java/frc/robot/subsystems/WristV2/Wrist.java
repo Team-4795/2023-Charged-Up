@@ -3,6 +3,7 @@ package frc.robot.subsystems.WristV2;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
@@ -36,12 +37,13 @@ public class Wrist extends SubsystemBase {
     private Wrist(){
         encoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
         goal = this.getPosition();
+        wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
 
         setDefaultCommand(run(() -> {
             double change = MathUtil.applyDeadband(OIConstants.operatorController.getLeftY(), 0.05);
             change = WristConstants.manualSpeed * Math.pow(change, 3);
             goal += change;
-            goal = MathUtil.clamp(goal, 0.0, 0.4);
+            goal = MathUtil.clamp(goal, 0.05, 0.35);
         }));
     }
 

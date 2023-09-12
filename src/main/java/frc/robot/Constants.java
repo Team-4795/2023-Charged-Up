@@ -272,7 +272,7 @@ public final class Constants {
         
         public static final double kP = 3;
         public static final double kI = 0.0;
-        public static final double kD = 0;
+        public static final double kD = 1;
         public static final double kDt = 0.02;
         public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(1, 4);
 
@@ -287,11 +287,11 @@ public final class Constants {
         public static final double manualSpeed = 0.01;
         
 
-        public static final double maxAngleRad = 0.4 * 2 * Math.PI;
+        public static final double maxAngleRad = 0.35 * 2 * Math.PI;
         public static final double MOI = 0.0245;
         public static final double gearing = 2;
         public static final double length = 0.286;
-        public static final double minAngleRad = 0.0 * 2 * Math.PI;
+        public static final double minAngleRad = 0.05 * 2 * Math.PI;
 
 
     }
@@ -324,7 +324,7 @@ public final class Constants {
         public static final Setpoints kLowPickup = new Setpoints(0.928, 0.05, -0.5, false);
         public static final Setpoints kStowHigh = new Setpoints(0.5, 0.2, -0.5, false);
         public static final Setpoints kDoubleFeeder = new Setpoints(0.62, 0.35, -0.5, false);
-        public static final Setpoints kLowScore = new Setpoints(0.89, 0, -0.3, false);
+        public static final Setpoints kLowScore = new Setpoints(0.89, 0.05, -0.3, false);
         public static final Setpoints kMidScore = new Setpoints(0.69, 0.3, -0.5, false);
         public static final Setpoints kHighScore = new Setpoints(0.565, 0.35, -0.75, false);
         public static final Setpoints kStowInFrame = new Setpoints(0.16, 0.05, -0.5, false);
@@ -345,7 +345,7 @@ public final class Constants {
         public static final Setpoints kMidScore = new Setpoints(0.72, 0.05, -0.4, false);
         public static final Setpoints kHighScore = new Setpoints(0.64, 0.2, -0.4, false);
         public static final Setpoints kStowInFrame = new Setpoints(0.16, 0.05, -0.4, false);
-        public static final Setpoints kStowLow = new Setpoints(0.96, 0.0, -0.4, false);
+        public static final Setpoints kStowLow = new Setpoints(0.96, 0.05, -0.4, false);
     }
 
     public static class VisionConstants {
