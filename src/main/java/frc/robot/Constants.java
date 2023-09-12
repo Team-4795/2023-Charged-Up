@@ -268,7 +268,8 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-        public static final int CANID = 13; //***NEEDS UPDATING***
+        public static final int CANID = 13;
+        public static final int currentLimit = 25;
         
         public static final double kP = 3;
         public static final double kI = 0.0;
@@ -276,16 +277,15 @@ public final class Constants {
         public static final double kDt = 0.02;
         public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(1, 4);
 
-        public static final double kS = 0.2;
+        public static final double kS = 0.0;
         public static final double kg = 0;
-        public static final double kV = 0.15;
+        public static final double kV = 0.48;
         public static final double ka = 0;
 
         public static final double retractedSetpoint = 0.05;
         public static final double extendedSetpoint = 0.35;
         public static final double rollerbarSetpoint = 0.26;
         public static final double manualSpeed = 0.01;
-        
 
         public static final double maxAngleRad = 0.35 * 2 * Math.PI;
         public static final double MOI = 0.0245;
@@ -293,6 +293,8 @@ public final class Constants {
         public static final double length = 0.286;
         public static final double minAngleRad = 0.05 * 2 * Math.PI;
 
+        public static final int bufferSize = 10;
+        public static final double stallCurrentThreshold = 15;
 
     }
 

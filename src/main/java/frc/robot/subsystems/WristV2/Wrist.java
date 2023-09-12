@@ -9,6 +9,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.util.CircularBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -19,44 +20,67 @@ import frc.robot.subsystems.arm.Arm;
 public class Wrist extends SubsystemBase {
     private CANSparkMax wristMotor = new CANSparkMax(WristConstants.CANID, MotorType.kBrushless);
     private AbsoluteEncoder encoder;
-    
-    private ArmFeedforward feedforward = new ArmFeedforward(WristConstants.kS, WristConstants.kg, WristConstants.kV, WristConstants.ka);
-    private ProfiledPIDController controller = new ProfiledPIDController(WristConstants.kP, WristConstants.kI, WristConstants.kD, WristConstants.constraints, WristConstants.kDt);
+
+    private ArmFeedforward feedforward = new ArmFeedforward(WristConstants.kS, WristConstants.kg, WristConstants.kV,
+            WristConstants.ka);
+    private ProfiledPIDController controller = new ProfiledPIDController(WristConstants.kP, WristConstants.kI,
+            WristConstants.kD, WristConstants.constraints, WristConstants.kDt);
     private double goal;
     private double backupGoal;
 
+    private boolean binaryControl;
+    private CircularBuffer wristCurrentBuffer = new CircularBuffer(WristConstants.bufferSize);
+
     private static Wrist instance;
 
-    public static Wrist getInstance(){
-        if(instance == null){
+    public static Wrist getInstance() {
+        if (instance == null) {
             instance = new Wrist();
         }
         return instance;
     }
 
-    private Wrist(){
+    private Wrist() {
+        binaryControl = false;
         encoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
         goal = this.getPosition();
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
+        wristMotor.setSmartCurrentLimit(WristConstants.currentLimit);
 
         setDefaultCommand(run(() -> {
             double change = MathUtil.applyDeadband(OIConstants.operatorController.getLeftY(), 0.05);
-            change = WristConstants.manualSpeed * Math.pow(change, 3);
-            goal += change;
-            goal = MathUtil.clamp(goal, 0.05, 0.35);
+            if (!binaryControl) {
+                change = WristConstants.manualSpeed * Math.pow(change, 3);
+                goal += change;
+                goal = MathUtil.clamp(goal, 0.05, 0.35);
+            } else {
+                if(change > 0.5){
+                    goal = WristConstants.extendedSetpoint;
+                } else if(change < -0.5){
+                    goal = WristConstants.retractedSetpoint;
+                }
+            }
         }));
     }
 
-    public void setGoal(double goal){
+    public void setGoal(double goal) {
         this.goal = goal;
     }
 
-    public void setTarget(double position){
+    public void setTarget(double position) {
         goal = position;
     }
 
-    public void retract(){
+    public void retract() {
         goal = WristConstants.retractedSetpoint;
+    }
+
+    public void toggleBinaryControl(){
+        binaryControl = !binaryControl;
+    }
+
+    public void setBinaryControl(boolean on){
+        binaryControl = on;
     }
 
     public void flip() {
@@ -69,32 +93,48 @@ public class Wrist extends SubsystemBase {
         }
     }
 
-    public void extend(){
+    public void extend() {
         goal = WristConstants.extendedSetpoint;
     }
 
-    private double getPosition(){
+    private double getPosition() {
         return (encoder.getPosition() / 2);
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         double armPosition = Arm.getInstance().getPosition();
         double position = this.getPosition();
-        if(armPosition < ArmConstants.kLowWristLimit && goal < 0){
-            backupGoal = WristConstants.extendedSetpoint;
-            double motorSpeed = feedforward.calculate(backupGoal, 0) + controller.calculate(position, backupGoal);
-            wristMotor.set(motorSpeed);
-        } else if(armPosition > ArmConstants.kHighWristLimit && goal > 0){
-            backupGoal = WristConstants.retractedSetpoint;
-            double motorSpeed = feedforward.calculate(backupGoal, 0) + controller.calculate(position, backupGoal);
+        double wristCurrent = wristMotor.getOutputCurrent();
+        double motorSpeed = 0;
+        if(binaryControl) {
+            wristCurrentBuffer.addLast(wristCurrent);
+            if(goal > 0){
+                motorSpeed = 0.8;
+            } else if (goal < 0){
+                motorSpeed = -0.8;
+            }
+            if(wristCurrent > WristConstants.stallCurrentThreshold){
+                motorSpeed *= 0.5;
+            }
             wristMotor.set(motorSpeed);
         } else {
-            double motorSpeed = feedforward.calculate(goal, 0) + controller.calculate(position, goal);
-            wristMotor.set(motorSpeed);
+            if (armPosition < ArmConstants.kLowWristLimit && goal < 0) {
+                backupGoal = WristConstants.extendedSetpoint;
+                motorSpeed = feedforward.calculate(backupGoal, 0) + controller.calculate(position, backupGoal);
+                wristMotor.set(motorSpeed);
+            } else if (armPosition > ArmConstants.kHighWristLimit && goal > 0) {
+                backupGoal = WristConstants.retractedSetpoint;
+                motorSpeed = feedforward.calculate(backupGoal, 0) + controller.calculate(position, backupGoal);
+                wristMotor.set(motorSpeed);
+            } else {
+                motorSpeed = feedforward.calculate(goal, 0) + controller.calculate(position, goal);
+                wristMotor.set(motorSpeed);
+            }
         }
-
-        SmartDashboard.putNumber("Wrist Current", wristMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Wrist Speed", motorSpeed);
+        SmartDashboard.putNumber("Wrist Current", wristCurrent);
+        SmartDashboard.putBoolean("Wrist Binary Control?", binaryControl);
         SmartDashboard.putNumber("Wrist Goal", goal);
         SmartDashboard.putNumber("Wrist Position", position);
     }
