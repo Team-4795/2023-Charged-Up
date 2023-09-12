@@ -108,13 +108,15 @@ public class Wrist extends SubsystemBase {
         double wristCurrent = wristMotor.getOutputCurrent();
         double motorSpeed = 0;
         if(binaryControl) {
-            wristCurrentBuffer.addLast(wristCurrent);
+            if(wristCurrent < 40){
+                wristCurrentBuffer.addLast(wristCurrent);
+            }
             if(goal > 0){
                 motorSpeed = 0.8;
             } else if (goal < 0){
                 motorSpeed = -0.8;
             }
-            if(wristCurrent > WristConstants.stallCurrentThreshold){
+            if(this.avgCurrent() > WristConstants.stallCurrentThreshold){
                 motorSpeed *= 0.5;
             }
             wristMotor.set(motorSpeed);
@@ -134,6 +136,7 @@ public class Wrist extends SubsystemBase {
         }
         SmartDashboard.putNumber("Wrist Speed", motorSpeed);
         SmartDashboard.putNumber("Wrist Current", wristCurrent);
+        SmartDashboard.putNumber("Wrist Average Current", avgCurrent());
         SmartDashboard.putBoolean("Wrist Binary Control?", binaryControl);
         SmartDashboard.putNumber("Wrist Goal", goal);
         SmartDashboard.putNumber("Wrist Position", position);
@@ -143,7 +146,15 @@ public class Wrist extends SubsystemBase {
         return goal;
     }
 
-    public Object setExtendedTarget(boolean b) {
-        return null;
+    public void setExtendedTarget(boolean b) {
+        
+    }
+
+    private double avgCurrent() {
+        double sum = 0;
+        for (int i = 0; i < wristCurrentBuffer.size(); i++) {
+            sum += wristCurrentBuffer.get(i);
+        }
+        return sum / wristCurrentBuffer.size();
     }
 }
