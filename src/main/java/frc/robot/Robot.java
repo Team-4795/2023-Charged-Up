@@ -55,7 +55,7 @@ public class Robot extends LoggedRobot {
         Logger logger = Logger.getInstance();
         switch (Constants.getRobot()) {
             case Comp:
-              logger.addDataReceiver(new WPILOGWriter("/media/sda2"));
+              logger.addDataReceiver(new WPILOGWriter("/media/sda1"));
               logger.addDataReceiver(new NT4Publisher());
               // LoggedPowerDistribution.getInstance(50, ModuleType.kRev);
               break;
