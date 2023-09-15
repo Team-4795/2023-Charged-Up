@@ -47,7 +47,7 @@ public class Wrist extends SubsystemBase {
     }
 
     private Wrist() {
-        binaryControl = false;
+        binaryControl = true;
         encoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
         goal = this.getPosition();
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);

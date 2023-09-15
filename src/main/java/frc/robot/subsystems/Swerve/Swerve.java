@@ -126,8 +126,8 @@ public class Swerve extends SubsystemBase {
                 });
 
         m_field.setRobotPose(m_odometry.getPoseMeters());
-        poseEstimator.estimateRobotPose(this.getPose());
-        visionPose = poseEstimator.getPoseEstimate();
+        // poseEstimator.estimateRobotPose(this.getPose());
+        // visionPose = poseEstimator.getPoseEstimate();
 
         SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
         SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());

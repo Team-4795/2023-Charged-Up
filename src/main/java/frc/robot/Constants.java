@@ -218,14 +218,14 @@ public final class Constants {
 
     public static final class ArmConstants {
         public static final TrapezoidProfile.Constraints kCubeMotionConstraint =
-                new TrapezoidProfile.Constraints(0.5, 1.5);
+                new TrapezoidProfile.Constraints(1.0, 2);
         public static final TrapezoidProfile.Constraints kConeMotionConstraint =
-                new TrapezoidProfile.Constraints(0.5, 1.5);
+                new TrapezoidProfile.Constraints(1.0, 2);
         public static final TrapezoidProfile.Constraints kNotStoringConstraint =
-                new TrapezoidProfile.Constraints(0.5, 1.5);
+                new TrapezoidProfile.Constraints(1.0, 2);
         public static final int kLeftArmMotorCANID = 10;
         public static final int kRightArmMotorCANID = 11;
-        public static final double kP = 3.5;
+        public static final double kP = 4.0;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kFF = 0;
@@ -263,8 +263,8 @@ public final class Constants {
         public static final double kDoubleExtensionBoundary = 0.45;
         public static final double kSpinSpeed = -1;
 
-        public static final double kExtendTime = .3;
-        public static final double kRetractTime = .5;
+        public static final double kExtendTime = .6;
+        public static final double kRetractTime = .6;
     }
 
     public static final class WristConstants {
