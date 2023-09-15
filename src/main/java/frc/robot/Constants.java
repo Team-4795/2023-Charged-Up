@@ -258,7 +258,7 @@ public final class Constants {
         public static final int kForwardChannel = 11;
         public static final int kReverseChannel = 12;
 
-        public static final double kArmBoundary = 0.19;
+        public static final double kArmBoundary = 0.20;
         public static final double kWristRetractedBoundary = 0.23;
         public static final double kDoubleExtensionBoundary = 0.45;
         public static final double kSpinSpeed = -1;
