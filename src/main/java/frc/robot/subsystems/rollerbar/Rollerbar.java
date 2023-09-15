@@ -126,6 +126,9 @@ public class Rollerbar extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Rollerbar", inputs);
+        Logger.getInstance().recordOutput("Rollerbar/TargetExtend", targetExtend);
+        Logger.getInstance().recordOutput("Rollerbar/extended", extended);
+        Logger.getInstance().recordOutput("Rollerbar/shouldMove?", this.shouldMove());
 
         viz.update(getEstimatedAngleDeg());
 

@@ -115,14 +115,20 @@ public class Wrist extends SubsystemBase {
         double position = this.getPosition();
         double wristCurrent = wristMotor.getOutputCurrent();
         double motorSpeed = 0;
+        boolean backup = false;
         if(binaryControl) {
+            backup = armPosition > ArmConstants.kHighWristLimit && goal > 0;
             if(wristCurrent < 40){
                 wristCurrentBuffer.addLast(wristCurrent);
             }
-            if(goal > 0.2){
-                motorSpeed = 0.8;
-            } else {
+            if(backup){
                 motorSpeed = -0.8;
+            } else {
+                if(goal > 0.2){
+                    motorSpeed = 0.8;
+                } else {
+                    motorSpeed = -0.8;
+                }
             }
             if(this.avgCurrent() > WristConstants.stallCurrentThreshold){
                 motorSpeed *= 0.5;

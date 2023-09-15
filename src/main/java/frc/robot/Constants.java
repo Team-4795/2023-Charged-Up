@@ -335,8 +335,8 @@ public final class Constants {
         public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, 0.2, -0.6, false);
         public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, 0.08, -0.5, false);
         public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, 0.08, -0.5, false);
-        public static final Setpoints kBackwardsLowPickup = new Setpoints(0.18, 0.12, 0.0, true);
-        public static final Setpoints kBackwardLowPickupAuto = new Setpoints(0.1835, 0.12, 0, true);
+        public static final Setpoints kBackwardsLowPickup = new Setpoints(0.195, 0.12, 0.0, true);
+        public static final Setpoints kBackwardLowPickupAuto = new Setpoints(0.1975, 0.12, 0, true);
     }
 
     public static final class ConeSetpointConstants {
