@@ -258,7 +258,7 @@ public final class Constants {
         public static final int kForwardChannel = 11;
         public static final int kReverseChannel = 12;
 
-        public static final double kArmBoundary = 0.20;
+        public static final double kArmBoundary = 0.19;
         public static final double kWristRetractedBoundary = 0.23;
         public static final double kDoubleExtensionBoundary = 0.45;
         public static final double kSpinSpeed = -1;
@@ -284,7 +284,7 @@ public final class Constants {
 
         public static final double retractedSetpoint = 0.13;
         public static final double extendedSetpoint = 0.36;
-        public static final double rollerbarSetpoint = 0.26;
+        public static final double rollerbarSetpoint = 0.3;
         public static final double manualSpeed = 0.01;
 
         public static final double maxAngleRad = 0.35 * 2 * Math.PI;

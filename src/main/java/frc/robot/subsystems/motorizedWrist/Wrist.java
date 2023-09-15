@@ -52,7 +52,7 @@ public class Wrist extends SubsystemBase{
             double change = MathUtil.applyDeadband(OIConstants.operatorController.getLeftY(), 0.05);
             change = WristConstants.manualSpeed * Math.pow(change, 3);
             goal += change;
-            goal = MathUtil.clamp(goal, -0.2, 0.2);
+            goal = MathUtil.clamp(goal, 0, 0.4);
         }));
     }
 
@@ -79,6 +79,16 @@ public class Wrist extends SubsystemBase{
     public double getGoal(){
         return goal;
     }
+
+    public double getPosition(){
+        return inputs.angle;
+    }
+
+    public void flip(){}
+
+    public void setExtendedTarget(boolean b){}
+
+    public void toggleBinaryControl(){}
 
     @Override
     public void periodic() {

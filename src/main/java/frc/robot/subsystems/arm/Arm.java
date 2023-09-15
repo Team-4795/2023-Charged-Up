@@ -111,7 +111,7 @@ public class Arm extends SubsystemBase {
         /* Double extension constraint */
         if (Rollerbar.getInstance().shouldMove()) {
             if(Rollerbar.getInstance().getTargetExtended() || unsafeSetpoint()){
-                if (!Rollerbar.getInstance().safeToMove(setpoint)) {
+                if (needTempSetpoints()) {
                     setTargetPosition(RollerbarConstants.kArmBoundary + 0.005);
                     Wrist.getInstance().setTarget(WristConstants.rollerbarSetpoint);
                     isTemporary = true;
@@ -131,11 +131,35 @@ public class Arm extends SubsystemBase {
         io.setArmVoltage(feedback);
     }
 
-    private boolean unsafeSetpoint(){
-        if(setpoint < RollerbarConstants.kArmBoundary || 
-            (Wrist.getInstance().getGoal() < WristConstants.rollerbarSetpoint && setpoint < RollerbarConstants.kWristRetractedBoundary)){
+    private boolean needTempSetpoints(){
+        if(unsafePosition()){
+            return true;
+        } else if(unsafeSetpoint()){
             return true;
         }
         return false;
+    }
+
+    private boolean unsafePosition(){
+        double position = inputs.angleRev;
+        double wristPosition = Wrist.getInstance().getPosition();
+        if(position < RollerbarConstants.kArmBoundary){
+            return true;
+        } else if(position < RollerbarConstants.kWristRetractedBoundary && wristPosition < WristConstants.rollerbarSetpoint){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean unsafeSetpoint(){
+        double wristGoal = Wrist.getInstance().getGoal();
+        if(setpoint < RollerbarConstants.kArmBoundary){
+            return true;
+        } else if(setpoint < RollerbarConstants.kWristRetractedBoundary && wristGoal < WristConstants.rollerbarSetpoint){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

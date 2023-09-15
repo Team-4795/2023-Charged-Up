@@ -100,7 +100,7 @@ public class Wrist extends SubsystemBase {
         goal = WristConstants.extendedSetpoint;
     }
 
-    private double getPosition() {
+    public double getPosition() {
         return (encoder.getPosition() / 2);
     }
 
