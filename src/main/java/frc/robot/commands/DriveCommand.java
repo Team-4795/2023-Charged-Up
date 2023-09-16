@@ -34,7 +34,7 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        drive.runVelocity(new ChassisSpeeds(speed, 0, 0));
+        drive.runVelocity(new ChassisSpeeds(0, speed, 0));
         elevationAngle = drive.getElevationAngle();
         if (Math.abs(elevationAngle) > angleThreshold) {
             if (!check) {

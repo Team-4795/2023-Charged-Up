@@ -62,7 +62,7 @@ public class Swerve extends SubsystemBase {
     // The gyro sensor
 
     AHRS m_gyro = new AHRS(SPI.Port.kMXP);
-    WPI_Pigeon2 pigeon = new WPI_Pigeon2(20);
+    // WPI_Pigeon2 pigeon = new WPI_Pigeon2(20);
 
     private RotationMatrix rotation;
     private double balanceSpeed = 0.0;
@@ -334,7 +334,8 @@ public class Swerve extends SubsystemBase {
     // angle between xy-plane and the forward vector of the drivebase - potentially
     // doesn't work
     public double getElevationAngle() {
-        return pigeon.getPitch();
+        // return pigeon.getPitch();
+        return 0;
     }
 
     public double getElevationVelocity() {

@@ -1,5 +1,8 @@
 package frc.robot.commands;
 
+import com.fasterxml.jackson.core.io.OutputDecorator;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
@@ -44,8 +47,9 @@ public class AutoBalance extends CommandBase {
         output = updateDrive();
         countOscillations();
         // not sure if Field relative is correct, but whatever
+        drive.runVelocity(new ChassisSpeeds(0, output, 0));
         // drive.drive(output, 0, 0, false, true);
-        // drive.setBalanceSpeed(output);
+        drive.setBalanceSpeed(output);
         // drive.setOscillations(oscillations);
     }
 

@@ -110,13 +110,11 @@ public class Arm extends SubsystemBase {
 
         /* Double extension constraint */
         if (Rollerbar.getInstance().shouldMove()) {
-            if(Rollerbar.getInstance().getTargetExtended() || unsafeSetpoint()){
                 if (needTempSetpoints()) {
-                    setTargetPosition(RollerbarConstants.kArmBoundary + 0.005);
+                    setTargetPosition(RollerbarConstants.kArmBoundary + 0.015);
                     Wrist.getInstance().setTarget(WristConstants.rollerbarSetpoint);
                     isTemporary = true;
                 }   
-            }
         } else if (isTemporary) {
             StateManager.getInstance().setSetpoints();
             isTemporary = false;
