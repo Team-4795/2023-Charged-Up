@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
@@ -13,9 +14,11 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.util.CircularBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.StateManager;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.WristConstants;
+import frc.robot.StateManager.State;
 import frc.robot.subsystems.arm.Arm;
 
 public class Wrist extends SubsystemBase {
@@ -46,6 +49,7 @@ public class Wrist extends SubsystemBase {
         binaryControl = true;
         encoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
         goal = this.getPosition();
+        wristMotor.setIdleMode(IdleMode.kBrake);
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
         wristMotor.setSmartCurrentLimit(WristConstants.currentLimit);
 
@@ -126,7 +130,7 @@ public class Wrist extends SubsystemBase {
                 }
             }
             if(this.avgCurrent() > WristConstants.stallCurrentThreshold){
-                motorSpeed *= 0.5;
+                motorSpeed *= 0.4;
             }
             wristMotor.set(motorSpeed);
         } else {

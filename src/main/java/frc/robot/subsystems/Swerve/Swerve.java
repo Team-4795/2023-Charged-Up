@@ -105,8 +105,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData(m_field);
         setDefaultCommand(
             run(() -> this.drive(
-            MathUtil.applyDeadband(OIConstants.driverController.getRawAxis(0), OIConstants.kDriveDeadband),
-            MathUtil.applyDeadband(-OIConstants.driverController.getRawAxis(1), OIConstants.kDriveDeadband),
+            MathUtil.applyDeadband(OIConstants.driverController.getRawAxis(0) / 1.05, OIConstants.kDriveDeadband),
+            MathUtil.applyDeadband(-OIConstants.driverController.getRawAxis(1) / 1.05, OIConstants.kDriveDeadband),
             MathUtil.applyDeadband(-OIConstants.driverController.getRawAxis(4), OIConstants.kDriveDeadband),
             true,true))
         );
@@ -135,7 +135,6 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putNumber("Pigeon Angle of Elevation", getElevationAngle());
         SmartDashboard.putNumber("NavX Angle of Elevation", m_gyro.getPitch());
-        SmartDashboard.putNumber("Roll", pigeon.getRoll());
         SmartDashboard.putNumber("Balancing Speed", getBalanceSpeed());
         SmartDashboard.putData("Field", m_field);
         SmartDashboard.putNumber("backwards", Math.cos(Math.toRadians(this.getAngle())));
@@ -237,11 +236,17 @@ public class Swerve extends SubsystemBase {
             ySpeedCommanded = ySpeed;
             m_currentRotation = rot;
         }
+        
 
         // Convert the commanded speeds into the correct units for the drivetrain
         double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
         double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
         double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
+        
+        SmartDashboard.putNumber("xSpeed", xSpeedDelivered);
+        SmartDashboard.putNumber("ySpeed", ySpeedDelivered);
+        SmartDashboard.putNumber("rotSpeed", rotDelivered);
+        
 
         var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
                 fieldRelative

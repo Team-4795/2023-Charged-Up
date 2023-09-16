@@ -122,6 +122,11 @@ public class Arm extends SubsystemBase {
             isTemporary = false;
         }
 
+        Logger.getInstance().recordOutput("Unsafe setpoint", unsafeSetpoint());
+        Logger.getInstance().recordOutput("Unsafe position", unsafePosition());
+        Logger.getInstance().recordOutput("temporary Setpoints", needTempSetpoints());
+    
+
         // armVisualizerMeasured.update(getAngleDeg(), Wrist.getInstance().getAngleDeg());
         // armVisualizerSetpoint.update(getSetpointDeg(), Wrist.getInstance().getSetpointDeg());
 
@@ -132,12 +137,7 @@ public class Arm extends SubsystemBase {
     }
 
     private boolean needTempSetpoints(){
-        if(unsafePosition()){
-            return true;
-        } else if(unsafeSetpoint()){
-            return true;
-        }
-        return false;
+        return unsafePosition() || unsafeSetpoint();
     }
 
     private boolean unsafePosition(){

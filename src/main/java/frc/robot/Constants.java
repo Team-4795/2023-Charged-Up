@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.utils.Setpoints;
 import java.util.HashMap;
 
+import org.opencv.core.Mat;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -97,8 +99,8 @@ public final class Constants {
         public static final int kDrivingMotorPinionTeeth = 14;
         public static final double kDrivingMotorReduction = (45.0 * 22.0) / (kDrivingMotorPinionTeeth * 15.0);
     
-        public static final double kDrivingEncoderPositionFactor = 1.0 / kDrivingMotorReduction; // radians
-        public static final double kDrivingEncoderVelocityFactor = (1.0 / kDrivingMotorReduction) / 60.0; // radians per second
+        public static final double kDrivingEncoderPositionFactor = kWheelDiameterMeters * Math.PI / kDrivingMotorReduction; // radians
+        public static final double kDrivingEncoderVelocityFactor = ((kWheelDiameterMeters * Math.PI) / kDrivingMotorReduction) / 60.0; // radians per second
     
         public static final double kTurningEncoderPositionFactor = (2 * Math.PI); // radians
         public static final double kTurningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
@@ -258,7 +260,7 @@ public final class Constants {
         public static final int kForwardChannel = 11;
         public static final int kReverseChannel = 12;
 
-        public static final double kArmBoundary = 0.19;
+        public static final double kArmBoundary = 0.205;
         public static final double kWristRetractedBoundary = 0.23;
         public static final double kDoubleExtensionBoundary = 0.45;
         public static final double kSpinSpeed = -1;
@@ -273,18 +275,18 @@ public final class Constants {
         
         public static final double kP = 3;
         public static final double kI = 0.0;
-        public static final double kD = 1;
+        public static final double kD = 0.2;
         public static final double kDt = 0.02;
         public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(1, 4);
 
-        public static final double kS = 0.0;
+        public static final double kS = 0.1;
         public static final double kg = 0;
         public static final double kV = 0.48;
         public static final double ka = 0;
 
         public static final double retractedSetpoint = 0.13;
         public static final double extendedSetpoint = 0.36;
-        public static final double rollerbarSetpoint = 0.3;
+        public static final double rollerbarSetpoint = 0.26;
         public static final double manualSpeed = 0.01;
 
         public static final double maxAngleRad = 0.35 * 2 * Math.PI;
@@ -294,7 +296,7 @@ public final class Constants {
         public static final double minAngleRad = 0.05 * 2 * Math.PI;
 
         public static final int bufferSize = 10;
-        public static final double stallCurrentThreshold = 15;
+        public static final double stallCurrentThreshold = 16;
 
     }
 
