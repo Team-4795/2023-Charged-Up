@@ -172,17 +172,17 @@ public class LEDs extends SubsystemBase {
         setColor(0, 0, 0, false, 1);
     }
 
-    @Override
-    public void periodic() {
-        String[] leds = new String[buffer.getLength()];
+    // @Override
+    // public void periodic() {
+        //String[] leds = new String[buffer.getLength()];
 
-        for (int i = 0; i < buffer.getLength(); i++) {
-            leds[i] = buffer.getLED(i).toHexString();
-        }
+        //for (int i = 0; i < buffer.getLength(); i++) {
+          //  leds[i] = buffer.getLED(i).toHexString();
+        //}
 
-        Logger.getInstance().recordOutput("leds", leds);
+        // Logger.getInstance().recordOutput("leds", leds);
 
         // Logger.getInstance().recordOutput("X", new double[] { 1.0 });
 
-    }
+    //}
 }

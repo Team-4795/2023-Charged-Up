@@ -286,7 +286,7 @@ public final class Constants {
 
         public static final double retractedSetpoint = 0.13;
         public static final double extendedSetpoint = 0.36;
-        public static final double rollerbarSetpoint = 0.26;
+        public static final double rollerbarSetpoint = 0.20;
         public static final double manualSpeed = 0.01;
 
         public static final double maxAngleRad = 0.35 * 2 * Math.PI;

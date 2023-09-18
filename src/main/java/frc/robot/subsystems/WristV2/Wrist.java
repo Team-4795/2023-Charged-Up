@@ -105,7 +105,7 @@ public class Wrist extends SubsystemBase {
     }
 
     public double getPosition() {
-        return (encoder.getPosition() / 2);
+        return (encoder.getPosition());
     }
 
     @Override
