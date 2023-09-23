@@ -56,7 +56,7 @@ public class Rollerbar extends SubsystemBase {
     public final double endAngle = 22.353;
     public final double extensionTime = 1;
 
-    public Rollerbar(RollerbarIO io) {
+    private Rollerbar(RollerbarIO io) {
         this.io = io;
 
         movingToExtended = getExtension();

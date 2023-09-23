@@ -48,7 +48,7 @@ public class Intake extends SubsystemBase {
     // Circular buffer used for averaging current
     private CircularBuffer currentValues = new CircularBuffer(IntakeConstants.currentAvgSize);
 
-    public Intake(IntakeIO io) {
+    private Intake(IntakeIO io) {
         this.io = io;
 
         setDefaultCommand(intakeCommand());

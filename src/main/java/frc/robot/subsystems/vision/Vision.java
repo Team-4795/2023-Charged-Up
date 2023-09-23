@@ -25,7 +25,7 @@ public class Vision extends SubsystemBase {
     return mInstance;
   }
 
-  public Vision(){
+  private Vision(){
     camera = NetworkTableInstance.getDefault().getTable("limelight");
   }
 

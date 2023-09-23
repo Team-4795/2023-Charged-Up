@@ -46,7 +46,7 @@ public class Arm extends SubsystemBase {
     // Set when the arm is moving to avoid rollerbar or double extension
     private boolean isTemporary = false;
 
-    public Arm(ArmIO io) {
+    private Arm(ArmIO io) {
         this.io = io;
         io.updateInputs(inputs);
 

@@ -23,7 +23,7 @@ public class LandingGear extends SubsystemBase {
     private boolean extended;
     private boolean targetExtended;
 
-    public LandingGear() {
+    private LandingGear() {
         extended = false;
         targetExtended = false;
 

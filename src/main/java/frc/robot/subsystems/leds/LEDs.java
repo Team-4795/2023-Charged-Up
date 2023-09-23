@@ -50,7 +50,7 @@ public class LEDs extends SubsystemBase {
     private AddressableLEDBuffer buffer;
     private String[] led1 = new String[1];
 
-    public LEDs() {
+    private LEDs() {
         led = new AddressableLED(2);
         buffer = new AddressableLEDBuffer(LED_LENGTH);
 
