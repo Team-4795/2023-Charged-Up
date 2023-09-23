@@ -23,7 +23,6 @@ import frc.robot.subsystems.arm.Arm;
 
 public class Wrist extends SubsystemBase {
     private CANSparkMax wristMotor = new CANSparkMax(WristConstants.CANID, MotorType.kBrushless);
-    // private DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
     private AbsoluteEncoder encoder;
 
     private ArmFeedforward feedforward = new ArmFeedforward(WristConstants.kS, WristConstants.kg, WristConstants.kV,
@@ -50,7 +49,7 @@ public class Wrist extends SubsystemBase {
         encoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
         goal = this.getPosition();
         wristMotor.setIdleMode(IdleMode.kBrake);
-        // wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
+        // wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
         wristMotor.setSmartCurrentLimit(WristConstants.currentLimit);
 
         setDefaultCommand(run(() -> {

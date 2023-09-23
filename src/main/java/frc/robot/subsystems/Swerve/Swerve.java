@@ -29,9 +29,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.utils.RotationMatrix;
 import frc.utils.SwerveUtils;
-import frc.utils.VisionPoseEstimator;
 
 public class Swerve extends SubsystemBase {
     // Create field2d
@@ -64,7 +62,6 @@ public class Swerve extends SubsystemBase {
     AHRS m_gyro = new AHRS(SPI.Port.kMXP);
     // WPI_Pigeon2 pigeon = new WPI_Pigeon2(20);
 
-    private RotationMatrix rotation;
     private double balanceSpeed = 0.0;
     public int oscillations = 0;
 
@@ -88,7 +85,6 @@ public class Swerve extends SubsystemBase {
                     m_rearRight.getPosition()
             });
 
-    VisionPoseEstimator poseEstimator = new VisionPoseEstimator(VisionConstants.kSnakeEyesCamera);
     Pose2d visionPose = new Pose2d();
 
     private static Swerve instance;
@@ -126,8 +122,6 @@ public class Swerve extends SubsystemBase {
                 });
 
         m_field.setRobotPose(m_odometry.getPoseMeters());
-        // poseEstimator.estimateRobotPose(this.getPose());
-        // visionPose = poseEstimator.getPoseEstimate();
 
         SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
         SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
@@ -331,25 +325,12 @@ public class Swerve extends SubsystemBase {
         return Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset);
     }
 
-    // angle between xy-plane and the forward vector of the drivebase - potentially
-    // doesn't work
+
     public double getElevationAngle() {
         // return pigeon.getPitch();
         return 0;
     }
 
-    public double getElevationVelocity() {
-        return rotation.findElevationVelocity(m_gyro.getPitch(), m_gyro.getRoll(), getHeading().getDegrees(),
-                m_gyro.getRawGyroX(), m_gyro.getRawGyroY(), m_gyro.getRawGyroZ());
-    }
-
-    public double getElevationAngleV2() {
-        return m_gyro.getRawAccelZ();
-    }
-
-    public double getElevationVelocityV2() {
-        return 0.0; // in the process of remaking
-    }
 
     public double getVisionHeading() {
         double angle = (getAngle()) % 360;
