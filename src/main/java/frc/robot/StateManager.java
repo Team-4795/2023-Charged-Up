@@ -30,8 +30,6 @@ public class StateManager extends VirtualSubsystem {
     // Either what were picking or what were storing
     private Gamepiece gamepiece = Gamepiece.Cube;
 
-    private ConstraintManager constraintManager = new ConstraintManager();
-
     public enum Gamepiece {
         Cube,
         Cone,

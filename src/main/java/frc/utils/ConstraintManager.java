@@ -19,46 +19,18 @@ public class ConstraintManager extends VirtualSubsystem{
     private boolean rollerbarShouldMove = false;
     private TempSetpoint setpoint;
     private boolean temporary = false;
-    public boolean needTemp = false;
+    private boolean needTemp = false;
 
-    public ConstraintManager(){
+    private static ConstraintManager instance;
+
+    public static void initialize(){
+        if(instance == null){
+            instance = new ConstraintManager();
+        }
+    }
+
+    private ConstraintManager(){
         setpoint = TempSetpoint.None;
-    }
-
-    public ConstraintManager(double arm, double armSetpoint, double wrist, double wristSetpoint, boolean rollerbar){
-        setpoint = TempSetpoint.None;
-        update(arm, armSetpoint, wrist, wristSetpoint, rollerbar);
-    }
-
-    public void update(double arm, double armSetpoint, double wrist, double wristSetpoint, boolean rollerbar){
-        armPosition = arm;
-        this.armSetpoint = armSetpoint;
-        wristPositon = wrist;
-        this.wristSetpoint = wristSetpoint;
-        rollerbarShouldMove = rollerbar;
-    }
-
-    public void applyConstraints(){
-        if(rollerbarShouldMove){
-            if(!temporary && (needTemp = needTempSetpoints())){
-                setTempSetpoints();
-                temporary = true;
-            }
-        } else if(temporary) {
-            StateManager.getInstance().setSetpoints();
-            temporary = false;
-            needTemp = false;
-        }
-    }
-
-    public void setTempSetpoints(){
-        if(setpoint.armPos != -1){
-            temporary = true;
-            Arm.getInstance().setTargetPosition(setpoint.armPos);
-        }
-        if(setpoint.wristPos != -1){
-            Wrist.getInstance().setTarget(setpoint.wristPos);
-        }
     }
 
     @Override
@@ -71,6 +43,19 @@ public class ConstraintManager extends VirtualSubsystem{
             Rollerbar.getInstance().shouldMove());
         this.applyConstraints();
         Logger.getInstance().recordOutput("Constraints/needTemporary", this.needTemp);
+    }
+
+    private void applyConstraints(){
+        if(rollerbarShouldMove){
+            if(!temporary && (needTemp = needTempSetpoints())){
+                setTempSetpoints();
+                temporary = true;
+            }
+        } else if(temporary) {
+            StateManager.getInstance().setSetpoints();
+            temporary = false;
+            needTemp = false;
+        }
     }
 
     private boolean needTempSetpoints(){
@@ -94,6 +79,16 @@ public class ConstraintManager extends VirtualSubsystem{
         return false;
     }
 
+    private void setTempSetpoints(){
+        if(setpoint.armPos != -1){
+            temporary = true;
+            Arm.getInstance().setTargetPosition(setpoint.armPos);
+        }
+        if(setpoint.wristPos != -1){
+            Wrist.getInstance().setTarget(setpoint.wristPos);
+        }
+    }
+
     private boolean unsafePosition(){
         if(armPosition < RollerbarConstants.kArmBoundary){
             return true;
@@ -113,5 +108,12 @@ public class ConstraintManager extends VirtualSubsystem{
             return false;
         }
     }
-    
+
+    private void update(double arm, double armSetpoint, double wrist, double wristSetpoint, boolean rollerbar){
+        armPosition = arm;
+        this.armSetpoint = armSetpoint;
+        wristPositon = wrist;
+        this.wristSetpoint = wristSetpoint;
+        rollerbarShouldMove = rollerbar;
+    } 
 }

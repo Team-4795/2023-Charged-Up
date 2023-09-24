@@ -17,6 +17,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollerbar.Rollerbar;
+import frc.utils.ConstraintManager;
 import frc.robot.subsystems.motorizedWrist.Wrist;
 
 /*
@@ -43,6 +44,7 @@ public class RobotContainer {
         Intake intake = Intake.getInstance();
         Wrist wrist = Wrist.getInstance();
         StateManager manager = StateManager.getInstance();
+        ConstraintManager.initialize();
 
         OIConstants.operatorController.a().whileTrue(Commands.run(rollerbar::reverse, rollerbar));
         OIConstants.operatorController.b().onTrue(Commands.run(rollerbar::spin, rollerbar));
