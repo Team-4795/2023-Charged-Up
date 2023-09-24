@@ -15,7 +15,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollerbar.Rollerbar;
-import frc.robot.subsystems.WristV2.Wrist;
+import frc.robot.subsystems.motorizedWrist.Wrist;
 import java.util.HashMap;
 import java.util.Map;
 

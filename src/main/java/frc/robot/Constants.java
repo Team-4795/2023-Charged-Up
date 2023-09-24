@@ -250,6 +250,8 @@ public final class Constants {
         public static final double kHighSetpointLimit = 0.94;
         public static final double kPositionThreshold = 0.025;
 
+        public static final double minSafeRollerbar = 0.75;
+
         public static final double maxWindPoint = 0.18;
         public static final double YeetpointEnd = 0.77;
         public static final double armWindPoint = 0.412;
@@ -260,40 +262,44 @@ public final class Constants {
         public static final int kForwardChannel = 11;
         public static final int kReverseChannel = 12;
 
-        public static final double kArmBoundary = 0.205;
+        public static final double kArmBoundary = 0.19;
         public static final double kWristRetractedBoundary = 0.23;
         public static final double kDoubleExtensionBoundary = 0.45;
         public static final double kSpinSpeed = -1;
 
-        public static final double kExtendTime = .7;
-        public static final double kRetractTime = .6;
+        public static final double kExtendTime = .5;
+        public static final double kRetractTime = .5;
     }
 
     public static final class WristConstants {
         public static final int CANID = 13;
         public static final int currentLimit = 25;
+
+        public static final double maxPositionRev = 0.4;
+        public static final double minPositionRev = 0.0;
         
-        public static final double kP = 3;
+        public static final double kP = 4;
         public static final double kI = 0.0;
-        public static final double kD = 1;
+        public static final double kD = 3.5;
         public static final double kDt = 0.02;
         public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(1, 4);
 
-        public static final double kS = 0.1;
+        public static final double kS = 0;
         public static final double kg = 0;
-        public static final double kV = 0.48;
+        public static final double kV = 0;
         public static final double ka = 0;
 
-        public static final double retractedSetpoint = 0.13;
-        public static final double extendedSetpoint = 0.36;
-        public static final double rollerbarSetpoint = 0.20;
+        public static final double midPoint = 0.5 * (maxPositionRev - minPositionRev);
+        public static final double retractedSetpoint = 0.2 * (maxPositionRev - minPositionRev);
+        public static final double extendedSetpoint = 0.8 * (maxPositionRev - minPositionRev);
+        public static final double rollerbarSetpoint = 0.55 * (maxPositionRev - minPositionRev);
         public static final double manualSpeed = 0.01;
 
-        public static final double maxAngleRad = 0.35 * 2 * Math.PI;
+        public static final double maxAngleRad = maxPositionRev * 2 * Math.PI;
         public static final double MOI = 0.0245;
         public static final double gearing = 2;
         public static final double length = 0.286;
-        public static final double minAngleRad = 0.05 * 2 * Math.PI;
+        public static final double minAngleRad = minPositionRev * 2 * Math.PI;
 
         public static final int bufferSize = 10;
         public static final double stallCurrentThreshold = 16;
@@ -365,10 +371,5 @@ public final class Constants {
                 new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
 
         public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
-    }
-
-    public static class LandingGearConstants {
-        public static final int kForwardChannel = 8;
-        public static final int kBackwardChannel = 9;
     }
 }

@@ -12,7 +12,7 @@ import frc.robot.Constants.WristConstants;
 import frc.robot.StateManager;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.rollerbar.Rollerbar;
-import frc.robot.subsystems.WristV2.Wrist;
+import frc.robot.subsystems.motorizedWrist.Wrist;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
@@ -36,7 +36,7 @@ public class Arm extends SubsystemBase {
         return mInstance;
     }
 
-    public double setpoint;
+    private double setpoint;
 
     private ArmController controller;
 
@@ -95,6 +95,10 @@ public class Arm extends SubsystemBase {
         return setpoint * 360 - 90;
     }
 
+    public double getSetpoint(){
+        return setpoint;
+    }
+
     public boolean atSetpoint() {
         return Math.abs(getPosition() - setpoint) < ArmConstants.kPositionThreshold && !isTemporary;
     }
@@ -107,26 +111,11 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Arm", inputs);
-
-        /* Double extension constraint */
-        if (Rollerbar.getInstance().shouldMove()) {
-                if (needTempSetpoints()) {
-                    setTargetPosition(RollerbarConstants.kArmBoundary + 0.015);
-                    Wrist.getInstance().setTarget(WristConstants.rollerbarSetpoint);
-                    isTemporary = true;
-                }   
-        } else if (isTemporary) {
-            StateManager.getInstance().setSetpoints();
-            isTemporary = false;
-        }
-
-        Logger.getInstance().recordOutput("Unsafe setpoint", unsafeSetpoint());
-        Logger.getInstance().recordOutput("Unsafe position", unsafePosition());
         Logger.getInstance().recordOutput("temporary Setpoints", needTempSetpoints());
     
 
-        // armVisualizerMeasured.update(getAngleDeg(), Wrist.getInstance().getAngleDeg());
-        // armVisualizerSetpoint.update(getSetpointDeg(), Wrist.getInstance().getSetpointDeg());
+        armVisualizerMeasured.update(getAngleDeg(), Wrist.getInstance().getAngleDeg());
+        armVisualizerSetpoint.update(getSetpointDeg(), Wrist.getInstance().getSetpointDeg());
 
         Logger.getInstance().recordOutput("Arm setpoint", setpoint);
 

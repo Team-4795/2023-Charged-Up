@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.RollerbarConstants;
-import frc.robot.subsystems.WristV2.Wrist;
+import frc.robot.Constants.WristConstants;
+import frc.robot.subsystems.motorizedWrist.Wrist;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.intake.Intake;
 
@@ -80,7 +81,12 @@ public class Rollerbar extends SubsystemBase {
     }
 
     public boolean safeToMove(double position) {
-        return position > RollerbarConstants.kArmBoundary && position < RollerbarConstants.kDoubleExtensionBoundary && Wrist.getInstance().getPosition() > 0.2;
+        if(position > RollerbarConstants.kWristRetractedBoundary){
+            return true;
+        } else if (position > RollerbarConstants.kArmBoundary && Wrist.getInstance().getPosition() > WristConstants.rollerbarSetpoint){
+            return true;
+        }
+        return false;
     }
 
     public boolean isExtended() {

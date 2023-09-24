@@ -21,6 +21,7 @@ public class WristIOSim implements WristIO{
         inputs.angle = wristSim.getAngleRads() / (2 * Math.PI);
         inputs.angularVelocity = wristSim.getVelocityRadPerSec() / (2 * Math.PI);
         inputs.motorVolts = appliedVolts;
+        inputs.current = wristSim.getCurrentDrawAmps();
     }
 
 

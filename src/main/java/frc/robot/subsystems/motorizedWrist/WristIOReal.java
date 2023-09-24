@@ -15,7 +15,7 @@ public class WristIOReal implements WristIO {
 
     public WristIOReal(){
         encoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
-
+        
         wristMotor.setOpenLoopRampRate(0);
         wristMotor.setClosedLoopRampRate(0);
         wristMotor.setSmartCurrentLimit(0);
@@ -25,9 +25,10 @@ public class WristIOReal implements WristIO {
 
     @Override
     public void updateInputs(WristIOInputs inputs) {
-        inputs.angle = (encoder.getPosition() / 2);
+        inputs.angle = encoder.getPosition();
         inputs.angularVelocity = encoder.getVelocity();
         inputs.motorVolts = wristMotor.getAppliedOutput() * wristMotor.getBusVoltage();
+        inputs.current = wristMotor.getOutputCurrent();
     }
 
     @Override

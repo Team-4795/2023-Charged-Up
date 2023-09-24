@@ -8,7 +8,8 @@ import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.rollerbar.*;
 import frc.robot.subsystems.vision.*;
-import frc.robot.subsystems.WristV2.*;
+import frc.robot.subsystems.motorizedWrist.*;
+import frc.utils.ConstraintManager;
 import frc.utils.Setpoints;
 import org.littletonrobotics.junction.Logger;
 
@@ -28,6 +29,8 @@ public class StateManager extends VirtualSubsystem {
 
     // Either what were picking or what were storing
     private Gamepiece gamepiece = Gamepiece.Cube;
+
+    private ConstraintManager constraintManager = new ConstraintManager();
 
     public enum Gamepiece {
         Cube,
@@ -190,6 +193,7 @@ public class StateManager extends VirtualSubsystem {
         Rollerbar.getInstance().setExtendedTarget(getRollerbarExtended());
     }
 
+    @Override
     public void periodic() {
         Logger.getInstance().recordOutput("StateManager/Gamepiece", gamepiece.toString());
         Logger.getInstance().recordOutput("StateManager/State", state.toString());
