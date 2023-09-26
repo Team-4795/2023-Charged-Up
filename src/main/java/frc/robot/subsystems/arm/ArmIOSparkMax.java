@@ -38,8 +38,19 @@ public class ArmIOSparkMax implements ArmIO {
         rightArmMotor.follow(leftArmMotor, true);
 
         leftArmMotor.setInverted(true);
-        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 30);
-        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 30);
+
+        rightArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 20);
+        for(PeriodicFrame frame : PeriodicFrame.values()){
+            rightArmMotor.setPeriodicFramePeriod(frame, 10000);
+        }
+
+        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 200);
+        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
+        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
+        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
+        leftArmMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+
         leftArmMotor.burnFlash();
         rightArmMotor.burnFlash();
     }

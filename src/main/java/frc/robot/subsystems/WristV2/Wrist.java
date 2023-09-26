@@ -49,7 +49,12 @@ public class Wrist extends SubsystemBase {
         encoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
         goal = this.getPosition();
         wristMotor.setIdleMode(IdleMode.kBrake);
-        // wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
+        wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
+        wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10000);
+        wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
+        wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
+        wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
         wristMotor.setSmartCurrentLimit(WristConstants.currentLimit);
 
         setDefaultCommand(run(() -> {

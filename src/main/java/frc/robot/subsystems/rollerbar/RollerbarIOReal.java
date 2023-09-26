@@ -3,6 +3,7 @@ package frc.robot.subsystems.rollerbar;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -25,6 +26,11 @@ public class RollerbarIOReal implements RollerbarIO {
         rollerMotor.restoreFactoryDefaults();
         rollerMotor.setIdleMode(IdleMode.kBrake);
         rollerMotor.setSmartCurrentLimit(30);
+        rollerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10000);
+        rollerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
+        rollerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
+        rollerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
+        rollerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
         rollerMotor.burnFlash();
     }
 
