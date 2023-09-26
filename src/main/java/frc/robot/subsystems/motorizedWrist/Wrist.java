@@ -51,7 +51,7 @@ public class Wrist extends SubsystemBase{
 
     private Wrist(WristIO io){
         this.io = io;
-        binaryControl = false;
+        binaryControl = true;
         io.updateInputs(inputs);
         goal = inputs.angle;
 
@@ -126,12 +126,12 @@ public class Wrist extends SubsystemBase{
                 wristCurrentBuffer.addLast(inputs.current);
             }
             if(backup){
-                motorSpeed = -0.8;
+                motorSpeed = -0.6;
             } else {
-                if(goal > 0.2){
-                    motorSpeed = 0.8;
+                if(goal > WristConstants.midPoint){
+                    motorSpeed = 0.6;
                 } else {
-                    motorSpeed = -0.8;
+                    motorSpeed = -0.6;
                 }
             }
             if(this.avgCurrent() > WristConstants.stallCurrentThreshold){

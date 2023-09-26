@@ -111,42 +111,13 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Arm", inputs);
-        Logger.getInstance().recordOutput("temporary Setpoints", needTempSetpoints());
-    
 
-        armVisualizerMeasured.update(getAngleDeg(), Wrist.getInstance().getAngleDeg());
-        armVisualizerSetpoint.update(getSetpointDeg(), Wrist.getInstance().getSetpointDeg());
+        // armVisualizerMeasured.update(getAngleDeg(), Wrist.getInstance().getAngleDeg());
+        // armVisualizerSetpoint.update(getSetpointDeg(), Wrist.getInstance().getSetpointDeg());
 
         Logger.getInstance().recordOutput("Arm setpoint", setpoint);
 
         double feedback = controller.calculate(inputs.angleRev, setpoint, getConstraints());
         io.setArmVoltage(feedback);
-    }
-
-    private boolean needTempSetpoints(){
-        return unsafePosition() || unsafeSetpoint();
-    }
-
-    private boolean unsafePosition(){
-        double position = inputs.angleRev;
-        double wristPosition = Wrist.getInstance().getPosition();
-        if(position < RollerbarConstants.kArmBoundary){
-            return true;
-        } else if(position < RollerbarConstants.kWristRetractedBoundary && wristPosition < WristConstants.rollerbarSetpoint){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean unsafeSetpoint(){
-        double wristGoal = Wrist.getInstance().getGoal();
-        if(setpoint < RollerbarConstants.kArmBoundary){
-            return true;
-        } else if(setpoint < RollerbarConstants.kWristRetractedBoundary && wristGoal < WristConstants.rollerbarSetpoint){
-            return true;
-        } else {
-            return false;
-        }
     }
 }

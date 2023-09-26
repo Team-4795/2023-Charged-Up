@@ -267,8 +267,8 @@ public final class Constants {
         public static final double kDoubleExtensionBoundary = 0.45;
         public static final double kSpinSpeed = -1;
 
-        public static final double kExtendTime = .5;
-        public static final double kRetractTime = .5;
+        public static final double kExtendTime = .7;
+        public static final double kRetractTime = .7;
     }
 
     public static final class WristConstants {
