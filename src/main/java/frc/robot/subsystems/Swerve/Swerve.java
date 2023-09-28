@@ -101,8 +101,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData(m_field);
         setDefaultCommand(
             run(() -> this.drive(
-            MathUtil.applyDeadband(OIConstants.driverController.getRawAxis(0) / 1.05, OIConstants.kDriveDeadband),
-            MathUtil.applyDeadband(-OIConstants.driverController.getRawAxis(1) / 1.05, OIConstants.kDriveDeadband),
+            MathUtil.applyDeadband(OIConstants.driverController.getRawAxis(0), OIConstants.kDriveDeadband),
+            MathUtil.applyDeadband(-OIConstants.driverController.getRawAxis(1), OIConstants.kDriveDeadband),
             MathUtil.applyDeadband(-OIConstants.driverController.getRawAxis(4), OIConstants.kDriveDeadband),
             true,true))
         );
