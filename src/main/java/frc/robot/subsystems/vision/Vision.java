@@ -68,7 +68,7 @@ public class Vision extends SubsystemBase {
     camArea = camera.getEntry("ta").getDouble(0.0);
     hasTargets = (camera.getEntry("tv").getDouble(0.0) == 1);
     botpose = camera.getEntry("botpose_wpired").getDoubleArray(new double[6]);
-    Rotation3d botRotation = new Rotation3d(botpose[4], botpose[3], botpose[5]);
+    Rotation3d botRotation = new Rotation3d(botpose[3] * (Math.PI/180), botpose[4] * (Math.PI/180), botpose[5] * (Math.PI/180));
     Quaternion botQuaternion = botRotation.getQuaternion();
     loggedpose[0] = botpose[0];
     loggedpose[1] = botpose[1];
