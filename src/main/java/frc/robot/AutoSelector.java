@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.autoPaths.*;
-import frc.robot.commands.AutoCommands;
+import frc.robot.Commands.AutoCommands;
 
 public class AutoSelector {
     private final LoggedDashboardChooser<AutoPath> chooser = new LoggedDashboardChooser<>("Auto Selector");

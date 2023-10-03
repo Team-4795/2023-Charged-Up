@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.Commands;
 
 import com.fasterxml.jackson.core.io.OutputDecorator;
 

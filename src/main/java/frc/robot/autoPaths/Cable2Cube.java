@@ -6,8 +6,8 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.StateManager.Gamepiece;
-import frc.robot.commands.AutoCommands;
-import frc.robot.commands.AutoCommands.Height;
+import frc.robot.Commands.AutoCommands;
+import frc.robot.Commands.AutoCommands.Height;
 
 public class Cable2Cube extends AutoPath {
     public Command load(AutoCommands autoCommands) {

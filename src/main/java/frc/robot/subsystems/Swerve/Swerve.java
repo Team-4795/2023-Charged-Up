@@ -1,22 +1,30 @@
 package frc.robot.subsystems.Swerve;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +38,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.utils.SwerveUtils;
+import frc.robot.subsystems.vision.Vision;
 
 public class Swerve extends SubsystemBase {
     // Create field2d
@@ -60,6 +69,11 @@ public class Swerve extends SubsystemBase {
     // The gyro sensor
 
     AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+
+    // PoseEstimater
+
+    // private SwerveDrivePoseEstimator m_poseEstimator;
+
     // WPI_Pigeon2 pigeon = new WPI_Pigeon2(20);
 
     private double balanceSpeed = 0.0;
@@ -74,6 +88,7 @@ public class Swerve extends SubsystemBase {
     private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
     private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
+
     // Odometry class for tracking robot pose
     SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
             DriveConstants.kDriveKinematics,
@@ -84,6 +99,19 @@ public class Swerve extends SubsystemBase {
                     m_rearLeft.getPosition(),
                     m_rearRight.getPosition()
             });
+
+    SwerveDrivePoseEstimator m_poseEstimator =
+            new SwerveDrivePoseEstimator(
+                DriveConstants.kDriveKinematics,
+                Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
+                new SwerveModulePosition[] {
+                        m_frontLeft.getPosition(),
+                        m_frontRight.getPosition(),
+                        m_rearLeft.getPosition(),
+                        m_rearRight.getPosition(),
+            
+                }, new Pose2d(0,0, new Rotation2d()));
+                
 
     Pose2d visionPose = new Pose2d();
 
@@ -120,12 +148,25 @@ public class Swerve extends SubsystemBase {
                         m_rearLeft.getPosition(),
                         m_rearRight.getPosition()
                 });
-
+                m_poseEstimator.update(
+                    Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
+    
+                    new SwerveModulePosition[] {
+                            m_frontLeft.getPosition(),
+                            m_frontRight.getPosition(),
+                            m_rearLeft.getPosition(),
+                            m_rearRight.getPosition()
+                    });
         m_field.setRobotPose(m_odometry.getPoseMeters());
+
+        Pose3d visionMeasurement3d = new Pose3d(Vision.getInstance().loggedpose[1], Vision.getInstance().loggedpose[2], Vision.getInstance().loggedpose[3], Vision.getInstance().botRotation);
+        Pose2d visionMeasurement2d = visionMeasurement3d.toPose2d();
+        m_poseEstimator.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
 
         SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
         SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
         SmartDashboard.putData("pose", m_field);
+        Logger.getInstance().recordOutput("Estimated pose", m_poseEstimator.getEstimatedPosition());
 
         SmartDashboard.putNumber("Pigeon Angle of Elevation", getElevationAngle());
         SmartDashboard.putNumber("NavX Angle of Elevation", m_gyro.getPitch());
