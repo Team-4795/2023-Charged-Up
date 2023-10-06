@@ -275,8 +275,8 @@ public final class Constants {
         public static final int CANID = 13;
         public static final int currentLimit = 25;
 
-        public static final double maxPositionRev = 0.43;
-        public static final double minPositionRev = 0.0;
+        public static final double maxPositionRev = 0.92;
+        public static final double minPositionRev = 0.2;
         
         public static final double kP = 1;
         public static final double kI = 0.0;
