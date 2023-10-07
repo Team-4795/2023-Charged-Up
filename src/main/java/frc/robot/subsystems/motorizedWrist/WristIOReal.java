@@ -22,6 +22,7 @@ public class WristIOReal implements WristIO {
         encoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
         relative = wristMotor.getEncoder();
         relative.setPosition(0);
+        relative.setPositionConversionFactor(0.04166667);
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 20);

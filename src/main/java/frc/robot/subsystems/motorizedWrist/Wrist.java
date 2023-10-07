@@ -122,9 +122,7 @@ public class Wrist extends SubsystemBase{
         boolean backup = false;
         if(binaryControl){
             backup = armPosition > ArmConstants.kHighWristLimit && goal > 0;
-            if(inputs.current < 40){
-                wristCurrentBuffer.addLast(inputs.current);
-            }
+            wristCurrentBuffer.addLast(inputs.current);
             if(backup){
                 motorSpeed = -0.6;
             } else {
