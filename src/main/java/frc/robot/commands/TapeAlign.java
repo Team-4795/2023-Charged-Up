@@ -10,14 +10,20 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RotationConstants;
 import frc.robot.Constants.TapeAlignConstants;
+import frc.robot.StateManager.Gamepiece;
+import frc.robot.StateManager.State;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.motorizedWrist.Wrist;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.StateManager;
 import java.util.function.Supplier;
 
 public class TapeAlign extends CommandBase {
     private Swerve drive = Swerve.getInstance();
     private Vision vision = Vision.getInstance();
+    private Wrist wrist = Wrist.getInstance();
+    private StateManager stateManager = StateManager.getInstance();
     private PIDController rotationPID;
 
     private Supplier<Double> xspeedSupplier;
@@ -52,7 +58,12 @@ public class TapeAlign extends CommandBase {
                 x_speed * DriveConstants.kMaxSpeedMetersPerSecond, 
                 ySpeed * DriveConstants.kMaxSpeedMetersPerSecond, 
                 -rotation * DriveConstants.kMaxAngularSpeed));
-        } else {
+
+            if(vision.getArea() >= 0.2 && stateManager.getState() == State.MidScore && stateManager.getGamepiece() == Gamepiece.Cone){
+                wrist.extend();
+            }
+        } 
+        else {
             double rotation = RotationConstants.kNoTargetSpeed;
             if(drive.getVisionHeading() > 0){
                 rotation *= -1;

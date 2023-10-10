@@ -25,10 +25,10 @@ public class StateManager extends VirtualSubsystem {
     }
 
     // What state were in
-    private State state;
+    public State state;
 
     // Either what were picking or what were storing
-    private Gamepiece gamepiece = Gamepiece.Cube;
+    public Gamepiece gamepiece = Gamepiece.Cube;
 
     public enum Gamepiece {
         Cube,
