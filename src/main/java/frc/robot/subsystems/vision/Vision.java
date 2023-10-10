@@ -35,6 +35,7 @@ public class Vision extends SubsystemBase {
   private Vision(){
     camera = NetworkTableInstance.getDefault().getTable("limelight");
     loggedpose = new double[7];
+    botRotation = new Rotation3d();
   }
 
   public boolean hasTargets() {

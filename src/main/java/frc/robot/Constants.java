@@ -275,25 +275,25 @@ public final class Constants {
         public static final int CANID = 13;
         public static final int currentLimit = 25;
 
-        public static final double maxPositionRev = 0.4;
-        public static final double minPositionRev = 0.0;
+        public static final double maxPositionRev = 0.31;
+        public static final double minPositionRev = -0.02;
         
-        public static final double kP = 1;
+        public static final double kP = 5; 
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kDt = 0.02;
         public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(1, 4);
 
         public static final double kS = 0;
-        public static final double kg = 0;
-        public static final double kV = 0;
+        public static final double kg = 0; //0.3
+        public static final double kV = 8.9; //8.9
         public static final double ka = 0;
 
         public static final double midPoint = 0.5 * (maxPositionRev - minPositionRev);
         public static final double retractedSetpoint = 0.2 * (maxPositionRev - minPositionRev);
         public static final double extendedSetpoint = 0.8 * (maxPositionRev - minPositionRev);
         public static final double rollerbarSetpoint = 0.55 * (maxPositionRev - minPositionRev);
-        public static final double manualSpeed = 0.01;
+        public static final double manualSpeed = -0.01;
 
         public static final double maxAngleRad = maxPositionRev * 2 * Math.PI;
         public static final double MOI = 0.0245;
@@ -333,12 +333,12 @@ public final class Constants {
     public static final class CubeSetpointConstants {
         public static final Setpoints kLowPickup = new Setpoints(0.928, 0.05, -0.5, false);
         public static final Setpoints kStowHigh = new Setpoints(0.5, 0.2, -0.5, false);
-        public static final Setpoints kDoubleFeeder = new Setpoints(0.635, 0.35, -0.5, false);
+        public static final Setpoints kDoubleFeeder = new Setpoints(0.635, 0.29, -0.5, false);
         public static final Setpoints kLowScore = new Setpoints(0.89, 0.05, -0.3, false);
-        public static final Setpoints kMidScore = new Setpoints(0.69, 0.3, -0.5, false);
-        public static final Setpoints kHighScore = new Setpoints(0.565, 0.35, -0.75, false);
+        public static final Setpoints kMidScore = new Setpoints(0.69, 0.29, -0.5, false);
+        public static final Setpoints kHighScore = new Setpoints(0.565, 0.29, -0.75, false);
         public static final Setpoints kStowInFrame = new Setpoints(0.18, 0.05, -0.5, false);
-        public static final Setpoints kStowLow = new Setpoints(0.96, 0.0, -0.5, false);
+        public static final Setpoints kStowLow = new Setpoints(0.96, 0.01, -0.5, false);
         public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, 0.1, -1.0, false);
         public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, 0.2, -0.6, false);
         public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, 0.08, -0.5, false);
@@ -350,7 +350,7 @@ public final class Constants {
     public static final class ConeSetpointConstants {
         public static final Setpoints kLowPickup = new Setpoints(0.94, 0.05, -0.4, false);
         public static final Setpoints kStowHigh = new Setpoints(0.5, 0.2, -0.4, false);
-        public static final Setpoints kDoubleFeeder = new Setpoints(0.615, 0.35, -0.4, false);
+        public static final Setpoints kDoubleFeeder = new Setpoints(0.615, 0.29, -0.4, false);
         public static final Setpoints kLowScore = new Setpoints(0.87, 0.03, -0.4, false);
         public static final Setpoints kMidScore = new Setpoints(0.72, 0.05, -0.4, false);
         public static final Setpoints kHighScore = new Setpoints(0.58, 0.2, -0.4, false);

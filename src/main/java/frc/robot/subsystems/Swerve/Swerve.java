@@ -148,20 +148,21 @@ public class Swerve extends SubsystemBase {
                         m_rearLeft.getPosition(),
                         m_rearRight.getPosition()
                 });
-                m_poseEstimator.update(
-                    Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
+        m_poseEstimator.update(
+            Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
     
-                    new SwerveModulePosition[] {
-                            m_frontLeft.getPosition(),
-                            m_frontRight.getPosition(),
-                            m_rearLeft.getPosition(),
-                            m_rearRight.getPosition()
-                    });
+            new SwerveModulePosition[] {
+                m_frontLeft.getPosition(),
+                m_frontRight.getPosition(),
+                m_rearLeft.getPosition(),
+                m_rearRight.getPosition()
+        });
         m_field.setRobotPose(m_odometry.getPoseMeters());
 
         Pose3d visionMeasurement3d = new Pose3d(Vision.getInstance().loggedpose[1], Vision.getInstance().loggedpose[2], Vision.getInstance().loggedpose[3], Vision.getInstance().botRotation);
         Pose2d visionMeasurement2d = visionMeasurement3d.toPose2d();
         m_poseEstimator.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
+
 
         SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
         SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
