@@ -265,7 +265,7 @@ public final class Constants {
         public static final double kArmBoundary = 0.19;
         public static final double kWristRetractedBoundary = 0.23;
         public static final double kDoubleExtensionBoundary = 0.45;
-        public static final double kSpinSpeed = -1;
+        public static final double kSpinSpeed = -0.9;
 
         public static final double kExtendTime = .7;
         public static final double kRetractTime = .7;
@@ -337,20 +337,20 @@ public final class Constants {
         public static final Setpoints kLowScore = new Setpoints(0.89, 0.05, -0.3, false);
         public static final Setpoints kMidScore = new Setpoints(0.69, 0.29, -0.5, false);
         public static final Setpoints kHighScore = new Setpoints(0.565, 0.29, -0.75, false);
-        public static final Setpoints kStowInFrame = new Setpoints(0.18, 0.05, -0.5, false);
+        public static final Setpoints kStowInFrame = new Setpoints(0.18, 0.025, -0.5, false);
         public static final Setpoints kStowLow = new Setpoints(0.96, 0.01, -0.5, false);
         public static final Setpoints kBackwardsHighScore = new Setpoints(0.432, 0.1, -1.0, false);
         public static final Setpoints kBackwardsMidScore = new Setpoints(0.33, 0.2, -0.6, false);
         public static final Setpoints kBackwardsLowScore = new Setpoints(0.22, 0.08, -0.5, false);
         public static final Setpoints kBackwardsDoubleFeeder = new Setpoints(0.356, 0.08, -0.5, false);
-        public static final Setpoints kBackwardsLowPickup = new Setpoints(0.21, 0.12, 0.0, true);
+        public static final Setpoints kBackwardsLowPickup = new Setpoints(0.185, 0.065, 0.0, true);
         public static final Setpoints kBackwardLowPickupAuto = new Setpoints(0.21, 0.12, 0, true);
     }
 
     public static final class ConeSetpointConstants {
         public static final Setpoints kLowPickup = new Setpoints(0.94, 0.05, -0.4, false);
         public static final Setpoints kStowHigh = new Setpoints(0.5, 0.2, -0.4, false);
-        public static final Setpoints kDoubleFeeder = new Setpoints(0.615, 0.29, -0.4, false);
+        public static final Setpoints kDoubleFeeder = new Setpoints(0.635, 0.26, -0.4, false);
         public static final Setpoints kLowScore = new Setpoints(0.87, 0.03, -0.4, false);
         public static final Setpoints kMidScore = new Setpoints(0.72, 0.05, -0.4, false);
         public static final Setpoints kHighScore = new Setpoints(0.58, 0.2, -0.4, false);
