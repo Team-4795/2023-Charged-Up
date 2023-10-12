@@ -51,7 +51,7 @@ public class Wrist extends SubsystemBase{
 
     private Wrist(WristIO io){
         this.io = io;
-        binaryControl = true;
+        binaryControl = false;
         io.updateInputs(inputs);
         goal = inputs.angle;
 
