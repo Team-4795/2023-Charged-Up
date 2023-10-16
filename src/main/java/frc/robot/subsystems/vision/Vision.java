@@ -1,6 +1,8 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightResults;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Quaternion;
@@ -22,6 +24,8 @@ public class Vision extends SubsystemBase {
   public double[] loggedpose;
   public Rotation3d botRotation;
   private boolean hasTargets;
+
+  private LimelightResults llresults;
 
   private static Vision mInstance;
 
@@ -55,7 +59,8 @@ public class Vision extends SubsystemBase {
   }
 
   public void pipelineIndex(int index) {
-    camera.getEntry("pipeline").setNumber(index);
+    //camera.getEntry("pipeline").setNumber(index);
+    LimelightHelpers.setPipelineIndex("", index);
   }
 
   public void switchToTag() {
@@ -68,17 +73,23 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    camX = camera.getEntry("ty").getDouble(0.0);
-    camY = camera.getEntry("tx").getDouble(0.0);
-    camArea = camera.getEntry("ta").getDouble(0.0);
-    hasTargets = (camera.getEntry("tv").getDouble(0.0) == 1);
-    botpose = camera.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+    llresults = LimelightHelpers.getLatestResults("");
+    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
+
+    camX = LimelightHelpers.getTX("");
+    camY = LimelightHelpers.getTY("");
+    camArea = LimelightHelpers.getTA("");
+    botpose = LimelightHelpers.getBotPose_wpiRed("");
+    hasTargets = LimelightHelpers.getTV("");
+
+    //camX = camera.getEntry("ty").getDouble(0.0);
+    //camY = camera.getEntry("tx").getDouble(0.0);
+    //camArea = camera.getEntry("ta").getDouble(0.0);
+    //hasTargets = (camera.getEntry("tv").getDouble(0.0) == 1);
+    //botpose = camera.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+    
     botRotation = new Rotation3d(botpose[3]*Math.PI/180, botpose[4]*Math.PI/180, botpose[5]*Math.PI/180);
     Quaternion botQuaternion = botRotation.getQuaternion();
-
-
-
-
 
     loggedpose[0] = botpose[0];
     loggedpose[1] = botpose[1];
@@ -88,11 +99,11 @@ public class Vision extends SubsystemBase {
     loggedpose[5] = botQuaternion.getY();
     loggedpose[6] = botQuaternion.getZ();
 
-
     SmartDashboard.putBoolean("Vision Target?", hasTargets);
     SmartDashboard.putNumber("Target Area", camArea);
     SmartDashboard.putNumber("Displacement Angle X", camX);
     SmartDashboard.putNumber("Displacement Angle Y", camY);
+    SmartDashboard.putNumber("Number of AprilTags", numAprilTags);
     SmartDashboard.putNumberArray("Botpose", loggedpose);
   }
 
