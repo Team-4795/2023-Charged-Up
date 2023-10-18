@@ -159,7 +159,7 @@ public class Swerve extends SubsystemBase {
         });
         m_field.setRobotPose(m_odometry.getPoseMeters());
 
-        Pose3d visionMeasurement3d = new Pose3d(Vision.getInstance().loggedpose[1], Vision.getInstance().loggedpose[2], Vision.getInstance().loggedpose[3], Vision.getInstance().botRotation);
+        Pose3d visionMeasurement3d = new Pose3d(Vision.getInstance().loggedpose[0], Vision.getInstance().loggedpose[1], Vision.getInstance().loggedpose[2], Vision.getInstance().botRotation);
         Pose2d visionMeasurement2d = visionMeasurement3d.toPose2d();
         m_poseEstimator.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
 
