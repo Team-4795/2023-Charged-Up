@@ -29,6 +29,7 @@ public class Cable3Cube extends AutoPath {
                 autoCommands.outtake(0.2),
                 autoCommands.intakeTrajectory(Gamepiece.Cube, true, intakeGP3),
                 autoCommands.scoreTrajectory(Gamepiece.Cube, Height.Low, false, scoreGP3),
+                autoCommands.outtake(0.2),
                 autoCommands.stow()
             ).finallyDo((end) -> Intake.getInstance().setOverrideStoring(false))
         );
