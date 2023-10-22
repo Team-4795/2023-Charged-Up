@@ -16,6 +16,8 @@ public class AutoSelector {
 
         chooser.addDefaultOption("Free 3 Hybrid MHM", new Free3HybridMHM());
 
+        chooser.addOption("Free 3 Cube", new Free3Cube());
+
         chooser.addOption("Center 2 + Balance", new Center2CubeBalance());
 
         chooser.addOption("Center 1 + Balance", new Center1CubeBalance());
@@ -24,7 +26,7 @@ public class AutoSelector {
 
         chooser.addOption("Cable 2 Cube", new Cable2Cube());
 
-        chooser.addOption("Cable 25", new Cable25HybridMHL());
+        chooser.addOption("Cable?????", new Cable3Cube());
     }
 
     public Command getSelected() {
