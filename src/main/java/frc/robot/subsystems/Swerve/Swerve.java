@@ -161,8 +161,14 @@ public class Swerve extends SubsystemBase {
 
         Pose3d visionMeasurement3d = new Pose3d(Vision.getInstance().loggedpose[0], Vision.getInstance().loggedpose[1], Vision.getInstance().loggedpose[2], Vision.getInstance().botRotation);
         Pose2d visionMeasurement2d = visionMeasurement3d.toPose2d();
-        m_poseEstimator.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
+        double distance = visionMeasurement2d.getTranslation().getDistance(m_poseEstimator.getEstimatedPosition().getTranslation());
+        
+        boolean forceApriltags = Constants.OIConstants.operatorController.getHID().getStartButton();
 
+        if (visionMeasurement2d.getX() != 0 && (forceApriltags || distance < 1.0)) {
+            m_poseEstimator.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
+            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(1, 1, 1));
+        }
 
         SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
         SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
