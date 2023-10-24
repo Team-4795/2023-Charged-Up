@@ -166,7 +166,7 @@ public class Swerve extends SubsystemBase {
         boolean forceApriltags = Constants.OIConstants.operatorController.getHID().getStartButton();
 
         if (visionMeasurement2d.getX() != 0 && (forceApriltags || distance < 1.0)) {
-            m_poseEstimator.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
+            m_poseEstimator.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp() - (Vision.getInstance().botpose[6] / 1000.0));
             m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(1, 1, 1));
         }
 
