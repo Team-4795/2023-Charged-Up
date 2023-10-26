@@ -46,6 +46,7 @@ public class RobotContainer {
         StateManager manager = StateManager.getInstance();
         ConstraintManager.initialize();
 
+        OIConstants.operatorController.back().onTrue(Commands.runOnce(drive::resetEstimatedPose));
         OIConstants.operatorController.a().whileTrue(Commands.run(rollerbar::reverse, rollerbar));
         OIConstants.operatorController.b().onTrue(Commands.run(rollerbar::spin, rollerbar));
         OIConstants.operatorController.x().onTrue(Commands.runOnce(wrist::flip));
