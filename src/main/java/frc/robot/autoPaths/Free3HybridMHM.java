@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.StateManager.Gamepiece;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.Commands.AutoCommands;
 import frc.robot.Commands.AutoCommands.Height;
 
@@ -28,6 +29,9 @@ public class Free3HybridMHM extends AutoPath {
                 autoCommands.intakeTrajectory(Gamepiece.Cube, true, intakeGP2),
                 autoCommands.scoreTrajectory(Gamepiece.Cube, Height.Mid, false, scoreGP2),
                 autoCommands.outtake(0.3),
-                autoCommands.intakeTrajectory(Gamepiece.Cube, true, intakeGP2)));
+                autoCommands.intakeTrajectory(Gamepiece.Cube, true, intakeGP2)).finallyDo((end) -> {
+                    Intake.getInstance().setOverrideStoring(false);
+                }));
+                
     }
 }

@@ -3,6 +3,9 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Quaternion;
@@ -20,6 +23,7 @@ public class Vision extends SubsystemBase {
   private double camX;
   private double camY; 
   private double camArea;
+  private double dist;
   public double[] botpose;
   public double[] loggedpose;
   public Rotation3d botRotation;
@@ -71,6 +75,10 @@ public class Vision extends SubsystemBase {
     pipelineIndex(1);
   }
 
+  public double getDistance() {
+    return dist;
+  }
+
   @Override
   public void periodic() {
     llresults = LimelightHelpers.getLatestResults("");
@@ -80,6 +88,7 @@ public class Vision extends SubsystemBase {
     camY = LimelightHelpers.getTY("");
     camArea = LimelightHelpers.getTA("");
     botpose = LimelightHelpers.getBotPose_wpiRed("");
+    dist = LimelightHelpers.getTargetPose3d_CameraSpace("").getTranslation().getZ();
     hasTargets = LimelightHelpers.getTV("");
 
     //camX = camera.getEntry("ty").getDouble(0.0);
@@ -99,12 +108,14 @@ public class Vision extends SubsystemBase {
     loggedpose[5] = botQuaternion.getY();
     loggedpose[6] = botQuaternion.getZ();
 
+    Logger.getInstance().recordOutput("Vision/Distance", dist);
     SmartDashboard.putBoolean("Vision Target?", hasTargets);
     SmartDashboard.putNumber("Target Area", camArea);
     SmartDashboard.putNumber("Displacement Angle X", camX);
     SmartDashboard.putNumber("Displacement Angle Y", camY);
     SmartDashboard.putNumber("Number of AprilTags", numAprilTags);
     SmartDashboard.putNumberArray("Botpose", loggedpose);
+
   }
 
 }

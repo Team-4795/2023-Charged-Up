@@ -68,13 +68,13 @@ public class Swerve extends SubsystemBase {
 
     // The gyro sensor
 
-    AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+    // AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
     // PoseEstimater
 
     // private SwerveDrivePoseEstimator m_poseEstimator;
 
-    // WPI_Pigeon2 pigeon = new WPI_Pigeon2(20);
+    WPI_Pigeon2 m_gyro = new WPI_Pigeon2(20);
 
     private double balanceSpeed = 0.0;
     public int oscillations = 0;
@@ -161,11 +161,26 @@ public class Swerve extends SubsystemBase {
 
         Pose3d visionMeasurement3d = new Pose3d(Vision.getInstance().loggedpose[0], Vision.getInstance().loggedpose[1], Vision.getInstance().loggedpose[2], Vision.getInstance().botRotation);
         Pose2d visionMeasurement2d = visionMeasurement3d.toPose2d();
-        m_poseEstimator.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
+        double distance = visionMeasurement2d.getTranslation().getDistance(m_poseEstimator.getEstimatedPosition().getTranslation());
 
+        boolean forceApriltags = Constants.OIConstants.operatorController.getHID().getStartButton();
+        double angleDiff = visionMeasurement2d.getRotation().getRadians() - m_poseEstimator.getEstimatedPosition().getRotation().getRadians();
+
+        if (visionMeasurement2d != null && visionMeasurement2d.getX() != 0 && (forceApriltags || (distance < 1.0 && Math.abs(angleDiff) < 1.0))) {
+            var stddevs = VecBuilder.fill(1.5, 1.5, 1);
+
+            if (Vision.getInstance().getDistance() > 2.0) {
+                stddevs = VecBuilder.fill(3, 3, 2);
+            }
+
+            m_poseEstimator.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp() - (Vision.getInstance().botpose[6] / 1000.0), stddevs);
+        }
 
         SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
-        SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
+        Logger.getInstance().recordOutput("Gyro/Yaw",  m_gyro.getAngle());
+        Logger.getInstance().recordOutput("Gyro/Pitch",  m_gyro.getPitch());
+        Logger.getInstance().recordOutput("Gyro/Roll",  m_gyro.getRoll());
+
         SmartDashboard.putData("pose", m_field);
         Logger.getInstance().recordOutput("Estimated pose", m_poseEstimator.getEstimatedPosition());
 
@@ -175,9 +190,9 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData("Field", m_field);
         SmartDashboard.putNumber("backwards", Math.cos(Math.toRadians(this.getAngle())));
         SmartDashboard.putNumberArray("Swerve states", getModuleStates());
-        SmartDashboard.putNumber("magnetometer X", m_gyro.getRawMagX());
-        SmartDashboard.putNumber("magnetometer Y", m_gyro.getRawMagY());
-        SmartDashboard.putNumber("magnetometer Z", m_gyro.getRawMagZ());
+        // SmartDashboard.putNumber("magnetometer X", m_gyro.getRawMagX());
+        // SmartDashboard.putNumber("magnetometer Y", m_gyro.getRawMagY());
+        // SmartDashboard.putNumber("magnetometer Z", m_gyro.getRawMagZ());
         SmartDashboard.putNumberArray("Odometry",
                 new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees() });
         // SmartDashboard.putNumberArray("Vision Pose Estimate", new double[] {
@@ -185,6 +200,17 @@ public class Swerve extends SubsystemBase {
         // });
     }
 
+    public void resetEstimatedPose() {
+        m_poseEstimator.resetPosition(
+                Rotation2d.fromDegrees(-m_gyro.getAngle() + Constants.DriveConstants.kChassisAngularOffset),
+                new SwerveModulePosition[] {
+                        m_frontLeft.getPosition(),
+                        m_frontRight.getPosition(),
+                        m_rearLeft.getPosition(),
+                        m_rearRight.getPosition()
+                },
+                new Pose2d());
+    }
     /**
      * Returns the currently-estimated pose of the robot.
      *
@@ -350,12 +376,14 @@ public class Swerve extends SubsystemBase {
     /** Zeroes the heading of the robot. */
     public void zeroHeading() {
         m_gyro.reset();
-        m_gyro.setAngleAdjustment(0);
+        // m_gyro.setAngleAdjustment(0);
     }
 
     public void zeroReverseHeading() {
         m_gyro.reset();
-        m_gyro.setAngleAdjustment(180);
+        // m_gyro.setAngleAdjustment(180);
+        m_gyro.addYaw(180);
+
     }
 
     /**
