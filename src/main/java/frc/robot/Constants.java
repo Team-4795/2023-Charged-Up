@@ -173,10 +173,9 @@ public final class Constants {
         public static final double platformMaxAngle = 10;
 
         // constant speed during command
-        public static final double balanceSpeed = 0.07;
+        public static final double balanceSpeed = 0.1;
 
-        public static final double driveAngleThreshold =
-                12; // angle at which checking angle duration starts, in degrees
+        public static final double driveAngleThreshold = 5; // angle at which checking angle duration starts, in degrees
         // constant drive up speed
         public static final double driveBalanceSpeed = 0.4;
         // useless for Asheville
@@ -193,8 +192,9 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
         public static final double zeroAngleThreshold = 0.15;
-        public static final double deadbandValue = 11;
+        public static final double deadbandValue = 10;
         public static final double oscillationTime = 0.06;
+        public static final double balanceSpeed2 = 0.16;
     }
 
     public static final class NeoMotorConstants {
@@ -267,8 +267,8 @@ public final class Constants {
         public static final double kDoubleExtensionBoundary = 0.45;
         public static final double kSpinSpeed = -0.9;
 
-        public static final double kExtendTime = .7;
-        public static final double kRetractTime = .7;
+        public static final double kExtendTime = .6;
+        public static final double kRetractTime = .6;
     }
 
     public static final class WristConstants {
@@ -292,7 +292,7 @@ public final class Constants {
         public static final double midPoint = 0.5 * (maxPositionRev - minPositionRev);
         public static final double retractedSetpoint = 0.2 * (maxPositionRev - minPositionRev);
         public static final double extendedSetpoint = 0.8 * (maxPositionRev - minPositionRev);
-        public static final double rollerbarSetpoint = 0.55 * (maxPositionRev - minPositionRev);
+        public static final double rollerbarSetpoint = 0.475 * (maxPositionRev - minPositionRev);
         public static final double manualSpeed = -0.01;
 
         public static final double maxAngleRad = maxPositionRev * 2 * Math.PI;
@@ -350,7 +350,7 @@ public final class Constants {
     public static final class ConeSetpointConstants {
         public static final Setpoints kLowPickup = new Setpoints(0.94, 0.05, -0.4, false);
         public static final Setpoints kStowHigh = new Setpoints(0.5, 0.2, -0.4, false);
-        public static final Setpoints kDoubleFeeder = new Setpoints(0.635, 0.26, -0.4, false);
+        public static final Setpoints kDoubleFeeder = new Setpoints(0.63, 0.26, -0.4, false);
         public static final Setpoints kLowScore = new Setpoints(0.87, 0.03, -0.4, false);
         public static final Setpoints kMidScore = new Setpoints(0.72, 0.05, -0.4, false);
         public static final Setpoints kHighScore = new Setpoints(0.58, 0.2, -0.4, false);

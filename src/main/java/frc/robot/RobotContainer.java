@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.*;
@@ -46,7 +47,9 @@ public class RobotContainer {
         StateManager manager = StateManager.getInstance();
         ConstraintManager.initialize();
 
-        OIConstants.operatorController.back().onTrue(Commands.runOnce(drive::resetEstimatedPose));
+        // OIConstants.operatorController.back().onTrue(Commands.runOnce(drive::resetEstimatedPose));
+        OIConstants.operatorController.button(6).onTrue(new PrintCommand("Worked"));
+
         OIConstants.operatorController.a().whileTrue(Commands.run(rollerbar::reverse, rollerbar));
         OIConstants.operatorController.b().onTrue(Commands.run(rollerbar::spin, rollerbar));
         OIConstants.operatorController.x().onTrue(Commands.runOnce(wrist::flip));
@@ -62,7 +65,6 @@ public class RobotContainer {
         OIConstants.operatorController.povLeft().onTrue(Commands.runOnce(manager::dpadLeft));
         OIConstants.operatorController.povRight().onTrue(Commands.runOnce(manager::dpadRight));
         OIConstants.operatorController.povDown().onTrue(Commands.runOnce(manager::dpadDown));
-
         // Force rollerbar toggle
         OIConstants.driverController.a().onTrue(Commands.runOnce(rollerbar::toggle));
 
@@ -110,8 +112,8 @@ public class RobotContainer {
                         new LEDCommand(() -> -1.0).withTimeout(1.0)));
 
         // Operator LED trigger
-        new Trigger(() -> Math.abs(MathUtil.applyDeadband(OIConstants.driverController.getRightY(), 0.1)) > 0)
-                .whileTrue(new LEDCommand(() -> MathUtil.applyDeadband(OIConstants.driverController.getRightY(), 0.1)));
+        // new Trigger(() -> Math.abs(MathUtil.applyDeadband(OIConstants.driverController.getRightY(), 0.1)) > 0)
+        //         .whileTrue(new LEDCommand(() -> MathUtil.applyDeadband(OIConstants.driverController.getRightY(), 0.1)));
     }
 
     public void setDriverRumble(double rumble) {

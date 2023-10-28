@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -398,7 +400,7 @@ public class Swerve extends SubsystemBase {
 
     public double getElevationAngle() {
         // return pigeon.getPitch();
-        return 0;
+        return m_gyro.getPitch();
     }
 
 
@@ -471,16 +473,17 @@ public class Swerve extends SubsystemBase {
                         zeroReverseHeading();
                     } else {
                         zeroHeading();
-                    }
+                    }}),
+                new WaitCommand(0.2),
+                new InstantCommand(() -> {
 
                     this.resetOdometry(PathPlannerTrajectory
                             .transformTrajectoryForAlliance(traj, DriverStation.getAlliance())
                             .getInitialHolonomicPose(), flip);
 
                     this.setBreakMode();
-                })
+                }));
         // new InstantCommand(() -> m_intake.setOverrideStoring(true))
-        );
     }
 
     public double getAngle() {

@@ -24,6 +24,6 @@ public class SimpleHighCube extends AutoPath {
         return Commands.sequence(
                 autoCommands.autoStartUp(AutoBalance, false),
                 autoCommands.score(Gamepiece.Cube, Height.High, false),
-                autoCommands.outtake(0.2));
+                autoCommands.outtake(0.5));
     }
 }

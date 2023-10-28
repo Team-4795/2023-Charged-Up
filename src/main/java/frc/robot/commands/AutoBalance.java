@@ -18,16 +18,10 @@ public class AutoBalance extends CommandBase {
     int previousSign = 0;
     int currentSign = 0;
 
-    int signCheck = 0;
-    boolean checkingOscillation = false;
-    int oscillations = 1;
-
-    Timer oscillationTimer = new Timer();
 
     public AutoBalance(double errorThreshold) {
         this.errorThreshold = errorThreshold;
         output = 0;
-        oscillationTimer.reset();
         addRequirements(drive);
     }
 
@@ -45,7 +39,6 @@ public class AutoBalance extends CommandBase {
             elevationAngle = AutoConstants.platformMaxAngle;
         }
         output = updateDrive();
-        countOscillations();
         // not sure if Field relative is correct, but whatever
         drive.runVelocity(new ChassisSpeeds(0, output, 0));
         // drive.drive(output, 0, 0, false, true);
@@ -55,13 +48,15 @@ public class AutoBalance extends CommandBase {
 
     private double updateDrive() {
         // assuming we drive straight in the x direction for now
-        return -signOf(elevationAngle)
-                * (Math.pow(
-                        AutoConstants.polyCoeff
-                                / oscillations
-                                * (Math.abs(elevationAngle) / AutoConstants.platformMaxAngle),
-                        2))
-                * AutoConstants.balanceSpeed;
+        // return -signOf(elevationAngle)
+        //         * (Math.pow(
+        //                 AutoConstants.polyCoeff
+        //                         * (Math.abs(elevationAngle) / AutoConstants.platformMaxAngle),
+        //                 2))
+        //         * AutoConstants.balanceSpeed;
+        return -signOf(elevationAngle) * AutoConstants.balanceSpeed2;
+
+        
     }
 
     private int signOf(double num) {
@@ -92,21 +87,21 @@ public class AutoBalance extends CommandBase {
         return value;
     }
 
-    private void countOscillations() {
-        previousSign = currentSign;
-        currentSign = signOf(elevationAngle);
-        if (previousSign != currentSign && !checkingOscillation) {
-            signCheck = currentSign;
-            oscillationTimer.start();
-            checkingOscillation = true;
-        }
-        if (oscillationTimer.hasElapsed(AutoConstants.oscillationTime)) {
-            if (currentSign == signCheck) {
-                oscillations++;
-            }
-            oscillationTimer.stop();
-            oscillationTimer.reset();
-            checkingOscillation = false;
-        }
-    }
+    // private void countOscillations() {
+    //     previousSign = currentSign;
+    //     currentSign = signOf(elevationAngle);
+    //     if (previousSign != currentSign && !checkingOscillation) {
+    //         signCheck = currentSign;
+    //         oscillationTimer.start();
+    //         checkingOscillation = true;
+    //     }
+    //     if (oscillationTimer.hasElapsed(AutoConstants.oscillationTime)) {
+    //         if (currentSign == signCheck) {
+    //             oscillations++;
+    //         }
+    //         oscillationTimer.stop();
+    //         oscillationTimer.reset();
+    //         checkingOscillation = false;
+    //     }
+    // }
 }

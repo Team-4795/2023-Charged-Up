@@ -14,9 +14,9 @@ public class AutoSelector {
     public AutoSelector() {
         autoCommands = new AutoCommands();
 
-        chooser.addDefaultOption("Free 3 Hybrid MHM", new Free3HybridMHM());
+        chooser.addOption("Free 3 Hybrid MHM", new Free3HybridMHM());
 
-        chooser.addOption("Free 3 Cube", new Free3Cube());
+        chooser.addDefaultOption("Free 3 Cube", new Free3Cube());
 
         chooser.addOption("Center 2 + Balance", new Center2CubeBalance());
 
@@ -27,6 +27,8 @@ public class AutoSelector {
         chooser.addOption("Cable 2 Cube", new Cable2Cube());
 
         chooser.addOption("Cable?????", new Cable3Cube());
+
+        chooser.addOption("test", new AutoTest());
     }
 
     public Command getSelected() {

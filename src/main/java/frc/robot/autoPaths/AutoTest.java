@@ -11,12 +11,11 @@ import frc.robot.Commands.AutoCommands;
 
 public class AutoTest extends AutoPath {
     public Command load(AutoCommands autoCommands) {
-        PathPlannerTrajectory test = PathPlanner.loadPath("Testing Path", new PathConstraints(4, 3.5));
+        PathPlannerTrajectory test = PathPlanner.loadPath("Intake Free N2 GP1", new PathConstraints(4, 3.5));
 
         return Commands.sequence(
             autoCommands.autoStartUp(test, false),
-            autoCommands.intakeTrajectory(Gamepiece.Cube, true, test),
-            autoCommands.stow()
+            autoCommands.autoBalance(true, true)
         );
     }
 }

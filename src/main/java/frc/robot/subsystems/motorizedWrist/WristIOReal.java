@@ -50,4 +50,9 @@ public class WristIOReal implements WristIO {
         wristMotor.set(motorSpeed);
     }
     
+    @Override
+    public void zero() {
+        relative.setPosition(0);
+    }
+
 }

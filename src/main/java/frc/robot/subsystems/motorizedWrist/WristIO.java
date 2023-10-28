@@ -15,4 +15,6 @@ public interface WristIO {
     public default void updateInputs(WristIOInputs inputs){}
 
     public default void set(double motorSpeed){}
+
+    public default void zero(){}
 }

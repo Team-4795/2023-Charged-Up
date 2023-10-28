@@ -67,6 +67,10 @@ public class Wrist extends SubsystemBase{
         goal = position;
     }
 
+    public void zero(){
+        io.zero();
+    }
+
     public void retract(){
         goal = WristConstants.retractedSetpoint;
     }
