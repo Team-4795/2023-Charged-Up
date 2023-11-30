@@ -44,8 +44,8 @@ public final class Constants {
     public static final class DriveConstants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
-        public static final double kMaxSpeedMetersPerSecond = 4.8;
-        public static final double kMaxAngularSpeed = 3 * Math.PI; // radians per second
+        public static final double kMaxSpeedMetersPerSecond = 1;
+        public static final double kMaxAngularSpeed = 1*Math.PI; // radians per second
 
         public static final double kDirectionSlewRate = 10.0; // radians per second
         public static final double kMagnitudeSlewRate = 10.0; // percent per second (1 = 100%)
@@ -143,7 +143,7 @@ public final class Constants {
 
         public static final double kDriveDeadband = 0.1;
         public static final double kArmDeadband = 0.05;
-        public static final double kArmManualSpeed = 0.01;
+        public static final double kArmManualSpeed = 0.005;
     }
 
     public static final class AutoConstants {
@@ -220,11 +220,11 @@ public final class Constants {
 
     public static final class ArmConstants {
         public static final TrapezoidProfile.Constraints kCubeMotionConstraint =
-                new TrapezoidProfile.Constraints(1.0, 2);
+                new TrapezoidProfile.Constraints(1, 2);
         public static final TrapezoidProfile.Constraints kConeMotionConstraint =
-                new TrapezoidProfile.Constraints(1.0, 2);
+                new TrapezoidProfile.Constraints(1, 2);
         public static final TrapezoidProfile.Constraints kNotStoringConstraint =
-                new TrapezoidProfile.Constraints(1.0, 2);
+                new TrapezoidProfile.Constraints(1, 2);
         public static final int kLeftArmMotorCANID = 10;
         public static final int kRightArmMotorCANID = 11;
         public static final double kP = 4.0;
