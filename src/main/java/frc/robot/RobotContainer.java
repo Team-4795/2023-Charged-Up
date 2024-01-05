@@ -98,10 +98,10 @@ public class RobotContainer {
 
                         
         // Vision align
-        OIConstants.driverController
-                .povLeft()
-                .whileTrue(new TapeAlign(
-                        () -> OIConstants.driverController.getLeftX(), () -> -OIConstants.driverController.getLeftY()));
+        // OIConstants.driverController
+        //         .povLeft()
+        //         .whileTrue(new TapeAlign(
+        //                 () -> OIConstants.driverController.getLeftX(), () -> -OIConstants.driverController.getLeftY()));
 
         // Intaking LED trigger
         new Trigger(Intake::isStoring)
