@@ -25,6 +25,9 @@
   },
   "NTProvider": {
     "types": {
+      "/AdvantageKit/RealOutputs/ArmMechanism2d/Measured": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/ArmMechanism2d/Setpoint": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/RollerbarMechanism2d/Setpoint": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
       "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
@@ -68,8 +71,13 @@
       "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/SmartDashboard/Angular Speed Limit": "String Chooser",
+      "/SmartDashboard/ArmMechanism": "Mechanism2d",
       "/SmartDashboard/Auto Selector": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Linear Speed Limit": "String Chooser",
+      "/SmartDashboard/Measured Arm Mechanism": "Mechanism2d",
+      "/SmartDashboard/Setpoint Arm Mechanism": "Mechanism2d",
       "/SmartDashboard/pose": "Field2d"
     }
   },
@@ -84,6 +92,15 @@
         }
       },
       "SmartDashboard": {
+        "Arm": {
+          "open": true
+        },
+        "ArmMechanism": {
+          "Arm": {
+            "open": true
+          },
+          "open": true
+        },
         "Auto Selector": {
           "open": true
         },

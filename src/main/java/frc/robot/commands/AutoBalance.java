@@ -1,60 +1,68 @@
 package frc.robot.Commands;
 
+import com.fasterxml.jackson.core.io.OutputDecorator;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.subsystems.Swerve.Swerve;
+import frc.robot.subsystems.drive.Drive;
 
-/*
- * May need to interpolate elevation velocity between x and y axis
- */
-public class AutoBalance extends CommandBase{
-    DriveSubsystem drive;
-    double errorThreshold;
-    
+public class AutoBalance extends CommandBase {
+    Swerve drive = Swerve.getInstance();
     double elevationAngle;
-    double elevationVelocity;
-    
+    double errorThreshold;
     double output;
 
-    public AutoBalance(DriveSubsystem drive, double errorThreshold){
-        this.drive = drive;
+    int previousSign = 0;
+    int currentSign = 0;
+
+
+    public AutoBalance(double errorThreshold) {
         this.errorThreshold = errorThreshold;
         output = 0;
-
         addRequirements(drive);
     }
 
-
     @Override
-    public void initialize(){
-        elevationAngle = drive.getElevationAngleV2();
-        elevationVelocity = drive.getElevationVelocityV2();
+    public void initialize() {
+        elevationAngle = drive.getElevationAngle();
     }
 
     @Override
-    public void execute(){
-        elevationAngle = drive.getElevationAngleV2();
-        elevationVelocity = drive.getElevationVelocityV2();
+    public void execute() {
+        elevationAngle = deadband(drive.getElevationAngle());
+        if (elevationAngle < -AutoConstants.platformMaxAngle) {
+            elevationAngle = -AutoConstants.platformMaxAngle;
+        } else if (elevationAngle > AutoConstants.platformMaxAngle) {
+            elevationAngle = AutoConstants.platformMaxAngle;
+        }
         output = updateDrive();
+        // not sure if Field relative is correct, but whatever
+        drive.runVelocity(new ChassisSpeeds(0, output, 0));
+        // drive.drive(output, 0, 0, false, true);
         drive.setBalanceSpeed(output);
-
-        drive.drive(output, 0.0, 0.0, false, true);
+        // drive.setOscillations(oscillations);
     }
 
     private double updateDrive() {
-        //check angle --> direction relation just in case, should be right tho
-        double speed = (Math.pow(AutoConstants.polyCoeff * (Math.abs(elevationAngle)/AutoConstants.platformMaxAngle), 2)) * AutoConstants.balanceSpeed;
-        if(elevationAngle > 0){
-            speed *= -1;
-        }
-        return speed;
+        // assuming we drive straight in the x direction for now
+        // return -signOf(elevationAngle)
+        //         * (Math.pow(
+        //                 AutoConstants.polyCoeff
+        //                         * (Math.abs(elevationAngle) / AutoConstants.platformMaxAngle),
+        //                 2))
+        //         * AutoConstants.balanceSpeed;
+        return -signOf(elevationAngle) * AutoConstants.balanceSpeed2;
+
+        
     }
 
-    private int signOf(double num){
-        if(num < 0){
+    private int signOf(double num) {
+        if (num < 0) {
             return -1;
-        } else if (num > 0){
+        } else if (num > 0) {
             return 1;
         } else {
             return 0;
@@ -62,13 +70,38 @@ public class AutoBalance extends CommandBase{
     }
 
     @Override
-    public void end(boolean interrupted){
-        drive.setBalanceSpeed(0);
+    public void end(boolean interrupted) {
+        // drive.setBalanceSpeed(0);
+
     }
 
     @Override
-    public boolean isFinished(){
-        return (Math.abs(elevationVelocity) > errorThreshold && (signOf(elevationAngle) != signOf(elevationVelocity)));
+    public boolean isFinished() {
+        return false;
     }
 
+    private double deadband(double value) {
+        if (-AutoConstants.deadbandValue < value && value < AutoConstants.deadbandValue) {
+            return 0.0;
+        }
+        return value;
+    }
+
+    // private void countOscillations() {
+    //     previousSign = currentSign;
+    //     currentSign = signOf(elevationAngle);
+    //     if (previousSign != currentSign && !checkingOscillation) {
+    //         signCheck = currentSign;
+    //         oscillationTimer.start();
+    //         checkingOscillation = true;
+    //     }
+    //     if (oscillationTimer.hasElapsed(AutoConstants.oscillationTime)) {
+    //         if (currentSign == signCheck) {
+    //             oscillations++;
+    //         }
+    //         oscillationTimer.stop();
+    //         oscillationTimer.reset();
+    //         checkingOscillation = false;
+    //     }
+    // }
 }

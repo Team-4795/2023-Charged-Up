@@ -1,40 +1,44 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Swerve.Swerve;
+import frc.robot.subsystems.drive.Drive;
 
-//Do not use within first checkDuration * 1000 millis of the day
-public class DriveCommand extends CommandBase{
-    DriveSubsystem drive;
+// Only drives straight in the X-direction, assumes platform in front of robot
+public class DriveCommand extends CommandBase {
+    Swerve drive = Swerve.getInstance();
     double speed;
     double angleThreshold;
 
     double duration;
     double time;
     boolean check;
+
     double elevationAngle;
 
-    public DriveCommand(DriveSubsystem drive, double speed, double angleThreshold, double checkDuration){
-        this.drive = drive;
+    public DriveCommand(double speed, double angleThreshold, double checkDuration) {
         this.angleThreshold = angleThreshold;
-        this.duration = 1000 * checkDuration;
         this.speed = speed;
-        check = false;
+        this.duration = checkDuration;
+        this.time = 0;
+        this.check = false;
         addRequirements(drive);
     }
 
     @Override
-    public void initialize(){
-        elevationAngle = drive.getElevationAngleV2();
+    public void initialize() {
+        elevationAngle = drive.getElevationAngle();
     }
 
     @Override
-    public void execute(){
-        drive.drive(0, speed, 0, true, true);
-        elevationAngle = drive.getElevationAngleV2();
-        if(Math.abs(elevationAngle) > angleThreshold){
-            if(!check){
-                time = System.currentTimeMillis();
+    public void execute() {
+        drive.runVelocity(new ChassisSpeeds(0, speed, 0));
+        elevationAngle = drive.getElevationAngle();
+        if (Math.abs(elevationAngle) > angleThreshold) {
+            if (!check) {
+                time = Timer.getFPGATimestamp() + 100;
                 check = true;
             }
         } else {
@@ -44,7 +48,7 @@ public class DriveCommand extends CommandBase{
     }
 
     @Override
-    public boolean isFinished(){
-        return (((System.currentTimeMillis() - time) > duration) && check);
+    public boolean isFinished() {
+        return (((Timer.getFPGATimestamp() + 100 - time) > duration) && check);
     }
 }

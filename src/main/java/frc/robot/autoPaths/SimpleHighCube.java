@@ -8,24 +8,22 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.AutoSelector;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.StateManager.Gamepiece;
+import frc.robot.Commands.AutoCommands;
+import frc.robot.Commands.AutoCommands.Height;
 
+public class SimpleHighCube extends AutoPath {
 
+    public Command load(AutoCommands autoCommands) {
 
-public class SimpleHighCube extends SequentialCommandGroup {
+        PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Free Auto Balance", new PathConstraints(3, 3));
 
-  public SimpleHighCube(DriveSubsystem drivebase, AutoSelector m_autoSelector) {
-
-    PathPlannerTrajectory AutoBalance = PathPlanner.loadPath("Free Auto Balance", new PathConstraints(3, 3));
-
-    addCommands(
-      new SequentialCommandGroup(
-        m_autoSelector.autoStartUp(AutoBalance, false),
-        m_autoSelector.score("cube", "high", false),
-        m_autoSelector.outtake(0.2)
-      )
-    );
-  }
+        return Commands.sequence(
+                autoCommands.autoStartUp(AutoBalance, false),
+                autoCommands.score(Gamepiece.Cube, Height.High, false),
+                autoCommands.outtake(0.5));
+    }
 }
