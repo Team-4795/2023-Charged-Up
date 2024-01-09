@@ -4,22 +4,22 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.*;
-import frc.robot.Commands.*;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.OIConstants;
+import frc.robot.Commands.LEDCommand;
+import frc.robot.Commands.TapeAlign;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.motorizedWrist.Wrist;
 import frc.robot.subsystems.rollerbar.Rollerbar;
 import frc.utils.ConstraintManager;
-import frc.robot.subsystems.motorizedWrist.Wrist;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -96,11 +96,12 @@ public class RobotContainer {
                             }
                         }));
 
+                        
         // Vision align
-        OIConstants.driverController
-                .povLeft()
-                .whileTrue(new TapeAlign(
-                        () -> OIConstants.driverController.getLeftX(), () -> -OIConstants.driverController.getLeftY()));
+        // OIConstants.driverController
+        //         .povLeft()
+        //         .whileTrue(new TapeAlign(
+        //                 () -> OIConstants.driverController.getLeftX(), () -> -OIConstants.driverController.getLeftY()));
 
         // Intaking LED trigger
         new Trigger(Intake::isStoring)

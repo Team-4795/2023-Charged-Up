@@ -70,13 +70,13 @@ public class Swerve extends SubsystemBase {
 
     // The gyro sensor
 
-    // AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+    AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
     // PoseEstimater
 
     // private SwerveDrivePoseEstimator m_poseEstimator;
 
-    WPI_Pigeon2 m_gyro = new WPI_Pigeon2(20);
+    //WPI_Pigeon2 m_gyro = new WPI_Pigeon2(20);
 
     private double balanceSpeed = 0.0;
     public int oscillations = 0;
@@ -378,13 +378,12 @@ public class Swerve extends SubsystemBase {
     /** Zeroes the heading of the robot. */
     public void zeroHeading() {
         m_gyro.reset();
-        // m_gyro.setAngleAdjustment(0);
+        m_gyro.setAngleAdjustment(0);
     }
 
     public void zeroReverseHeading() {
         m_gyro.reset();
-        // m_gyro.setAngleAdjustment(180);
-        m_gyro.addYaw(180);
+        m_gyro.setAngleAdjustment(180);
 
     }
 
